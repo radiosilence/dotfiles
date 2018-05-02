@@ -1,0 +1,34 @@
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+	name = James Cleveland
+	email = jc@blit.cc
+[core]
+	editor = vim
+[alias]
+	up = pull --rebase --autostash
+
+[difftool]
+	prompt = false
+[mergetool]
+	prompt = false
+	keepBackup = false
+[diff]
+	tool = vscode
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+
+[difftool "vscode"]
+	    cmd = code --wait --diff $LOCAL $REMOTE
+
+[merge]
+	    tool = vscode
+[mergetool "vscode"]
+	    cmd = code --wait $MERGED
+[push]
+	default = current
