@@ -1,0 +1,52 @@
+{
+    "editor.fontSize": 16,
+    "editor.fontFamily": "Input Mono",
+    "editor.tabSize": 2,
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": true,
+    "typescript.validate.enable": true,
+    "javascript.validate.enable": false,
+    "tslint.enable": true,
+    "tslint.autoFixOnSave": true,
+    "eslint.enable": true,
+    "editor.rulers": [
+        80
+    ],
+    "editor.quickSuggestionsDelay": 0,
+    "editor.minimap.enabled": false,
+    "editor.minimap.renderCharacters": false,
+    "files.trimTrailingWhitespace": true,
+    "editor.renderWhitespace": "boundary",
+    "emmet.syntaxProfiles": {
+        "javascript": "jsx"
+    },
+    "workbench.editor.tabCloseButton": "left",
+    "git.confirmSync": false,
+    "editor.wordWrap": "on",
+    "window.zoomLevel": -1,
+    "sync.gist": "21e80917159a825f99b4c816e9e674a0",
+    "sync.lastUpload": "2017-05-03T13:54:45.410Z",
+    "sync.autoDownload": false,
+    "sync.autoUpload": false,
+    "sync.lastDownload": "",
+    "sync.forceDownload": false,
+    "sync.host": "",
+    "sync.pathPrefix": "",
+    "sync.quietSync": false,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true,
+        "**/object": true
+    },
+    "typescript.format.enable": false,
+    "c-cpp-flylint.flexelint.enable": false,
+    "eslint.run": "onType",
+    "files.associations": {
+        "**/concourse.yml": "concourse-pipeline-yaml"
+    },
+    "git.autofetch": true,
+    "explorer.confirmDragAndDrop": false,
+    "workbench.iconTheme": "vs-nomo-dark"
+}
+
