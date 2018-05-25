@@ -9,6 +9,8 @@ prompt pure
 #
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
 export PATH="$HOME/.nodenv/shims:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
 
 export GOPATH=$(go env GOPATH)
 
@@ -21,13 +23,13 @@ setopt interactivecomments
 alias 'youtube-dl=noglob youtube-dl '
 alias 'curl=noglob curl '
 alias 'http=noglob http '
-alias 'll=ls -lh --color'
-alias 'la=ls -lha --color'
+alias 'll=ls -lh --color '
+alias 'la=ls -lha --color '
+alias 'ip=ip -c -br '
 
 alias mntwrk='hdiutil attach -mountpoint ~/Workspace ~/_Workspace.sparsebundle'
 alias npmpubjc='npm publish --userconfig ~/.npmrc-jc'
 alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew prune'
-export PATH=$PATH:~/.local/bin
 
 # tabtab source for serverless package
 # uninstall by removing these lines or running `tabtab uninstall serverless`
