@@ -1,8 +1,8 @@
-#!/bin/zsh
-
-for file in .*
+#!/usr/bin/env zsh
+for file in $(print .*~.git)
 do
-	unlink $HOME/$file
-	ln -s $PWD/$file $HOME/$file
+	echo $file
+	# unlink $HOME/$file
+	# ln -s $PWD/$file $HOME/$file
 done
 
