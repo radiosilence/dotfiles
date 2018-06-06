@@ -7,12 +7,14 @@ autoload -U promptinit; promptinit
 prompt pure
 # Customize to your needs...
 #
+#
+export GOPATH=$(go env GOPATH)
+
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
 export PATH="$HOME/.nodenv/shims:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
 
-
-export GOPATH=$(go env GOPATH)
 
 export EDITOR=vim
 
