@@ -1,8 +1,12 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
-for file in .*
+setopt extendedglob
+
+for file in .*~.git
 do
-	unlink $HOME/$file
+	echo "unlinking $file"
+	unlink $HOME/$file || "$file didn't exist"
+	echo "linking $PWD/$file -> $file"
 	ln -s $PWD/$file $HOME/$file
 done
 
