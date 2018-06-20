@@ -29,7 +29,12 @@ alias 'll=ls -lh --color '
 alias 'la=ls -lha --color '
 alias 'ip=ip -c -br '
 
-alias mntwrk='hdiutil attach -mountpoint ~/Workspace ~/_Workspace.sparsebundle'
+if [[ ! -a $HOME/Workspace/lml ]]; then
+	hdiutil attach -mountpoint $HOME/Workspace $HOME/_Workspace.sparsebundle > /dev/null
+fi
+
+
+alias mntwrk='ls $HOME/Workspace/lml || hdiutil attach -mountpoint ~/Workspace ~/_Workspace.sparsebundle'
 alias npmpubjc='npm publish --userconfig ~/.npmrc-jc'
 alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew prune'
 
