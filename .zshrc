@@ -3,18 +3,32 @@ setopt clobber
 setopt no_share_history
 setopt interactivecomments
 
+# config
+ZSH_AUTOSUGGEST_USE_ASYNC=false
+NVM_AUTO_USE=true
+NVM_LAZY_LOAD=true
+PURE_PROMPT_SYMBOL='→ '
+
+# binds
+bindkey -e
+bindkey '[C' forward-word
+bindkey '[D' backward-word
+
+# editor
+export EDITOR=vim
+
 # zplug
 export ZPLUG_HOME=/usr/local/opt/zplug
 source $ZPLUG_HOME/init.zsh
 
 zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
 zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
-zplug "modules/history", from:prezto
 zplug "modules/directory", from:prezto
 zplug "modules/completion", from:prezto
 zplug "modules/ssh", from:prezto
-zplug "modules/autosuggestions", from:prezto
+zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-history-substring-search"
 zplug "lukechilds/zsh-nvm"
 zplug "erikced/zsh-pyenv-lazy-load"
 
@@ -26,13 +40,6 @@ if ! zplug check --verbose; then
 fi
 
 zplug load
-
-# config
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-export NVM_AUTO_USE=true
-export NVM_LAZY_LOAD=true
-export PURE_PROMPT_SYMBOL='→ '
-export EDITOR=vim
 
 # path
 PATH="/usr/local/bin:$PATH"
