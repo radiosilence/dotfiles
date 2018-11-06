@@ -25,6 +25,7 @@ zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
 zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
 zplug "modules/directory", from:prezto
 zplug "modules/completion", from:prezto
+zplug "modules/history", from:prezto
 zplug "modules/ssh", from:prezto
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
