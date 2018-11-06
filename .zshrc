@@ -1,15 +1,26 @@
+# config
+setopt clobber
+setopt no_share_history
+setopt interactivecomments
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+export NVM_AUTO_USE=true
+NVM_LAZY_LOAD=true
+PURE_PROMPT_SYMBOL='→ '
+
 # zplug
 export ZPLUG_HOME=/usr/local/opt/zplug
 source $ZPLUG_HOME/init.zsh
 
 zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
+zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
 zplug "modules/history", from:prezto
 zplug "modules/directory", from:prezto
 zplug "modules/completion", from:prezto
 zplug "modules/ssh", from:prezto
 zplug "modules/autosuggestions", from:prezto
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
+zplug "lukechilds/zsh-nvm"
+zplug "erikced/zsh-pyenv-lazy-load"
 
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
@@ -19,14 +30,6 @@ if ! zplug check --verbose; then
 fi
 
 zplug load
-
-PURE_PROMPT_SYMBOL='→ '
-
-# opts
-setopt clobber
-setopt no_share_history
-setopt interactivecomments
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
 # path
 PATH="/usr/local/bin:$PATH"
@@ -44,18 +47,6 @@ PATH="$HOME/.nodenv/shims:$PATH"
 # vim
 export EDITOR=vim
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-function load_nvm() {
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-}
-
-async_start_worker nvm_worker -n
-async_register_callback nvm_worker load_nvm
-async_job nvm_worker sleep 0.1
-
-
 # aliases
 alias 'youtube-dl=noglob youtube-dl '
 alias 'curl=noglob curl '
@@ -68,9 +59,6 @@ alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew pr
 # go
 GOPATH=$(go env GOPATH)
 PATH="$GOPATH/bin:$PATH"
-
-# pyenv
-[ -x "$(which pyenv)" ] && eval "$(pyenv init -)"
 
 # export path
 export PATH
