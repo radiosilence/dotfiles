@@ -1,11 +1,7 @@
-# config
+# opts
 setopt clobber
 setopt no_share_history
 setopt interactivecomments
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-export NVM_AUTO_USE=true
-NVM_LAZY_LOAD=true
-PURE_PROMPT_SYMBOL='→ '
 
 # zplug
 export ZPLUG_HOME=/usr/local/opt/zplug
@@ -31,6 +27,13 @@ fi
 
 zplug load
 
+# config
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+export NVM_AUTO_USE=true
+export NVM_LAZY_LOAD=true
+export PURE_PROMPT_SYMBOL='→ '
+export EDITOR=vim
+
 # path
 PATH="/usr/local/bin:$PATH"
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
@@ -44,9 +47,6 @@ PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 PATH="$HOME/.nodenv/shims:$PATH"
 
-# vim
-export EDITOR=vim
-
 # aliases
 alias 'youtube-dl=noglob youtube-dl '
 alias 'curl=noglob curl '
@@ -58,7 +58,6 @@ alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew pr
 
 # go
 if [ -x "$(which go)" ]; then
-  echo adding go path
   GOPATH=$(go env GOPATH)
   PATH="$GOPATH/bin:$PATH"
 fi
