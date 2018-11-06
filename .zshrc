@@ -8,13 +8,12 @@ prompt pure
 # Customize to your needs...
 #
 #
-export GOPATH=$(go env GOPATH)
 
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
 export PATH="$HOME/.nodenv/shims:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$GOPATH/bin:$PATH"
-
+export PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
+export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 
 export EDITOR=vim
 
@@ -41,3 +40,10 @@ alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew pr
 [[ -f /Users/james/Workspace/lml/api-custom-authorizers/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/james/Workspace/lml/api-custom-authorizers/node_modules/tabtab/.completions/sls.zsh
 
 alias 'https-server=http-server --ssl --cert ~/Workspace/localhost.pem --key ~/Workspace/localhost.pem'
+
+
+export GOPATH=$(go env GOPATH)
+export PATH="$GOPATH/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
