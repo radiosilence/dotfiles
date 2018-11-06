@@ -7,7 +7,7 @@ setopt interactivecomments
 ZSH_AUTOSUGGEST_USE_ASYNC=false
 NVM_AUTO_USE=true
 NVM_LAZY_LOAD=true
-PURE_PROMPT_SYMBOL='→ '
+PURE_PROMPT_SYMBOL='→'
 
 # binds
 bindkey -e
