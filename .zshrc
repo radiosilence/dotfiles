@@ -7,15 +7,22 @@ autoload -U promptinit; promptinit
 prompt pure
 # Customize to your needs...
 #
-#
 
-export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
+PATH="/usr/local/bin:$PATH"
+PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
+PATH="$HOME/.local/bin:$PATH"
+PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
+PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
+PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 export PATH="$HOME/.nodenv/shims:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
-export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
-
 export EDITOR=vim
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 setopt clobber
 setopt no_share_history
@@ -32,18 +39,17 @@ alias mntwrk='hdiutil attach -mountpoint ~/Workspace ~/_Workspace.sparsebundle'
 alias npmpubjc='npm publish --userconfig ~/.npmrc-jc'
 alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew prune'
 
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[[ -f /Users/james/Workspace/lml/api-custom-authorizers/node_modules/tabtab/.completions/serverless.zsh ]] && . /Users/james/Workspace/lml/api-custom-authorizers/node_modules/tabtab/.completions/serverless.zsh
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[[ -f /Users/james/Workspace/lml/api-custom-authorizers/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/james/Workspace/lml/api-custom-authorizers/node_modules/tabtab/.completions/sls.zsh
-
 alias 'https-server=http-server --ssl --cert ~/Workspace/localhost.pem --key ~/Workspace/localhost.pem'
-
 
 export GOPATH=$(go env GOPATH)
 export PATH="$GOPATH/bin:$PATH"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+GOPATH=$(go env GOPATH)
+PATH="$GOPATH/bin:$PATH"
+
+alias hrun=pyenv exec honcho -f etc/environments/development/procfile -e etc/environments/development/env run
+
+eval "$(pyenv init -)"
