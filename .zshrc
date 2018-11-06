@@ -57,8 +57,11 @@ alias 'ip=ip -c -br '
 alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew prune'
 
 # go
-GOPATH=$(go env GOPATH)
-PATH="$GOPATH/bin:$PATH"
+if [ -x "$(which go)" ]; then
+  echo adding go path
+  GOPATH=$(go env GOPATH)
+  PATH="$GOPATH/bin:$PATH"
+fi
 
 # export path
 export PATH
