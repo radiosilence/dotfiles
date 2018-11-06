@@ -3,13 +3,11 @@ export ZPLUG_HOME=/usr/local/opt/zplug
 source $ZPLUG_HOME/init.zsh
 
 zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
-zplug "modules/git", from:prezto
 zplug "modules/history", from:prezto
 zplug "modules/directory", from:prezto
 zplug "modules/completion", from:prezto
 zplug "modules/ssh", from:prezto
 zplug "modules/autosuggestions", from:prezto
-zplug "k4rthik/git-cal", as:command
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
 
@@ -28,6 +26,7 @@ PURE_PROMPT_SYMBOL='→ '
 setopt clobber
 setopt no_share_history
 setopt interactivecomments
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
 # path
 PATH="/usr/local/bin:$PATH"
