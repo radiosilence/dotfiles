@@ -11,8 +11,7 @@ PURE_PROMPT_SYMBOL='→'
 
 # binds
 bindkey -e
-bindkey '[C' forward-word
-bindkey '[D' backward-word
+bindkey "\e[3~" delete-char
 
 # editor
 export EDITOR=vim
@@ -29,7 +28,6 @@ zplug "modules/history", from:prezto
 zplug "modules/ssh", from:prezto
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "zsh-users/zsh-history-substring-search"
 zplug "lukechilds/zsh-nvm"
 zplug "erikced/zsh-pyenv-lazy-load"
 
