@@ -10,8 +10,14 @@ NVM_LAZY_LOAD=true
 PURE_PROMPT_SYMBOL='→'
 
 # binds
-bindkey -e
 bindkey "\e[3~" delete-char
+
+# prezto config
+zstyle ':prezto:module:editor' key-bindings 'emacs'
+zstyle ':prezto:module:editor' dot-expansion 'yes'
+zstyle ':prezto:module:gnu-utility' prefix 'g'
+zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa2' 'id_github'
+zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'pattern' 'line' 'cursor' 'root'
 
 # editor
 export EDITOR=vim
@@ -22,13 +28,15 @@ source $ZPLUG_HOME/init.zsh
 
 zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
 zplug "intelfx/pure", use:pure.zsh, from:github, as:theme
+zplug "modules/editor", from:prezto
 zplug "modules/directory", from:prezto
 zplug "modules/completion", from:prezto
 zplug "modules/history", from:prezto
 zplug "modules/ssh", from:prezto
+zplug "modules/gnu-utility", from:prezto
+zplug "lukechilds/zsh-nvm"
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "lukechilds/zsh-nvm"
 zplug "erikced/zsh-pyenv-lazy-load"
 
 if ! zplug check --verbose; then
@@ -42,16 +50,9 @@ zplug load
 
 # path
 PATH="/usr/local/bin:$PATH"
-PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
-PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
-PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
-PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
-PATH="$HOME/.local/bin:$PATH"
 PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
-PATH="$HOME/.nodenv/shims:$PATH"
 
 # aliases
 alias 'youtube-dl=noglob youtube-dl '
