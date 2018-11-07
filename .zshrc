@@ -18,6 +18,7 @@ zstyle ':prezto:module:editor' dot-expansion 'yes'
 zstyle ':prezto:module:gnu-utility' prefix 'g'
 zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa2' 'id_github'
 zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'pattern' 'line' 'cursor' 'root'
+zstyle ':prezto:module:tmux:auto-start' local 'yes'
 
 # editor
 export EDITOR=vim
@@ -34,6 +35,7 @@ zplug "modules/completion", from:prezto
 zplug "modules/history", from:prezto
 zplug "modules/ssh", from:prezto
 zplug "modules/gnu-utility", from:prezto
+zplug "modules/tmux", from:prezto
 zplug "lukechilds/zsh-nvm"
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
