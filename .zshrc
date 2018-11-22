@@ -29,6 +29,7 @@ source $ZPLUG_HOME/init.zsh
 zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
 zplug "intelfx/pure", use:pure.zsh, from:github, as:theme
 zplug "modules/editor", from:prezto
+zplug "modules/git", from:prezto
 zplug "modules/directory", from:prezto
 zplug "modules/completion", from:prezto
 zplug "modules/history", from:prezto
@@ -69,6 +70,9 @@ if [ -x "$(which go)" ]; then
   GOPATH=$(go env GOPATH)
   PATH="$GOPATH/bin:$PATH"
 fi
+
+# java
+export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
 # export path
 export PATH
