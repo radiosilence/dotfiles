@@ -3,6 +3,12 @@
 # Please adapt and uncomment the following lines:
 	name = James Cleveland
 	email = jc@blit.cc
+[push]
+	default = current
+[pull]
+	default = current
+	rebase = true
+
 [core]
 	editor = vim
 [alias]
@@ -24,11 +30,11 @@
 	clean = git-lfs clean -- %f
 
 [difftool "vscode"]
-	    cmd = code --wait --diff $LOCAL $REMOTE
+	cmd = code --wait --diff $LOCAL $REMOTE
 
 [merge]
-	    tool = vscode
+	tool = vscode
+
 [mergetool "vscode"]
-	    cmd = code --wait $MERGED
-[push]
-	default = current
+	cmd = code --wait $MERGED
+
