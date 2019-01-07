@@ -55,7 +55,7 @@ PATH="/usr/local/bin:$PATH"
 PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
-PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]')/bin::$PATH"
+PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'):$PATH"
 
 # aliases
 alias 'youtube-dl=noglob youtube-dl '
