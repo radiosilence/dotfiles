@@ -66,7 +66,7 @@ alias 'http=noglob http '
 alias 'll=ls -lh --color '
 alias 'la=ls -lha --color '
 alias 'ip=ip -c -br '
-alias brewski='brew update && brew upgrade && brew cleanup; brew doctor; brew prune'
+alias brewski='brew update && brew upgrade && brew cleanup; brew doctor'
 
 # go
 if [ -x "$(which go)" ]; then
