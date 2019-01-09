@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # opts
 setopt clobber
 setopt no_share_history
