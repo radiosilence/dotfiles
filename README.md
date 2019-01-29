@@ -12,6 +12,8 @@
 - alacritty (fast gl based terminal)
 - VS Code
 
+## Install
+
 ```zsh
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 cd ~/.dotfiles
