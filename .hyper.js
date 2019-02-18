@@ -156,7 +156,15 @@ module.exports = {
   //   `hyperpower`
   //   `@company/project`
   //   `project#1.0.1`
-  plugins: ['hyper-material-theme', 'hypercwd', 'hyper-statusline', 'hyperlinks', 'hyperterm-paste', 'hyper-alt-click'],
+  plugins: [
+    'hypercwd',
+    'hyper-statusline',
+    'hyperlinks',
+    'hyperterm-paste',
+    'hyper-alt-click',
+    // 'hyper-captain-sweetheart',
+    'hyper-vscode-dark',
+  ],
 
   // in development, you can create a directory under
   // `~/.hyper_plugins/local/` and include it here
