@@ -80,3 +80,7 @@ export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
 # export path
 export PATH
+
+# sdkman
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
