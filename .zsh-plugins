@@ -4,9 +4,16 @@ lukechilds/zsh-nvm
 Tarrasch/zsh-bd
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions branch:develop
-sorin-ionescu/prezto path:modules/gnu-utility/init.zsh path:modules/git/init.zsh path:modules/editor/init.zsh path:modules/completion/init.zsh path:modules/history/init.zsh path:modules/directory/init.zsh path:modules/ssh/init.zsh path:modules/tmux/init.zsh
+sorin-ionescu/prezto path:modules/gnu-utility/init.zsh
+# sorin-ionescu/prezto path:modules/editor/init.zsh
+sorin-ionescu/prezto path:modules/completion/init.zsh
+sorin-ionescu/prezto path:modules/history/init.zsh
+sorin-ionescu/prezto path:modules/directory/init.zsh
+sorin-ionescu/prezto path:modules/ssh/init.zsh
+sorin-ionescu/prezto path:modules/tmux/init.zsh
+
+sindresorhus/pure
 
 zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
 
-sindresorhus/pure

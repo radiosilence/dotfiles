@@ -5,6 +5,10 @@ setopt clobber
 setopt no_share_history
 setopt interactivecomments
 
+# autoloads
+autoload -Uz compinit
+autoload -U add-zsh-hook
+
 # config
 ZSH_AUTOSUGGEST_USE_ASYNC=false
 NVM_AUTO_USE=true
@@ -30,8 +34,26 @@ update_plugins() {
 source $HOME/.zsh-plugins.sh
 
 # completions
-autoload -Uz compinit
-compinit $HOME/.zcompdump
+typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
+if [ $(date +'%j') != $updated_at ]; then
+  compinit -i
+else
+  compinit -C -i
+fi
+
+# nvm lazy autoload
+export NVM_DIR=$HOME/.nvm
+check_nvm() {
+  if ! [[ -v NVM_BIN ]]; then
+    # nvm is not loaded
+    if [[ -f "$PWD/.nvmrc"  ]]; then
+      # there is an nvmrc
+      nvm use
+    fi
+  fi
+}
+
+add-zsh-hook -Uz chpwd (){ check_nvm }
 
 # path
 PATH="/usr/local/bin:$PATH"
