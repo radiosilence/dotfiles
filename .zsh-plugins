@@ -1,0 +1,11 @@
+mafredri/zsh-async
+lukechilds/zsh-nvm
+# rupa/z
+Tarrasch/zsh-bd
+zsh-users/zsh-completions
+zsh-users/zsh-autosuggestions branch:develop
+junegunn/fzf
+sindresorhus/pure
+sorin-ionescu/prezto path:modules/gnu-utility/init.zsh path:modules/git/init.zsh path:modules/editor/init.zsh path:modules/completion/init.zsh path:modules/history/init.zsh path:modules/directory/init.zsh
+zsh-users/zsh-history-substring-search
+zsh-users/zsh-syntax-highlighting

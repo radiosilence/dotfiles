@@ -15,8 +15,6 @@ PURE_PROMPT_SYMBOL='→'
 bindkey "\e[3~" delete-char
 
 # prezto config
-zstyle ':prezto:module:editor' key-bindings 'emacs'
-zstyle ':prezto:module:editor' dot-expansion 'yes'
 zstyle ':prezto:module:gnu-utility' prefix 'g'
 zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa2' 'id_github'
 zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'pattern' 'line' 'cursor' 'root'
@@ -24,33 +22,14 @@ zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'patt
 # editor
 export EDITOR=vim
 
-# zplug
-export ZPLUG_HOME=/usr/local/opt/zplug
-source $ZPLUG_HOME/init.zsh
+# antibody
 
-zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
-zplug "intelfx/pure", use:pure.zsh, from:github, as:theme
-zplug "modules/editor", from:prezto
-zplug "modules/git", from:prezto
-zplug "modules/directory", from:prezto
-zplug "modules/completion", from:prezto
-zplug "modules/history", from:prezto
-zplug "modules/ssh", from:prezto
-zplug "modules/gnu-utility", from:prezto
-zplug "modules/tmux", from:prezto
-zplug "lukechilds/zsh-nvm"
-zplug "zsh-users/zsh-autosuggestions"
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "erikced/zsh-pyenv-lazy-load"
+update_plugins() {
+  rm $HOME/.zsh-plugins.sh || echo "no plugins found"
+  antibody bundle < $HOME/.zsh-plugins > $HOME/.zsh-plugins.sh
+}
 
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-
-zplug load
+source $HOME/.zsh-plugins.sh
 
 # path
 PATH="/usr/local/bin:$PATH"
