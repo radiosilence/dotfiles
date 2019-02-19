@@ -29,7 +29,9 @@ export EDITOR=vim
 update_plugins() {
   rm $HOME/.zsh-plugins.sh || echo "no plugins found"
   antibody bundle < $HOME/.zsh-plugins > $HOME/.zsh-plugins.sh
+  source $HOME/.zsh-plugins.sh
 }
+
 source $HOME/.zsh-plugins.sh
 
 # completions
