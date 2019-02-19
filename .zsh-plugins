@@ -1,17 +1,14 @@
 mafredri/zsh-async
 lukechilds/zsh-nvm
-# rupa/z
 Tarrasch/zsh-bd
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions branch:develop
 sorin-ionescu/prezto path:modules/gnu-utility/init.zsh
-# sorin-ionescu/prezto path:modules/editor/init.zsh
 sorin-ionescu/prezto path:modules/completion/init.zsh
 sorin-ionescu/prezto path:modules/history/init.zsh
 sorin-ionescu/prezto path:modules/directory/init.zsh
 sorin-ionescu/prezto path:modules/ssh/init.zsh
 sorin-ionescu/prezto path:modules/tmux/init.zsh
-
 sindresorhus/pure
 
 zsh-users/zsh-history-substring-search
