@@ -23,13 +23,15 @@ zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'patt
 export EDITOR=vim
 
 # antibody
-
 update_plugins() {
   rm $HOME/.zsh-plugins.sh || echo "no plugins found"
   antibody bundle < $HOME/.zsh-plugins > $HOME/.zsh-plugins.sh
 }
-
 source $HOME/.zsh-plugins.sh
+
+# completions
+autoload -Uz compinit
+compinit $HOME/.zcompdump
 
 # path
 PATH="/usr/local/bin:$PATH"
