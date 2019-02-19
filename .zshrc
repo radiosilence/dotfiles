@@ -23,24 +23,12 @@ zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'patt
 export EDITOR=vim
 
 # antibody
-source <(antibody init)
 
-antibody bundle < "$HOME/.zsh-plugins"
+update_plugins() {
+  antibody bundle < $HOME/.zsh-plugins > $HOME/.zsh-plugins.sh
+}
 
-# antibody bundle mafredri/zsh-async
-# # antibody bundle robbyrussell/oh-my-zsh folder:plugins/completion
-# # antibody bundle robbyrussell/oh-my-zsh folder:plugins/directory
-# # antibody bundle robbyrussell/oh-my-zsh folder:plugins/editor
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/git
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/gnu-utils
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/history
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/ssh
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/tmux
-# antibody bundle lukechilds/zsh-nvm
-
-# antibody bundle sindresorhus/pure
-# antibody bundle zsh-users/zsh-autosuggestions
-# antibody bundle zsh-users/zsh-syntax-highlighting
+source $HOME/.zsh-plugins.sh
 
 # path
 PATH="/usr/local/bin:$PATH"
