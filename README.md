@@ -3,7 +3,7 @@
 ## Requirements
 
 - Recent version of zsh
-- zplug [here](https://github.com/zplug/zplug)
+- antibody [here](https://getantibody.github.io/install/)
 
 ## Other stuff
 
@@ -15,9 +15,7 @@
 ## Install
 
 ```zsh
-git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
-cd ~/.dotfiles
-./install.zsh
+git clone https://github.com/radiosilence/dotfiles ~/.dotfiles && ./dotfiles/install.zsh
 ```
 
 ---
