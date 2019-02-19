@@ -15,8 +15,6 @@ PURE_PROMPT_SYMBOL='→'
 bindkey "\e[3~" delete-char
 
 # prezto config
-zstyle ':prezto:module:editor' key-bindings 'emacs'
-zstyle ':prezto:module:editor' dot-expansion 'yes'
 zstyle ':prezto:module:gnu-utility' prefix 'g'
 zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa2' 'id_github'
 zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'pattern' 'line' 'cursor' 'root'
@@ -27,20 +25,22 @@ export EDITOR=vim
 # antibody
 source <(antibody init)
 
-antibody bundle mafredri/zsh-async
-antibody bundle sindresorhus/pure
-antibody bundle sorin-ionescu/prezto folder:modules/completion
-antibody bundle sorin-ionescu/prezto folder:modules/editor
-antibody bundle sorin-ionescu/prezto folder:modules/git
-antibody bundle sorin-ionescu/prezto folder:modules/directory
-antibody bundle sorin-ionescu/prezto folder:modules/completion
-antibody bundle sorin-ionescu/prezto folder:modules/history
-antibody bundle sorin-ionescu/prezto folder:modules/ssh
-antibody bundle sorin-ionescu/prezto folder:modules/gnu-utility
-antibody bundle sorin-ionescu/prezto folder:modules/tmux
-antibody bundle lukechilds/zsh-nvm
-antibody bundle zsh-users/zsh-autosuggestions
-antibody bundle zsh-users/zsh-syntax-highlighting
+antibody bundle < "$HOME/.zsh-plugins"
+
+# antibody bundle mafredri/zsh-async
+# # antibody bundle robbyrussell/oh-my-zsh folder:plugins/completion
+# # antibody bundle robbyrussell/oh-my-zsh folder:plugins/directory
+# # antibody bundle robbyrussell/oh-my-zsh folder:plugins/editor
+# antibody bundle robbyrussell/oh-my-zsh folder:plugins/git
+# antibody bundle robbyrussell/oh-my-zsh folder:plugins/gnu-utils
+# antibody bundle robbyrussell/oh-my-zsh folder:plugins/history
+# antibody bundle robbyrussell/oh-my-zsh folder:plugins/ssh
+# antibody bundle robbyrussell/oh-my-zsh folder:plugins/tmux
+# antibody bundle lukechilds/zsh-nvm
+
+# antibody bundle sindresorhus/pure
+# antibody bundle zsh-users/zsh-autosuggestions
+# antibody bundle zsh-users/zsh-syntax-highlighting
 
 # path
 PATH="/usr/local/bin:$PATH"
