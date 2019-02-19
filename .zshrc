@@ -24,33 +24,24 @@ zstyle ':prezto:module:syntax-highlighting' highlighters 'main' 'brackets' 'patt
 # editor
 export EDITOR=vim
 
-# zplug
-export ZPLUG_HOME=/usr/local/opt/zplug
-source $ZPLUG_HOME/init.zsh
+# antibody
+source <(antibody init)
 
-zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
-zplug "intelfx/pure", use:pure.zsh, from:github, as:theme
-zplug "modules/editor", from:prezto
-zplug "modules/git", from:prezto
-zplug "modules/directory", from:prezto
-zplug "modules/completion", from:prezto
-zplug "modules/history", from:prezto
-zplug "modules/ssh", from:prezto
-zplug "modules/gnu-utility", from:prezto
-zplug "modules/tmux", from:prezto
-zplug "lukechilds/zsh-nvm"
-zplug "zsh-users/zsh-autosuggestions"
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "erikced/zsh-pyenv-lazy-load"
-
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-
-zplug load
+antibody bundle mafredri/zsh-async
+antibody bundle sorin-ionescu/prezto folder:modules/completion
+antibody bundle sorin-ionescu/prezto folder:modules/editor
+antibody bundle sorin-ionescu/prezto folder:modules/git
+antibody bundle sorin-ionescu/prezto folder:modules/directory
+antibody bundle sorin-ionescu/prezto folder:modules/completion
+antibody bundle sorin-ionescu/prezto folder:modules/history
+antibody bundle sorin-ionescu/prezto folder:modules/ssh
+antibody bundle sorin-ionescu/prezto folder:modules/gnu-utility
+antibody bundle sorin-ionescu/prezto folder:modules/tmux
+antibody bundle sindresorhus/pure
+antibody bundle lukechilds/zsh-nvm
+antibody bundle zsh-users/zsh-autosuggestions
+antibody bundle zsh-users/zsh-syntax-highlighting
+antibody bundle erikced/zsh-pyenv-lazy-load
 
 # path
 PATH="/usr/local/bin:$PATH"
