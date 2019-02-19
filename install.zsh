@@ -2,6 +2,8 @@
 
 setopt extendedglob
 
+cd "${0%/*}"
+
 for file in .*~.git
 do
 	echo "unlinking $file"
@@ -10,3 +12,4 @@ do
 	ln -s $PWD/$file $HOME/$file
 done
 
+cd -
