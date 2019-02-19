@@ -18,12 +18,10 @@
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles && ./dotfiles/install.zsh
 ```
 
----
-**NOTE**: Only symlinks .hidden files
+> **NOTE**: Only symlinks .hidden files
 
----
 
-## Copy SF Mono from Terminal.app
+## Install SF Mono
 
 ```zsh
 cp /Applications/Utilities/Terminal.app/Contents/Resources/Fonts/*.otf ~/Library/Fonts/
