@@ -28,6 +28,7 @@ export EDITOR=vim
 source <(antibody init)
 
 antibody bundle mafredri/zsh-async
+antibody bundle sindresorhus/pure
 antibody bundle sorin-ionescu/prezto folder:modules/completion
 antibody bundle sorin-ionescu/prezto folder:modules/editor
 antibody bundle sorin-ionescu/prezto folder:modules/git
@@ -37,11 +38,9 @@ antibody bundle sorin-ionescu/prezto folder:modules/history
 antibody bundle sorin-ionescu/prezto folder:modules/ssh
 antibody bundle sorin-ionescu/prezto folder:modules/gnu-utility
 antibody bundle sorin-ionescu/prezto folder:modules/tmux
-antibody bundle sindresorhus/pure
 antibody bundle lukechilds/zsh-nvm
 antibody bundle zsh-users/zsh-autosuggestions
 antibody bundle zsh-users/zsh-syntax-highlighting
-antibody bundle erikced/zsh-pyenv-lazy-load
 
 # path
 PATH="/usr/local/bin:$PATH"
