@@ -3,14 +3,15 @@
 ## Requirements
 
 - Recent version of zsh
-- antibody [here](https://getantibody.github.io/install/)
+- [antibody](https://getantibody.github.io) (`brew install getantibody/tap/antibody`)
 
-## Other stuff
+## Includes
 
-- Recent ViM with Vundle
+- ViM
 - tmux
-- alacritty (fast gl based terminal)
 - VS Code
+- alacritty (fast, gl based terminal)
+- Hyper (slow, electron based terminal)
 
 ## Install
 
