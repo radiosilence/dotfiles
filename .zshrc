@@ -76,7 +76,7 @@ if [ -x "$(which go)" ]; then
 fi
 
 # java
-export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+[[ -x "/usr/libexec/java_home" ]] && export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
 # export path
 export PATH
