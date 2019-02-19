@@ -20,4 +20,10 @@ cd ~/.dotfiles
 ./install.zsh
 ```
 
+## Copy SF Mono from Terminal.app
+
+```zsh
+cp /Applications/Utilities/Terminal.app/Contents/Resources/Fonts/*.otf ~/Library/Fonts/
+```
+
 Only symlinks .hidden files
