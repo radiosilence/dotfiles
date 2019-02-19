@@ -1,16 +1,11 @@
 mafredri/zsh-async
 lukechilds/zsh-nvm
+# rupa/z
+Tarrasch/zsh-bd
 zsh-users/zsh-completions
-
+zsh-users/zsh-autosuggestions branch:develop
+junegunn/fzf
 sindresorhus/pure
-zsh-users/zsh-autosuggestions
+sorin-ionescu/prezto path:modules/gnu-utility/init.zsh path:modules/git/init.zsh path:modules/completion/init.zsh
+zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
-
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/completion
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/directory
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/editor
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/git
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/gnu-utils
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/history
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/ssh
-# antibody bundle robbyrussell/oh-my-zsh folder:plugins/tmux
