@@ -13,10 +13,18 @@
 - alacritty (fast, gl based terminal)
 - Hyper (slow, electron based terminal)
 
+## Install dependencies (macOS)
+
+```zsh
+brew install antigen
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+```
+
 ## Install
 
 ```zsh
-git clone https://github.com/radiosilence/dotfiles ~/.dotfiles && ./dotfiles/install.zsh
+git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
+./dotfiles/install.zsh
 ```
 
 > **NOTE**: Only symlinks .hidden files

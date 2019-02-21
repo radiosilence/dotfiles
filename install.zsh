@@ -12,4 +12,6 @@ do
 	ln -s $PWD/$file $HOME/$file
 done
 
+antibody bundle < $HOME/.zsh-plugins > $HOME/.zsh-plugins.sh
+
 cd -
