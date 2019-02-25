@@ -13,8 +13,7 @@ autoload -U add-zsh-hook
 
 # config
 ZSH_AUTOSUGGEST_USE_ASYNC=false
-NVM_AUTO_USE=true
-NVM_LAZY_LOAD=true
+#
 PURE_PROMPT_SYMBOL='→'
 
 # binds
@@ -44,20 +43,6 @@ else
   compinit -C -i
 fi
 
-# nvm lazy autoload
-export NVM_DIR=$HOME/.nvm
-check_nvm() {
-  if ! [[ -v NVM_BIN ]]; then
-    # nvm is not loaded
-    if [[ -f "$PWD/.nvmrc"  ]]; then
-      # there is an nvmrc
-      nvm use
-    fi
-  fi
-}
-
-add-zsh-hook -Uz chpwd (){ check_nvm }
-
 # path
 PATH="/usr/local/bin:$PATH"
 PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
@@ -75,18 +60,13 @@ alias 'la=ls -lha --color '
 alias 'ip=ip -c -br '
 alias brewski='brew update && brew upgrade && brew cleanup; brew doctor'
 
-# go
-if [ -x "$(which go)" ]; then
-  GOPATH=$(go env GOPATH)
-  PATH="$GOPATH/bin:$PATH"
-fi
-
-# java
-[[ -x "/usr/libexec/java_home" ]] && export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
-
 # export path
 export PATH
 
 # sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# asdf
+source $HOME/.asdf/asdf.sh
+source $HOME/.asdf/completions/asdf.bash
