@@ -81,57 +81,48 @@ font:
 # Should display the render timer
 render_timer: false
 
-# Colors (Tomorrow Night Bright)
+# Base16 Default Dark 256 - alacritty color config
+# Chris Kempson (http://chriskempson.com)
 colors:
   # Default colors
   primary:
-    background: "0x1e1e1e"
-    foreground: "0xd4d4d4"
+    background: "0x181818"
+    foreground: "0xd8d8d8"
 
   # Colors the cursor will use if `custom_cursor_colors` is true
   cursor:
-    text: "0x1e1e1e"
-    cursor: "0xd4d4d4"
-    # Style of the cursor
-    #
-    # Values for 'cursor_style':
-    # - Block
-    # - Underline
-    # - Beam
-    style: Block
+    text: "0x181818"
+    cursor: "0xd8d8d8"
 
   # Normal colors
   normal:
-    black: "0x1e1e1e"
-    red: "0xf44747"
-    green: "0x608b4e"
-    yellow: "0xd7ba7d"
-    blue: "0x569cd6"
-    magenta: "0x646695"
-    cyan: "0x4ec9b0"
-    white: "0xd4d4d4"
+    black: "0x181818"
+    red: "0xab4642"
+    green: "0xa1b56c"
+    yellow: "0xf7ca88"
+    blue: "0x7cafc2"
+    magenta: "0xba8baf"
+    cyan: "0x86c1b9"
+    white: "0xd8d8d8"
 
   # Bright colors
   bright:
-    black: "0x808080"
-    red: "0xd16969"
-    green: "0xb5cea8"
-    yellow: "0xdcdcaa"
-    blue: "0x6796e6"
-    magenta: "0xc586c0"
-    cyan: "0x9cdcfe"
-    white: "0xffffff"
+    black: "0x585858"
+    red: "0xab4642"
+    green: "0xa1b56c"
+    yellow: "0xf7ca88"
+    blue: "0x7cafc2"
+    magenta: "0xba8baf"
+    cyan: "0x86c1b9"
+    white: "0xf8f8f8"
 
-  # Dim colors (Optional)
-  # dim:
-  #   black:   '0x333333'
-  #   red:     '0xf2777a'
-  #   green:   '0x99cc99'
-  #   yellow:  '0xffcc66'
-  #   blue:    '0x6699cc'
-  #   magenta: '0xcc99cc'
-  #   cyan:    '0x66cccc'
-  #   white:   '0xdddddd'
+  indexed_colors:
+    - { index: 16, color: "0xdc9656" }
+    - { index: 17, color: "0xa16946" }
+    - { index: 18, color: "0x282828" }
+    - { index: 19, color: "0x383838" }
+    - { index: 20, color: "0xb8b8b8" }
+    - { index: 21, color: "0xe8e8e8" }
 
 # Visual Bell
 #
