@@ -4,6 +4,7 @@ bindkey -e
 
 # opts
 setopt clobber
+set +o noclobber
 setopt no_share_history
 setopt interactivecomments
 

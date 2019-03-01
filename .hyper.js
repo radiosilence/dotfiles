@@ -138,15 +138,19 @@ module.exports = {
   // examples:
   //   `hyperpower`
   //   `@company/project`
-  //   `project#1.0.1`
+  //   `project#1.0.1`,
+  base16: {
+    scheme: 'default' // scheme name
+  },
   plugins: [
     'hypercwd',
     'hyper-statusline',
     'hyperlinks',
     'hyperterm-paste',
     'hyper-alt-click',
-    // 'hyper-captain-sweetheart',
-    'hyper-vscode-dark',
+    'hyper-captain-sweetheart',
+    // 'hyper-vscode-dark',
+    // 'hypersixteen',
     // 'nord-hyper',
   ],
 
