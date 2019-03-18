@@ -46,6 +46,7 @@ fi
 
 # path
 PATH="/usr/local/bin:$PATH"
+PATH="/usr/local/sbin:$PATH"
 PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
