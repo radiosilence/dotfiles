@@ -41,19 +41,19 @@ draw_bold_text_with_bright_colors: true
 font:
   # The normal (roman) font face to use.
   normal:
-    family: SF Mono
+    family: Fantasque Sans Mono
     # Style can be specified to pick a specific face.
     # style: Regular
 
   # The bold font face
   bold:
-    family: SF Mono
+    family: Fantasque Sans Mono
     # Style can be specified to pick a specific face.
     # style: Bold
 
   # The italic font face
   italic:
-    family: SF Mono
+    family: Fantasque Sans Mono
     # Style can be specified to pick a specific face.
     # style: Italic
 
@@ -81,48 +81,33 @@ font:
 # Should display the render timer
 render_timer: false
 
-# Base16 Default Dark 256 - alacritty color config
-# Chris Kempson (http://chriskempson.com)
 colors:
   # Default colors
   primary:
-    background: "0x181818"
-    foreground: "0xd8d8d8"
-
-  # Colors the cursor will use if `custom_cursor_colors` is true
-  cursor:
-    text: "0x181818"
-    cursor: "0xd8d8d8"
+    background: "0x161616"
+    foreground: "0xffffff"
 
   # Normal colors
   normal:
-    black: "0x181818"
-    red: "0xab4642"
-    green: "0xa1b56c"
-    yellow: "0xf7ca88"
-    blue: "0x7cafc2"
-    magenta: "0xba8baf"
-    cyan: "0x86c1b9"
-    white: "0xd8d8d8"
+    black: "0x222222"
+    red: "0xe84f4f"
+    green: "0xb7ce42"
+    yellow: "0xfea63c"
+    blue: "0x66aabb"
+    magenta: "0xb7416e"
+    cyan: "0x6d878d"
+    white: "0xdddddd"
 
   # Bright colors
   bright:
-    black: "0x585858"
-    red: "0xab4642"
-    green: "0xa1b56c"
-    yellow: "0xf7ca88"
-    blue: "0x7cafc2"
-    magenta: "0xba8baf"
-    cyan: "0x86c1b9"
-    white: "0xf8f8f8"
-
-  indexed_colors:
-    - { index: 16, color: "0xdc9656" }
-    - { index: 17, color: "0xa16946" }
-    - { index: 18, color: "0x282828" }
-    - { index: 19, color: "0x383838" }
-    - { index: 20, color: "0xb8b8b8" }
-    - { index: 21, color: "0xe8e8e8" }
+    black: "0x666666"
+    red: "0xd23d3d"
+    green: "0xbde077"
+    yellow: "0xffe863"
+    blue: "0xaaccbb"
+    magenta: "0xe16a98"
+    cyan: "0x42717b"
+    white: "0xcccccc"
 
 # Visual Bell
 #
