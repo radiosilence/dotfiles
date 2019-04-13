@@ -3,8 +3,6 @@
 ## Requirements
 
 - Recent version of zsh
-- [antibody](https://getantibody.github.io) (`brew install getantibody/tap/antibody`)
-- [asdf](https://asdf-vm.com/#/) (`git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.1`)
 
 ## Includes
 
@@ -16,9 +14,11 @@
 
 ## Install dependencies (macOS)
 
-```zsh
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-```
+
+- [antibody](https://getantibody.github.io) (`brew install getantibody/tap/antibody`)
+- [asdf](https://asdf-vm.com/#/) (`git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.1`)
+- [vundle](https://github.com/VundleVim/Vundle.vim) (`git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim`)
+
 
 ## Install
 
