@@ -16,7 +16,7 @@
 
 ## Install dependencies (macOS)
 
-
+- [homebrew](https://brew.sh/) (`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`)
 - [antibody](https://getantibody.github.io) (`brew install getantibody/tap/antibody`)
 - [asdf](https://asdf-vm.com/#/) (`git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.1`)
 - [vundle](https://github.com/VundleVim/Vundle.vim) (`git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim`)
