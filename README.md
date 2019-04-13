@@ -31,6 +31,9 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 
 > **NOTE**: Only symlinks .hidden files
 
+## Get sick AF fonts that have the neat ligatures
+
+- [Ligaturizer](https://github.com/ToxicFrog/Ligaturizer) (get Fantasque Sans Mono or Alacritty wont work)
 
 ## Install SF Mono
 
