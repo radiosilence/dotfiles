@@ -7,6 +7,8 @@
 ## Includes
 
 - ViM
+- minimal asdf file that makes it work with nvm etc...
+- various useful zsh crap for working with stuff on macos
 - tmux
 - VS Code
 - alacritty (fast, gl based terminal)
