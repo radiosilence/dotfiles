@@ -53,6 +53,9 @@ PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'):$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
 
+# android sdk
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+
 # aliases
 alias 'youtube-dl=noglob youtube-dl '
 alias 'curl=noglob curl '
@@ -72,3 +75,7 @@ export SDKMAN_DIR="$HOME/.sdkman"
 # asdf
 source $HOME/.asdf/asdf.sh
 source $HOME/.asdf/completions/asdf.bash
+
+# useful things
+
+alias 'zoom=sudo launchctl remove com.cylance.agent_service'

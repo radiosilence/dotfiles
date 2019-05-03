@@ -84,7 +84,7 @@ render_timer: false
 colors:
   # Default colors
   primary:
-    background: "0x363537"
+    background: "0x2a2a2a"
     foreground: "0xf7f1ff"
 
   # Normal colors
@@ -93,7 +93,7 @@ colors:
     red: "0xfc618d"
     green: "0x7bd88f"
     yellow: "0xfce566"
-    blue: "0xfd9353"
+    blue: "0x78DCE8"
     magenta: "0x948ae3"
     cyan: "0x5ad4e6"
     white: "0xf7f1ff"
@@ -104,7 +104,7 @@ colors:
     red: "0xfc618d"
     green: "0x7bd88f"
     yellow: "0xfce566"
-    blue: "0xfd9353"
+    blue: "0x78DCE8"
     magenta: "0x948ae3"
     cyan: "0x14ffff"
     white: "0xf7f1ff"
