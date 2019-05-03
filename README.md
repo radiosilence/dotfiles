@@ -17,6 +17,14 @@
 
 ```zsh
 brew install antigen
+```
+
+or without homebrew/on Linux:
+
+```zsh
+curl -sL git.io/antibody | sh -s
+```
+```zsh
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 ```
 
