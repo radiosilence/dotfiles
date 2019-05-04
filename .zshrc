@@ -36,6 +36,16 @@ update_plugins() {
 
 source $HOME/.zsh-plugins.sh
 
+# pure power
+PURE_POWER_MODE=fancy
+source ~/.purepower
+
+# powerlevel9k
+POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='cyan'
+POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='cyan'
+POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='grey42'
+POWERLEVEL9K_VCS_CLEAN_FOREGROUND='grey42'
+
 # completions
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
 if [ $(date +'%j') != $updated_at ]; then
