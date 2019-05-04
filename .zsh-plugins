@@ -9,7 +9,7 @@ sorin-ionescu/prezto path:modules/history/init.zsh
 sorin-ionescu/prezto path:modules/directory/init.zsh
 sorin-ionescu/prezto path:modules/ssh/init.zsh
 sorin-ionescu/prezto path:modules/tmux/init.zsh
-sindresorhus/pure
+denysdovhan/spaceship-prompt
 
 zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
