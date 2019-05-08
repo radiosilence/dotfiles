@@ -12,7 +12,7 @@
 - tmux
 - VS Code
 - alacritty (fast, gl based terminal)
-- Hyper (slow, electron based terminal)
+- Terminal.app profile (MacOS terminal, more stable than alacritty)
 
 ## Install dependencies (macOS)
 
