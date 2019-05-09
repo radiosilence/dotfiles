@@ -92,9 +92,12 @@ POWERLEVEL9K_VCS_CLEAN_FOREGROUND='grey42'
 
 
 # iTerm
-if [ $ITERM_SESSION_ID ]; then
-  export PROMPT_COMMAND='echo -ne "\033];${PWD##*/}\007"; ':"$PROMPT_COMMAND";
+if [ -f "$HOME/.iterm2_shell_integration.zsh" ]; then
+  export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=1
+  source "$HOME/.iterm2_shell_integration.zsh"
 fi
 
-# $PROMPT_COMMAND compat
-precmd() { eval "$PROMPT_COMMAND" }
+precmd() {
+  # iterm
+  [[ $ITERM_SESSION_ID ]] && echo -ne "\033];${PWD##*/}\007"
+}
