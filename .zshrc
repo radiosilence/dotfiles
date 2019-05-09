@@ -27,25 +27,6 @@ zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa' 'id_github'
 # editor
 export EDITOR=vim
 
-# antibody
-update_plugins() {
-  rm $HOME/.zsh-plugins.sh || echo "no plugins found"
-  antibody bundle < $HOME/.zsh-plugins > $HOME/.zsh-plugins.sh
-  source $HOME/.zsh-plugins.sh
-}
-
-source $HOME/.zsh-plugins.sh
-
-# pure power
-PURE_POWER_MODE=fancy
-source ~/.purepower
-
-# powerlevel9k
-POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='grey58'
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='grey58'
-POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='grey42'
-POWERLEVEL9K_VCS_CLEAN_FOREGROUND='grey42'
-
 # completions
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
 if [ $(date +'%j') != $updated_at ]; then
@@ -89,3 +70,22 @@ source $HOME/.asdf/completions/asdf.bash
 # useful things
 
 alias 'zoom=sudo launchctl remove com.cylance.agent_service'
+
+# antibody
+update_plugins() {
+  rm $HOME/.zsh-plugins.sh || echo "no plugins found"
+  antibody bundle < $HOME/.zsh-plugins > $HOME/.zsh-plugins.sh
+  source $HOME/.zsh-plugins.sh
+}
+
+source $HOME/.zsh-plugins.sh
+
+# pure power
+PURE_POWER_MODE=fancy
+source ~/.purepower
+
+# powerlevel9k
+POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='grey58'
+POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='grey58'
+POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='grey42'
+POWERLEVEL9K_VCS_CLEAN_FOREGROUND='grey42'
