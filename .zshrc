@@ -54,7 +54,8 @@ alias 'http=noglob http '
 alias 'll=ls -lh --color '
 alias 'la=ls -lha --color '
 alias 'ip=ip -c -br '
-alias brewski='brew update && brew upgrade && brew cleanup; brew doctor'
+alias 'brewski=brew update && brew upgrade && brew cleanup; brew doctor'
+
 
 # export path
 export PATH
@@ -100,4 +101,9 @@ fi
 precmd() {
   # iterm
   [[ $ITERM_SESSION_ID ]] && echo -ne "\033];${PWD##*/}\007"
+}
+
+# cheat.sh
+cheat() {
+  curl "cheat.sh/$1"
 }
