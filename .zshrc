@@ -27,6 +27,9 @@ zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa' 'id_github'
 # editor
 export EDITOR=vim
 
+# it is colourful damnit
+export CLICOLOR=1
+
 # completions
 typeset -i updated_at=$(date +'%j' -r ~/.zcompdump 2>/dev/null || stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)
 if [ $(date +'%j') != $updated_at ]; then
@@ -43,6 +46,7 @@ PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
 PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'):$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
+PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 
 # android sdk
 export ANDROID_HOME="$HOME/Library/Android/sdk"
@@ -51,10 +55,10 @@ export ANDROID_HOME="$HOME/Library/Android/sdk"
 alias 'youtube-dl=noglob youtube-dl '
 alias 'curl=noglob curl '
 alias 'http=noglob http '
-alias 'll=ls -lh --color '
-alias 'la=ls -lha --color '
+# alias 'll=ls -lh --color '
+# alias 'la=ls -lha --color '
 alias 'ip=ip -c -br '
-alias 'brewski=brew update && brew upgrade && brew cleanup; brew doctor'
+alias 'brewski=brew update && brew upgrade && brew cleanup; brew doctor '
 
 
 # export path
@@ -103,7 +107,7 @@ precmd() {
   [[ $ITERM_SESSION_ID ]] && echo -ne "\033];${PWD##*/}\007"
 }
 
-# cheat.sh
-cheat() {
-  curl "cheat.sh/$1"
-}
+# # cheat.sh
+# cheat() {
+#   curl "cheat.sh/$1"
+# }
