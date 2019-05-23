@@ -2,7 +2,7 @@ mafredri/zsh-async
 Tarrasch/zsh-bd
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions branch:develop
-sorin-ionescu/prezto path:modules/gnu-utility/init.zsh
+
 sorin-ionescu/prezto path:modules/editor/init.zsh
 sorin-ionescu/prezto path:modules/completion/init.zsh
 sorin-ionescu/prezto path:modules/history/init.zsh
@@ -14,3 +14,9 @@ romkatv/powerlevel10k
 zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
 
+
+chriskempson/base16-shell
+wfxr/forgit
+caarlos0/zsh-git-sync kind:path
+supercrabtree/k
+zpm-zsh/ls
