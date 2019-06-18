@@ -41,6 +41,7 @@ alias gbsr='git bisect reset'
 alias gbss='git bisect start'
 
 alias gc='git commit -v'
+alias gcn='git commit -v -n'
 alias gc!='git commit -v --amend'
 alias gcn!='git commit -v --no-edit --amend'
 alias gca='git commit -v -a'
@@ -111,6 +112,16 @@ function ggp() {
   else
     [[ "$#" == 0 ]] && local b="$(git_current_branch)"
     git push origin "${b:=$1}"
+  fi
+}
+compdef _git ggp=git-checkout
+
+function ggpnv() {
+  if [[ "$#" != 0 ]] && [[ "$#" != 1 ]]; then
+    git push origin "${*}" --no-verify
+  else
+    [[ "$#" == 0 ]] && local b="$(git_current_branch)"
+    git push origin "${b:=$1}" --no-verify
   fi
 }
 compdef _git ggp=git-checkout
