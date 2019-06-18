@@ -1,3 +1,5 @@
+#!/usr/local/bin zsh
+
 function git_current_branch() {
   git symbolic-ref -q HEAD | sed -e 's|^refs/heads/||'
 }
@@ -9,13 +11,6 @@ function _git_log_prettily(){
   fi
 }
 compdef _git _git_log_prettily=git-log
-
-# Warn if the current branch is a WIP
-function work_in_progress() {
-  if $(git log -n 1 2>/dev/null | grep -q -c "\-\-wip\-\-"); then
-    echo "WIP!!"
-  fi
-}
 
 #
 # Aliases
@@ -77,7 +72,7 @@ alias gds='git diff --staged'
 alias gdt='git diff-tree --no-commit-id --name-only -r'
 alias gdw='git diff --word-diff'
 
-function gdv() { git diff -w "$@" | view - }
+function gdv() { git diff -w "$@" | view -; }
 compdef _git gdv=git-diff
 
 alias gf='git fetch'
@@ -214,11 +209,6 @@ alias gsr='git svn rebase'
 alias gss='git status -s'
 alias gst='git status'
 
-# use the default stash push on git 2.13 and newer
-autoload -Uz is-at-least
-is-at-least 2.13 "$(git --version 2>/dev/null | awk '{print $3}')" \
-  && alias gsta='git stash push' \
-  || alias gsta='git stash save'
 
 alias gstaa='git stash apply'
 alias gstc='git stash clear'
@@ -231,7 +221,7 @@ alias gsu='git submodule update'
 
 alias gts='git tag -s'
 alias gtv='git tag | sort -V'
-alias gtl='gtl(){ git tag --sort=-v:refname -n -l ${1}* }; noglob gtl'
+function gtl(){ git tag --sort=-v:refname -n -l "${1}*"; }
 
 alias gunignore='git update-index --no-assume-unchanged'
 alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
