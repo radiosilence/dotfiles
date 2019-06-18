@@ -7,4 +7,7 @@ update_plugins() {
   source ~/.zsh-plugins.sh
 }
 
+# compatibility
+unalias k 2>/dev/null
+
 source ~/.zsh-plugins.sh
