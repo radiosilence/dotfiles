@@ -32,7 +32,7 @@
 #
 #                         LEFT PROMPT
 #
-#   * Your current directory is bright blue when under $HOME and brownish everywhere else.
+#   * Your current directory is bright blue when under ~ and brownish everywhere else.
 #   * '#' is shown on the far left if you cannot write to the current directory.
 #   * The prompt symbol on the left is '❮' when vicmd keymap is active and '❯' otherwise. It's green
 #     if the last command has succeeded and red if it has failed.
