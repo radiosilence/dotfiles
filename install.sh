@@ -5,11 +5,11 @@ cd "${0%/*}" || exit
 
 for file in .*; do
 	[[ $file == *.git* || $file = "." || $file = ".." || $file = ".vscode" || $file == ".sonarlint" ]] && continue
-	[[ -f "$HOME/$file" ]] && unlink "$HOME/$file"
-	echo "linking $file -> $HOME/$file"
-	ln -s "$PWD/$file" "$HOME/$file"
+	[[ -f ~/$file ]] && unlink ~/"$file"
+	echo "linking $file -> ~/$file"
+	ln -s "$PWD/$file" ~/"$file"
 done
 
-antibody bundle < "$HOME/.zsh-plugins" > "$HOME/.zsh-plugins.sh"
+antibody bundle < ~/.zsh-plugins > ~/.zsh-plugins.sh
 
 cd - || exit
