@@ -10,3 +10,5 @@ export SDKMAN_DIR=~/.sdkman
 # asdf
 source ~/.asdf/asdf.sh
 source ~/.asdf/completions/asdf.bash
+
+[[ -x /usr/libexec/java_home ]] && export JAVA_HOME=$(/usr/libexec/java_home)

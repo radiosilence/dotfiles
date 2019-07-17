@@ -9,6 +9,7 @@ PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'):$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
 
 # export path
 export PATH
