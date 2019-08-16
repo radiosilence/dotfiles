@@ -12,4 +12,6 @@ done
 
 antibody bundle < ~/.zsh-plugins > ~/.zsh-plugins.sh
 
+mkdir -p ~/.config/kitty; ln -s ~/.dotfiles/kitty.conf ~/.config/kitty/kitty.conf
+
 cd - || exit
