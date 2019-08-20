@@ -1,0 +1,1 @@
+/Users/jc/.dotfiles/.zsh.d
