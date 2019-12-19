@@ -9,3 +9,4 @@ alias brewski='brew update -v && brew upgrade -v && brew cleanup -v; brew doctor
 alias zoom='sudo launchctl unload /Library/LaunchDaemons/com.cylance.cyoptics_service.plist'
 alias szrc='source ~/.zshrc'
 alias k='k --no-vcs -A -h '
+alias html2pdf='docker run --rm -v $(pwd):/converted/ arachnysdocker/athenapdf athenapdf '

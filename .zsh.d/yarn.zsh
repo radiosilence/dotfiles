@@ -1,4 +1,4 @@
-#!/usr/local/bin yarn
+#!/usr/local/bin zsh
 
 alias y='yarn '
 
@@ -9,4 +9,5 @@ alias ya='yarn add '
 alias yaW='yarn add -W '
 alias yaD='yarn add -D '
 alias yaDW='yarn add -DW '
+alias ys='yarn && yarn start '
 
