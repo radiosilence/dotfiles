@@ -34,7 +34,8 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 
 ## Get sick AF fonts that have the neat ligatures
 
-- [Ligaturizer](https://github.com/ToxicFrog/Ligaturizer) (get Fantasque Sans Mono or Alacritty wont work)
+- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts/)
+- [Ligaturizer](https://github.com/ToxicFrog/Ligaturizer)
 
 ## Install SF Mono
 
