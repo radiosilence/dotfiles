@@ -1,17 +1,20 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 
 cd "${0%/*}" || exit
 
+
 for file in .*; do
 	[[ $file == *.git* || $file = "." || $file = ".." || $file = ".vscode" || $file == ".sonarlint" ]] && continue
-	[[ -f ~/$file ]] && unlink ~/"$file"
+	[[ -f ~/$file ]] && unlink ~/$file
 	echo "linking $file -> ~/$file"
-	ln -s "$PWD/$file" ~/"$file"
+	[[ ! -d ~/$file ]] && ln -s "$PWD/$file" ~/"$file"
 done
 
 antibody bundle < ~/.zsh-plugins > ~/.zsh-plugins.sh
 
-mkdir -p ~/.config/kitty; ln -s ~/.dotfiles/kitty.conf ~/.config/kitty/kitty.conf
+mkdir -p ~/.config/kitty
+[[ -f ~/.config/kitty/kitty.conf ]] && unlink ~/.config/kitty/kitty.conf
+ln -s ~/.dotfiles/kitty.conf ~/.config/kitty/kitty.conf
 
 cd - || exit
