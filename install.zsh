@@ -1,17 +1,13 @@
 #!/usr/bin/env zsh
 
-
 cd "${0%/*}" || exit
-
 
 for file in .*; do
 	[[ $file == *.git* || $file = "." || $file = ".." || $file = ".vscode" || $file == ".sonarlint" ]] && continue
 	[[ -f ~/$file ]] && unlink ~/$file
-	if [ -v SSH_TTY ]; then
-		if [ $file = ".tmux.conf "]; then
-			echo "skipping .tmux.conf because on ssh"
-			continue
-		fi
+	if [ -v SSH_TTY ] && [ $file = ".tmux.conf" ]; then
+		echo "skipping .tmux.conf because on ssh"
+		continue
 	fi
 	echo "linking $file -> ~/$file"
 	[[ ! -d ~/$file ]] && ln -s "$PWD/$file" ~/"$file"
