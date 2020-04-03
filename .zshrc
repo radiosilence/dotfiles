@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+setopt NULL_GLOB
 
 for config (~/.zsh.d/*.zsh) source $config
 
