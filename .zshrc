@@ -16,3 +16,5 @@ for config (~/.zsh.d.local/*.zsh) source $config
 export SDKMAN_DIR="/Users/jc/.sdkman"
 [[ -s "/Users/jc/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/jc/.sdkman/bin/sdkman-init.sh"
 
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
