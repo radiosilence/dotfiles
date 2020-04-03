@@ -1,93 +1,62 @@
 {
-  "editor.fontFamily": "Liga Fantasque Sans Mono NoLoopK",
-  "editor.tabSize": 2,
-  "editor.formatOnSave": true,
-  "typescript.validate.enable": true,
-  "editor.rulers": [120],
-  "editor.quickSuggestionsDelay": 0,
-  "editor.minimap.enabled": false,
-  "editor.minimap.renderCharacters": false,
-  "files.trimTrailingWhitespace": true,
-  "editor.renderWhitespace": "boundary",
-  "emmet.syntaxProfiles": {
-    "javascript": "jsx"
-  },
-  "workbench.editor.tabCloseButton": "left",
-  "git.confirmSync": false,
-  "editor.wordWrap": "on",
-  "window.zoomLevel": -1,
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/bower_components": true,
-    "**/dist": true,
-    "**/object": true
-  },
-  "typescript.format.enable": false,
-  "files.associations": {
-    "**/concourse.yml": "concourse-pipeline-yaml"
-  },
-  "git.autofetch": true,
-  "explorer.confirmDragAndDrop": false,
-  "workbench.iconTheme": "Monokai Pro (Filter Spectrum) Icons",
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "markdown.extension.preview.autoShowPreviewToSide": true,
-  "ruby.useLanguageServer": true,
-  "go.useLanguageServer": true,
-  "ruby.codeCompletion": "rcodetools",
-  "ruby.lint": {
-    "reek": true,
-    "rubocop": true,
-    "ruby": true, //Runs ruby -wc
-    "fasterer": true,
-    "debride": true,
-    "ruby-lint": true
-  },
-  "ruby.format": "rubocop",
-  "ruby.intellisense": "rubyLocate",
-  "breadcrumbs.enabled": true,
-  "editor.fontSize": 17,
-  "shellcheck.customArgs": ["-x"],
-  "terminal.integrated.shell.osx": "/usr/local/bin/zsh",
-  "eslint.alwaysShowStatus": true,
-  "eslint.autoFixOnSave": true,
-  "eslint.validate": [
-    {
-      "language": "javascript",
-      "autoFix": true
+    "workbench.iconTheme": "Monokai Pro (Filter Spectrum) Icons",
+    "editor.fontFamily": "Liga Fantasque Sans Mono NoLoopK",
+    "editor.tabSize": 2,
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "terminal.integrated.shell.osx": "/usr/local/bin/zsh",
+    "terminal.integrated.fontFamily": "FantasqueSansMono Nerd Font",
+    "typescript.validate.enable": true,
+    "javascript.validate.enable": false,
+    "editor.rulers": [
+        80
+    ],
+    "editor.quickSuggestionsDelay": 0,
+    "editor.minimap.enabled": false,
+    "editor.minimap.renderCharacters": false,
+    "files.trimTrailingWhitespace": true,
+    "editor.renderWhitespace": "boundary",
+    "emmet.syntaxProfiles": {
+        "javascript": "jsx"
     },
-    {
-      "language": "javascriptreact",
-      "autoFix": true
+    "workbench.editor.tabCloseButton": "left",
+    "git.confirmSync": false,
+    "editor.wordWrap": "on",
+    "window.zoomLevel": -1,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true,
+        "**/object": true
     },
-    {
-      "language": "typescript",
-      "autoFix": true
+    "typescript.format.enable": false,
+    "files.associations": {
+        "**/concourse.yml": "concourse-pipeline-yaml"
     },
-    {
-      "language": "typescriptreact",
-      "autoFix": true
-    }
-  ],
-  "files.exclude": {
-    "**/.classpath": true,
-    "**/.project": true,
-    "**/.settings": true,
-    "**/.factorypath": true
-  },
-  "editor.fontLigatures": true,
-  "workbench.colorTheme": "Monokai Pro (Filter Spectrum)",
-  "editor.suggestSelection": "first",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-  "terminal.external.osxExec": "AlacriTTY",
-  "terminal.integrated.fontSize": 14,
-  "python.jediEnabled": false,
-  "explorer.confirmDelete": false,
-  "npm.autoDetect": "off",
-  "prettier.tslintIntegration": true,
-  "files.autoSave": "onFocusChange",
-  "gitlens.codeLens.enabled": false,
-  "terminal.integrated.rendererType": "canvas",
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+    "git.autofetch": true,
+    "explorer.confirmDragAndDrop": false,
+    "npm.enableScriptExplorer": true,
+    "gitlens.advanced.messages": {
+        "suppressShowKeyBindingsNotice": true
+    },
+    "gitlens.codeLens.enabled": false,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "[typescriptreact]": {},
+    "gitlens.views.fileHistory.enabled": true,
+    "gitlens.views.lineHistory.enabled": true,
+    "editor.fontSize": 16,
+    "editor.suggestSelection": "first",
+    "editor.fontLigatures": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "eslint.alwaysShowStatus": true,
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "workbench.colorTheme": "Monokai Pro (Filter Spectrum)",
+    "workbench.fontAliasing": "auto",
+    "terminal.integrated.fontSize": 14
 }
