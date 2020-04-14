@@ -31,7 +31,11 @@ zstyle ':prezto:module:gnu-utility' prefix 'g'
 zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa' 'id_github'
 
 # editor
-export EDITOR=vim
+if [[ -x $(which code) ]]; then
+  export EDITOR="code --wait"
+else
+  export EDITOR=vim
+fi
 
 # it is colourful damnit
 export CLICOLOR=1
