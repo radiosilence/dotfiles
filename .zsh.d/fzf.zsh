@@ -1,5 +1,3 @@
-#!/usr/local/bin zsh
-
 ## GIT
 
 # fco - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches

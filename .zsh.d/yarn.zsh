@@ -1,5 +1,3 @@
-#!/usr/local/bin zsh
-
 alias y='yarn '
 
 alias yt='yarn test '

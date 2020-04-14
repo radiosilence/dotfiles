@@ -1,5 +1,3 @@
-#!/usr/local/bin zsh
-
 HISTFILE=~/.zhistory
 setopt APPEND_HISTORY
 HISTSIZE=1200

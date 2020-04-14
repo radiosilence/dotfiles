@@ -1,5 +1,3 @@
-#!/usr/local/bin zsh
-
 # antibody
 update_plugins() {
   rm ~/.zsh-plugins.sh || echo "no plugins found"
