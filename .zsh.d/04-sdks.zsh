@@ -1,5 +1,3 @@
-#!/usr/local/bin zsh
-
 # android sdk
 export ANDROID_HOME=~/Library/Android/sdk
 

@@ -1,5 +1,3 @@
-#!/usr/local/bin zsh
-
 # aliases
 alias youtube-'dl=noglob youtube-dl '
 alias curl='noglob curl '
