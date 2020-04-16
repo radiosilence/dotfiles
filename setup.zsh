@@ -25,9 +25,12 @@ brew install \
   unrar \
   youtube-dl
 
+brew tap AdoptOpenJDK/openjdk
+
 # remove brave
 brew cask install \
   1password \
+  adoptopenjdk8 \
   alacritty \
   android-sdk \
   brave-browser \
