@@ -8,7 +8,7 @@ export SDKMAN_DIR=~/.sdkman
 # asdf
 if [[ -d ~/.asdf ]]; then
   source ~/.asdf/asdf.sh
-  source ~/.asdf/completions/asdf.bash
+  fpath=(${ASDF_DIR}/completions $fpath)
 fi
 
 [[ -x /usr/libexec/java_home ]] && export JAVA_HOME=$(/usr/libexec/java_home)

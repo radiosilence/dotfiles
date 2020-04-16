@@ -5,6 +5,7 @@ brew install \
   asdf \
   autoconf \
   automake \
+  antibody \
   bash \
   cmatrix \
   coreutils \

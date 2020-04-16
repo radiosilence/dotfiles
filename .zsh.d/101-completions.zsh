@@ -3,9 +3,9 @@ autoload -Uz compinit
 autoload -Uz compinit
 
 if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-	compinit -u;
+	compinit -u -i;
 else
-	compinit -u -C;
+	compinit -u -C -i;
 fi;
 #autoload -U ~/.zsh/completion/*(:t)
 zstyle ':completion:*' auto-description 'specify: %d'
