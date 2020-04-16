@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 brew install \
+  zsh \
   aria2 \
   asdf \
   autoconf \
