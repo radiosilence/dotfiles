@@ -12,3 +12,9 @@ if [[ -d ~/.asdf ]]; then
 fi
 
 [[ -x /usr/libexec/java_home ]] && export JAVA_HOME=$(/usr/libexec/java_home)
+
+
+if [[ -x $(which brew) ]]; then
+  BREW_PREFIX=$(brew --prefix)
+  ANDROID_SDK_ROOT="$BREW_PREFIX/share/android-sdk"
+fi
