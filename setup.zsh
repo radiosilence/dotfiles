@@ -18,6 +18,7 @@ brew install \
   gnu-tar \
   gnupg \
   gnutls \
+  jq \
   nmap \
   rsync \
   telnet \
@@ -25,7 +26,8 @@ brew install \
   tmux \
   tree \
   unrar \
-  youtube-dl
+  youtube-dl \
+  watchman
 
 brew tap AdoptOpenJDK/openjdk
 
