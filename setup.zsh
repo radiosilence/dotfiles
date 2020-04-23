@@ -34,7 +34,7 @@ brew tap AdoptOpenJDK/openjdk
 # remove brave
 brew cask install \
   1password \
-  adoptopenjdk8 \
+  adoptopenjdk \
   alacritty \
   android-sdk \
   brave-browser \
