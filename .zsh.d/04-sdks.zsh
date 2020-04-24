@@ -19,10 +19,7 @@ fi
 export JAVA_14_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-14.jdk/Contents/Home
 export JAVA_8_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
 
-if [[ -d $JAVA_14_HOME ]]; then
-  JAVA_HOME=$JAVA_14_HOME
-elif [[ -d $JAVA_8_HOME ]]; then
-  JAVA_HOME=$JAVA_8_HOME
-fi
+[[ -d $JAVA_14_HOME ]] && JAVA_HOME=$JAVA_14_HOME
+[[ -d $JAVA_8_HOME ]] && JAVA_HOME=$JAVA_8_HOME
 
 export JAVA_HOME
