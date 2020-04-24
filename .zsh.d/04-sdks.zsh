@@ -16,10 +16,15 @@ if [[ -x $(which brew) ]]; then
   ANDROID_SDK_ROOT="$BREW_PREFIX/share/android-sdk"
 fi
 
-export JAVA_14_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-14.jdk/Contents/Home
-export JAVA_8_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+_JVM_PATH=/Library/Java/JavaVirtualMachines
 
-[[ -d $JAVA_14_HOME ]] && JAVA_HOME=$JAVA_14_HOME
-[[ -d $JAVA_8_HOME ]] && JAVA_HOME=$JAVA_8_HOME
+export JAVA_14_HOME="$_JVM_PATH/adoptopenjdk-14.jdk/Contents/Home"
+export JAVA_8_HOME="$_JVM_PATH/adoptopenjdk-8.jdk/Contents/Home"
 
-export JAVA_HOME
+try_java() {
+  _JAVA_HOME="$_JVM_PATH/adoptopenjdk-$1.jdk/Contents/Home"
+  [[ -d $_JAVA_HOME ]] && export JAVA_HOME=$_JAVA_HOME
+}
+
+try_java 14
+try_java 8
