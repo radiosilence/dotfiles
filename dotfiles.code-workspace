@@ -2,15 +2,6 @@
   "folders": [
     {
       "path": "."
-    },
-    {
-      "path": "/Users/jc/.zsh.d.local"
-    },
-    {
-      "path": "/Users/jc/kubeconfig"
-    },
-    {
-      "path": "/Users/jc/.config"
     }
   ]
 }
