@@ -12,7 +12,7 @@ if [[ -s ~/.asdf/asdf.sh ]]; then
 fi
 
 if [[ -x $(which brew) ]]; then
-  BREW_PREFIX=$(brew --prefix)
+  export BREW_PREFIX=$(brew --prefix)
   ANDROID_SDK_ROOT="$BREW_PREFIX/share/android-sdk"
 fi
 
