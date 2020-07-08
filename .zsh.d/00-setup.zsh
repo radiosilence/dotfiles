@@ -1,5 +1,3 @@
-bindkey -e
-
 # opts
 setopt clobber
 setopt no_share_history

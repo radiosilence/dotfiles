@@ -18,3 +18,4 @@ export SDKMAN_DIR="/Users/james.cleveland/.sdkman"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
+
