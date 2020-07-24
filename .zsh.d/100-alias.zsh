@@ -9,3 +9,6 @@ alias zoom='sudo launchctl unload /Library/LaunchDaemons/com.cylance.cyoptics_se
 alias szrc='. ~/.zshrc'
 alias k='k --no-vcs -A -h '
 alias html2pdf='docker run --rm -v $(pwd):/converted/ arachnysdocker/athenapdf athenapdf '
+
+alias pg_start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg_stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
