@@ -1,4 +1,5 @@
 ## handy stuff
+bindkey "ç" fzf-cd-widget
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
