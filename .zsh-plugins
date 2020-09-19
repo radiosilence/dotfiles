@@ -15,6 +15,7 @@ romkatv/powerlevel10k
 zsh-users/zsh-history-substring-search
 zsh-users/zsh-syntax-highlighting
 
+ryutok/rust-zsh-completions
 
 chriskempson/base16-shell
 wfxr/forgit

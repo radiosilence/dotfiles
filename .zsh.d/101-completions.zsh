@@ -1,6 +1,5 @@
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit
-autoload -Uz compinit
 
 if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
 	compinit -u -i;
