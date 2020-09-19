@@ -3,7 +3,7 @@ function git_current_branch() {
 }
 
 # Pretty log messages
-function _git_log_prettily(){
+function _git_log_prettily() {
   if ! [ -z $1 ]; then
     git log --pretty=$1
   fi
@@ -56,7 +56,7 @@ alias gpristine='git reset --hard && git clean -dfx'
 alias gcm='git checkout master'
 alias gcrn='git checkout release/next'
 alias gcod='git checkout develop'
-alias gcmm='git commit -m'
+alias gcmm='git commit -n -m'
 alias gco='git checkout'
 alias gcount='git shortlog -sn'
 alias gcp='git cherry-pick'
@@ -219,7 +219,6 @@ alias gsr='git svn rebase'
 alias gss='git status -s'
 alias gst='git status'
 
-
 alias gstaa='git stash apply'
 alias gstc='git stash clear'
 alias gstd='git stash drop'
@@ -231,7 +230,7 @@ alias gsu='git submodule update'
 
 alias gts='git tag -s'
 alias gtv='git tag | sort -V'
-function gtl(){ git tag --sort=-v:refname -n -l "${1}*"; }
+function gtl() { git tag --sort=-v:refname -n -l "${1}*"; }
 
 alias gunignore='git update-index --no-assume-unchanged'
 alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'
