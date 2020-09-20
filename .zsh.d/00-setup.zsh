@@ -1,5 +1,4 @@
 # opts
-setopt clobber
 setopt no_share_history
 setopt interactivecomments
 
