@@ -25,7 +25,7 @@ zstyle ':prezto:module:gnu-utility' prefix 'g'
 zstyle ':prezto:module:ssh:load' identities 'id_ed25519' 'id_rsa' 'id_github'
 
 # editor
-if [[ -x $(which code) ]]; then
+if [[ -x /usr/local/bin/code ]]; then
   export EDITOR="code --wait"
 else
   export EDITOR=vim
