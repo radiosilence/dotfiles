@@ -1,0 +1,2 @@
+export WASMTIME_HOME="$HOME/.wasmtime"
+PATH="$WASMTIME_HOME/bin:$PATH"
