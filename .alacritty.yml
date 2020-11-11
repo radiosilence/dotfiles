@@ -80,7 +80,7 @@ font:
 colors:
   # Default colors
   primary:
-    background: "0x222222"
+    background: "0x221f22"
     foreground: "0xf7f1ff"
 
   # Normal colors
