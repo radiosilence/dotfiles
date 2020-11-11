@@ -7,7 +7,6 @@ sorin-ionescu/prezto path:modules/editor/init.zsh
 sorin-ionescu/prezto path:modules/completion/init.zsh
 sorin-ionescu/prezto path:modules/history/init.zsh
 sorin-ionescu/prezto path:modules/directory/init.zsh
-sorin-ionescu/prezto path:modules/ssh/init.zsh
 sorin-ionescu/prezto path:modules/tmux/init.zsh
 
 romkatv/powerlevel10k
