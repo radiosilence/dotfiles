@@ -1,5 +1,5 @@
 imp() {
-  dst=~/inbox/_imp
+  dst=~/inbox/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
   rm -r $dst
   mkdir -p $dst
   echo "downloading..."
