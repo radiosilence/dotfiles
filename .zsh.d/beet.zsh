@@ -1,8 +1,13 @@
 imp() {
-  dst=~/inbox/$1
-  mkdir -p $dst/$1
+  dst=~/inbox/_imp
+  rm -r $dst
+  mkdir -p $dst
+  echo "downloading..."
   curl $2 -o $dst/dl.zip
-  unzip ~/$dst/dl.zip
+  echo "unzipping $dst/dl.zip"
+  unzip $dst/dl.zip
+  echo "removing $dst/dl.zip"
   rm $dst/dl.zip
+  echo "importing $dst..."
   beet import $dst
 }
