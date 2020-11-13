@@ -9,5 +9,5 @@ imp() {
   echo "removing $dst/dl.zip"
   rm $dst/dl.zip
   echo "importing $dst..."
-  beet import $dst
+  beet import $dst -I
 }
