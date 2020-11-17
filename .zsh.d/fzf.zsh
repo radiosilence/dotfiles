@@ -12,44 +12,48 @@ FZF_ARGS=""
 fco() {
   local branches branch
   branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
-  branch=$(echo "$branches" |
-           $FZF_CMD $FZF_ARGS -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+    branch=$(echo "$branches" |
+      $FZF_CMD $FZF_ARGS -d $((2 + $(wc -l <<<"$branches"))) +m) &&
+    git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
-
 
 # fco - merge git branch (including remote branches), sorted by most recent commit, limit 30 last branches
 fm() {
   local branches branch
   branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
-  branch=$(echo "$branches" |
-           $FZF_CMD $FZF_ARGS -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-  git merge $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+    branch=$(echo "$branches" |
+      $FZF_CMD $FZF_ARGS -d $((2 + $(wc -l <<<"$branches"))) +m) &&
+    git merge $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
-
 
 # fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
 fcop() {
   local tags branches target
   branches=$(
     git --no-pager branch --all --sort=-committerdate \
-      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-    | sed '/^$/d') || return
+      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" |
+      sed '/^$/d'
+  ) || return
   tags=$(
-    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
+    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}'
+  ) || return
   target=$(
-    (echo "$branches"; echo "$tags") |
-    fzf --no-hscroll --no-multi -n 2 \
-        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
-  git checkout $(awk '{print $2}' <<<"$target" )
+    (
+      echo "$branches"
+      echo "$tags"
+    ) |
+      fzf --no-hscroll --no-multi -n 2 \
+        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'"
+  ) || return
+  git checkout $(awk '{print $2}' <<<"$target")
 }
 
 # fcoc - checkout git commit
 fcoc() {
   local commits commit
   commits=$(git log --pretty=oneline --abbrev-commit --reverse) &&
-  commit=$(echo "$commits" | fzf --tac +s +m -e) &&
-  git checkout $(echo "$commit" | sed "s/ .*//")
+    commit=$(echo "$commits" | fzf --tac +s +m -e) &&
+    git checkout $(echo "$commit" | sed "s/ .*//")
 }
 
 ## ASDF
@@ -68,8 +72,9 @@ vmi() {
   if [[ $lang ]]; then
     local versions=$(asdf list-all $lang | fzf -m)
     if [[ $versions ]]; then
-      for version in $(echo $versions);
-      do; asdf install $lang $version; done;
+      for version in $(echo $versions); do
+        asdf install $lang $version
+      done
     fi
   fi
 }
@@ -83,8 +88,9 @@ bip() {
   local inst=$(brew search | fzf -m)
 
   if [[ $inst ]]; then
-    for prog in $(echo $inst);
-    do; brew install $prog; done;
+    for prog in $(echo $inst); do
+      brew install $prog
+    done
   fi
 }
 # Update (one or multiple) selected application(s)
@@ -93,8 +99,9 @@ bup() {
   local upd=$(brew leaves | fzf -m)
 
   if [[ $upd ]]; then
-    for prog in $(echo $upd);
-    do; brew upgrade $prog; done;
+    for prog in $(echo $upd); do
+      brew upgrade $prog
+    done
   fi
 }
 # Delete (one or multiple) selected application(s)
@@ -103,115 +110,55 @@ brp() {
   local uninst=$(brew leaves | fzf -m)
 
   if [[ $uninst ]]; then
-    for prog in $(echo $uninst);
-    do; brew uninstall $prog; done;
+    for prog in $(echo $uninst); do
+      brew uninstall $prog
+    done
   fi
 }
 # Install or open the webpage for the selected application
 # using brew cask search as input source
 # and display a info quickview window for the currently marked application
 bcip() {
-    local token
-    token=$(brew cask search | $FZF_CMD $FZF_ARGS --query="$1" +m --preview 'brew cask info {}')
+  local token
+  token=$(brew cask search | $FZF_CMD $FZF_ARGS --query="$1" +m --preview 'brew cask info {}')
 
-    if [ "x$token" != "x" ]
-    then
-        echo "(I)nstall or open the (h)omepage of $token"
-        read input
-        if [ $input = "i" ] || [ $input = "I" ]; then
-            brew cask install $token
-        fi
-        if [ $input = "h" ] || [ $input = "H" ]; then
-            brew cask home $token
-        fi
+  if [ "x$token" != "x" ]; then
+    echo "(I)nstall or open the (h)omepage of $token"
+    read input
+    if [ $input = "i" ] || [ $input = "I" ]; then
+      brew cask install $token
     fi
+    if [ $input = "h" ] || [ $input = "H" ]; then
+      brew cask home $token
+    fi
+  fi
 }
 # Uninstall or open the webpage for the selected application
 # using brew list as input source (all brew cask installed applications)
 # and display a info quickview window for the currently marked application
 bcrp() {
-    local token
-    token=$(brew cask list | $FZF_CMD $FZF_ARGS --query="$1" +m --preview 'brew cask info {}')
+  local token
+  token=$(brew cask list | $FZF_CMD $FZF_ARGS --query="$1" +m --preview 'brew cask info {}')
 
-    if [ "x$token" != "x" ]
-    then
-        echo "(U)ninstall or open the (h)omepage of $token"
-        read input
-        if [ $input = "u" ] || [ $input = "U" ]; then
-            brew cask uninstall $token
-        fi
-        if [ $input = "h" ] || [ $token = "h" ]; then
-            brew cask home $token
-        fi
+  if [ "x$token" != "x" ]; then
+    echo "(U)ninstall or open the (h)omepage of $token"
+    read input
+    if [ $input = "u" ] || [ $input = "U" ]; then
+      brew cask uninstall $token
     fi
+    if [ $input = "h" ] || [ $token = "h" ]; then
+      brew cask home $token
+    fi
+  fi
 }
 
 # GIT heart FZF
 # -------------
 
 is_in_git_repo() {
-  git rev-parse HEAD > /dev/null 2>&1
+  git rev-parse HEAD >/dev/null 2>&1
 }
 
 fzf-down() {
   fzf --height 50% "$@" --border
 }
-
-gf() {
-  is_in_git_repo || return
-  git -c color.status=always status --short |
-  fzf-down -m --ansi --nth 2..,.. \
-    --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' |
-  cut -c4- | sed 's/.* -> //'
-}
-
-gb() {
-  is_in_git_repo || return
-  git branch -a --color=always | grep -v '/HEAD\s' | sort |
-  fzf-down --ansi --multi --tac --preview-window right:70% \
-    --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
-  sed 's/^..//' | cut -d' ' -f1 |
-  sed 's#^remotes/##'
-}
-
-gt() {
-  is_in_git_repo || return
-  git tag --sort -version:refname |
-  fzf-down --multi --preview-window right:70% \
-    --preview 'git show --color=always {} | head -'$LINES
-}
-
-gh() {
-  is_in_git_repo || return
-  git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
-  fzf-down --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
-    --header 'Press CTRL-S to toggle sort' \
-    --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | head -'$LINES |
-  grep -o "[a-f0-9]\{7,\}"
-}
-
-gr() {
-  is_in_git_repo || return
-  git remote -v | awk '{print $1 "\t" $2}' | uniq |
-  fzf-down --tac \
-    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1} | head -200' |
-  cut -d$'\t' -f1
-}
-
-join-lines() {
-  local item
-  while read item; do
-    echo -n "${(q)item} "
-  done
-}
-
-bind-git-helper() {
-  local c
-  for c in $@; do
-    eval "fzf-g$c-widget() { local result=\$(g$c | join-lines); zle reset-prompt; LBUFFER+=\$result }"
-    eval "zle -N fzf-g$c-widget"
-    eval "bindkey '^g^$c' fzf-g$c-widget"
-  done
-}
-bind-git-helper f b t r h
-unset -f bind-git-helper
