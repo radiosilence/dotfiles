@@ -6,6 +6,11 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "" ] || [ "$2" = "" ]; the
 fi
 
 PUBKEY=$(gpg --export-ssh-key $1)
+
+if [ "$PUBKEY" = "" ]; then
+  exit 1
+fi
+
 echo "pubkey: $PUBKEY"
 
 SSHDIR="~/.ssh"
