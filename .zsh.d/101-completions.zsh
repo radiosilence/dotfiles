@@ -1,12 +1,8 @@
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit
 
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-	compinit -u -i
-else
-	compinit -u -C -i
-fi
-#autoload -U ~/.zsh/completion/*(:t)
+compinit -u -C -i
+
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
