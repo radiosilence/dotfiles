@@ -8,6 +8,8 @@ fi
 #!/usr/bin/env zsh
 setopt NULL_GLOB
 
+. ~/.dotfiles-dir
+
 for config (~/.zsh.d/*.zsh) . $config
 
 for config (~/.zsh.d.local/*.zsh) . $config

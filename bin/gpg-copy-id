@@ -1,0 +1,32 @@
+#!/bin/sh
+PUBKEY=$(gpg --export-ssh-key $1)
+echo "pubkey: $PUBKEY"
+
+SSHDIR="~/.ssh"
+AUTHKEYS="$SSHDIR/authorized_keys"
+
+read -d '' install <<EOF
+
+if [ ! -d "$SSHDIR" ]; then
+  echo "creating $SSHDIR"
+  mkdir -p $SSHDIR
+  chmod 700 $SSHDIR
+fi
+
+if [ ! -f "$AUTHKEYS" ]; then
+  echo "creating authorized_keys"
+  touch $AUTHKEYS
+  chmod 600 $AUTHKEYS
+fi
+
+if [ "\$(grep '$PUBKEY' $AUTHKEYS | wc -l)" = "0" ]; then
+  echo "adding key to authorized_keys"
+  echo '$PUBKEY' >> $AUTHKEYS
+  echo "done!"
+else
+  echo "key already exists in authorized_keys, skipping"
+fi
+EOF
+
+echo "install script:\n$install\n"
+ssh $2 "$install"
