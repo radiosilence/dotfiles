@@ -28,5 +28,4 @@ else
 fi
 EOF
 
-echo "install script:\n$install\n"
 ssh $2 "$install"
