@@ -1,4 +1,10 @@
 #!/bin/sh
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "" ] || [ "$2" = "" ]; then
+  echo "Usage: gpg-copy-id <key name> <user>@<host>"
+  exit 1
+fi
+
 PUBKEY=$(gpg --export-ssh-key $1)
 echo "pubkey: $PUBKEY"
 
