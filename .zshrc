@@ -14,10 +14,6 @@ for config (~/.zsh.d/*.zsh) . $config
 
 for config (~/.zsh.d.local/*.zsh) . $config
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/james.cleveland/.sdkman"
-[[ -s "/Users/james.cleveland/.sdkman/bin/sdkman-init.sh" ]] && . "/Users/james.cleveland/.sdkman/bin/sdkman-init.sh"
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
 
