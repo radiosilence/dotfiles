@@ -19,4 +19,3 @@ ryutok/rust-zsh-completions
 chriskempson/base16-shell
 wfxr/forgit
 caarlos0/zsh-git-sync kind:path
-zpm-zsh/ls

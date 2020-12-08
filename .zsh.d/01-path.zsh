@@ -1,6 +1,7 @@
 # path
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/uutils-coreutils/libexec/uubin:$PATH"
 PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
 PATH="/usr/local/bin:$PATH"
 PATH="/usr/local/sbin:$PATH"
