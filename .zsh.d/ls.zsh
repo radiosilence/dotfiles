@@ -2,7 +2,7 @@
 
 # Standarized $0 handling, following:
 # https://github.com/zdharma/Zsh-100-Commits-Club/blob/master/Zsh-Plugin-Standard.adoc
-echo "DOING EXA COMPDEF"
+
 0="${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}"
 local _DIRNAME="${0:h}"
 
@@ -79,4 +79,3 @@ else
   compdef ll=ls
 fi
 
-echo "DONE EXA COMPDEF"
