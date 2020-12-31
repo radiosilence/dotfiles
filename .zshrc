@@ -16,7 +16,11 @@ is_macos() {
   [ -d /Library ]
 }
 
-. ~/.dotfiles-dir
+if [ -f ~/.dotfiles-dir ]; then
+  . ~/.dotfiles-dir
+else
+  (cd "${0%/*}" && echo "export DOTFILES=$DOTFILES" >./.dotfiles-dir)
+fi
 
 fpath=($DOTFILES_DIR, $fpath)
 
