@@ -61,3 +61,15 @@ echo $(pwd) // “/home/poop“
   echo $(pwd) // “/var/log“
 )
 echo $(pwd) // “/home/poop“
+
+echo "doing fnc test"
+cmd_with_cd() {
+  (
+    cd /tmp
+    echo $(pwd)
+  )
+}
+
+echo $(pwd)
+cmd_with_cd
+echo $(pwd)
