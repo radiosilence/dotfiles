@@ -4,6 +4,8 @@ cd "${0%/*}" || exit
 
 DOTFILES=$(pwd)
 
+git pull
+
 echo "export DOTFILES=$DOTFILES" >~/.dotfiles-dir
 
 . ./.zsh.d/install.zsh
