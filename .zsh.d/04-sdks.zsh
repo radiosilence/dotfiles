@@ -1,5 +1,7 @@
 # android sdk
-export ANDROID_HOME=~/Library/Android/sdk
+if is_macos; then
+  export ANDROID_HOME=~/Library/Android/sdk
+fi
 
 # sdkman
 export SDKMAN_DIR=~/.sdkman
@@ -7,7 +9,6 @@ export SDKMAN_DIR=~/.sdkman
 
 if is_cmd brew; then
   export BREW_PREFIX=$(brew --prefix)
-  ANDROID_SDK_ROOT="$BREW_PREFIX/share/android-sdk"
 fi
 
 try_java() {
