@@ -1,23 +1,26 @@
+link_dotfile() {
+  [ -e ~/$1 ] && continue
+
+  [[ $1 == *.git* || $1 = "." || $1 = ".." || $1 = ".vscode" || $1 == ".sonarlint" ]] && continue
+
+  if [ -v SSH_TTY ] && [ $1 = ".tmux.conf" ]; then
+    echo "skipping .tmux.conf because on ssh"
+    continue
+  fi
+  echo "linking $1 -> ~/$1"
+  ln -s "$PWD/$1" ~/"$1"
+}
+
 install_dotfiles() {
   . ~/.dotfiles-dir
+  [ !-d "$DOTFILES" ] && return
+  echo "installing from $DOTFILES..."
+  (
+    cd $DOTFILES &&
+      for file in .*; do
+        link_dotfile $file
+      done
 
-  if [ -d "$DOTFILES" ]; then
-    echo "installing from $DOTFILES..."
-    (
-      cd $DOTFILES &&
-        for file in .*; do
-          [ -f ~/$file ] || [ -d ~/$file ] && continue
-          [[ $file == *.git* || $file = "." || $file = ".." || $file = ".vscode" || $file == ".sonarlint" ]] && continue
-          [[ -f ~/$file ]] && unlink ~/$file
-          if [ -v SSH_TTY ] && [ $file = ".tmux.conf" ]; then
-            echo "skipping .tmux.conf because on ssh"
-            continue
-          fi
-          echo "linking $file -> ~/$file"
-          [[ ! -d ~/$file ]] && ln -s "$PWD/$file" ~/"$file"
-        done
-
-      antibody bundle <~/.zsh-plugins >~/.zsh-plugins.sh
-    )
-  fi
+    antibody bundle <~/.zsh-plugins >~/.zsh-plugins.sh
+  )
 }
