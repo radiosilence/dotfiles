@@ -8,18 +8,26 @@ fi
 #!/usr/bin/env zsh
 setopt NULL_GLOB
 
-
-is_cmd() {
+function is_cmd() {
   command -v $1 &>/dev/null
 }
 
+function is_macos() {
+  [ -d /Library ]
+}
 
 . ~/.dotfiles-dir
 
+fpath=($DOTFILES_DIR, $fpath)
+
 for config (~/.zsh.d/*.zsh) . $config
 
-for config (~/.zsh.d.local/*.zsh) . $config
+if [ -d ~/.zsh.d.local ]; then
+  for config (~/.zsh.d.local/*.zsh) . $config
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
+if [ -f ~/.p10k.zsh ]; then
+   . ~/.p10k.zsh
+  fi
 
