@@ -1,31 +1,37 @@
-# path
-PATH="/usr/local/bin:$PATH"
-PATH="/usr/local/sbin:$PATH"
+paths+=(
+  ~/.local/bin
+  $DOTFILES/bin
+  ~/.fastlane/bin
+  ~/.yarn/bin
+  ~/.config/yarn/global/node_modules/.bin
+)
 
 if is_cmd ruby; then
-  PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'):$PATH"
+  paths+=($(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'))
 fi
 
 if is_macos; then
-  PATH="$HOME/Library/Python/2.7/bin:$PATH"
-  PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
-  PATH="$HOME/Library/Android/sdk/tools/bin:$PATH"
-  PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
-  PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-  PATH="/usr/local/opt/findutils/libexec/gnubin:$PATH"
-  PATH="/usr/local/opt/uutils-coreutils/libexec/uubin:$PATH"
-  PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
+  paths+=(
+    ~/Library/Python/2.7/bin
+    /Applications/Postgres.app/Contents/Versions/latest/bin
+    ~/Library/Android/sdk/tools/bin
+    ~/Library/Android/sdk/platform-tools
+    /usr/local/opt/coreutils/libexec/gnubin
+    /usr/local/opt/findutils/libexec/gnubin
+    /usr/local/opt/uutils-coreutils/libexec/uubin
+    /usr/local/opt/gnu-getopt/bi
+  )
 fi
-
-PATH="$HOME/.local/bin:$PATH"
-PATH="$DOTFILES/bin:$PATH"
-PATH="$HOME/.fastlane/bin:$PATH"
 
 if is_cmd cargo; then
-  PATH="$HOME/.cargo/bin:$PATH"
+  paths+=(~/.cargo/bin)
 fi
 
-PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+paths+=(
+  /usr/local/bin
+  /usr/local/sbin
+  $PATH
+)
 
 # export path
-export PATH
+export PATH=$(join_by : $paths)
