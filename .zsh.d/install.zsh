@@ -6,7 +6,7 @@ install_dotfiles() {
     (
       cd $DOTFILES &&
         for file in .*; do
-          [ -f $file ] && continue
+          [ -f $file ] || [ -d $file ] && continue
           [[ $file == *.git* || $file = "." || $file = ".." || $file = ".vscode" || $file == ".sonarlint" ]] && continue
           [[ -f ~/$file ]] && unlink ~/$file
           if [ -v SSH_TTY ] && [ $file = ".tmux.conf" ]; then
