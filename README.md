@@ -27,7 +27,7 @@
 
 ```zsh
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
-./dotfiles/install.zsh
+./dotfiles/install
 ```
 
 > **NOTE**: Only symlinks .hidden files

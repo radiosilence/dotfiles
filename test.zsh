@@ -53,3 +53,11 @@ if [[ -x "$(which asdkjhaslkdjhsakjdhasd)" ]]; then
 else
   echo "which asdkjhaslkdjhsakjdhasd DOES NOT exists!"
 fi
+
+cd /home/poop
+echo $(pwd) // “/home/poop“
+(
+  cd /var/log
+  echo $(pwd) // “/var/log“
+)
+echo $(pwd) // “/home/poop“
