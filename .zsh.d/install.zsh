@@ -9,7 +9,7 @@ link_dotfile() {
   fi
 
   echo "linking $1 -> ~/$1"
-  ln -s "$PWD/$1" ~/"$1"
+  ln -s ./$1 ~/$1
 }
 
 install_dotfiles() {
