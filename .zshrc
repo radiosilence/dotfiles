@@ -19,7 +19,7 @@ is_macos() {
 if [ -f ~/.dotfiles-dir ]; then
   . ~/.dotfiles-dir
 else
-  (cd "${0%/*}" && echo "export DOTFILES=$DOTFILES" >./.dotfiles-dir)
+  echo "\$DOTFILES not set, please run install again"
 fi
 
 fpath=($DOTFILES_DIR, $fpath)
