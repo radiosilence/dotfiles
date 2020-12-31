@@ -1,7 +1,8 @@
 install_dotfiles() {
   if [ -d "$DOTFILES" ]; then
+    echo "installing from $DOTFILES..."
     (
-      cd $1 &&
+      cd $DOTFILES &&
         for file in .*; do
           [ -f $file ] && continue
           [[ $file == *.git* || $file = "." || $file = ".." || $file = ".vscode" || $file == ".sonarlint" ]] && continue
