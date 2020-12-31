@@ -7,6 +7,7 @@ link_dotfile() {
     echo "skipping .tmux.conf because on ssh"
     continue
   fi
+
   echo "linking $1 -> ~/$1"
   ln -s "$PWD/$1" ~/"$1"
 }
