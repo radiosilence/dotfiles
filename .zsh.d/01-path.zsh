@@ -1,4 +1,4 @@
-paths+=(
+paths=(
   ~/.local/bin
   $DOTFILES/bin
   ~/.fastlane/bin
