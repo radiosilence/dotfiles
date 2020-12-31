@@ -1,14 +1,13 @@
 #!/usr/bin/env zsh
 
-cd "${0%/*}" || exit
+(
+  cd "${0%/*}" || exit &&
+    DOTFILES=$(pwd)
 
-DOTFILES=$(pwd)
+  git pull
 
-git pull
+  echo "export DOTFILES=$DOTFILES" >~/.dotfiles-dir
 
-echo "export DOTFILES=$DOTFILES" >~/.dotfiles-dir
-
-. ./.zsh.d/install.zsh
-install_dotfiles $DOTFILES
-
-cd - || exit
+  . ./.zsh.d/install.zsh
+  install_dotfiles $DOTFILES
+)
