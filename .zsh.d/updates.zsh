@@ -14,9 +14,12 @@ updates() {
     asdf plugin update --all
   fi
 
-  if is_cmd youtube-dlc && is_cmd pip3; then
-    echo "updating youtube-dlc"
-    pip3 install --upgrade youtube-dlc
+  if is_cmd pip3; then
+    pip3 install --upgrade pip
+    if is_cmd youtube-dlc; then
+      echo "updating youtube-dlc"
+      pip3 install --upgrade youtube-dlc
+    fi
   fi
 
   if is_macos; then
