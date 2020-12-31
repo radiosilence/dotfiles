@@ -13,7 +13,7 @@ PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 PATH="$HOME/.fastlane/bin:$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
 
-[[ -x $(which ruby) ]] && PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'):$PATH"
+is_cmd ruby && PATH="$(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'):$PATH"
 
 PATH="$HOME/Library/Python/2.7/bin:$PATH"
 

@@ -8,6 +8,12 @@ fi
 #!/usr/bin/env zsh
 setopt NULL_GLOB
 
+
+is_cmd() {
+  command -v $1 &>/dev/null
+}
+
+
 . ~/.dotfiles-dir
 
 for config (~/.zsh.d/*.zsh) . $config
