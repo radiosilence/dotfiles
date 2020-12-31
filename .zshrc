@@ -5,16 +5,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   . "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-#!/usr/bin/env zsh
 setopt NULL_GLOB
-
-is_cmd() {
-  command -v $1 &>/dev/null
-}
-
-is_macos() {
-  [ -d /Library ]
-}
 
 if [ -f ~/.dotfiles-dir ]; then
   . ~/.dotfiles-dir
