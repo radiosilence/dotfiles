@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!zsh
 brew install \
   zsh \
   aria2 \
@@ -51,4 +51,3 @@ brew cask install \
   visual-studio-code \
   whatsapp \
   zoomus
-

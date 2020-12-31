@@ -12,7 +12,7 @@ fi
 
 if is_macos; then
   paths+=(
-    ~/Library/Python/2.7/bin
+    # ~/Library/Python/2.7/bin
     /Applications/Postgres.app/Contents/Versions/latest/bin
     ~/Library/Android/sdk/tools/bin
     ~/Library/Android/sdk/platform-tools
