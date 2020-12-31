@@ -1,4 +1,6 @@
 install_dotfiles() {
+  . ~/.dotfiles-dir
+
   if [ -d "$DOTFILES" ]; then
     echo "installing from $DOTFILES..."
     (
