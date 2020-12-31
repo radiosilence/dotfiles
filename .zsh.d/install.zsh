@@ -1,15 +1,16 @@
 link_dotfile() {
   [ -e ~/$1 ] && return
+  [[ $1 == *.git || $1 == .gitignore || $1 = "." || $1 = ".." || $1 = ".vscode" || $1 == ".sonarlint" ]] && return
 
-  [[ $1 == *.git* || $1 = "." || $1 = ".." || $1 = ".vscode" || $1 == ".sonarlint" ]] && return
+  echo $PWD/$1
 
   if [ -v SSH_TTY ] && [ $1 = ".tmux.conf" ]; then
     echo "skipping .tmux.conf because on ssh"
     return
   fi
 
-  echo "linking $1 -> ~/$1"
-  ln -s ./$1 ~/$1
+  echo "linking $PWD/$1 -> ~/$1"
+  ln -s $PWD/$1 ~/$1
 }
 
 install_dotfiles() {
