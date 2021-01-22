@@ -19,7 +19,6 @@ setopt no_share_history
 setopt interactivecomments
 
 # autoloads
-autoload -Uz compinit
 autoload -U add-zsh-hook
 
 # config
