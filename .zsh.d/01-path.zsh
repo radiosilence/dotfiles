@@ -6,9 +6,9 @@ paths=(
   ~/.config/yarn/global/node_modules/.bin
 )
 
-if is_cmd ruby; then
-  paths+=($(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'))
-fi
+# if is_cmd ruby; then
+#   paths+=($(ruby -e 'print "%s/bin:%s/bin" % [Gem.user_dir, Gem.dir]'))
+# fi
 
 if is_macos; then
   paths+=(
