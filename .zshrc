@@ -7,7 +7,7 @@ fi
 
 setopt NULL_GLOB
 
-if [ -f ~/.dotfiles-dir ]; then
+if [ -e ~/.dotfiles-dir ]; then
   . ~/.dotfiles-dir
 else
   echo "\$DOTFILES not set, please run install again"
@@ -22,7 +22,7 @@ if [ -d ~/.zsh.d.local ]; then
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-if [ -f ~/.p10k.zsh ]; then
+if [ -e ~/.p10k.zsh ]; then
    . ~/.p10k.zsh
   fi
 
