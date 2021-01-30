@@ -3,13 +3,20 @@ if [ -e ~/.zgenom/zgenom.zsh ]; then
 fi
 
 if is_cmd zgenom; then
-  zgenom load mafredri/zsh-async
-  zgenom load Tarrasch/zsh-bd
-  zgenom load zsh-users/zsh-completions
-  zgenom load zsh-users/zsh-autosuggestions . develop
-  zgenom load romkatv/powerlevel10k powerlevel10k
-  zgenom load zsh-users/zsh-history-substring-search
-  zgenom load zsh-users/zsh-syntax-highlighting
-  zgenom load ryutok/rust-zsh-completions
-  zgenom load wfxr/forgit
+  export ZGEN_RESET_ON_CHANGE=($DOTFILES/.zsh.d/05-zgenom.zsh)
+
+  if ! zgenom saved; then
+    zgenom load mafredri/zsh-async
+    zgenom load Tarrasch/zsh-bd
+    zgenom load zsh-users/zsh-completions
+    zgenom load zsh-users/zsh-autosuggestions . develop
+    zgenom load romkatv/powerlevel10k powerlevel10k
+    zgenom load zsh-users/zsh-history-substring-search
+    zgenom load zsh-users/zsh-syntax-highlighting
+    zgenom load ryutok/rust-zsh-completions
+    zgenom load wfxr/forgit
+    zgenom load sei40kr/zsh-tmux-rename
+
+    zgenom save
+  fi
 fi
