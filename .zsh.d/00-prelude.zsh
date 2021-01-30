@@ -26,15 +26,6 @@ ZSH_AUTOSUGGEST_USE_ASYNC=false
 #
 PURE_PROMPT_SYMBOL='→'
 
-# binds
-bindkey -e
-bindkey "\e[3~" delete-char
-
-bindkey '^\e[\e[1;3C' emacs-forward-word
-bindkey '^\e[\e[1;3D' emacs-backward-word
-bindkey "^[b" emacs-forward-word
-bindkey '^[f' emacs-backward-word
-
 # editor
 if is_cmd code-insiders; then
   export EDITOR="code-insiders --wait"
