@@ -13,7 +13,7 @@ else
   echo "\$DOTFILES not set, please run install again"
 fi
 
-fpath=($DOTFILES_DIR, $fpath)
+fpath=($DOTFILES, $fpath)
 
 for config (~/.zsh.d/*.zsh) . $config
 
