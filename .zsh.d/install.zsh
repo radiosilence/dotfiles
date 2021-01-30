@@ -1,5 +1,7 @@
 link_dotfile() {
-  [ -e ~/$1 ] && return
+  [ -h ~/$1 ] && echo "skipping $1 (link) " && return
+  [ -f ~/$1 ] && echo "skipping $1 (file) " && return
+  [ -d ~/$1 ] && echo "skipping $1 (dir) " && return
   [[ $1 == *.git || $1 == .gitignore || $1 = "." || $1 = ".." || $1 = ".vscode" || $1 == ".sonarlint" ]] && return
 
   echo $PWD/$1
