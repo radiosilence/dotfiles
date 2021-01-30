@@ -7,7 +7,8 @@ update_dotfiles() {
 
 updates() {
   update_dotfiles
-  update_plugins
+  zgenom update
+  zgenom clean
 
   if is_cmd asdf; then
     echo "updating asdf..."
