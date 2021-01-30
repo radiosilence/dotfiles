@@ -8,6 +8,7 @@ update_dotfiles() {
 updates() {
   update_dotfiles
   zgenom update
+  zgenom selfupdate
   zgenom clean
 
   if is_cmd asdf; then
