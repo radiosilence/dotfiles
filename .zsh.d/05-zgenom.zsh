@@ -11,6 +11,5 @@ if is_cmd zgenom; then
   zgenom load zsh-users/zsh-history-substring-search
   zgenom load zsh-users/zsh-syntax-highlighting
   zgenom load ryutok/rust-zsh-completions
-  zgenom load chriskempson/base16-shell
   zgenom load wfxr/forgit
 fi
