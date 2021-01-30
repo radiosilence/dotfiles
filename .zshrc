@@ -20,9 +20,3 @@ for config (~/.zsh.d/*.zsh) . $config
 if [ -d ~/.zsh.d.local ]; then
   for config (~/.zsh.d.local/*.zsh) . $config
 fi
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-if [ -e ~/.p10k.zsh ]; then
-   . ~/.p10k.zsh
-  fi
-
