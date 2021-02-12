@@ -26,9 +26,10 @@ ZSH_AUTOSUGGEST_USE_ASYNC=false
 PURE_PROMPT_SYMBOL='→'
 
 # editor
-if is_cmd code-insiders; then
-  export EDITOR="code-insiders --wait"
-elif is_cmd code; then
+# if is_cmd code-insiders; then
+#   export EDITOR="code-insiders --wait"
+# e
+if is_cmd code; then
   export EDITOR="code --wait"
 else
   export EDITOR=vim
