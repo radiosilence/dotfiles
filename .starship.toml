@@ -31,3 +31,12 @@ format = '[$symbol$account(\($region\))]($style) '
 symbol = " "
 disabled = true
 style = "green"
+
+[kotlin]
+disabled = true
+
+[java]
+disabled = true
+
+[package]
+disabled = true
