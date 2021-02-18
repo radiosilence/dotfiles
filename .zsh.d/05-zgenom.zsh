@@ -10,7 +10,6 @@ if is_cmd zgenom; then
     # zgenom load Tarrasch/zsh-bd
     zgenom load zsh-users/zsh-completions
     zgenom load zsh-users/zsh-autosuggestions . develop
-    zgenom load romkatv/powerlevel10k powerlevel10k
     zgenom load zsh-users/zsh-history-substring-search
     zgenom load zsh-users/zsh-syntax-highlighting
     zgenom load ryutok/rust-zsh-completions
