@@ -1,15 +1,14 @@
-update_dotfiles() {
+updates() {
   if [ -d "$DOTFILES" ]; then
     echo "updating dotfiles $DOTFILES"
     (cd "$DOTFILES" && git pull)
   fi
-}
 
-updates() {
-  update_dotfiles
-  zgenom update
-  zgenom selfupdate
-  zgenom clean
+  if is_cmd zgenom; then
+    zgenom update
+    zgenom selfupdate
+    zgenom clean
+  fi
 
   if is_cmd asdf; then
     echo "updating asdf..."
