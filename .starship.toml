@@ -8,7 +8,7 @@ success_symbol = "[➜](bold green)" # The "success_symbol" segment is being set
 [directory]
 truncation_length = 8
 truncate_to_repo = false
-style = "blue"
+style = "fg:8"
 truncation_symbol = "…/"
 
 [git_branch]
@@ -25,3 +25,8 @@ style = "yellow"
 disabled = true
 symbol = " "
 format = '[$symbol$account(\($region\))]($style) '
+
+[nodejs]
+symbol = " "
+disabled = true
+style = "green"
