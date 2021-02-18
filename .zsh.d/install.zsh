@@ -24,7 +24,5 @@ install_dotfiles() {
     for file in .*; do
       link_dotfile $file
     done
-
-    antibody bundle <~/.zsh-plugins >~/.zsh-plugins.sh
   )
 }
