@@ -20,6 +20,7 @@ setopt interactivecomments
 
 # autoloads
 autoload -U add-zsh-hook
+
 # config
 ZSH_AUTOSUGGEST_USE_ASYNC=false
 #
