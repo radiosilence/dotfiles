@@ -12,6 +12,12 @@ truncate_to_repo = false
 style = "fg:8"
 truncation_symbol = ".../"
 
+[hostname]
+format = "[$hostname]($style) "
+
+[username]
+format = "[$user]($style)@"
+
 [git_branch]
 symbol = "  "
 format = "[$symbol$branch]($style) "
