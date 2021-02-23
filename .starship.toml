@@ -29,14 +29,16 @@ format = '[$symbol$account(\($region\))]($style) '
 
 [nodejs]
 symbol = " "
-disabled = true
+disabled = false
 style = "green"
 
 [kotlin]
-disabled = true
+disabled = false
 
 [java]
-disabled = true
+disabled = false
 
 [package]
 disabled = true
+display_private = true
+symbol = "  "
