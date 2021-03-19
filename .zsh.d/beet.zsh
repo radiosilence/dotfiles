@@ -1,7 +1,7 @@
 if is_cmd beet; then
   imp() {
     dst=~/inbox/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-    rm -r $dst
+    [ -d $dst ] && rm -r $dst
     mkdir -p $dst
     echo "downloading..."
     curl $1 -o $dst/dl.zip
