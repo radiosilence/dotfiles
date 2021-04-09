@@ -1,0 +1,79 @@
+h264:
+  -c:v libx264 -preset medium -crf 22
+
+  h265:
+  -c:v libx265 -preset medium -crf 26
+
+  no recompress:
+  -c copy
+
+  presets:
+  ultrafast,superfast, faster, fast, medium, slow, slower, veryslow
+
+  desinterlace:
+  -vf yadif
+
+  target size:
+  -s 1920x1080
+
+  aspect ratio without recompressing:
+  -aspect 16:9
+
+  rotate video:
+  -vf "transpose=1"
+  0 = 90CounterCLockwise and Vertical Flip (default)
+  1 = 90Clockwise
+  2 = 90CounterClockwise
+  3 = 90Clockwise and Vertical Flip
+
+  rotate without recompressing:
+  -metadata:s:v rotate="90"
+
+  audio aac two channels:
+  -c:a aac -b:a 160k -ac 2
+
+  web fast start:
+  -movflags +faststart
+
+  autoscale to WxH with black bands:
+  -vf "scale=W:H:force_original_aspect_ratio=decrease,pad=W:H:(ow-iw)/2:(oh-ih)/2"
+
+  get jpeg snapshot:
+  -vframes 1 -q:v 2 dest.jpg
+
+  concatenate mp4 without recompressing:
+  -f concat -safe 0 -i "files.txt" -c copy -movflags +faststart
+  files.txt format:
+  file 'filepath'
+
+  ffprobe get videoinfo:
+  ffprobe -v quiet -print_format xml -show_format -show_streams "filepath" > file.xml
+
+  if override which sub track is default, use "-default_mode infer_no_subs"
+
+  clear disposition (default sub):
+  -disposition:s 0
+
+  default or forced disposition:
+  -disposition:s forced
+
+  track metadata (audio):
+  -metadata:s:a title="xx"
+  track metadata (video):
+  -metadata:s:v title="xx"
+  global metadata:
+  -metadata title="xx"
+  -metadata description="xx"
+  -metadata comment="xx"
+
+  extract sound from video to mp4
+  ffmpeg -i source_video.avi -vn -ar 44100 -ac 2 -ab 192k -f mp3 sound.mp3
+
+  skip time (place after input file):
+  -ss 00:05:00
+
+  stop after:
+  -t 00:05:00
+
+  Approx fast seek (place before input file):
+  -ss 00:05:00 -noaccurate_seek -i ....
