@@ -3,6 +3,9 @@ if [[ "$TERM" == 'dumb' ]]; then
   return 1
 fi
 
+autoload -Uz compinit
+compinit
+
 # Add zsh-completions to $fpath.
 # fpath=("${0:h}/external/src" $fpath)
 

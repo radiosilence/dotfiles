@@ -1,18 +1,8 @@
-enable_ssh_ssh() {
-  eval $(ssh-agent)
-}
-
-# if is_cmd gpg; then
-#   gpg-connect-agent --quiet /bye >/dev/null 2>/dev/null
-#   gpg-agent --daemon --quiet --enable-ssh-support >/dev/null 2>&1
-#   export GPG_TTY=$(tty)
-
-# else
-enable_ssh_ssh
+# init_ssh_agent() {
+#   eval $(ssh-agent -s)
+#   ssh-add ~/.ssh/id_jc
+#   ssh-add ~/.ssh/id_mw
+# }
+# if [ -z "$SSH_AUTH_SOCK" ]; then
+#   init_ssh_agent
 # fi
-
-# You must set IdentityAgent like so...
-# Host *
-#     ServerAliveInterval 120
-#     TCPKeepAlive yes
-#     IdentityAgent ~/.gnupg/S.gpg-agent.ssh
