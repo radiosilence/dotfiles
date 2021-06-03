@@ -39,4 +39,4 @@ fi
 # it is colourful damnit
 export CLICOLOR=1
 
-export WORDCHARS=${WORDCHARS/\//}
+export WORDCHARS=''
