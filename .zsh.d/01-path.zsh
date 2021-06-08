@@ -13,6 +13,8 @@ paths=(
 if is_macos; then
   paths+=(
     # ~/Library/Python/2.7/bin
+    /opt/homebrew/bin
+    /opt/homebrew/sbin
     /Applications/Postgres.app/Contents/Versions/latest/bin
     ~/Library/Android/sdk/tools/bin
     ~/Library/Android/sdk/platform-tools

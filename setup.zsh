@@ -25,29 +25,14 @@ brew install \
   tig \
   tmux \
   tree \
-  unrar \
+  rar \
   youtube-dl \
   watchman
 
 brew tap AdoptOpenJDK/openjdk
 
-# remove brave
-brew cask install \
+brew install --cask \
   1password \
   adoptopenjdk \
-  alacritty \
-  android-sdk \
-  brave-browser \
-  fastlane \
-  flipper \
-  google-cloud-sdk \
   mpv \
-  react-native-debugger \
-  reactotron \
-  ripcord \
-  signal \
-  spotify \
-  telegram \
-  visual-studio-code \
-  whatsapp \
-  zoomus
+  android-sdk
