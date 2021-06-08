@@ -37,3 +37,5 @@ eval "$(starship init zsh)"
 
 # global_end=$(date +%s.%N)
 # echo "TOTAL TIME $(time_from $global_start)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

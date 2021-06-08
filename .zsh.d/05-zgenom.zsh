@@ -14,7 +14,7 @@ if is_cmd zgenom; then
     zgenom load zsh-users/zsh-syntax-highlighting
     zgenom load ryutok/rust-zsh-completions
     # zgenom load wfxr/forgit
-    zgenom load ptavares/zsh-direnv
+    # zgenom load ptavares/zsh-direnv
 
     zgenom save
   fi
