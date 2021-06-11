@@ -686,7 +686,7 @@
 	<key>Bell</key>
 	<true/>
 	<key>CommandString</key>
-	<string>/opt/homebrew/bin/zsh</string>
+	<string>/bin/zsh</string>
 	<key>CursorBlink</key>
 	<true/>
 	<key>CursorColor</key>

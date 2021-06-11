@@ -28,6 +28,7 @@ if is_macos; then
     $BREW_PREFIX/opt/findutils/libexec/gnubin
     $BREW_PREFIX/opt/uutils-coreutils/libexec/uubin
     $BREW_PREFIX/opt/gnu-getopt/bi
+    /opt/homebrew/opt/ruby/bin
   )
 fi
 
