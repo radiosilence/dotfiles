@@ -2,42 +2,30 @@
 brew install \
   \
   aria2 \
-  \
-  \
-  \
   antibody \
   bash \
   cmatrix \
-  \
   ffmpeg \
-  \
+  fd \
   fzf \
   git \
-  \
-  \
-  \
   gnupg \
-  \
   jq \
+  lsd \
   nmap \
-  \
   telnet \
   tig \
   tmux \
   tree \
   rar \
+  ripgrep \
   youtube-dl \
-  watchman # zsh \
-# asdf \
-# autoconf \
-# automake \
-# coreutils \
-# findutils \
-# gnu-getopt \
-# gnu-indent \
-# gnu-tar \
-# gnutls \
-# rsync \
+  watchman
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+cargo install \
+  fcp
 
 brew tap AdoptOpenJDK/openjdk
 

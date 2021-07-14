@@ -11,3 +11,16 @@ if is_macos; then
   alias pg_start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
   alias pg_stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
 fi
+
+if is_cmd lsd; then
+  alias ls='lsd '
+  alias ll='lsd -l '
+fi
+
+if is_cmd fcp; then
+  alias cp='fcp '
+fi
+
+if is_cmd rg; then
+  alias grep='rg '
+fi
