@@ -4,7 +4,9 @@ brew install \
   aria2 \
   antibody \
   bash \
+  broot \
   cmatrix \
+  zoxide \
   ffmpeg \
   fd \
   fzf \
