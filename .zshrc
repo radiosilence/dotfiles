@@ -39,3 +39,5 @@ eval "$(starship init zsh)"
 # echo "TOTAL TIME $(time_from $global_start)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source /Users/jc/.config/broot/launcher/bash/br
