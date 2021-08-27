@@ -21,6 +21,7 @@ brew install \
   tree \
   rar \
   ripgrep \
+  pinentry \
   youtube-dl \
   watchman
 
