@@ -24,7 +24,6 @@ autoload -U add-zsh-hook
 # config
 ZSH_AUTOSUGGEST_USE_ASYNC=false
 #
-PURE_PROMPT_SYMBOL='→'
 
 # editor
 # if is_cmd code-insiders; then

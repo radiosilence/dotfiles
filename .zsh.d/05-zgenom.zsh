@@ -13,6 +13,8 @@ if is_cmd zgenom; then
     zgenom load zsh-users/zsh-history-substring-search
     zgenom load zsh-users/zsh-syntax-highlighting
     zgenom load ryutok/rust-zsh-completions
+    zgenom load marlonrichert/zsh-autocomplete
+    zgenom load redxtech/zsh-asdf-direnv
     # zgenom load wfxr/forgit
     # zgenom load ptavares/zsh-direnv
 
