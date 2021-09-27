@@ -19,16 +19,15 @@ fi
 if is_macos; then
   paths+=(
     # ~/Library/Python/2.7/bin
-    $BREW_PREFIX/bin
-    $BREW_PREFIX/sbin
     /Applications/Postgres.app/Contents/Versions/latest/bin
     ~/Library/Android/sdk/tools/bin
     ~/Library/Android/sdk/platform-tools
-    $BREW_PREFIX/opt/coreutils/libexec/gnubin
-    $BREW_PREFIX/opt/findutils/libexec/gnubin
-    $BREW_PREFIX/opt/uutils-coreutils/libexec/uubin
-    $BREW_PREFIX/opt/gnu-getopt/bi
-    /opt/homebrew/opt/ruby/bin
+    $BREW_PREFIX/bin
+    $BREW_PREFIX/sbin
+    # $BREW_PREFIX/opt/coreutils/libexec/gnubin
+    # $BREW_PREFIX/opt/findutils/libexec/gnubin
+    # $BREW_PREFIX/opt/uutils-coreutils/libexec/uubin
+    # $BREW_PREFIX/opt/gnu-getopt/bin
   )
 fi
 
