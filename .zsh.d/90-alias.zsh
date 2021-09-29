@@ -17,10 +17,6 @@ if is_cmd lsd; then
   alias ll='lsd -l '
 fi
 
-if is_cmd fcp; then
-  alias cp='fcp '
-fi
-
 if is_cmd rg; then
   alias grep='rg '
 fi

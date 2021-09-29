@@ -12,12 +12,9 @@ if [ !-d ~/.zgenon ]; then
 fi
 
 brew install \
-  antibody \
-  aria2 \
   asdf \
-  bash \
   broot \
-  cmatrix \
+  fcp \
   fd \
   ffmpeg \
   fzf \
@@ -27,7 +24,6 @@ brew install \
   lsd \
   nmap \
   pinentry \
-  pinentry-macx \
   rar \
   ripgrep \
   starship \
