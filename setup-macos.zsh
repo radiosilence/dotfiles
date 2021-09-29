@@ -36,7 +36,7 @@ fi
 if [ ! -d ~/.zgenom ]; then
   git clone https://github.com/jandamm/zgenom.git ~/.zgenom
 fi
-
+brew tap homebrew/cask-fonts
 brew install \
   asdf \
   broot \
@@ -69,6 +69,8 @@ fi
 
 cargo install \
   fcp
+
+sudo softwareupdate --install-rosetta
 
 brew tap AdoptOpenJDK/openjdk
 
