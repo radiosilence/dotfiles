@@ -3,5 +3,7 @@ awsve() {
 }
 
 upload() {
-  aws-vault exec jc aws s3 cp --acl public-read ${@:2} $1 s3://blit-files
+  AWS_PROFILE=jc
+  aws s3 cp ${@:2} $1 s3://blit-files
+  echo https://your-cloudfront-domain.whatever/$1 | pbcopy
 }
