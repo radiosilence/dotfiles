@@ -1,5 +1,5 @@
 zstyle ':autocomplete:*' fzf-completion yes
-zstyle ':autocomplete:*' min-delay 1.0
+zstyle ':autocomplete:*' min-delay 0.5
 
 zstyle ':autocomplete:*' default-context ''
 # '': Start each new command line with normal autocompletion.
