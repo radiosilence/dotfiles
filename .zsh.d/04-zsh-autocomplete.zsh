@@ -13,3 +13,9 @@ zstyle ':autocomplete:*' recent-dirs zoxide
 
 zle -A {.,}history-incremental-search-forward
 zle -A {.,}history-incremental-search-backward
+
+zstyle ':autocomplete:*' widget-style menu-select
+# complete-word: (Shift-)Tab inserts the top (bottom) completion.
+# menu-complete: Press again to cycle to next (previous) completion.
+# menu-select:   Same as `menu-complete`, but updates selection in menu.
+# ⚠️ NOTE: This setting can NOT be changed at runtime.
