@@ -17,10 +17,7 @@ updates() {
 
   if is_cmd pip3; then
     pip3 install --upgrade pip
-    if is_cmd youtube-dlc; then
-      echo "updating youtube-dlc"
-      pip3 install --upgrade youtube-dlc
-    fi
+
     if is_cmd yt-dlp; then
       echo "updating yt-dlp"
       pip3 install --upgrade yt-dlp
@@ -31,7 +28,7 @@ updates() {
     echo "updating brew"
     brew update
     brew upgrade
-    brew upgrade --cask
+    brew upgrade --no-quarantine --cask
     brew cleanup
     brew doctor
   fi
