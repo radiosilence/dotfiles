@@ -1,6 +1,8 @@
 local wezterm = require 'wezterm';
 
 return {
+    initial_rows = 64,
+    initial_cols = 240,
     font = wezterm.font("Iosevka Nerd Font"),
     font_rules = {
         {
