@@ -54,9 +54,9 @@ return {
         cursor_border = "#52ad70",
 
         -- the foreground color of selected text
-        selection_fg = "black",
+        selection_fg = "white",
         -- the background color of selected text
-        selection_bg = "#fffacd",
+        selection_bg = "#314f78",
 
         -- The color of the scrollbar "thumb"; the portion that represents the current viewport
         scrollbar_thumb = "#222222",
@@ -72,9 +72,6 @@ return {
             "#69676c", "#fc618d", "#7bd88f", "#fce566", "#78DCE8", "#948ae3",
             "#14ffff", "#f7f1ff"
         },
-
-        -- Arbitrary colors of the palette in the range from 16 to 255
-        indexed = {[136] = "#af8700"}
     },
     hide_tab_bar_if_only_one_tab = true,
     window_padding = {left = 2, right = 2, top = 2, bottom = 2},
