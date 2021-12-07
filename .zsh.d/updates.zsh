@@ -17,11 +17,6 @@ updates() {
 
   if is_cmd pip3; then
     pip3 install --upgrade pip
-
-    if is_cmd yt-dlp; then
-      echo "updating yt-dlp"
-      pip3 install --upgrade yt-dlp
-    fi
   fi
 
   if is_macos; then
