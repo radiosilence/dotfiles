@@ -9,6 +9,6 @@ importmusic() {
   (cd $1 && flac2alac)
   ssh music@soul "rm -rf ~/inbox/*"
   rsync -av $1 music@soul:inbox/
-  ssh music@soul "beet import ~/inbox/*"
+  ssh music@soul "beet import -I ~/inbox/*"
   (cd /Volumes/Stanley && ./pull.sh)
 }
