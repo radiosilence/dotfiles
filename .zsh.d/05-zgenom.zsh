@@ -7,17 +7,16 @@ if is_cmd zgenom; then
   zgenom autoupdate
 
   if ! zgenom saved; then
-    # zgenom load mafredri/zsh-async
-    zgenom load Tarrasch/zsh-bd
-    zgenom load zsh-users/zsh-completions
-    zgenom load zsh-users/zsh-autosuggestions . develop
-    zgenom load zsh-users/zsh-history-substring-search
-    zgenom load zsh-users/zsh-syntax-highlighting
-    zgenom load ryutok/rust-zsh-completions
-    zgenom load marlonrichert/zsh-autocomplete
-    zgenom load redxtech/zsh-asdf-direnv
-    # zgenom load wfxr/forgit
-    # zgenom load ptavares/zsh-direnv
+    zgenom loadall <<EOPLUGINS
+    Tarrasch/zsh-bd
+    zsh-users/zsh-completions
+    zsh-users/zsh-autosuggestions . develop
+    zsh-users/zsh-history-substring-search
+    zsh-users/zsh-syntax-highlighting
+    ryutok/rust-zsh-completions
+    marlonrichert/zsh-autocomplete
+    redxtech/zsh-asdf-direnv
+EOPLUGINS
 
     zgenom save
   fi
