@@ -4,6 +4,7 @@ fi
 
 if is_cmd zgenom; then
   export ZGEN_RESET_ON_CHANGE=($DOTFILES/.zsh.d/05-zgenom.zsh)
+  zgenom autoupdate
 
   if ! zgenom saved; then
     # zgenom load mafredri/zsh-async
