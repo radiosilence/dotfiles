@@ -1,7 +1,8 @@
 ## handy stuff
-bindkey "ç" fzf-cd-widget
 
 [ -s ~/.fzf.zsh ] && . ~/.fzf.zsh
+
+# bindkey "ç" fzf-cd-widget
 
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info --height 40% --preview 'cat {}'"
 FZF_CMD="fzf"
