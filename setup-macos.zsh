@@ -52,15 +52,15 @@ brew install \
   jq \
   lsd \
   nmap \
-  pinentry \
+  pinentry-mac \
   rar \
   ripgrep \
   starship \
   telnet \
   tig \
   tmux \
-  youtube-dl \
-  zoxide \
+  shellcheck \
+  yt-dlp \
   zoxide
 
 if ! is_cmd cargo; then
