@@ -5,4 +5,5 @@ export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 
 gpg-switch-yubikey() {
   gpg-connect-agent "scd serialno" "learn --force" /bye
+
 }
