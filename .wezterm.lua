@@ -7,20 +7,20 @@ return {
     font_rules = {
         {
             intensity = "Bold",
-            font = wezterm.font("Iosevka Nerd Font", {bold = true})
+            font = wezterm.font("Iosevka Nerd Font", { bold = true })
         }, {
             italic = true,
             intensity = "Bold",
             font = wezterm.font("Iosevka Nerd Font",
-                                {bold = true, italic = true})
+                { bold = true, italic = true })
         },
         {
             italic = true,
-            font = wezterm.font("Iosevka Nerd Font", {italic = true})
+            font = wezterm.font("Iosevka Nerd Font", { italic = true })
         }
     },
     default_prog = {
-        "sh", "-c", '/opt/homebrew/bin/tmux a || /opt/homebrew/bin/tmux'
+        "bash", "-c", "export BREW_PREFIX=$([ -d ~/.homebrew ] && echo ~/.homebrew || echo /opt/homebrew)  $BREW_PREFIX/bin/tmux a || $BREW_PREFIX/bin/tmux"
     },
     -- default_prog = {"zsh"},
     send_composed_key_when_left_alt_is_pressed = false,
@@ -30,11 +30,11 @@ return {
         {
             key = "LeftArrow",
             mods = "OPT",
-            action = {SendKey = {key = "b", mods = "ALT"}}
+            action = { SendKey = { key = "b", mods = "ALT" } }
         }, {
             key = "RightArrow",
             mods = "OPT",
-            action = {SendKey = {key = "f", mods = "ALT"}}
+            action = { SendKey = { key = "f", mods = "ALT" } }
         }
     },
     colors = {
@@ -74,6 +74,6 @@ return {
         },
     },
     hide_tab_bar_if_only_one_tab = true,
-    window_padding = {left = 2, right = 2, top = 2, bottom = 2},
+    window_padding = { left = 2, right = 2, top = 2, bottom = 2 },
     window_close_confirmation = "NeverPrompt"
 }
