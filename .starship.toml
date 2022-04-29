@@ -2,9 +2,9 @@
 add_newline = false
 
 [character]
-error_symbol = "[!](red)"
-vicmd_symbol = "[V](green)"
-success_symbol = "[%%](green)"
+error_symbol = ""
+vicmd_symbol = ""
+success_symbol = ""
 
 [directory]
 truncation_length = 8

@@ -52,6 +52,7 @@ brew install \
   jq \
   lsd \
   nmap \
+  pinentry \
   pinentry-mac \
   rar \
   ripgrep \
