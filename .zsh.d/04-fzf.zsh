@@ -5,8 +5,8 @@
 # bindkey "ç" fzf-cd-widget
 
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info --height 40% --preview 'cat {}'"
+
 FZF_CMD="fzf"
-## GIT
 FZF_ARGS=""
 
 # fco - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
