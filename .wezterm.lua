@@ -3,20 +3,20 @@ local wezterm = require 'wezterm';
 return {
     initial_rows = 64,
     initial_cols = 240,
-    font = wezterm.font("Iosevka Nerd Font"),
+    font = wezterm.font("Hack Nerd Font JBM Ligatured CCG"),
     font_rules = {
         {
             intensity = "Bold",
-            font = wezterm.font("Iosevka Nerd Font", { bold = true })
+            font = wezterm.font("Hack Nerd Font JBM Ligatured CCG", { bold = true })
         }, {
             italic = true,
             intensity = "Bold",
-            font = wezterm.font("Iosevka Nerd Font",
+            font = wezterm.font("Hack Nerd Font JBM Ligatured CCG",
                 { bold = true, italic = true })
         },
         {
             italic = true,
-            font = wezterm.font("Iosevka Nerd Font", { italic = true })
+            font = wezterm.font("Hack Nerd Font JBM Ligatured CCG", { italic = true })
         }
     },
     default_prog = {
@@ -65,12 +65,24 @@ return {
         split = "#444444",
 
         ansi = {
-            "#000000", "#fc618d", "#7bd88f", "#fce566", "#78DCE8", "#948ae3",
-            "#5ad4e6", "#f7f1ff"
+            "#000000",
+            "#fc618d",
+            "#7bd88f",
+            "#fce566",
+            "#78DCE8",
+            "#948ae3",
+            "#5ad4e6",
+            "#f7f1ff",
         },
         brights = {
-            "#69676c", "#fc618d", "#7bd88f", "#fce566", "#78DCE8", "#948ae3",
-            "#14ffff", "#f7f1ff"
+            "#120d12",
+            "#ff5c8a",
+            "#55fc79",
+            "#ffe342",
+            "#61efff",
+            "#8e80ff",
+            "#4dffff",
+            "#ffffff",
         },
     },
     hide_tab_bar_if_only_one_tab = true,

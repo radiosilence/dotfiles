@@ -41,21 +41,21 @@ font:
   # The normal (roman) font face to use.
   normal:
     # family: FantasqueSansMono Nerd Font
-    family: Iosevka Nerd Font
+    family: Hack Nerd Font JBM Ligatured CCG
     # Style can be specified to pick a specific face.
     # style: Regular
 
   # The bold font face
   bold:
     # family: FantasqueSansMono Nerd Font
-    family: Iosevka Nerd Font
+    family: Hack Nerd Font JBM Ligatured CCG
     # Style can be specified to pick a specific face.
     # style: Bold
 
   # The italic font face
   italic:
     # family: FantasqueSansMono Nerd Font
-    family: Iosevka Nerd Font
+    family: Hack Nerd Font JBM Ligatured CCG
     # Style can be specified to pick a specific face.
     # style: Italic
 
