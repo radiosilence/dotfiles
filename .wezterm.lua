@@ -63,19 +63,8 @@ return {
 
         -- The color of the split lines between panes
         split = "#444444",
-
-        ansi = {
-            "#000000",
-            "#fc618d",
-            "#7bd88f",
-            "#fce566",
-            "#78DCE8",
-            "#948ae3",
-            "#5ad4e6",
-            "#f7f1ff",
-        },
         brights = {
-            "#120d12",
+            "#b195b1",
             "#ff5c8a",
             "#55fc79",
             "#ffe342",
@@ -83,6 +72,16 @@ return {
             "#8e80ff",
             "#4dffff",
             "#ffffff",
+        },
+        ansi = {
+            "#221f22",
+            "#fc618d",
+            "#7bd88f",
+            "#fce566",
+            "#78DCE8",
+            "#948ae3",
+            "#5ad4e6",
+            "#f7f1ff",
         },
     },
     hide_tab_bar_if_only_one_tab = true,
