@@ -1,6 +1,7 @@
 if is_cmd bat; then
   alias "bat=bat \
     --map-syntax='*.kubeconfig:YAML' \
+    --map-syntax='config:YAML' \
   "
   alias "cat=bat"
   # alias "fd=fd -X bat"
