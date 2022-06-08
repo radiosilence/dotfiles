@@ -15,7 +15,6 @@ if is_cmd zgenom; then
     zsh-users/zsh-syntax-highlighting
     ryutok/rust-zsh-completions
     marlonrichert/zsh-autocomplete
-    redxtech/zsh-asdf-direnv
 EOPLUGINS
 
     zgenom save
