@@ -12,6 +12,8 @@ time_from() {
 
 setopt NULL_GLOB
 
+export ZSH_ASDF_DIRENV_LIBONLY=true
+
 if [ -e ~/.dotfiles-dir ]; then
   . ~/.dotfiles-dir
 else
@@ -21,9 +23,10 @@ fi
 fpath=($DOTFILES, $fpath)
 
 for config in ~/.zsh.d/*.zsh; do
-  # start=$(now)
   . $config
-  # echo "[$(time_from $start)] loaded $config"
+  # word="shims"
+  # string=$PATH
+  # test "${string#*$word}" != "$string" && echo "post $config: $word found in path"
 done
 
 if [ -d ~/.zsh.d.local ]; then
