@@ -16,7 +16,6 @@ if is_macos; then
     /Applications/Postgres.app/Contents/Versions/latest/bin
     ~/Library/Android/sdk/tools/bin
     ~/Library/Android/sdk/platform-tools
-    /usr/local/MacGPG2/bin
   )
 fi
 
