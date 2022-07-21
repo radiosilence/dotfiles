@@ -20,7 +20,7 @@ return {
         }
     },
     default_prog = {
-        "sh", "-c", "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin/:$HOME/.homebrew/bin\"; tmux || tmux a"
+        "sh", "-c", "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin/:$HOME/.homebrew/bin\"; tmux a || tmux"
     },
     -- default_prog = {"zsh"},
     send_composed_key_when_left_alt_is_pressed = false,
