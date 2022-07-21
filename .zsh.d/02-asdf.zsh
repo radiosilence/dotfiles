@@ -5,7 +5,7 @@ elif [ -d $BREW_PREFIX/opt/asdf ]; then
 fi
 # direnv
 if is_cmd direnv; then
-  source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+  [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
   export DIRENV_LOG_FORMAT=""
   PATH="~/.asdf/bin:$PATH"
 fi
