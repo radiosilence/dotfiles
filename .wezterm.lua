@@ -20,7 +20,8 @@ return {
         }
     },
     default_prog = {
-        "bash", "-c", "export BREW_PREFIX=$([ -d ~/.homebrew ] && echo ~/.homebrew || echo /opt/homebrew)  $BREW_PREFIX/bin/tmux a || $BREW_PREFIX/bin/tmux"
+        "sh", "-c",
+        "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin/:$HOME/.homebrew/bin\"; which tmux && (tmux a || tmux) || zsh"
     },
     -- default_prog = {"zsh"},
     send_composed_key_when_left_alt_is_pressed = false,
