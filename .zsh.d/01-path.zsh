@@ -14,7 +14,6 @@ if is_macos; then
   paths+=(
     # ~/Library/Python/2.7/bin
     /Applications/Postgres.app/Contents/Versions/latest/bin
-    /usr/local/MacGPG2/bin
   )
 fi
 
