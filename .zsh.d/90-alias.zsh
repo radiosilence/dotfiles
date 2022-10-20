@@ -15,6 +15,7 @@ fi
 if is_cmd lsd; then
   alias ls='lsd '
   alias ll='lsd -l '
+  alias tree='lsd --tree'
 fi
 
 if is_cmd rg; then
