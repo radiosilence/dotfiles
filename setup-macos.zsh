@@ -39,6 +39,8 @@ fi
 brew tap homebrew/cask-fonts
 brew install \
   asdf \
+  awscli \
+  azure-cli \
   broot \
   clang-format \
   fcp \
@@ -50,17 +52,22 @@ brew install \
   git \
   gnupg \
   jq \
+  kubernetes-cli \
   lsd \
   nmap \
   pinentry \
   pinentry-mac \
   rar \
   ripgrep \
+  shellcheck \
   starship \
   telnet \
+  terraform \
+  terraform-docs \
   tig \
   tmux \
-  shellcheck \
+  tmux \
+  yt-dlp \
   yt-dlp \
   zoxide
 
