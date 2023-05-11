@@ -1,0 +1,4 @@
+theme = "monokai_pro"
+
+[editor]
+auto-format = true
