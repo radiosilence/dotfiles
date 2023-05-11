@@ -29,7 +29,9 @@ ZSH_AUTOSUGGEST_USE_ASYNC=false
 # if is_cmd code-insiders; then
 #   export EDITOR="code-insiders --wait"
 # e
-if is_cmd code; then
+if is_cmd hx; then
+  export EDITOR="hx"
+elif is_cmd code; then
   export EDITOR="code --wait"
 else
   export EDITOR=vim
