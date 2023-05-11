@@ -8,6 +8,7 @@ fi
 
 export HOMEBREW_CASK_OPTS=--no-quarantine
 export PATH="$BREW_PREFIX/bin:$BREW_PREFIX/sbin:$PATH"
+export PATH="$BREW_PREFIX/opt/openssl@3/bin:$PATH"
 
 if is_cmd brew; then
   FPATH="$BREW_PREFIX/share/zsh/site-functions:${FPATH}"
