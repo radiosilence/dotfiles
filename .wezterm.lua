@@ -2,7 +2,7 @@ local wezterm = require 'wezterm';
 
 return {
   initial_rows = 64,
-  initial_cols = 240,
+  initial_cols = 160,
   font = wezterm.font("Hack Nerd Font JBM Ligatured CCG"),
   font_rules = {
     {
