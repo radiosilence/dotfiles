@@ -51,6 +51,8 @@ brew install \
   fzf \
   git \
   gnupg \
+  go \
+  gopls \
   jq \
   kubernetes-cli \
   lsd \
@@ -59,15 +61,18 @@ brew install \
   pinentry-mac \
   rar \
   ripgrep \
+  rust-analyzer \
   shellcheck \
   starship \
+  taplo \
   telnet \
   terraform \
+  terraform-ls \
   terraform-docs \
   tig \
   tmux \
   tmux \
-  yt-dlp \
+  yaml-language-server \
   yt-dlp \
   zoxide
 
