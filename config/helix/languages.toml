@@ -1,7 +1,15 @@
+[language-server.efm-lsp-prettier]
+command = "efm-langserver"
+
+[language-server.efm-lsp-prettier.config]
+documentFormatting = true
+languages = { typescript = [ { formatCommand ="prettier --stdin-filepath ${INPUT}", formatStdin = true } ] }
+
+[language-server.rust-analyzer]
+config = { checkOnSave = { command = "clippy" }}
+
 [[language]]
 name = "rust"
-[language.config]
-checkOnSave = { command = "clippy" }
 
 [[language]]
 name = "html"
@@ -19,11 +27,13 @@ formatter = { command = 'prettier', args = ["--parser", "css"] }
 name = "javascript"
 formatter = { command = 'prettier', args = ["--parser", "typescript"] }
 auto-format = true
+language-servers = [ { name = "efm-lsp-prettier", only-features = [ "format" ] }, "typescript-language-server" ] 
 
 [[language]]
 name = "typescript"
 formatter = { command = 'prettier', args = ["--parser", "typescript"] }
 auto-format = true
+language-servers = [ { name = "efm-lsp-prettier", only-features = [ "format" ] }, "typescript-language-server" ]
 
 [[language]]
 name = "tsx"
