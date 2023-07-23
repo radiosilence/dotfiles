@@ -26,67 +26,69 @@
 echo $TODOS
 
 is_cmd() {
-  command -v $1 &>/dev/null
+	command -v $1 &>/dev/null
 }
 
 if ! is_cmd brew; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 if [ ! -d ~/.zgenom ]; then
-  git clone https://github.com/jandamm/zgenom.git ~/.zgenom
+	git clone https://github.com/jandamm/zgenom.git ~/.zgenom
 fi
 brew tap homebrew/cask-fonts
 brew install \
-  asdf \
-  awscli \
-  azure-cli \
-  broot \
-  clang-format \
-  fcp \
-  fd \
-  ffmpeg \
-  font-iosevka \
-  font-iosevka-nerd-font \
-  fzf \
-  git \
-  gnupg \
-  go \
-  gopls \
-  jq \
-  kubernetes-cli \
-  lsd \
-  nmap \
-  pinentry \
-  pinentry-mac \
-  rar \
-  ripgrep \
-  rust-analyzer \
-  shellcheck \
-  starship \
-  taplo \
-  telnet \
-  terraform \
-  terraform-ls \
-  terraform-docs \
-  tig \
-  tmux \
-  tmux \
-  yaml-language-server \
-  yt-dlp \
-  zoxide
+	asdf \
+	awscli \
+	azure-cli \
+	broot \
+	clang-format \
+	efm-langserver \
+	fcp \
+	fd \
+	ffmpeg \
+	font-iosevka \
+	font-iosevka-nerd-font \
+	fzf \
+	gh \
+	git \
+	gnupg \
+	go \
+	gopls \
+	jq \
+	kubernetes-cli \
+	lsd \
+	nmap \
+	pinentry \
+	pinentry-mac \
+	rar \
+	ripgrep \
+	rust-analyzer \
+	shellcheck \
+	starship \
+	taplo \
+	telnet \
+	terraform \
+	terraform-ls \
+	terraform-docs \
+	tig \
+	tmux \
+	tmux \
+	yaml-language-server \
+	yt-dlp \
+	zoxide
 
 if ! is_cmd cargo; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 fi
 
 cargo install \
-  fcp
+	fcp
 
 sudo softwareupdate --install-rosetta
 
 brew tap AdoptOpenJDK/openjdk
 
 brew install --cask \
-  adoptopenjdk8 \
-  android-sdk
+	adoptopenjdk8 \
+	android-sdk
