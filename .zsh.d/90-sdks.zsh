@@ -25,3 +25,4 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 try_java 8
 try_java 14
 try_azul 11
+try_azul 17
