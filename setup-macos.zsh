@@ -55,26 +55,34 @@ brew install \
 	gnupg \
 	go \
 	gopls \
+	helix \
 	jq \
 	kubernetes-cli \
 	lsd \
+	lua-language-server \
+	make \
 	nmap \
 	pinentry \
 	pinentry-mac \
+	pulumi \
+	qemu \
 	rar \
 	ripgrep \
 	rust-analyzer \
 	shellcheck \
+	shellcheck \
+	shfmt \
+	starship \
 	starship \
 	taplo \
 	telnet \
 	terraform \
-	terraform-ls \
 	terraform-docs \
+	terraform-ls \
 	tig \
 	tmux \
-	tmux \
 	yaml-language-server \
+	yq \
 	yt-dlp \
 	zoxide
 
