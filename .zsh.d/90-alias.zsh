@@ -16,6 +16,10 @@ if is_cmd lsd; then
   alias ls='lsd '
   alias ll='lsd -l '
   alias tree='lsd --tree'
+elif is_cmd exa; then
+  alias ls='exa '
+  alias ll='exa -l '
+  alias tree='exa --tree'
 fi
 
 if is_cmd rg; then
