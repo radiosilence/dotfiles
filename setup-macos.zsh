@@ -53,8 +53,6 @@ brew install \
 	gh \
 	git \
 	gnupg \
-	go \
-	gopls \
 	helix \
 	jq \
 	kubernetes-cli \
@@ -70,9 +68,7 @@ brew install \
 	ripgrep \
 	rust-analyzer \
 	shellcheck \
-	shellcheck \
 	shfmt \
-	starship \
 	starship \
 	taplo \
 	telnet \
@@ -86,17 +82,28 @@ brew install \
 	yt-dlp \
 	zoxide
 
-if ! is_cmd cargo; then
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-fi
+ASDF_PLUGINS=(
+	java
+	golang
+	nodejs
+	python
+	rust
+	terraform
+	terraform-docs
+	terraform-ls
+)
 
+for plugin in $ASDF_PLUGINS; do
+	asdf plugin-add $plugin
+	asdf install $plugin latest
+	asdf global $plugin latest
+done
+
+rustup default stable
 cargo install \
 	fcp
 
 sudo softwareupdate --install-rosetta
 
-brew tap AdoptOpenJDK/openjdk
-
 brew install --cask \
-	adoptopenjdk8 \
 	android-sdk
