@@ -3,4 +3,4 @@ if [ -d "$WASMTIME_HOME" ]; then
   export PATH="$WASMTIME_HOME/bin:$PATH"
 fi
 
-export PATH="~/.cargo/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"

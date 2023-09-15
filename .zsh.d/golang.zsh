@@ -1,4 +1,4 @@
-if [ -d /usr/local/go ]; then
-  export GOPATH=~/go
-  export PATH="$GOPATH/bin:/usr/local/go/bin:$PATH"
+if is_cmd go; then
+  export GOPATH=$HOME/go
+  export PATH="$GOPATH/bin:$PATH"
 fi
