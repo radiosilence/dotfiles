@@ -65,6 +65,7 @@ brew install \
 	rar \
 	ripgrep \
 	rust-analyzer \
+	sheldon \
 	shellcheck \
 	shfmt \
 	starship \
@@ -86,9 +87,6 @@ ASDF_PLUGINS=(
 	nodejs
 	python
 	rust
-	terraform
-	terraform-docs
-	terraform-ls
 )
 
 for plugin in $ASDF_PLUGINS; do
