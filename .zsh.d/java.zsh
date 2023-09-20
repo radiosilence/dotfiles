@@ -3,7 +3,6 @@ try_java() {
   [[ -d $_JAVA_HOME ]] && export JAVA_HOME=$_JAVA_HOME
 }
 
-export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
