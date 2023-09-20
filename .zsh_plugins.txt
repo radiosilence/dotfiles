@@ -3,3 +3,4 @@ zsh-users/zsh-completions
 zsh-users/zsh-history-substring-search
 zdharma-continuum/fast-syntax-highlighting
 marlonrichert/zsh-autocomplete
+zsh-users/zsh-autosuggestions
