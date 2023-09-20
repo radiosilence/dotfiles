@@ -1,0 +1,23 @@
+# utility plugins
+romkatv/zsh-defer
+romkatv/zsh-bench kind:path
+
+# Zephyr
+mattmc3/zephyr path:plugins/color
+mattmc3/zephyr path:plugins/directory
+mattmc3/zephyr path:plugins/history
+mattmc3/zephyr path:plugins/homebrew
+mattmc3/zephyr path:plugins/macos conditional:is-macos
+
+
+zsh-users/zsh-history-substring-search
+zdharma-continuum/fast-syntax-highlighting
+zsh-users/zsh-autosuggestions
+
+
+mattmc3/zephyr path:plugins/completion
+zsh-users/zsh-completions
+olets/zsh-abbr kind:defer
+zsh-users/zsh-autosuggestions kind:defer
+zdharma-continuum/fast-syntax-highlighting kind:defer
+zsh-users/zsh-history-substring-search kind:defer

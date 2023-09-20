@@ -9,7 +9,7 @@ if [ -d "$ANTIDOTE_PATH" ]; then
 fi
 
 if is_cmd antidote; then
-  antidote load ${ZDOTDIR:-$HOME}/.zsh_plugins.txt
+  antidote load ${ZDOTDIR:-$HOME}/.zplugins
   # if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   # zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
   #   (
