@@ -38,6 +38,7 @@ brew install \
 	asdf \
 	awscli \
 	azure-cli \
+	bat \
 	broot \
 	clang-format \
 	efm-langserver \
