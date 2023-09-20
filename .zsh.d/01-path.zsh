@@ -6,16 +6,6 @@ paths=(
   ~/.config/yarn/global/node_modules/.bin
 )
 
-if is_macos; then
-  paths+=(
-    /Applications/Postgres.app/Contents/Versions/latest/bin
-  )
-fi
-
-if is_cmd cargo; then
-  paths+=(~/.cargo/bin)
-fi
-
 paths+=(
   /usr/local/bin
   /usr/local/sbin

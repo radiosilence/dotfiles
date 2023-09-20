@@ -7,7 +7,7 @@ mattmc3/zephyr path:plugins/color
 mattmc3/zephyr path:plugins/directory
 mattmc3/zephyr path:plugins/history
 mattmc3/zephyr path:plugins/homebrew
-mattmc3/zephyr path:plugins/macos conditional:is-macos
+mattmc3/zephyr path:plugins/macos conditional:is_macos
 
 
 zsh-users/zsh-history-substring-search

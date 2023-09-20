@@ -42,7 +42,3 @@ eval "$(starship init zsh)"
 # echo "TOTAL TIME $(time_from $global_start)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/jc/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
