@@ -12,6 +12,4 @@ export PATH="$BREW_PREFIX/opt/openssl@3/bin:$PATH"
 
 if is_cmd brew; then
   FPATH="$BREW_PREFIX/share/zsh/site-functions:${FPATH}"
-  autoload -Uz compinit
-  compinit -u
 fi

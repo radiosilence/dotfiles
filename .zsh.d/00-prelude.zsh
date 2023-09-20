@@ -21,10 +21,6 @@ setopt interactivecomments
 # autoloads
 autoload -U add-zsh-hook
 
-# config
-ZSH_AUTOSUGGEST_USE_ASYNC=false
-#
-
 # editor
 # if is_cmd code-insiders; then
 #   export EDITOR="code-insiders --wait"
