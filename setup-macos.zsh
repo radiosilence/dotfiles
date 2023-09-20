@@ -33,11 +33,9 @@ if ! is_cmd brew; then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-if [ ! -d ~/.zgenom ]; then
-	git clone https://github.com/jandamm/zgenom.git ~/.zgenom
-fi
 brew tap homebrew/cask-fonts
 brew install \
+	antidote \
 	asdf \
 	awscli \
 	azure-cli \
