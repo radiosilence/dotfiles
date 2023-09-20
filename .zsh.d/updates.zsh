@@ -4,10 +4,8 @@ updates() {
     (cd "$DOTFILES" && git pull)
   fi
 
-  if is_cmd zgenom; then
-    zgenom update
-    zgenom selfupdate
-    zgenom clean
+  if is_cmd sheldon; then
+    sheldon lock --update
   fi
 
   if is_cmd asdf; then
