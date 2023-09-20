@@ -21,8 +21,14 @@ github = 'zsh-users/zsh-autosuggestions'
 [plugins.zephyr]
 github = 'mattmc3/zephyr'
 use = [
-  "plugins/completion/*.zsh",
-  "plugins/color/*.zsh",
-  "plugins/directory/*.zsh",
-  "plugins/macos/*.zsh",
+  'plugins/color/*.zsh',
+  'plugins/directory/*.zsh',
+  'plugins/macos/*.zsh',
+  'plugins/completion/*.zsh',
 ]
+
+# [plugins.'marlonrichert/zsh-autocomplete']
+# github = 'marlonrichert/zsh-autocomplete'
+
+# [plugins.zsh-kubectl]
+# github = 'chrishrb/zsh-kubectl'
