@@ -9,14 +9,12 @@ mattmc3/zephyr path:plugins/history
 mattmc3/zephyr path:plugins/homebrew
 mattmc3/zephyr path:plugins/macos conditional:is_macos
 
-
-zsh-users/zsh-history-substring-search
-zdharma-continuum/fast-syntax-highlighting
-zsh-users/zsh-autosuggestions
-
-
+# Autocompelte
 mattmc3/zephyr path:plugins/completion
 zsh-users/zsh-completions
+marlonrichert/zsh-autocomplete
+
+# Other stuff
 olets/zsh-abbr kind:defer
 zsh-users/zsh-autosuggestions kind:defer
 zdharma-continuum/fast-syntax-highlighting kind:defer
