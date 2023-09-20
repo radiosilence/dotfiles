@@ -35,7 +35,6 @@ fi
 
 brew tap homebrew/cask-fonts
 brew install \
-	antidote \
 	asdf \
 	awscli \
 	azure-cli \
