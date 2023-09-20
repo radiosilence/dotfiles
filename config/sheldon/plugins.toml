@@ -11,12 +11,19 @@
 # See the documentation for more https://github.com/rossmacarthur/sheldon#readme
 
 [plugins]
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+[templates]
+defer = "{{ hooks | get: \"pre\" | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks | get: \"post\" | nl }}"
 
 [plugins.fast-syntax-highlighting]
 github = 'zdharma-continuum/fast-syntax-highlighting'
+apply = ["defer"]
 
 [plugins.autosuggestions]
 github = 'zsh-users/zsh-autosuggestions'
+apply = ["defer"]
 
 [plugins.zephyr]
 github = 'mattmc3/zephyr'

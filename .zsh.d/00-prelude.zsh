@@ -20,6 +20,8 @@ setopt interactivecomments
 
 # autoloads
 autoload -U add-zsh-hook
+# zstyle
+zstyle '*:compinit' arguments -D -i -u -C -w
 
 # editor
 # if is_cmd code-insiders; then
