@@ -21,6 +21,9 @@ link_confdir() {
 		echo "creating ~/.config"
 		mkdir ~/.config
 	fi
+	if [ -d ~/.config/$1 ]; then
+		echo "skipping ~/.config/$1 (exists) " && return
+	fi
 	echo "linking $PWD/$1 --> ~/.config/$1"
 	ln -s $PWD/$1 ~/.config/$1
 }
