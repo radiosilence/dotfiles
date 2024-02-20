@@ -23,6 +23,10 @@ autoload -U add-zsh-hook
 # zstyle
 zstyle '*:compinit' arguments -D -i -u -C -w
 
+# fix for sheldon
+
+zstyle ':zephyr:plugin:completion' manual 'yes'
+
 # editor
 # if is_cmd code-insiders; then
 #   export EDITOR="code-insiders --wait"
