@@ -44,8 +44,6 @@ brew install \
 	fcp \
 	fd \
 	ffmpeg \
-	font-iosevka \
-	font-iosevka-nerd-font \
 	fzf \
 	gh \
 	git \
@@ -79,6 +77,12 @@ brew install \
 
 brew tap hashicorp/tap && brew install hashicorp/tap/terraform
 
+brew install --cask \
+	zulu \
+	rar \
+	wezterm \
+	mpv
+
 ASDF_PLUGINS=(
 	java
 	golang
@@ -98,6 +102,3 @@ cargo install \
 	fcp
 
 sudo softwareupdate --install-rosetta
-
-brew install --cask \
-	android-sdk
