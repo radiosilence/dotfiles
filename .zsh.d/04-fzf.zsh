@@ -1,6 +1,5 @@
 ## handy stuff
-
-[ -s ~/.fzf.zsh ] && . ~/.fzf.zsh
+eval "$(fzf --zsh)"
 
 # bindkey "ç" fzf-cd-widget
 
