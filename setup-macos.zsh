@@ -58,9 +58,13 @@ brew install \
 	pinentry \
 	pinentry-mac \
 	pulumi \
+	pipx \
 	qemu \
 	rar \
 	ripgrep \
+	ruby \
+	cocoapods \
+	fastlane \
 	rust-analyzer \
 	sheldon \
 	shellcheck \
@@ -76,6 +80,8 @@ brew install \
 	zoxide
 
 brew tap hashicorp/tap && brew install hashicorp/tap/terraform
+brew tap facebook/fb && brew install idb-companion
+pipx install fb-idb
 
 brew install --cask \
 	zulu \
