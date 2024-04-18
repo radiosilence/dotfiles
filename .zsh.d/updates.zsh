@@ -13,10 +13,6 @@ updates() {
     asdf plugin update --all
   fi
 
-  if is_cmd pip3; then
-    pip3 install --upgrade pip
-  fi
-
   if is_macos; then
     echo "updating brew"
     brew update
