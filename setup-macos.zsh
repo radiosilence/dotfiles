@@ -32,7 +32,6 @@ is_cmd() {
 if ! is_cmd brew; then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
-
 brew tap homebrew/cask-fonts
 brew install \
 	asdf \
@@ -71,15 +70,14 @@ brew install \
 	starship \
 	taplo \
 	telnet \
-	terraform \
-	terraform-docs \
-	terraform-ls \
 	tig \
 	tmux \
 	yaml-language-server \
 	yq \
 	yt-dlp \
 	zoxide
+
+brew tap hashicorp/tap && brew install hashicorp/tap/terraform
 
 ASDF_PLUGINS=(
 	java
