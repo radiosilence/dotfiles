@@ -82,6 +82,7 @@ brew install \
 brew tap hashicorp/tap && brew install hashicorp/tap/terraform
 brew tap facebook/fb && brew install idb-companion
 pipx install fb-idb
+brew install oven-sh/bun/bun
 
 brew install --cask \
 	zulu \
