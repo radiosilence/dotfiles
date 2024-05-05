@@ -65,6 +65,7 @@ brew install \
 	ruby \
 	cocoapods \
 	fastlane \
+	rclone \
 	rust-analyzer \
 	sheldon \
 	shellcheck \

@@ -1,6 +1,10 @@
-# bun completions
-[ -s ~/.bun/_bun ] && source ~/.bun/_bun
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+alias b='bun '
+alias bi='bun install '
+alias bt='bun test '
+alias btu='bun test -u '
+alias br='bun remove '
+alias ba='bun add '
+alias baW='bun add -W '
+alias baD='bun add -D '
+alias baDW='bun add -DW '
+alias bs='bun && bun start '
