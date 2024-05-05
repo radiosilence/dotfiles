@@ -34,8 +34,8 @@ use = [
   'plugins/completion/*.zsh',
 ]
 
-# [plugins.'marlonrichert/zsh-autocomplete']
-# github = 'marlonrichert/zsh-autocomplete'
+[plugins.'marlonrichert/zsh-autocomplete']
+github = 'marlonrichert/zsh-autocomplete'
 
 # [plugins.zsh-kubectl]
 # github = 'chrishrb/zsh-kubectl'
