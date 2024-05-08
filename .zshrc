@@ -20,13 +20,13 @@ else
   echo "\$DOTFILES not set, please run install again"
 fi
 
+autoload -U +X bashcompinit && bashcompinit
+
 fpath=($DOTFILES, $fpath)
 
 for config in ~/.zsh.d/*.zsh; do
   . $config
-  # word="shims"
-  # string=$PATH
-  # test "${string#*$word}" != "$string" && echo "post $config: $word found in path"
+  echo "loading $config"
 done
 
 if [ -d ~/.zsh.d.local ]; then
