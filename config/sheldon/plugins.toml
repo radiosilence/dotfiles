@@ -35,9 +35,6 @@ use = [
   'plugins/completion/*.zsh',
 ]
 
-# [plugins.'marlonrichert/zsh-autocomplete']
-# github = 'marlonrichert/zsh-autocomplete'
-
 [plugins.oh-my-zsh]
 github = "ohmyzsh/ohmyzsh"
 use = ["plugins/asdf/asdf.plugin.zsh"]
