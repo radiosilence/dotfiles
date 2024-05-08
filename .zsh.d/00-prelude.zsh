@@ -25,7 +25,7 @@ zstyle '*:compinit' arguments -D -i -u -C -w
 
 # fix for sheldon
 
-zstyle ':zephyr:plugin:completion' manual 'yes'
+# zstyle ':zephyr:plugin:completion' manual 'yes'
 
 # editor
 # if is_cmd code-insiders; then
