@@ -25,6 +25,9 @@ apply = ["defer"]
 github = 'zsh-users/zsh-autosuggestions'
 apply = ["defer"]
 
+[plugins.completions]
+github = 'zsh-users/zsh-completions'
+
 [plugins.zephyr]
 github = 'mattmc3/zephyr'
 use = [
@@ -34,9 +37,8 @@ use = [
   'plugins/completion/*.zsh',
 ]
 
-[plugins.'marlonrichert/zsh-autocomplete']
-github = 'marlonrichert/zsh-autocomplete'
-
+# [plugins.'marlonrichert/zsh-autocomplete']
+# github = 'marlonrichert/zsh-autocomplete'
 
 [plugins.oh-my-zsh]
 github = "ohmyzsh/ohmyzsh"
