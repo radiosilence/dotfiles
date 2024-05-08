@@ -40,7 +40,9 @@ brew install \
 	bat \
 	broot \
 	clang-format \
+	cocoapods \
 	efm-langserver \
+	fastlane \
 	fcp \
 	fd \
 	ffmpeg \
@@ -57,15 +59,14 @@ brew install \
 	nmap \
 	pinentry \
 	pinentry-mac \
-	pulumi \
 	pipx \
+	pulumi \
 	qemu \
 	rar \
-	ripgrep \
-	ruby \
-	cocoapods \
-	fastlane \
 	rclone \
+	ripgrep \
+	rsync \
+	ruby \
 	rust-analyzer \
 	sheldon \
 	shellcheck \
@@ -81,8 +82,6 @@ brew install \
 	zoxide
 
 brew tap hashicorp/tap && brew install hashicorp/tap/terraform
-brew tap facebook/fb && brew install idb-companion
-pipx install fb-idb
 brew install oven-sh/bun/bun
 
 brew install --cask \
