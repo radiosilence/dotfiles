@@ -96,6 +96,7 @@ ASDF_PLUGINS=(
 	nodejs
 	python
 	rust
+	ruby
 )
 
 for plugin in $ASDF_PLUGINS; do
