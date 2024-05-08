@@ -26,7 +26,6 @@ fpath=($DOTFILES, $fpath)
 
 for config in ~/.zsh.d/*.zsh; do
   . $config
-  echo "loading $config"
 done
 
 if [ -d ~/.zsh.d.local ]; then
