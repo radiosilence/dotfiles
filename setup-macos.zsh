@@ -37,7 +37,6 @@ brew install \
 	bat \
 	broot \
 	clang-format \
-	cocoapods \
 	efm-langserver \
 	fastlane \
 	fcp \
@@ -64,8 +63,6 @@ brew install \
 	rclone \
 	ripgrep \
 	rsync \
-	ruby \
-	rust-analyzer \
 	sheldon \
 	shellcheck \
 	shfmt \
