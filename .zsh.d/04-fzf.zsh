@@ -58,27 +58,6 @@ fcoc() {
 
 ## ASDF
 
-# Install one or more versions of specified language
-# e.g. `vmi rust` # => fzf multimode, tab to mark, enter to install
-# if no plugin is supplied (e.g. `vmi<CR>`), fzf will list them for you
-# Mnemonic [V]ersion [M]anager [I]nstall
-vmi() {
-  local lang=${1}
-
-  if [[ ! $lang ]]; then
-    lang=$(asdf plugin-list | fzf)
-  fi
-
-  if [[ $lang ]]; then
-    local versions=$(asdf list-all $lang | fzf -m)
-    if [[ $versions ]]; then
-      for version in $(echo $versions); do
-        mise install $lang@$version
-      done
-    fi
-  fi
-}
-
 ## BREW
 
 # Install (one or multiple) selected application(s)
