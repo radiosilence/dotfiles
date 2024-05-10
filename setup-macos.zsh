@@ -34,7 +34,6 @@ if ! is_cmd brew; then
 fi
 brew tap homebrew/cask-fonts
 brew install \
-	asdf \
 	awscli \
 	azure-cli \
 	bat \
