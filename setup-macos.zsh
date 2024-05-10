@@ -34,8 +34,6 @@ if ! is_cmd brew; then
 fi
 brew tap homebrew/cask-fonts
 brew install \
-	awscli \
-	azure-cli \
 	bat \
 	broot \
 	clang-format \
@@ -89,19 +87,6 @@ brew install --cask \
 	rar \
 	wezterm \
 	mpv
-
-ASDF_PLUGINS=(
-	java
-	golang
-	nodejs
-	python
-	rust
-	ruby
-)
-
-for plugin in $ASDF_PLUGINS; do
-	mise use --global $plugin@latest
-done
 
 rustup default stable
 cargo install \
