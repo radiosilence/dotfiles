@@ -14,3 +14,7 @@ rust = "latest"
 bun = "latest"
 java = "latest"
 ruby = "latest"
+
+[settings]
+experimental = true
+asdf_compat = true
