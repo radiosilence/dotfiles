@@ -76,9 +76,6 @@ brew install \
 	yt-dlp \
 	zoxide
 
-brew tap hashicorp/tap && brew install hashicorp/tap/terraform
-brew install oven-sh/bun/bun
-
 brew install --cask \
 	zulu \
 	rar \
@@ -86,6 +83,9 @@ brew install --cask \
 	mpv
 
 rustup default stable
+
+mise install
+
 cargo install \
 	fcp
 
