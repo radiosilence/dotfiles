@@ -73,7 +73,7 @@ vmi() {
     local versions=$(asdf list-all $lang | fzf -m)
     if [[ $versions ]]; then
       for version in $(echo $versions); do
-        asdf install $lang $version
+        mise install $lang@$version
       done
     fi
   fi

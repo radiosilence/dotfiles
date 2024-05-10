@@ -8,11 +8,6 @@ updates() {
     sheldon lock --update
   fi
 
-  if is_cmd asdf; then
-    echo "updating asdf..."
-    asdf plugin update --all
-  fi
-
   if is_macos; then
     echo "updating brew"
     brew update
