@@ -56,6 +56,7 @@ brew install \
 	lsd \
 	lua-language-server \
 	make \
+	mise \
 	nmap \
 	pinentry \
 	pinentry-mac \
@@ -100,9 +101,7 @@ ASDF_PLUGINS=(
 )
 
 for plugin in $ASDF_PLUGINS; do
-	asdf plugin-add $plugin
-	asdf install $plugin latest
-	asdf global $plugin latest
+	mise use --global $plugin@latest
 done
 
 rustup default stable
