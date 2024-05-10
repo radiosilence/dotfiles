@@ -34,7 +34,3 @@ use = [
   'plugins/macos/*.zsh',
   'plugins/completion/*.zsh',
 ]
-
-[plugins.oh-my-zsh]
-github = "ohmyzsh/ohmyzsh"
-use = ["plugins/asdf/asdf.plugin.zsh"]
