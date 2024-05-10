@@ -7,7 +7,7 @@
 ## Includes
 
 - ViM
-- minimal asdf file that makes it work with nvm etc...
+- minimal mise file that makes it work with nvm etc...
 - various useful zsh crap for working with stuff on macos
 - tmux
 - VS Code
@@ -16,10 +16,10 @@
 
 ## Install dependencies (macOS)
 
-- [homebrew](https://brew.sh/) a package manager for macOS (`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`)
-- [zgenom](https://github.com/jandamm/zgenom) a package manager for zsh (`git clone https://github.com/jandamm/zgenom.git "${HOME}/.zgenom"`)
-- [asdf](https://asdf-vm.com/#/) a thing to replace nvm, rvm, etc. (`git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.1`)
-- [tpm](https://github.com/tmux-plugins/tpm) a package manager for tmux (`git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm`)
+- [homebrew](https://brew.sh/) a package manager for macOS
+- [sheldon](https://github.com/rossmacarthur/sheldon) a package manager for zsh (`brew install sheldon`)
+- [mise](https://mise.jdx.dev) a thing to replace nvm, rvm, etc. (`brew install mise`)
+- [tpm](https://github.com/tmux-plugins/tpm) a package manager for tmux (`brew install tpm`)
 - [fzf](https://github.com/junegunn/fzf) fuzzy matcher for anything (`brew install fzf`)
 
 ## Install
