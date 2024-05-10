@@ -1,4 +1,10 @@
 [tools]
+awscli = "latest"
+terraform = "latest"
+terraform-ls = "latest"
+azure-cli = "latest"
+firebase = "latest"
+yarn = "latest"
 node = "latest"
 go = "latest"
 python = "latest"
