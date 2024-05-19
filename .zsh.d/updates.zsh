@@ -4,6 +4,11 @@ updates() {
     (cd "$DOTFILES" && git pull)
   fi
 
+  if is_cmd mise; then
+    echo "updating mise"
+    mise up
+  fi
+
   if is_cmd sheldon; then
     sheldon lock --update
   fi
