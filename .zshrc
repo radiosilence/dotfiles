@@ -36,3 +36,5 @@ fi
 
 export STARSHIP_CONFIG=~/.starship.toml
 eval "$(starship init zsh)"
+
+source /Users/jc/.config/broot/launcher/bash/br
