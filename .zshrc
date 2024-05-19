@@ -35,6 +35,5 @@ if [ -d ~/.zsh.d.local ]; then
 fi
 
 export STARSHIP_CONFIG=~/.starship.toml
-eval "$(starship init zsh)"
 
-source /Users/jc/.config/broot/launcher/bash/br
+eval "$(starship init zsh)"

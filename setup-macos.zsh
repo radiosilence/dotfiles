@@ -41,11 +41,11 @@ if ! is_cmd brew; then
 fi
 
 brew install \
+	aria2 \
 	bat \
 	broot \
 	clang-format \
 	efm-langserver \
-	fastlane \
 	fcp \
 	ffmpeg \
 	fzf \
@@ -61,6 +61,7 @@ brew install \
 	qemu \
 	rsync \
 	sheldon \
+	starship \
 	taplo \
 	telnet \
 	tig \
@@ -72,7 +73,7 @@ mise install -y
 brew install --cask \
 	rar \
 	wezterm \
-	mpv
+	stolendata-mpv
 
 install_font https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip
 
