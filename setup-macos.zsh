@@ -51,14 +51,18 @@ brew install \
 	fzf \
 	gh \
 	git \
+	gmp \
 	gnupg \
 	helix \
+	libyaml \
 	lsd \
 	make \
 	mise \
 	nmap \
+	openssl@3 \
 	pulumi \
 	qemu \
+	readline \
 	rsync \
 	sheldon \
 	starship \
