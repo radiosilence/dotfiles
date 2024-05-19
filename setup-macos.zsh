@@ -92,11 +92,12 @@ cargo install \
 sudo softwareupdate --install-rosetta
 
 install_font() {
-	mkdir -p /tmp/font
-	aria2c $1 -d /tmp/font
-	unzip /tmp/font/*.zip -d /tmp/font
-	cp -v /tmp/font/*.{ttf,otf} ~/Library/Fonts
-	rm -rf /tmp/font
+	tmpdir=$(mktemp -d)
+	mkdir -p $tmpdir
+	aria2c $1 -d $tmpdir
+	unzip $tmpdir/*.zip -d $tmpdir
+	cp -v $tmpdir/*.{ttf,otf} ~/Library/Fonts
+	rm -rf $tmpdir
 }
 
 install_font https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip
