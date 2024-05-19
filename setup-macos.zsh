@@ -67,6 +67,8 @@ brew install \
 	tmux \
 	zoxide
 
+mise install -y
+
 brew install --cask \
 	rar \
 	wezterm \
@@ -75,7 +77,5 @@ brew install --cask \
 install_font https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip
 
 rustup default stable
-
-mise install -y
 
 sudo softwareupdate --install-rosetta
