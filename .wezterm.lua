@@ -1,22 +1,22 @@
 local wezterm = require 'wezterm';
-
+local font = 'Hack JBM Ligatured CCG';
 return {
   initial_rows = 64,
   initial_cols = 160,
-  font = wezterm.font("Hack Nerd Font JBM Ligatured CCG"),
+  font = wezterm.font(font),
   font_rules = {
     {
       intensity = "Bold",
-      font = wezterm.font("Hack Nerd Font JBM Ligatured CCG", { bold = true })
+      font = wezterm.font(font, { bold = true })
     }, {
     italic = true,
     intensity = "Bold",
-    font = wezterm.font("Hack Nerd Font JBM Ligatured CCG",
+    font = wezterm.font(font,
       { bold = true, italic = true })
   },
     {
       italic = true,
-      font = wezterm.font("Hack Nerd Font JBM Ligatured CCG", { italic = true })
+      font = wezterm.font(font, { italic = true })
     }
   },
   default_prog = {

@@ -95,8 +95,7 @@ install_font() {
 	mkdir -p /tmp/font
 	aria2c $1 -d /tmp/font
 	unzip /tmp/font/*.zip -d /tmp/font
-	cp /tmp/font/*.ttf ~/Library/Fonts
-	cp /tmp/font/*.otf ~/Library/Fonts
+	cp -v /tmp/font/*.{ttf,otf} ~/Library/Fonts
 	rm -rf /tmp/font
 }
 
