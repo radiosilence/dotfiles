@@ -23,8 +23,6 @@
 # * Paw
 # * Figma
 
-echo $TODOS
-
 is_cmd() {
 	command -v $1 &>/dev/null
 }
@@ -56,27 +54,19 @@ brew install \
 	git \
 	gnupg \
 	helix \
-	jq \
 	lsd \
-	lua-language-server \
 	make \
 	mise \
 	nmap \
 	pulumi \
 	qemu \
-	rclone \
 	ripgrep \
 	rsync \
 	sheldon \
-	shellcheck \
-	shfmt \
-	starship \
 	taplo \
 	telnet \
 	tig \
 	tmux \
-	yq \
-	yt-dlp \
 	zoxide
 
 brew install --cask \
@@ -88,6 +78,6 @@ install_font https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003
 
 rustup default stable
 
-mise install
+mise install -y
 
 sudo softwareupdate --install-rosetta
