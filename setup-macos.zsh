@@ -47,7 +47,6 @@ brew install \
 	efm-langserver \
 	fastlane \
 	fcp \
-	fd \
 	ffmpeg \
 	fzf \
 	gh \
@@ -60,7 +59,6 @@ brew install \
 	nmap \
 	pulumi \
 	qemu \
-	ripgrep \
 	rsync \
 	sheldon \
 	taplo \
