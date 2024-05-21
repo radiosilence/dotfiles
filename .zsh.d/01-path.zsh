@@ -6,10 +6,5 @@ paths=(
   ~/.config/yarn/global/node_modules/.bin
 )
 
-paths+=(
-  /usr/local/bin
-  /usr/local/sbin
-)
-
 # export path
 export PATH="$(join_by : $paths):$PATH"
