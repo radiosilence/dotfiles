@@ -13,6 +13,11 @@ updates() {
     sheldon lock --update
   fi
 
+  if is_cmd yt-dlp; then
+    echo "updating yt-dlp"
+    yt-dlp --update-to master
+  fi
+
   if is_macos; then
     echo "updating brew"
     brew update
