@@ -40,44 +40,8 @@ if ! is_cmd brew; then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-brew install \
-	aria2 \
-	bat \
-	broot \
-	clang-format \
-	efm-langserver \
-	fcp \
-	ffmpeg \
-	fzf \
-	gh \
-	git \
-	gmp \
-	gnupg \
-	helix \
-	libyaml \
-	lsd \
-	make \
-	mise \
-	nmap \
-	openssl@3 \
-	pulumi \
-	qemu \
-	readline \
-	rsync \
-	sheldon \
-	starship \
-	taplo \
-	telnet \
-	tig \
-	tmux \
-	zoxide
-
+brew bundle
 mise install -y
-
-brew install --cask \
-	rar \
-	wezterm \
-	stolendata-mpv
 
 install_font https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip
 
