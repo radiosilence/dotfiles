@@ -1,3 +1,4 @@
+#!zsh
 link_dotfile() {
 	[ -h ~/$1 ] && echo "skipping $1 (link) " && return
 	[ -f ~/$1 ] && echo "skipping $1 (file) " && return
@@ -45,4 +46,13 @@ install_dotfiles() {
 				done
 		)
 	)
+
+	install_brewfile
+}
+
+install_brewfile() {
+	if is_macos; then
+		echo "linking Brewfile $DOTFILES/Brewfile -> ~/Brewfile"
+		ln -s $DOTFILES/Brewfile ~/Brewfile
+	fi
 }

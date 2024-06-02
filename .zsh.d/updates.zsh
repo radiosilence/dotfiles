@@ -15,7 +15,7 @@ updates() {
 
   if is_cmd yt-dlp; then
     echo "updating yt-dlp"
-    yt-dlp --update-to master
+    yt-dlp --update-to nightly
   fi
 
   if is_macos; then
