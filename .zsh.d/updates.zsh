@@ -20,9 +20,7 @@ updates() {
 
   if is_macos; then
     echo "updating brew"
-    brew update
-    brew upgrade
-    brew upgrade --no-quarantine --cask
+    brew bundle
     brew cleanup
     brew doctor
   fi
