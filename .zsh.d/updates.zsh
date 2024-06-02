@@ -22,7 +22,7 @@ updates() {
     echo "updating brew"
     brew bundle
     brew upgrade
-    brew cu
+    brew cu -a
     brew cleanup
     brew doctor
   fi
