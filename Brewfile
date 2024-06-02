@@ -59,15 +59,19 @@ cask "figma"
 cask "firefox"
 cask "fork"
 cask "google-chrome"
+cask "mullvadvpn"
 cask "postman"
 cask "rar"
 cask "slack"
 cask "stolendata-mpv"
-cask "telegram"
 cask "visual-studio-code"
 cask "wezterm"
-cask "whatsapp"
 cask "zoom"
+mas "WhatsApp Messenger", id: 310633997
+mas "Messenger", id: 1480068668
+mas "Telegram", id: 747648890
+mas "Slack for Desktop", id: 803453959
+mas "Xcode", id: 497799835
 vscode "ahmadalli.vscode-nginx-conf"
 vscode "albert.tabout"
 vscode "amazonwebservices.aws-toolkit-vscode"
