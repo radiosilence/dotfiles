@@ -2,8 +2,8 @@ if [ -d ~/.homebrew ]; then
   export BREW_PREFIX=~/.homebrew
 elif [ -d /opt/homebrew ]; then
   export BREW_PREFIX=/opt/homebrew
-elif [ -d /usr/local/homebrew ]; then
-  export BREW_PREFIX=/usr/local/homebrew
+else
+  export BREW_PREFIX=/usr/local
 fi
 
 export HOMEBREW_CASK_OPTS=--no-quarantine
