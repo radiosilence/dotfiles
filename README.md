@@ -16,6 +16,12 @@
 
 ## Install dependencies (macOS)
 
+Easy:
+
+```
+./.dotfile/setup-macos.zsh
+```
+
 - [homebrew](https://brew.sh/) a package manager for macOS
 - [sheldon](https://github.com/rossmacarthur/sheldon) a package manager for zsh (`brew install sheldon`)
 - [mise](https://mise.jdx.dev) a thing to replace nvm, rvm, etc. (`brew install mise`)
