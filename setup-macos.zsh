@@ -47,4 +47,4 @@ install_font https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003
 
 rustup default stable
 
-sudo softwareupdate --install-rosetta
+# sudo softwareupdate --install-rosetta
