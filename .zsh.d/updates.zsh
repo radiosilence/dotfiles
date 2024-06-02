@@ -21,6 +21,7 @@ updates() {
   if is_macos; then
     echo "updating brew"
     brew bundle
+    brew upgrade
     brew cleanup
     brew doctor
   fi
