@@ -34,3 +34,6 @@ use = [
   'plugins/macos/*.zsh',
   'plugins/completion/*.zsh',
 ]
+
+[plugins.youshoulduse]
+github = 'MichaelAquilina/zsh-you-should-use'
