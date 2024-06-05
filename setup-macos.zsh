@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # list of programs to install:
 # * Code
 # * Firefox
