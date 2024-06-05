@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+if [ -z "$1" ]; then
+  echo "Usage: kill_port <port>"
+  return 1
+fi
+
+local PORT=$1
+local PID=$(lsof -ti :$PORT)
+
+if [ -z "$PID" ]; then
+  echo "No process is listening on port $PORT"
+  return 1
+fi
+
+kill -9 $PID
+echo "Killed process $PID listening on port $PORT"
