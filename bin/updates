@@ -1,24 +1,28 @@
 #!/usr/bin/env zsh
-  if [ -d "$DOTFILES" ]; then
-    echo "updating dotfiles $DOTFILES"
-    (cd "$DOTFILES" && git pull)
-  fi
+. ~/.dotfiles-dir
+. $DOTFILES/common.zsh
 
-  if is_cmd mise; then
-    echo "updating mise"
-    mise up
-  fi
+if [ -d "$DOTFILES" ]; then
+  echo "updating dotfiles $DOTFILES"
+  (cd "$DOTFILES" && git pull)
+fi
 
-  if is_cmd sheldon; then
-    sheldon lock --update
-  fi
+if is_cmd mise; then
+  echo "updating mise"
+  mise up
+  rm -rf ~/.local/share/mise/shims && mise reshim
+fi
 
-  if is_cmd yt-dlp; then
-    echo "updating yt-dlp"
-    yt-dlp --update-to nightly
-  fi
+if is_cmd sheldon; then
+  sheldon lock --update
+fi
 
-  if is_macos; then
-    echo "updating brew"
-    brew bundle
-  fi
+if is_cmd yt-dlp; then
+  echo "updating yt-dlp"
+  yt-dlp --update-to nightly
+fi
+
+if is_macos; then
+  echo "updating brew"
+  brew bundle
+fi
