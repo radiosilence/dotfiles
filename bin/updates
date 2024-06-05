@@ -1,4 +1,4 @@
-#!zsh
+#!/usr/bin/env zsh
   if [ -d "$DOTFILES" ]; then
     echo "updating dotfiles $DOTFILES"
     (cd "$DOTFILES" && git pull)
