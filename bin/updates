@@ -26,6 +26,6 @@ if is_macos; then
   echo "updating brew"
   brew bundle
   brew cu -af
-  brew clean
+  brew cleanup
   brew doctor
 fi
