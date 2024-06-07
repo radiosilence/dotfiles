@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-set -e
 cd $(dirname "$0") || exit
 DOTFILES=$(pwd)
 git pull
@@ -52,7 +51,7 @@ install_dotfiles() {
 }
 
 install_brewfile() {
-  if is_macos; then
+  if is_macos && [ ! -f ~/Brewfile ]; then
     echo "linking Brewfile $DOTFILES/Brewfile -> ~/Brewfile"
     ln -s $DOTFILES/Brewfile ~/Brewfile
   fi
