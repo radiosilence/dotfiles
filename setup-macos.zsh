@@ -11,6 +11,8 @@ echo "basename: [$(basename "$0")]"
 echo "dirname : [$(dirname "$0")]"
 echo "pwd     : [$(pwd)]"
 
+export PATH="$(dirname "$0")/bin:$PATH"
+echo $PATH
 . $(dirname $0)/common.zsh
 
 if ! is_cmd brew; then
