@@ -1,5 +1,5 @@
 . ~/.dotfiles-dir
-. $DOTFILES/common.zsh
+. $(dirname 0)/../common.zsh
 
 # opts
 setopt no_share_history
