@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
-
+set -e
 cd $(dirname "$0") || exit
 DOTFILES=$(pwd)
 git pull
 echo "export DOTFILES=$DOTFILES" >~/.dotfiles-dir
-. ./.zsh.d/00-prelude.zsh
+. ./common.zsh
 
 link_dotfile() {
   [ -h ~/$1 ] && echo "skipping $1 (link) " && return
