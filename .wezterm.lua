@@ -21,9 +21,9 @@ return {
   },
   default_prog = {
     "sh", "-c",
-    "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin/:$HOME/.homebrew/bin\"; which tmux && (tmux a || tmux) || zsh"
+    "which tmux && (tmux a || tmux) || zsh"
   },
-  -- default_prog = {"zsh"},
+  -- default_prog = { "zsh" },
   send_composed_key_when_left_alt_is_pressed = false,
   send_composed_key_when_right_alt_is_pressed = true,
   keys = {
