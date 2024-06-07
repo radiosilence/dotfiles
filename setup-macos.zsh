@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-set -e
 
 echo "basename: [$(basename "$0")]"
 echo "dirname : [$(dirname "$0")]"
