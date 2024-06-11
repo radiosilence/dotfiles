@@ -36,7 +36,6 @@ else
   ip_exists=$(echo $ip_ranges | yq '.[] | select(. == "'$ip'")')
   if [ "$ip_exists" = "" ]; then
     ip_ranges=$(echo $ip_ranges | yq '. += "'${ip}'"')
-    ip_ranges_str=$(echo $ip_ranges | yq 'join(",")')
     update_rule $id $(echo $ip_ranges | yq 'join(",")')
   else
     echo "skipping update of rule with priority $id ($DESCRIPTION) with additional ip $ip: already exists"
