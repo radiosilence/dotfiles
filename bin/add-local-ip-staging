@@ -31,7 +31,7 @@ create_rule() {
     --action=allow
 }
 
-ip=$(curl https://jsonip.com -s | jq -r .ip)
+ip=$(curl https://jsonip.com -s | yq -r .ip)
 response=$(gcloud compute security-policies describe $POLICY_NAME)
 rules=$(echo $response | yq '.rules')
 existing_rule=$(echo $rules | yq 'filter(.description == "'$DESCRIPTION'") | .[0]')
