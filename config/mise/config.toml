@@ -20,6 +20,7 @@ yt-dlp = "latest"
 usage = "latest"
 ruby = "3.3.1"
 firebase = "13.10.2"
+gcloud = "479.0.0"
 
 [settings]
 experimental = true
