@@ -6,6 +6,7 @@ DESCRIPTION="$1's IP allowed to access."
 POLICY_NAME=allowed-ip-staging
 
 update_rule() {
+  echo "updating rule with priority $1 ($DESCRIPTION) with ip ranges $2"
   gcloud compute security-policies rules update $1 \
     --security-policy $POLICY_NAME \
     --src-ip-ranges $2 \
@@ -14,6 +15,7 @@ update_rule() {
 }
 
 create_rule() {
+  echo "creating rule with priority $1 ($DESCRIPTION) with ip ranges $2"
   gcloud compute security-policies rules create $1 \
     --security-policy $POLICY_NAME \
     --src-ip-ranges $2 \
@@ -23,32 +25,21 @@ create_rule() {
 
 ip=$(curl https://jsonip.com -s | jq -r .ip)
 rules=$(gcloud compute security-policies describe $POLICY_NAME | yq '.rules')
-
 existing_rule=$(echo $rules | yq '.[] | select(.description == "'$DESCRIPTION'")')
-
 id=$(echo $existing_rule | yq .priority)
 
 if [ "$id" = "null" ]; then
   id=$(echo $rules | yq '.[] | select(.priority < 10000) | .priority' | sort -n | tail -n 1 | awk '{print $1 + 1}')
-  echo "creating $id"
   create_rule $id $ip
 else
-  echo "updating $id"
-  echo $existing_rule
   ip_ranges=$(echo $existing_rule | yq .match.config.srcIpRanges)
-  echo "ip_ranges" $ip_ranges
-
   ip_exists=$(echo $ip_ranges | yq '.[] | select(. == "'$ip'")')
-  echo ip_exists "'$ip_exists'"
   if [ "$ip_exists" = "" ]; then
-    echo "adding $ip"
     ip_ranges=$(echo $ip_ranges | yq '. += "'${ip}'"')
-    echo "ip_ranges=" $ip_ranges
     ip_ranges_str=$(echo $ip_ranges | yq 'join(",")')
-    echo "commasep" $ip_ranges_str
     update_rule $id $(echo $ip_ranges | yq 'join(",")')
   else
-    echo "IP already exists in rule, exiting"
+    echo "skipping update of rule with priority $id ($DESCRIPTION) with additional ip $ip: already exists"
     exit 0
   fi
 fi
