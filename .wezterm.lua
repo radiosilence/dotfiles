@@ -21,7 +21,7 @@ return {
   },
   default_prog = {
     "sh", "-c",
-    "which tmux && (tmux a || tmux) || zsh"
+    "export PATH=/opt/homebrew/bin:$PATH; (tmux a || tmux) || zsh"
   },
   -- default_prog = { "zsh" },
   send_composed_key_when_left_alt_is_pressed = false,
@@ -103,5 +103,5 @@ return {
   },
   hide_tab_bar_if_only_one_tab = true,
   window_padding = { left = 2, right = 2, top = 2, bottom = 2 },
-  window_close_confirmation = "NeverPrompt"
+  window_close_confirmation = "NeverPrompt",
 }
