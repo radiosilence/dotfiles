@@ -1,5 +1,6 @@
 local wezterm = require 'wezterm';
 local font = 'Hack JBM Ligatured CCG';
+local path = os.getenv('PATH')
 return {
   initial_rows = 64,
   initial_cols = 160,
@@ -21,7 +22,7 @@ return {
   },
   default_prog = {
     "sh", "-c",
-    "export PATH=/opt/homebrew/bin:$PATH; (tmux a || tmux) || zsh"
+    "(tmux a || tmux) || zsh"
   },
   -- default_prog = { "zsh" },
   send_composed_key_when_left_alt_is_pressed = false,
@@ -104,4 +105,7 @@ return {
   hide_tab_bar_if_only_one_tab = true,
   window_padding = { left = 2, right = 2, top = 2, bottom = 2 },
   window_close_confirmation = "NeverPrompt",
+  set_environment_variables = {
+    PATH = path .. ":/opt/homebrew/bin"
+  },
 }
