@@ -5,11 +5,16 @@ set -e
 
 DESCRIPTION="$1's IP allowed to access."
 POLICY_NAME=allowed-ip-staging
-DRY_RUN=1
+
+# Usage: log <action> <message> <details>
+log() {
+  echo -e "\033[1m[$1]\033[0m $2:"
+  echo -e "  $3"
+}
 
 # Usage: update_rule <priority> <ip_ranges>
 update_rule() {
-  echo "updating rule with priority $1 ($DESCRIPTION) with ip ranges $2"
+  log update "rule with priority $1 ($DESCRIPTION) with ip ranges" "$2"
 
   [ "$DRY_RUN" = "1" ] && exit 0
 
@@ -22,7 +27,7 @@ update_rule() {
 
 # Usage: create_rule <priority> <ip_ranges>
 create_rule() {
-  echo "creating rule with priority $1 ($DESCRIPTION) with ip ranges $2"
+  log create "rule with priority $1 ($DESCRIPTION) with ip ranges" "$2"
 
   [ "$DRY_RUN" = "1" ] && exit 0
 
@@ -31,6 +36,12 @@ create_rule() {
     --src-ip-ranges "$2" \
     --description "$DESCRIPTION" \
     --action=allow
+}
+
+# Usage: skip_rule <priority> <ip>
+skip_rule() {
+  log skip "rule with priority $priority ($DESCRIPTION)" "$ip already exists in ranges"
+  exit 1
 }
 
 # Usage: next_priority <rules>
@@ -54,7 +65,7 @@ if [ "$priority" = "null" ]; then
 else
   ip_ranges=$(echo "$existing_rule" | yq .match.config.srcIpRanges)
   if ip_exists "$ip_ranges" "$ip"; then
-    echo "skipping update of rule with priority $priority ($DESCRIPTION): $ip already exists in ranges" && exit 1
+    skip_rule "$priority" "$ip"
   fi
 
   update_rule "$priority" "$(echo "$ip_ranges" | yq '. += "'"${ip}"'" | join(",")')"
