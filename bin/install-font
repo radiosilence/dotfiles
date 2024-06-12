@@ -1,10 +1,10 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 tmpdir=$(mktemp -d)
-mkdir -p $tmpdir
-aria2c $1 -d $tmpdir
-unzip $tmpdir/*.zip -d $tmpdir
-cp -v $tmpdir/*.ttf ~/Library/Fonts || echo "No TTF files found"
-cp -v $tmpdir/*.otf ~/Library/Fonts || echo "No OTF files found"
+mkdir -p "$tmpdir"
+aria2c "$1" -d "$tmpdir"
+unzip "$tmpdir"/*.zip -d "$tmpdir"
+cp -v "$tmpdir"/*.ttf ~/Library/Fonts || echo "No TTF files found"
+cp -v "$tmpdir"/*.otf ~/Library/Fonts || echo "No OTF files found"
 echo "done."
-rm -rf $tmpdir
+rm -rf "$tmpdir"
