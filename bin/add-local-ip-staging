@@ -7,6 +7,7 @@ DESCRIPTION="$1's IP allowed to access."
 POLICY_NAME=allowed-ip-staging
 DRY_RUN=1
 
+# Usage: update_rule <priority> <ip_ranges>
 update_rule() {
   echo "updating rule with priority $1 ($DESCRIPTION) with ip ranges $2"
 
@@ -19,6 +20,7 @@ update_rule() {
     --action=allow
 }
 
+# Usage: create_rule <priority> <ip_ranges>
 create_rule() {
   echo "creating rule with priority $1 ($DESCRIPTION) with ip ranges $2"
 
@@ -31,10 +33,12 @@ create_rule() {
     --action=allow
 }
 
+# Usage: next_priority <rules>
 next_priority() {
   echo $1 | yq 'sort_by(.priority * -1) | filter(.priority < 10000) | .[0].priority + 1'
 }
 
+# Usage: ip_exists <ip_ranges> <ip>
 ip_exists() {
   [ "$(echo $1 | yq 'filter(. == "'$2'") | length')" != "0" ]
 }
