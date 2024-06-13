@@ -107,3 +107,4 @@ mas "Telegram", id: 747648890
 mas "Slack for Desktop", id: 803453959
 mas "Xcode", id: 497799835
 brew "docker-compose"
+brew "bd"
