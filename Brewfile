@@ -18,7 +18,7 @@ brew "cmake"
 brew "cmatrix"
 brew "coreutils"
 brew "curl"
-brew "aria2"
+brew "docker-compose"
 brew "efm-langserver"
 brew "fastfetch"
 brew "fcp"
@@ -106,5 +106,3 @@ mas "Messenger", id: 1480068668
 mas "Telegram", id: 747648890
 mas "Slack for Desktop", id: 803453959
 mas "Xcode", id: 497799835
-brew "docker-compose"
-brew "bd"
