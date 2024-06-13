@@ -4,6 +4,7 @@ paths=(
   ~/.fastlane/bin
   ~/.yarn/bin
   ~/.config/yarn/global/node_modules/.bin
+  /usr/local/bin
 )
 
 # export path
