@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 if [ -z "$1" ]; then
   echo "Usage: kill_port <port>"
@@ -13,5 +13,6 @@ if [ -z "$PID" ]; then
   return 1
 fi
 
-kill -9 "$PID"
-echo "Killed process $PID listening on port $PORT"
+echo "Killing process: $PID"
+kill -9 $PID
+echo "Killed process: $PID listening on port $PORT"
