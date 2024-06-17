@@ -1,5 +1,6 @@
 alias p='pnpm '
 
+alias pi='pnpm install '
 alias pt='pnpm test '
 alias ptu='pnpm test -u '
 alias pa='pnpm add '
