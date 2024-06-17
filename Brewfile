@@ -89,15 +89,17 @@ cask "figma"
 cask "firefox"
 cask "fork"
 cask "google-chrome"
-cask "google-cloud-sdk"
 cask "iina"
 cask "loom"
 cask "mullvadvpn"
+cask "notion"
+cask "notion-calendar"
 cask "postman"
 cask "rar"
 cask "slack"
 cask "stolendata-mpv"
 cask "tailscale"
+cask "tripmode"
 cask "visual-studio-code"
 cask "wezterm"
 cask "zoom"
@@ -106,5 +108,5 @@ mas "Messenger", id: 1480068668
 mas "Telegram", id: 747648890
 mas "Slack for Desktop", id: 803453959
 mas "Xcode", id: 497799835
-mas "Microsoft Excel", id: 462058435
-mas "Microsoft Word", id: 462054704
+# mas "Microsoft Excel", id: 462058435
+# mas "Microsoft Word", id: 462054704
