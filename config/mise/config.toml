@@ -25,4 +25,4 @@ gcloud = "latest"
 
 [settings]
 experimental = true
-asdf_compat = true
+asdf_compat = false
