@@ -1,0 +1,3 @@
+taketmp() {
+  cd "$(mktemp -d)"
+}
