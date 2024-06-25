@@ -100,11 +100,13 @@ cask "rar"
 cask "slack"
 cask "stolendata-mpv"
 cask "tailscale"
+cask "transmission"
 cask "tripmode"
 cask "visual-studio-code"
 cask "wezterm"
 cask "zoom"
 mas "WhatsApp Messenger", id: 310633997
+mas "Infuse", id: 1136220934
 mas "Messenger", id: 1480068668
 mas "Telegram", id: 747648890
 mas "Slack for Desktop", id: 803453959
