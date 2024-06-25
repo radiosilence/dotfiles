@@ -1,5 +1,7 @@
 local wezterm = require 'wezterm';
-local font = 'Hack JBM Ligatured CCG';
+-- local font = 'Hack JBM Ligatured CCG';
+
+local font = 'Geist Mono';
 local path = os.getenv('PATH')
 return {
   initial_rows = 64,
