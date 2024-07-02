@@ -112,5 +112,3 @@ mas "Messenger", id: 1480068668
 mas "Telegram", id: 747648890
 mas "Slack for Desktop", id: 803453959
 mas "Xcode", id: 497799835
-# mas "Microsoft Excel", id: 462058435
-# mas "Microsoft Word", id: 462054704
