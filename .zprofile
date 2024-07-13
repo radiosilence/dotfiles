@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-if is_cmd mise; then
+if command -v mise &>/dev/null; then
   eval "$(mise activate zsh)"
 elif [ -x ~/.local/bin/mise ]; then
   eval "$(~/.local/bin/mise activate zsh)"
