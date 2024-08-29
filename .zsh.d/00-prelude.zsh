@@ -5,10 +5,6 @@
 setopt no_share_history
 setopt interactivecomments
 
-# compinit
-autoload -Uz compinit
-compinit
-
 # autoloads
 autoload -U add-zsh-hook
 # zstyle
