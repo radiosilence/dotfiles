@@ -77,6 +77,7 @@ brew "yaml-language-server"
 brew "yq"
 brew "zellij"
 brew "zoxide"
+brew "zsh"
 cask "1password-cli"
 cask "1password"
 cask "arc"
@@ -90,11 +91,12 @@ cask "figma"
 cask "firefox"
 cask "focusrite-control"
 cask "fork"
+cask "font-geist"
+cask "font-geist-mono"
 cask "google-chrome"
 cask "iina"
 cask "lens"
 cask "loom"
-cask "mullvadvpn"
 cask "notion"
 cask "notion-calendar"
 cask "orbstack"
@@ -109,8 +111,8 @@ cask "visual-studio-code"
 cask "wezterm"
 cask "zoom"
 mas "WhatsApp Messenger", id: 310633997
-mas "Infuse", id: 1136220934
-mas "Messenger", id: 1480068668
-mas "Telegram", id: 747648890
-mas "Slack for Desktop", id: 803453959
-mas "Xcode", id: 497799835
+# mas "Infuse", id: 1136220934
+# mas "Messenger", id: 1480068668
+# mas "Telegram", id: 747648890
+# mas "Slack for Desktop", id: 803453959
+# mas "Xcode", id: 497799835
