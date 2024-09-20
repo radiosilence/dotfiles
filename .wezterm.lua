@@ -23,7 +23,7 @@ return {
     }
   },
   default_prog = {
-    "sh", "-c",
+    "zsh", "-c",
     "(tmux a || tmux) || zsh"
   },
   -- default_prog = { "zsh" },
@@ -108,6 +108,6 @@ return {
   window_padding = { left = 2, right = 2, top = 2, bottom = 2 },
   window_close_confirmation = "NeverPrompt",
   set_environment_variables = {
-    PATH = "/opt/homebrew/bin:" .. path
+    PATH = "/opt/homebrew/bin:/usr/local/bin:" .. path
   },
 }
