@@ -8,7 +8,6 @@ java = "zulu-21"
 kubectl = "latest"
 lefthook = "latest"
 lua-language-server = "latest"
-node = "20.14.0"
 pipx = "latest"
 pulumi = "latest"
 # python = "latest"
@@ -22,6 +21,7 @@ usage = "latest"
 # ruby = "3.3.1"
 firebase = "latest"
 gcloud = "latest"
+node = "latest"
 
 [settings]
 experimental = true
