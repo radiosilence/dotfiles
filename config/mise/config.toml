@@ -1,6 +1,5 @@
 [tools]
 awscli = "latest"
-azure-cli = "latest"
 bun = "latest"
 fd = "latest"
 go = "latest"
