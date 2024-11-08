@@ -22,10 +22,6 @@ elif is_cmd exa; then
   alias tree='exa --tree'
 fi
 
-if is_cmd rg; then
-  alias grep='rg '
-fi
-
 if is_cmd tidy-viewer; then
   alias tv='tidy-viewer'
 fi
