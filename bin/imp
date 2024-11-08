@@ -1,15 +1,14 @@
 #!/bin/bash
 
-imp() {
-  dst=$(mktemp -d)
-  [ -d "$dst" ] && rm -r "$dst"
-  mkdir -p "$dst"
-  echo "downloading..."
-  noglob curl "$1" -o "$dst"/dl.zip
-  echo "unzipping $dst/dl.zip"
-  unzip -d "$dst" "$dst"/dl.zip
-  echo "removing $dst/dl.zip"
-  rm "$dst"/dl.zip
-  echo "importing $dst..."
-  beet import "$dst" -I
-}
+dst=$(mktemp -d)
+echo "temp dst: $dst"
+[ -d "$dst" ] && rm -r "$dst"
+mkdir -p "$dst"
+echo "downloading..."
+noglob curl "$1" -o "$dst"/dl.zip
+echo "unzipping $dst/dl.zip"
+unzip -d "$dst" "$dst"/dl.zip
+echo "removing $dst/dl.zip"
+rm "$dst"/dl.zip
+echo "importing $dst..."
+beet import "$dst" -I
