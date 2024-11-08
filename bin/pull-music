@@ -1,20 +1,9 @@
 #!/bin/bash
-if is_cmd rclone; then
-	rclone sync \
-		--progress \
-		--size-only \
-		--checkers=64 \
-		--delete-before \
-		--transfers=64 \
-		-v \
-		oldboy:/mnt/kontent/music ./music
-else
-	rsync \
-		-vr \
-		--size-only \
-		--delete-before \
-		--info=progress2 \
-		--itemize-changes \
-		--iconv=utf-8-mac,utf-8 \
-		-e ssh 'oldboy:/mnt/kontent/music/' ./music/
-fi
+rclone sync \
+	--progress \
+	--size-only \
+	--checkers=64 \
+	--delete-before \
+	--transfers=64 \
+	-v \
+	oldboy:/mnt/kontent/music ./music

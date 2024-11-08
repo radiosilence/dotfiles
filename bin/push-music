@@ -1,0 +1,9 @@
+#!/bin/bash
+rclone sync \
+  --progress \
+  --size-only \
+  --checkers=64 \
+  --delete-before \
+  --transfers=64 \
+  -v \
+  /Volumes/Turtlehead/music oldboy:/mnt/kontent/music
