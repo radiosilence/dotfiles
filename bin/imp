@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 dst=$(mktemp -d)
 echo "temp dst: $dst"
