@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+rclone sync \
+  --progress \
+  --size-only \
+  --checkers=8 \
+  --delete-before \
+  --transfers=8 \
+  -v \
+  . oldboy:./inbox/slsk/
