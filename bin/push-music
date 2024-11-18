@@ -2,9 +2,9 @@
 rclone sync \
   --progress \
   --size-only \
-  --checkers=64 \
-  --delete-before \
-  --transfers=64 \
+  --checkers=16 \
+  --delete-during \
+  --transfers=16 \
   --exclude="**/.DS_Store" \
   -v \
   /Volumes/Turtlehead/music oldboy:/mnt/kontent/music

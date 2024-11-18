@@ -25,4 +25,4 @@ zig = "latest"
 
 [settings]
 experimental = true
-asdf_compat = false
+asdf_compat = true
