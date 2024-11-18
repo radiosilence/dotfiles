@@ -7,4 +7,4 @@ paths=(
 )
 
 # export path
-export PATH="$PATH:$(join_by : $paths)"
+export PATH="$(join_by : $paths):$PATH"
