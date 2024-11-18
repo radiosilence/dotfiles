@@ -7,4 +7,4 @@ paths=(
 )
 
 # export path
-export PATH="$PATH:$(join_by : $paths):/usr/local/bin"
+export PATH="$PATH:$(join_by : $paths)"
