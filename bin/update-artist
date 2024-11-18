@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for file in $1; do
+  [ -e "$file" ] || continue
+
+  ffmpeg -i "$file" -metadata artist="$2" -c copy "temp_$file"
+
+  mv "temp_$file" "$file"
+
+  echo "Updated artist tag for $file"
+done
