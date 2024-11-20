@@ -111,3 +111,4 @@ cask "whatsapp"
 cask "messenger"
 cask "telegram"
 mas "Infuse", id: 1136220934
+brew "hyperfine"
