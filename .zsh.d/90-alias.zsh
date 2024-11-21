@@ -25,3 +25,5 @@ fi
 if is_cmd tidy-viewer; then
   alias tv='tidy-viewer'
 fi
+
+alias tmpdir='cd $(mktemp -d)'
