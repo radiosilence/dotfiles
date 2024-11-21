@@ -7,8 +7,6 @@ else
   export BREW_PREFIX=/usr/local
 fi
 
-echo "BREW PREFIX is $BREW_PREFIX"
-
 export PATH="$BREW_PREFIX/bin:$BREW_PREFIX/sbin:$PATH"
 
 if command -v mise &>/dev/null; then
