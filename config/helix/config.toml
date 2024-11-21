@@ -2,6 +2,7 @@ theme = "monokai_pro"
 
 [editor]
 auto-format = true
+true-color = true
 
 [editor.file-picker]
 hidden = false
