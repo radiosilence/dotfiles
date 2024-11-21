@@ -1,4 +1,9 @@
 #!/bin/bash
+DEST=oldboy:/mnt/kontent/music
+if [ -d /Volumes/music ]; then
+  DEST=/Volumes/music
+fi
+
 rclone sync \
   --progress \
   --size-only \
@@ -7,4 +12,4 @@ rclone sync \
   --transfers=16 \
   --exclude="**/.DS_Store" \
   -v \
-  /Volumes/Turtlehead/music oldboy:/mnt/kontent/music
+  /Volumes/Turtlehead/music $DEST
