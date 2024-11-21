@@ -112,3 +112,4 @@ cask "messenger"
 cask "telegram"
 mas "Infuse", id: 1136220934
 brew "hyperfine"
+brew "iperf3"
