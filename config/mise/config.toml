@@ -20,7 +20,7 @@ usage = "latest"
 #ruby = "3.3.1"
 firebase = "latest"
 gcloud = "latest"
-node = "22"
+node = "lts"
 zig = "latest"
 
 [settings]
