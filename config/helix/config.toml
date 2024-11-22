@@ -4,5 +4,13 @@ theme = "monokai_pro"
 auto-format = true
 true-color = true
 
+[editor.whitespace.render]
+space = "all"
+tab = "all"
+nbsp = "none"
+nnbsp = "none"
+newline = "none"
+
 [editor.file-picker]
 hidden = false
+
