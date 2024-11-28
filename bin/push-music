@@ -1,5 +1,6 @@
 #!/bin/bash
-DEST=oldboy:/mnt/kontent/music
+SRC=/Volumes/Turtlehead/music
+DEST=oldboy.local:/mnt/kontent/music
 if [ -d /Volumes/music ]; then
   DEST=/Volumes/music
 fi
@@ -11,5 +12,6 @@ rclone sync \
   --delete-during \
   --transfers=16 \
   --exclude="**/.DS_Store" \
+  --exclude=".DS_Store" \
   -v \
-  /Volumes/Turtlehead/music $DEST
+  $SRC $DEST
