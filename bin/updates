@@ -7,6 +7,16 @@ if [ -d "$DOTFILES" ]; then
   (cd "$DOTFILES" && git pull)
 fi
 
+if is_cmd apt; then
+  echo "updating apt"
+  sudo sh -c “apt update && apt upgrade -y && apt-autoremove -y”
+fi
+
+if is_cmd dnf; then
+  echo "updating dnf"
+  sudo dnf update -y
+fi
+
 if is_cmd mise; then
   echo "updating mise"
   mise up
