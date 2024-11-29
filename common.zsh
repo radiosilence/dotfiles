@@ -13,3 +13,6 @@ join_by() {
   shift
   printf %s "$f" "${@/#/$d}"
 }
+
+bold=$(tput bold)
+normal=$(tput sgr0)
