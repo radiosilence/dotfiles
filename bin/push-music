@@ -1,6 +1,7 @@
 #!/bin/bash
 SRC=/Volumes/Turtlehead/music
 DEST=oldboy:/mnt/kontent/music
+
 if [ -d /Volumes/music ]; then
   DEST=/Volumes/music
 fi

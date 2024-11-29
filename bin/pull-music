@@ -1,6 +1,7 @@
 #!/bin/bash
-
 SRC=oldboy:/mnt/kontent/music
+DST=/Volumes/Turtlehead/music
+
 if [ -d /Volumes/music ]; then
 	SRC=/Volumes/music
 fi
@@ -13,4 +14,4 @@ rclone sync \
 	--transfers=16 \
 	--exclude="**/.DS_Store" \
 	-v \
-	$SRC /Volumes/Turtlehead/music
+	$SRC $DST
