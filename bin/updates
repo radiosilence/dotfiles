@@ -1,42 +1,43 @@
 #!/usr/bin/env zsh
+
 . ~/.dotfiles-dir
 . $DOTFILES/common.zsh
 
 if [ -d "$DOTFILES" ]; then
-  echo "updating dotfiles $DOTFILES..."
+  echo "${bold}[updates] updating dotfiles $DOTFILES...${normal}"
   (cd "$DOTFILES" && git pull)
 fi
 
 if is_cmd mise; then
-  echo "updating mise..."
+  echo "${bold}[updates] updating mise...${normal}"
   mise up
   rm -rf ~/.local/share/mise/shims && mise reshim
 fi
 
 if is_cmd sheldon; then
-  echo "updating sheldon..."
+  echo "${bold}[updates] updating sheldon...${normal}"
   sheldon lock --update
 fi
 
 if is_cmd yt-dlp; then
-  echo "updating yt-dlp..."
+  echo "${bold}[updates] updating yt-dlp...${normal}"
   yt-dlp --update-to nightly
 fi
 
 if is_cmd apt; then
-  echo "updating apt..."
+  echo "${bold}[updates] updating apt...${normal}"
   sudo apt update
   sudo apt upgrade -y
   sudo apt autoremove -y
 fi
 
 if is_cmd dnf; then
-  echo "updating dnf..."
+  echo "${bold}[updates] updating dnf...${normal}"
   sudo dnf update -y
 fi
 
 if is_cmd brew; then
-  echo "updating brew..."
+  echo "${bold}[updates] updating brew...${normal}"
   brew bundle
   brew cu -af
   brew cleanup
