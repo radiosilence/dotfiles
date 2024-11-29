@@ -3,39 +3,40 @@
 . $DOTFILES/common.zsh
 
 if [ -d "$DOTFILES" ]; then
-  echo "updating dotfiles $DOTFILES"
+  echo "updating dotfiles $DOTFILES..."
   (cd "$DOTFILES" && git pull)
 fi
 
 if is_cmd mise; then
-  echo "updating mise"
+  echo "updating mise..."
   mise up
   rm -rf ~/.local/share/mise/shims && mise reshim
 fi
 
 if is_cmd sheldon; then
+  echo "updating sheldon..."
   sheldon lock --update
 fi
 
 if is_cmd yt-dlp; then
-  echo "updating yt-dlp"
+  echo "updating yt-dlp..."
   yt-dlp --update-to nightly
 fi
 
 if is_cmd apt; then
-  echo "updating apt"
+  echo "updating apt..."
   sudo apt update
   sudo apt upgrade -y
   sudo apt autoremove -y
 fi
 
 if is_cmd dnf; then
-  echo "updating dnf"
+  echo "updating dnf..."
   sudo dnf update -y
 fi
 
 if is_cmd brew; then
-  echo "updating brew"
+  echo "updating brew..."
   brew bundle
   brew cu -af
   brew cleanup
