@@ -98,6 +98,7 @@ cask "font-geist-mono"
 cask "lens"
 cask "logitech-g-hub"
 cask "orbstack"
+cask "musicbrainz-picard"
 cask "postman"
 cask "rar"
 cask "stolendata-mpv", args: { no_quarantine: true }

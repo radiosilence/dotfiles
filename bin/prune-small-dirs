@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find . -type d -exec du -sk {} + | awk '$1 < 3096' | cut -f2- #| xargs -I{} rm -rf "{}"
