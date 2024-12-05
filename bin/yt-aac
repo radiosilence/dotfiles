@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/bash
 
 # Check if a YouTube URL is provided
 if [[ -z "$1" ]]; then
@@ -11,33 +11,51 @@ URL="$1"
 TEMP_DIR=$(mktemp -d)
 OUTPUT_FILE="${TEMP_DIR}/%(title)s.%(ext)s"
 
+# Get metadata
+echo "Getting metadata..."
+echo "URL: $URL"
+VIDEO_INFO=$(yt-dlp --print-json "$URL")
+echo "Metadata:"
+echo "$VIDEO_INFO" | jq
+
+VIDEO_TITLE=$(echo "$VIDEO_INFO" | jq -r '.title')
+CHANNEL_NAME=$(echo "$VIDEO_INFO" | jq -r '.uploader')
+UPLOAD_DATE=$(echo "$VIDEO_INFO" | jq -r '.upload_date')
+
+# Format the date as YYYY-MM-DD
+FORMATTED_DATE=$(date -j -f "%Y%m%d" "$UPLOAD_DATE" "+%Y-%m-%d" 2>/dev/null || echo "$UPLOAD_DATE")
+
+echo "Title: $VIDEO_TITLE"
+echo "Channel: $CHANNEL_NAME"
+echo "Date: $FORMATTED_DATE"
+
 # Download video and extract audio
 echo "Downloading and extracting audio..."
 yt-dlp \
   --format bestaudio/best \
-  --extract-audio \
-  --audio-format aac \
   --output "$OUTPUT_FILE" \
   "$URL"
 
-# Get metadata
-VIDEO_INFO=$(yt-dlp --print-json "$URL")
-VIDEO_TITLE=$(echo "$VIDEO_INFO" | jq -r '.title')
-CHANNEL_NAME=$(echo "$VIDEO_INFO" | jq -r '.uploader')
-
 # Process downloaded file
-DOWNLOADED_FILE=$(find "$TEMP_DIR" -type f -name "*.m4a")
+DOWNLOADED_FILE=$(find "$TEMP_DIR" -type f | head -n 1)
+echo "Downloaded file: $DOWNLOADED_FILE"
 if [[ -f "$DOWNLOADED_FILE" ]]; then
-  echo "Tagging the file with metadata..."
+  # Extract audio and tag it
+  OUTPUT_AUDIO_FILE="${DOWNLOADED_FILE%.*}.m4a"
+  echo "Extracting audio and tagging..."
   ffmpeg -i "$DOWNLOADED_FILE" \
-    -metadata albumartist="YouTube" \
+    -map 0:a \
+    -c:a aac \
+    -b:a 256k \
     -metadata title="$VIDEO_TITLE" \
-    -metadata artist="$CHANNEL_NAME" \
+    -metadata artist="YouTube" \
     -metadata album="$CHANNEL_NAME" \
-    -codec copy "${DOWNLOADED_FILE%.m4a}.tagged.m4a"
+    -metadata date="$FORMATTED_DATE" \
+    "$OUTPUT_AUDIO_FILE"
 
-  # Rename tagged file and clean up
-  mv "${DOWNLOADED_FILE%.m4a}.tagged.m4a" "$DOWNLOADED_FILE"
+  # Clean up the original downloaded file
+  echo "Removing video file..."
+  rm "$DOWNLOADED_FILE"
 else
   echo "Error: Failed to find the downloaded M4A file."
   exit 1
