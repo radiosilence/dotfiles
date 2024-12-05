@@ -20,7 +20,7 @@ done
 TARGET_DIR=${1:-.}
 
 # Find directories below the minimum size, escaping special characters
-TO_DELETE=$(find "$TARGET_DIR" -type d -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }')
+TO_DELETE=$(find "$TARGET_DIR" -type d -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder')
 
 # Exit if no directories match the criteria
 if [[ -z "$TO_DELETE" ]]; then
