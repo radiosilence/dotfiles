@@ -20,14 +20,9 @@ echo "$VIDEO_INFO" | jq
 
 VIDEO_TITLE=$(echo "$VIDEO_INFO" | jq -r '.title')
 CHANNEL_NAME=$(echo "$VIDEO_INFO" | jq -r '.uploader')
-UPLOAD_DATE=$(echo "$VIDEO_INFO" | jq -r '.upload_date')
-
-# Format the date as YYYY-MM-DD
-FORMATTED_DATE=$(date -j -f "%Y%m%d" "$UPLOAD_DATE" "+%Y-%m-%d" 2>/dev/null || echo "$UPLOAD_DATE")
 
 echo "Title: $VIDEO_TITLE"
 echo "Channel: $CHANNEL_NAME"
-echo "Date: $FORMATTED_DATE"
 
 # Download video and extract audio
 echo "Downloading and extracting audio..."
@@ -50,7 +45,6 @@ if [[ -f "$DOWNLOADED_FILE" ]]; then
     -metadata title="$VIDEO_TITLE" \
     -metadata artist="YouTube" \
     -metadata album="$CHANNEL_NAME" \
-    -metadata date="$FORMATTED_DATE" \
     "$OUTPUT_AUDIO_FILE"
 
   # Clean up the original downloaded file
