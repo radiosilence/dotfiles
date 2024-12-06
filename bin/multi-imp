@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# List directories for selection
+selected_dirs=$(find . -type d | fzf --multi --preview 'tree {}')
+
+# Check if selection was made
+if [[ -z "$selected_dirs" ]]; then
+  echo "No directories selected."
+  exit 1
+fi
+
+# Prepare the directories for beet import
+# Replace newlines with spaces, and quote each directory
+quoted_dirs=$(echo "$selected_dirs" | tr '\n' '\0' | xargs -0 -I{} printf "\"%s\" " {})
+
+# Run beet import with the quoted directories
+# shellcheck disable=SC2086
+eval beet import $quoted_dirs
