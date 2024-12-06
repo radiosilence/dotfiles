@@ -2,12 +2,15 @@
 
 # List directories for selection
 selected_dirs=$(find . -type d | fzf --multi --preview 'tree {}')
+num_selected=$(echo "$selected_dirs" | wc -l)
 
 # Check if selection was made
 if [[ -z "$selected_dirs" ]]; then
   echo "No directories selected."
   exit 1
 fi
+
+echo "Importing $num_selected directories..."
 
 # Prepare the directories for beet import
 # Replace newlines with spaces, and quote each directory
