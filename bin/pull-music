@@ -13,5 +13,6 @@ rclone sync \
 	--delete-during \
 	--transfers=16 \
 	--exclude="**/.DS_Store" \
+	--exclude=".DS_Store" \
 	-v \
 	$SRC $DST
