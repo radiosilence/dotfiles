@@ -1,21 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# List directories for selection
-selected_dirs=$(find . -type d | fzf --multi --preview 'tree {}')
-num_selected=$(echo "$selected_dirs" | wc -l)
+# Find directories in current working directory and use fzf for multi-select
+selected_dirs=$(find . -type d | fzf -m)
 
-# Check if selection was made
+# Check if any directories were selected
 if [[ -z "$selected_dirs" ]]; then
   echo "No directories selected."
   exit 1
 fi
 
-echo "Importing $num_selected directories..."
+# Convert selected directories to quoted arguments
+quoted_dirs=$(echo "$selected_dirs" | sed "s/^/'/; s/$/'/" | tr '\n' ' ')
 
-# Prepare the directories for beet import
-# Replace newlines with spaces, and quote each directory
-quoted_dirs=$(echo "$selected_dirs" | tr '\n' '\0' | xargs -0 -I{} printf "\"%s\" " {})
-
-# Run beet import with the quoted directories
-# shellcheck disable=SC2086
-eval beet import $quoted_dirs
+# Execute beet import with all selected directories
+echo "Importing directories: $quoted_dirs"
+eval "beet import $quoted_dirs"
