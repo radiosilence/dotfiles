@@ -2,6 +2,7 @@
 awscli = "latest"
 bun = "latest"
 fd = "latest"
+fzf = "latest"
 go = "latest"
 java = "zulu-21"
 kubectl = "latest"
