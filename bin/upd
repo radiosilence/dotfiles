@@ -4,40 +4,40 @@
 . $DOTFILES/common.zsh
 
 if [ -d "$DOTFILES" ]; then
-  echo "${bold}[updates] updating dotfiles $DOTFILES...${normal}"
+  echo "${bold}[upd] updating dotfiles $DOTFILES...${normal}"
   (cd "$DOTFILES" && git pull)
 fi
 
 if is_cmd mise; then
-  echo "${bold}[updates] updating mise...${normal}"
+  echo "${bold}[upd] updating mise...${normal}"
   mise up
   rm -rf ~/.local/share/mise/shims && mise reshim
 fi
 
 if is_cmd sheldon; then
-  echo "${bold}[updates] updating sheldon...${normal}"
+  echo "${bold}[upd] updating sheldon...${normal}"
   sheldon lock --update
 fi
 
 if is_cmd yt-dlp; then
-  echo "${bold}[updates] updating yt-dlp...${normal}"
+  echo "${bold}[upd] updating yt-dlp...${normal}"
   yt-dlp --update-to nightly
 fi
 
 if is_cmd apt; then
-  echo "${bold}[updates] updating apt...${normal}"
+  echo "${bold}[upd] updating apt...${normal}"
   sudo apt update
   sudo apt upgrade -y
   sudo apt autoremove -y
 fi
 
 if is_cmd dnf; then
-  echo "${bold}[updates] updating dnf...${normal}"
+  echo "${bold}[upd] updating dnf...${normal}"
   sudo dnf update -y
 fi
 
 if is_cmd brew; then
-  echo "${bold}[updates] updating brew...${normal}"
+  echo "${bold}[upd] updating brew...${normal}"
   brew bundle
   brew cu -af
   brew cleanup
