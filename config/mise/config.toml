@@ -14,7 +14,6 @@ rust = "latest"
 rust-analyzer = "latest"
 shellcheck = "latest"
 shfmt = "latest"
-terraform = "latest"
 tilt = "latest"
 yt-dlp = "latest"
 usage = "latest"
@@ -26,4 +25,4 @@ zig = "latest"
 
 [settings]
 experimental = true
-asdf_compat = true
+idiomatic_version_file = false
