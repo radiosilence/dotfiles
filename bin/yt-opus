@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# Default output directory
+OUTPUT_DIR="${OUTPUT_DIR:-$HOME/Downloads}"
+
+# Ensure output directory exists
+mkdir -p "$OUTPUT_DIR"
+
+# Function to process a single URL
+process_url() {
+  local URL="$1"
+
+  # Get metadata
+  echo "Processing URL: $URL"
+  VIDEO_INFO=$(yt-dlp --print-json "$URL")
+
+  VIDEO_TITLE=$(echo "$VIDEO_INFO" | jq -r '.title' | sed 's/[^a-zA-Z0-9._-]/_/g')
+  CHANNEL_NAME=$(echo "$VIDEO_INFO" | jq -r '.uploader' | sed 's/[^a-zA-Z0-9._-]/_/g')
+
+  echo "Title: $VIDEO_TITLE"
+  echo "Channel: $CHANNEL_NAME"
+
+  # Temporary download directory
+  TEMP_DIR=$(mktemp -d)
+  local DOWNLOAD_FILE="${TEMP_DIR}/%(title)s.%(ext)s"
+
+  # Download video and extract audio in best format
+  yt-dlp \
+    --format bestaudio/best \
+    --output "$DOWNLOAD_FILE" \
+    "$URL"
+
+  # Find the downloaded file
+  DOWNLOADED_FILE=$(find "$TEMP_DIR" -type f | head -n 1)
+
+  if [[ -f "$DOWNLOADED_FILE" ]]; then
+    # Check if the audio stream is already Opus
+    AUDIO_CODEC=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$DOWNLOADED_FILE")
+    OUTPUT_AUDIO_FILE="${OUTPUT_DIR}/${VIDEO_TITLE}.opus"
+
+    # Process based on audio codec
+    if [[ "$AUDIO_CODEC" == "opus" ]]; then
+      echo "Opus audio stream detected. Copying and tagging..."
+      ffmpeg -i "$DOWNLOADED_FILE" \
+        -map 0:a \
+        -c:a copy \
+        -metadata title="$VIDEO_TITLE" \
+        -metadata artist="YouTube" \
+        -metadata album="$CHANNEL_NAME" \
+        "$OUTPUT_AUDIO_FILE"
+    else
+      # Transcode to Opus
+      echo "Transcoding to Opus and tagging..."
+      ffmpeg -i "$DOWNLOADED_FILE" \
+        -map 0:a \
+        -c:a libopus \
+        -b:a 256k \
+        -metadata title="$VIDEO_TITLE" \
+        -metadata artist="YouTube" \
+        -metadata album="$CHANNEL_NAME" \
+        "$OUTPUT_AUDIO_FILE"
+    fi
+
+    echo "Saved: $OUTPUT_AUDIO_FILE"
+  else
+    echo "Error: Failed to find the downloaded file for $URL"
+    return 1
+  fi
+}
+
+# Parse command line arguments
+URLS=()
+FILE_LIST=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  -f | --file)
+    FILE_LIST="$2"
+    shift 2
+    ;;
+  *)
+    URLS+=("$1")
+    shift
+    ;;
+  esac
+done
+
+# Read URLs from file if specified
+if [[ -n "$FILE_LIST" ]]; then
+  if [[ ! -f "$FILE_LIST" ]]; then
+    echo "Error: File list '$FILE_LIST' not found"
+    exit 1
+  fi
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    # Skip empty lines and comments
+    [[ -z "$line" || "$line" =~ ^\s*# ]] && continue
+    URLS+=("$line")
+  done <"$FILE_LIST"
+fi
+
+# Check if any URLs are provided
+if [[ ${#URLS[@]} -eq 0 ]]; then
+  echo "Usage: $0 [URLs...] [-f FILE_LIST]"
+  echo "Optional: Set OUTPUT_DIR to change download location"
+  echo "Example: OUTPUT_DIR=~/Music $0 <URL1> <URL2>"
+  echo "Example: $0 -f urls.txt"
+  exit 1
+fi
+
+# Process URLs in parallel
+for url in "${URLS[@]}"; do
+  process_url "$url" &
+done
+
+# Wait for all background processes to complete
+wait
+
+echo "All downloads and processing complete."
