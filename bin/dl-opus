@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Default output directory
-OUTPUT_DIR="${OUTPUT_DIR:-$HOME/Downloads}"
+OUTPUT_DIR="${OUTPUT_DIR:-"/Volumes/Turtlehead/YouTube"}"
+
+# Cookies file for authentication
+COOKIES_FILE="${COOKIES_FILE:-"cookies.txt"}"
 
 # Ensure output directory exists
 mkdir -p "$OUTPUT_DIR"
@@ -12,7 +15,7 @@ process_url() {
 
   # Get metadata
   echo "Processing URL: $URL"
-  VIDEO_INFO=$(yt-dlp --print-json "$URL")
+  VIDEO_INFO=$(yt-dlp --cookies "$COOKIES_FILE" --print-json "$URL")
 
   VIDEO_TITLE=$(echo "$VIDEO_INFO" | jq -r '.title' | sed 's/[^a-zA-Z0-9._-]/_/g')
 
@@ -36,7 +39,7 @@ process_url() {
 
   # Download video and extract audio in best format
   yt-dlp \
-    --cookies-from-browser "chromium:~/Library/Application Support/Arc/User Data/Default" \
+    --cookies "$COOKIES_FILE" \
     --format bestaudio/best \
     --output "$DOWNLOAD_FILE" \
     "$URL"
