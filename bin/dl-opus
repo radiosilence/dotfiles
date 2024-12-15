@@ -15,7 +15,7 @@ process_url() {
   VIDEO_INFO=$(yt-dlp --print-json "$URL")
 
   VIDEO_TITLE=$(echo "$VIDEO_INFO" | jq -r '.title' | sed 's/[^a-zA-Z0-9._-]/_/g')
-  
+
   # Determine source and set appropriate metadata
   if [[ "$URL" == *"soundcloud.com"* ]]; then
     CHANNEL_NAME=$(echo "$VIDEO_INFO" | jq -r '.uploader')
@@ -36,6 +36,7 @@ process_url() {
 
   # Download video and extract audio in best format
   yt-dlp \
+    --cookies-from-browser "chromium:~/Library/Application Support/Arc/User Data/Default" \
     --format bestaudio/best \
     --output "$DOWNLOAD_FILE" \
     "$URL"
@@ -84,14 +85,14 @@ FILE_LIST=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -f|--file)
-      FILE_LIST="$2"
-      shift 2
-      ;;
-    *)
-      URLS+=("$1")
-      shift
-      ;;
+  -f | --file)
+    FILE_LIST="$2"
+    shift 2
+    ;;
+  *)
+    URLS+=("$1")
+    shift
+    ;;
   esac
 done
 
@@ -105,7 +106,7 @@ if [[ -n "$FILE_LIST" ]]; then
     # Skip empty lines and comments
     [[ -z "$line" || "$line" =~ ^\s*# ]] && continue
     URLS+=("$line")
-  done < "$FILE_LIST"
+  done <"$FILE_LIST"
 fi
 
 # Check if any URLs are provided
