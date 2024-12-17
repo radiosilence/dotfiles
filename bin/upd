@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-
+cd /tmp
 . ~/.dotfiles-dir
 . $DOTFILES/common.zsh
 
@@ -43,3 +43,4 @@ if is_cmd brew; then
   brew cleanup
   brew doctor
 fi
+cd -
