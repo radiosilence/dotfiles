@@ -30,7 +30,9 @@ fi
 
 # Display directories that would be deleted using tree
 echo "The following directories are below $MIN_SIZE KB and would be deleted:"
-echo "$TO_DELETE" | xargs -I{} tree "{}"
+DELETE_WITHOUT_QUOTES=$(echo "$TO_DELETE" | sed "s/'/'\"'\"'/g")
+echo $DELETE_WITHOUT_QUOTES
+echo "$TO_DELETE_WITHOUT_QUOTES" | xargs -I"{}" tree "{}"
 
 # Confirm deletion
 read "CONFIRM?Are you sure you want to delete these directories? [y/N] "
