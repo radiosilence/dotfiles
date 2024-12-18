@@ -1,0 +1,4 @@
+#!/bin/bash
+for file in *.flac; do
+    ffmpeg -i "$file" -c:a libopus -b:a 160k "${file%.flac}.opus"
+done
