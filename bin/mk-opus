@@ -1,4 +1,33 @@
 #!/bin/bash
+# Default bitrate
+BITRATE="160"
+
+# Function to display usage
+usage() {
+  echo "Usage: $0 <directory> [-b <bitrate>]"
+  echo "  directory: Path to audio files (required)"
+  echo "  -b: Bitrate for OPUS conversion (optional, default: 160)"
+  echo "  Example: $0 /path/to/audio -b 320"
+  exit 1
+}
+
+# Parse bitrate flag if provided
+while getopts ":b:" opt; do
+  case ${opt} in
+  b)
+    BITRATE="$OPTARG"
+    ;;
+  \?)
+    echo "Invalid option: $OPTARG" 1>&2
+    usage
+    ;;
+  :)
+    echo "Invalid option: $OPTARG requires an argument" 1>&2
+    usage
+    ;;
+  esac
+done
+
 for file in *.flac; do
-  ffmpeg -i "$file" -c:a libopus -b:a 160k "${file%.flac}.opus"
+  ffmpeg -i "$file" -c:a libopus -b:a "${BITRATE}"k "${file%.flac}.$BITRATE.opus"
 done
