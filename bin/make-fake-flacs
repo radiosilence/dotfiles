@@ -18,7 +18,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # First argument is the input directory
-INPUT_DIR="$1"
+INPUT_DIR="${1:-.}"
 shift
 
 # Parse bitrate flag if provided
