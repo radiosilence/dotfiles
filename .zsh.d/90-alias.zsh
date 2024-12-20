@@ -13,13 +13,11 @@ if is_macos; then
 fi
 
 if is_cmd lsd; then
+  alias lsd='lsd -A --color=always --icon=always --hyperlink=auto '
+  alias l='lsd '
   alias ls='lsd '
   alias ll='lsd -l '
-  alias tree='lsd --tree'
-elif is_cmd exa; then
-  alias ls='exa '
-  alias ll='exa -l '
-  alias tree='exa --tree'
+  alias tree='lsd --tree '
 fi
 
 if is_cmd tidy-viewer; then
