@@ -1,0 +1,15 @@
+directory: /Volumes/Turtlehead/music
+asciify_paths: false
+original_date: true
+import:
+  move: true
+  copy: false
+paths:
+  default: $albumartist/($year) $album [$format]/$disc$track. $artist - $title
+  comp: Various Artists/($$album%aunique{} [$format]/$disc$track. $artist - $title
+plugins:
+  - ftintitle
+  - fetchart
+  - embedart
+  - importadded
+  - yearfixer
