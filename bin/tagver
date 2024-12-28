@@ -1,0 +1,5 @@
+#!/bin/bash
+
+TAG=$(jq -r '.version' package.json)
+
+git tag -a "v$TAG" -m "Release $TAG" --force
