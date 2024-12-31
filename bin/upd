@@ -1,46 +1,46 @@
-#!/usr/bin/env zsh
-cd /tmp
-. ~/.dotfiles-dir
-. $DOTFILES/common.zsh
+#!/bin/sh
+cd "$(mktemp -d)" || exit
+
+DOTFILES=~/.dotfiles
 
 if [ -d "$DOTFILES" ]; then
-  echo "${bold}[upd] updating dotfiles $DOTFILES...${normal}"
+  echo "[upd] updating dotfiles $DOTFILES..."
   (cd "$DOTFILES" && git pull)
 fi
 
-if is_cmd mise; then
-  echo "${bold}[upd] updating mise...${normal}"
+if command -v mise >/dev/null 2>&1; then
+  echo "[upd] updating mise..."
   mise up
   rm -rf ~/.local/share/mise/shims && mise reshim
 fi
 
-if is_cmd sheldon; then
-  echo "${bold}[upd] updating sheldon...${normal}"
+if command -v sheldon >/dev/null 2>&1; then
+  echo "[upd] updating sheldon..."
   sheldon lock --update
 fi
 
-if is_cmd yt-dlp; then
-  echo "${bold}[upd] updating yt-dlp...${normal}"
+if command -v yt-dlp >/dev/null 2>&1; then
+  echo "[upd] updating yt-dlp..."
   yt-dlp --update-to nightly
 fi
 
-if is_cmd apt; then
-  echo "${bold}[upd] updating apt...${normal}"
+if command -v apt >/dev/null 2>&1; then
+  echo "[upd] updating apt..."
   sudo apt update
   sudo apt upgrade -y
   sudo apt autoremove -y
 fi
 
-if is_cmd dnf; then
-  echo "${bold}[upd] updating dnf...${normal}"
+if command -v dnf >/dev/null 2>&1; then
+  echo "[upd] updating dnf..."
   sudo dnf update -y
 fi
 
-if is_cmd brew; then
-  echo "${bold}[upd] updating brew...${normal}"
-  brew bundle
+if command -v brew >/dev/null 2>&1; then
+  echo "[upd] updating brew..."
+  brew bundle --file ~/Brewfile
   brew cu -af
   brew cleanup
   brew doctor
 fi
-cd -
+cd - || exit
