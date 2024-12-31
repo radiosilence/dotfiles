@@ -1,5 +1,3 @@
-#/usr/bin/env fish
-
 if type -q bat
     alias bat="bat \
         --map-syntax='*.kubeconfig:YAML' \
