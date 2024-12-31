@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # Find directories in current working directory and use fzf for multi-select
 selected_dirs=$(find . -type d | fzf -m)
 
 # Check if any directories were selected
-if [[ -z "$selected_dirs" ]]; then
+if [ -z "$selected_dirs" ]; then
   echo "No directories selected."
   exit 1
 fi
