@@ -1,44 +1,99 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env python3
 
-# Default values
-MIN_SIZE=3096
-TARGET_DIR=.
+import os
+import argparse
+import subprocess
+import shutil
 
-# Parse arguments
-while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
-  case $1 in
-  --min)
-    shift
-    MIN_SIZE=$1
-    ;;
-  esac
-  shift
-done
-[[ "$1" == '--' ]] && shift
+def get_directory_size(path: str):
+    """Calculate total size of a directory in KB"""
+    total = 0
+    try:
+        for entry in os.scandir(path):
+            if entry.is_file():
+                total += entry.stat().st_size
+            elif entry.is_dir():
+                total += get_directory_size(entry.path)
+    except PermissionError:
+        print(f"Warning: Permission denied for {path}")
+        return 0
+    return total / 1024  # Convert to KB
 
-# Set the directory (defaults to current directory)
-TARGET_DIR=${1:-.}
+def find_small_directories(target_dir: str, min_size: int):
+    """Find all directories below minimum size"""
+    small_dirs: list[str] = []
+    
+    for root, dirs, _ in os.walk(target_dir):
+        # Skip .stfolder
+        if '.stfolder' in dirs:
+            dirs.remove('.stfolder')
+            
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            size = get_directory_size(dir_path)
+            if size < min_size:
+                small_dirs.append(dir_path)
+    
+    return small_dirs
 
-# Find directories below the minimum size, escaping special characters
-TO_DELETE=$(find "$TARGET_DIR" -type d -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder')
+def display_tree(path: str):
+    """Display directory tree using 'tree' command if available"""
+    try:
+        result = subprocess.run(['tree', path], capture_output=True, text=True)
+        print(result.stdout)
+    except FileNotFoundError:
+        print(f"Directory: {path}")
+        # Fallback to simple listing if tree is not available
+        for root, _, files in os.walk(path):
+            level = root.replace(path, '').count(os.sep)
+            indent = '  ' * level
+            print(f"{indent}{os.path.basename(root)}/")
+            for file in files:
+                print(f"{indent}  {file}")
 
-# Exit if no directories match the criteria
-if [[ -z "$TO_DELETE" ]]; then
-  echo "No directories below $MIN_SIZE KB in $TARGET_DIR."
-  exit 0
-fi
+def main():
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Find and optionally delete small directories')
+    parser.add_argument('--min', type=int, default=3096,
+                      help='minimum size in KB (default: 3096)')
+    parser.add_argument('target_dir', nargs='?', default='.',
+                      help='target directory to search (default: current directory)')
+    
+    args = parser.parse_args()
+    
+    # Convert target directory to absolute path
+    target_dir = os.path.abspath(args.target_dir)
+    
+    # Find small directories
+    small_dirs = find_small_directories(target_dir, args.min)
+    
+    if not small_dirs:
+        print(f"No directories below {args.min} KB in {target_dir}.")
+        return
+    
+    # Display directories that would be deleted
+    print(f"The following directories are below {args.min} KB and would be deleted:")
+    for dir_path in small_dirs:
+        print(f"\n{dir_path}:")
+        display_tree(dir_path)
+    
+    # Confirm deletion
+    while True:
+        confirm = input("\nAre you sure you want to delete these directories? [y/N] ").lower()
+        if confirm in ['y', 'n', '']:
+            break
+        print("Please answer 'y' or 'n'")
+    
+    if confirm == 'y':
+        for dir_path in small_dirs:
+            try:
+                shutil.rmtree(dir_path)
+                print(f"Deleted: {dir_path}")
+            except Exception as e:
+                print(f"Error deleting {dir_path}: {e}")
+        print("Directories deleted.")
+    else:
+        print("Operation canceled.")
 
-# Display directories that would be deleted using tree
-echo "The following directories are below $MIN_SIZE KB and would be deleted:"
-DELETE_WITHOUT_QUOTES=$(echo "$TO_DELETE" | sed "s/'/'\"'\"'/g")
-echo $DELETE_WITHOUT_QUOTES
-echo "$TO_DELETE_WITHOUT_QUOTES" | xargs -I"{}" tree "{}"
-
-# Confirm deletion
-read "CONFIRM?Are you sure you want to delete these directories? [y/N] "
-if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
-  echo "$TO_DELETE" | tr '\n' '\0' | xargs -0 -I{} rm -rf "{}"
-  echo "Directories deleted."
-else
-  echo "Operation canceled."
-fi
+if __name__ == "__main__":
+    main()
