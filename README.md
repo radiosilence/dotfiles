@@ -6,8 +6,6 @@
 
 ## Includes
 
-- minimal mise file that makes it work with nvm etc...
-- tmux
 - configs for:
   - beets
   - fish
@@ -15,6 +13,8 @@
   - helix
   - mise
   - starship
+  - git
+  - wezterm
 
 ## Install dependencies (macOS)
 
