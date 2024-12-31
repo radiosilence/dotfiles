@@ -5,7 +5,7 @@ cd "$(mktemp -d)" || exit
 SCRIPT_DIR="$(dirname "$0")"
 DOTFILES="$(dirname "$SCRIPT_DIR")"
 
-cmd() {
+using() {
   command -v "$1" >/dev/null 2>&1
 }
 
@@ -14,35 +14,35 @@ if [ -d "$DOTFILES" ]; then
   (cd "$DOTFILES" && git pull && ./install)
 fi
 
-if cmd mise; then
+if using mise; then
   echo "[upd] updating mise..."
   mise up
   rm -rf ~/.local/share/mise/shims && mise reshim
 fi
 
-if cmd sheldon; then
+if using sheldon; then
   echo "[upd] updating sheldon..."
   sheldon lock --update
 fi
 
-if cmd yt; then
+if using yt; then
   echo "[upd] updating yt-dlp..."
   yt-dlp --update-to nightly
 fi
 
-if cmd apt; then
+if using apt; then
   echo "[upd] updating apt..."
   sudo apt update
   sudo apt upgrade -y
   sudo apt autoremove -y
 fi
 
-if cmd dnf; then
+if using dnf; then
   echo "[upd] updating dnf..."
   sudo dnf update -y
 fi
 
-if cmd brew; then
+if using brew; then
   echo "[upd] updating brew..."
   brew bundle
   brew cu -af

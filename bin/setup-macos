@@ -4,9 +4,13 @@ echo "basename: [$(basename "$0")]"
 echo "dirname : [$(dirname "$0")]"
 echo "pwd     : [$(pwd)]"
 
+using() {
+    command -v "$1" >/dev/null 2>&1
+}
+
 export PATH="$(dirname "$0")/bin:$PATH"
 
-if ! command -v brew >/dev/null 2>&1; then
+if using brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
@@ -16,7 +20,7 @@ install-font "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist
 
 upd
 
-"$(dirname "$0")/install"
+"$(dirname "$0")/../install"
 
 if command -v rustup >/dev/null 2>&1; then
     rustup default stable
