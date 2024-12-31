@@ -20,12 +20,7 @@ if using mise; then
   rm -rf ~/.local/share/mise/shims && mise reshim
 fi
 
-if using sheldon; then
-  echo "[upd] updating sheldon..."
-  sheldon lock --update
-fi
-
-if using yt; then
+if using yt-dlp; then
   echo "[upd] updating yt-dlp..."
   yt-dlp --update-to nightly
 fi
