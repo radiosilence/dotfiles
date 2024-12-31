@@ -10,3 +10,7 @@ function take -d "Create a directory and set CWD"
         end
     end
 end
+
+function taketmp -d "Create a temporary directory and set CWD"
+    cd (mktemp -d)
+end
