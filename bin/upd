@@ -49,4 +49,5 @@ if cmd brew; then
   brew cleanup
   brew doctor
 fi
+
 cd - || exit
