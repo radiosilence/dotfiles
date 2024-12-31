@@ -28,12 +28,12 @@ for config in ~/.zsh.d/*.zsh; do
   . $config
 done
 
-if [ -d ~/.zsh.d.local ]; then
+if [ -e ~/.zsh.d.local ]; then
   for config in ~/.zsh.d.local/*.zsh; do
     . $config
   done
 fi
 
-export STARSHIP_CONFIG=~/.starship.toml
+export STARSHIP_CONFIG=~/.config/starship.toml
 
 eval "$(starship init zsh)"

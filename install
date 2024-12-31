@@ -9,7 +9,7 @@ link_dotfile() {
     echo "skipping $1 (link) "
     return
   fi
-  if [ -f "$HOME/$1" ]; then
+  if [ -e "$HOME/$1" ]; then
     echo "skipping $1 (file) "
     return
   fi
@@ -33,11 +33,11 @@ link_dotfile() {
 }
 
 link_confdir() {
-  if [ ! -d "$HOME/.config" ]; then
+  if [ ! -e "$HOME/.config" ]; then
     echo "creating ~/.config"
     mkdir "$HOME/.config"
   fi
-  if [ -d "$HOME/.config/$1" ]; then
+  if [ -e "$HOME/.config/$1" ]; then
     echo "skipping ~/.config/$1 (exists) "
     return
   fi
@@ -47,7 +47,7 @@ link_confdir() {
 
 install_dotfiles() {
   . "$HOME/.dotfiles-dir"
-  [ ! -d "$DOTFILES" ] && return
+  [ ! -e "$DOTFILES" ] && return
   echo "installing from $DOTFILES..."
   (
     cd "$DOTFILES" || exit
@@ -65,7 +65,7 @@ install_dotfiles() {
 }
 
 install_brewfile() {
-  if [ -d /Library ] && [ ! -f "$HOME/Brewfile" ]; then
+  if [ -e /Library ] && [ ! -e "$HOME/Brewfile" ]; then
     echo "linking Brewfile $DOTFILES/Brewfile -> ~/Brewfile"
     ln -s "$DOTFILES/Brewfile" "$HOME/Brewfile"
   fi
