@@ -46,7 +46,6 @@ link_confdir() {
 }
 
 install_dotfiles() {
-  . "$HOME/.dotfiles-dir"
   [ ! -e "$DOTFILES" ] && return
   echo "installing from $DOTFILES..."
   (
@@ -73,3 +72,4 @@ install_brewfile() {
 
 install_dotfiles "$DOTFILES"
 install_brewfile
+cd - || exit
