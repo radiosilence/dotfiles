@@ -14,6 +14,7 @@
   - ghostty
   - helix
   - mise
+  - starship
 
 ## Install dependencies (macOS)
 
