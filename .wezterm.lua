@@ -108,6 +108,6 @@ return {
   window_padding = { left = 2, right = 2, top = 2, bottom = 2 },
   window_close_confirmation = "NeverPrompt",
   set_environment_variables = {
-    PATH = "/opt/homebrew/bin:/usr/local/bin:" .. path
+    PATH = path .. "/opt/homebrew/bin:/usr/local/bin:"
   },
 }
