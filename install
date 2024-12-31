@@ -65,7 +65,7 @@ install_dotfiles() {
 }
 
 install_brewfile() {
-  if is_macos && [ ! -f "$HOME/Brewfile" ]; then
+  if [ -d /Library ] && [ ! -f "$HOME/Brewfile" ]; then
     echo "linking Brewfile $DOTFILES/Brewfile -> ~/Brewfile"
     ln -s "$DOTFILES/Brewfile" "$HOME/Brewfile"
   fi
