@@ -1,5 +1,4 @@
 if type -q bun
-    echo "SETTING BUN ALISASE"
     alias b='bun '
     alias bi='bun install '
     alias bt='bun test '
