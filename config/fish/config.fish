@@ -1,4 +1,1 @@
-#!/usr/bin/env fish
-
-# starship
-starship init fish | source
+fish_add_path -p ~/.dotfiles/bin
