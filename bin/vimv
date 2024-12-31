@@ -5,7 +5,8 @@ set -eu
 # USAGE: vimv [file1 file2]
 # https://github.com/thameera/vimv
 
-declare -r FILENAMES_FILE=$(mktemp "${TMPDIR:-/tmp}/vimv.XXXXXX")
+declare -r FILENAMES_FILE
+FILENAMES_FILE=$(mktemp "${TMPDIR:-/tmp}/vimv.XXXXXX")
 
 trap '{ rm -f "${FILENAMES_FILE}" ; }' EXIT
 
@@ -23,6 +24,7 @@ ${EDITOR:-vi} "${FILENAMES_FILE}"
 
 IFS=$'\r\n' GLOBIGNORE='*' command eval 'dest=($(cat "${FILENAMES_FILE}"))'
 
+# shellcheck disable=SC2154
 if ((${#src[@]} != ${#dest[@]})); then
     echo "WARN: Number of files changed. Did you delete a line by accident? Aborting.." >&2
     exit 1
