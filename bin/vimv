@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -eu
 
 # Lists the current directory's files in Vim, so you can edit it and save to rename them
