@@ -2,7 +2,6 @@
 cd "$(dirname "$0")" || exit
 DOTFILES=$(pwd)
 git pull
-echo "export DOTFILES=$DOTFILES" >~/.dotfiles-dir
 
 link_dotfile() {
   if [ -h "$HOME/$1" ]; then
@@ -70,6 +69,6 @@ install_brewfile() {
   fi
 }
 
-install_dotfiles "$DOTFILES"
+install_dotfiles
 install_brewfile
 cd - || exit
