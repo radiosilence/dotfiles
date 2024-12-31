@@ -34,3 +34,11 @@ Easy:
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ./dotfiles/install
 ```
+
+# Install SSH config
+
+Add to ~/.ssh/config:
+
+```
+Include ~/.dotfiles/ssh/*.conf
+```
