@@ -1,7 +1,9 @@
 #!/bin/sh
-cd "$(mktemp -d)" || exit
+set -e
 
-DOTFILES=~/.dotfiles
+cd "$(mktemp -d)" || exit
+SCRIPT_DIR="$(dirname "$0")"
+DOTFILES="$(dirname "$SCRIPT_DIR")"
 
 cmd() {
   command -v "$1" >/dev/null 2>&1
