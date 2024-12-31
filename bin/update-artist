@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 for file in $1; do
   [ -e "$file" ] || continue
