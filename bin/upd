@@ -38,7 +38,7 @@ fi
 
 if command -v brew >/dev/null 2>&1; then
   echo "[upd] updating brew..."
-  brew bundle --file ~/Brewfile
+  brew bundle
   brew cu -af
   brew cleanup
   brew doctor
