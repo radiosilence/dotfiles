@@ -69,6 +69,21 @@ install_brewfile() {
   fi
 }
 
+install_gitconfig() {
+  if ! grep '.dotfiles' ~/.gitconfig; then
+    printf "\n[include]\npath = ~/.dotfiles/git.d/*.conf\n" >>~/.gitconfig
+  fi
+}
+
+install_sshconfig() {
+  if ! grep '.dotfiles' ~/.ssh/config; then
+    printf "\nInclude ~/.dotfiles/ssh.d/*.conf\n" >>~/.ssh/config
+  fi
+}
+
 install_dotfiles
 install_brewfile
+install_sshconfig
+install_gitconfig
+
 cd - || exit
