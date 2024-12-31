@@ -3,40 +3,44 @@ cd "$(mktemp -d)" || exit
 
 DOTFILES=~/.dotfiles
 
+cmd() {
+  command -v "$1" >/dev/null 2>&1
+}
+
 if [ -d "$DOTFILES" ]; then
   echo "[upd] updating dotfiles $DOTFILES..."
   (cd "$DOTFILES" && git pull && ./install)
 fi
 
-if command -v mise >/dev/null 2>&1; then
+if cmd mise; then
   echo "[upd] updating mise..."
   mise up
   rm -rf ~/.local/share/mise/shims && mise reshim
 fi
 
-if command -v sheldon >/dev/null 2>&1; then
+if cmd sheldon; then
   echo "[upd] updating sheldon..."
   sheldon lock --update
 fi
 
-if command -v yt-dlp >/dev/null 2>&1; then
+if cmd yt; then
   echo "[upd] updating yt-dlp..."
   yt-dlp --update-to nightly
 fi
 
-if command -v apt >/dev/null 2>&1; then
+if cmd apt; then
   echo "[upd] updating apt..."
   sudo apt update
   sudo apt upgrade -y
   sudo apt autoremove -y
 fi
 
-if command -v dnf >/dev/null 2>&1; then
+if cmd dnf; then
   echo "[upd] updating dnf..."
   sudo dnf update -y
 fi
 
-if command -v brew >/dev/null 2>&1; then
+if cmd brew; then
   echo "[upd] updating brew..."
   brew bundle
   brew cu -af
