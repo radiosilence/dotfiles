@@ -9,7 +9,7 @@ import shutil
 def get_directory_size(path: str):
     """Calculate total size of a directory in KB"""
 
-    total = 0
+    total: float = 0
     try:
         for entry in os.scandir(path):
             if entry.is_file():
