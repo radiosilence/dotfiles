@@ -5,7 +5,7 @@ DOTFILES=~/.dotfiles
 
 if [ -d "$DOTFILES" ]; then
   echo "[upd] updating dotfiles $DOTFILES..."
-  (cd "$DOTFILES" && git pull)
+  (cd "$DOTFILES" && git pull && ./install)
 fi
 
 if command -v mise >/dev/null 2>&1; then
