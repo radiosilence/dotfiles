@@ -24,5 +24,10 @@ node = "lts"
 zig = "latest"
 
 [settings]
+paranoid = false
+not_found_auto_install = true
 experimental = true
-idiomatic_version_file = false
+idiomatic_version_file = true
+trusted_config_paths = ['~/Workspace']
+jobs = 8
+env_file = ".env"
