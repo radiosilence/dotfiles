@@ -14,7 +14,7 @@ using() {
 
 export PATH="$DIRNAME:$PATH"
 
-if using brew; then
+if ! using brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
@@ -22,7 +22,9 @@ install-font "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.00
 install-font "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip"
 install-font "https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip"
 
-upd
+brew bundle
+
+mise i
 
 "$DIRNAME/../install"
 
