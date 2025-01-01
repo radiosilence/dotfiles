@@ -94,11 +94,11 @@ verbs: [
     # By default, `rm` does the system rm, and completely removes
     # the file. If you prefer to have the file moved to the system
     # trash, you may use the ':trash' internal with the verb below:
-    # {
-    #     invocation: "rm"
-    #     internal: "trash"
-    #     leave_broot: false
-    # }
+    {
+        invocation: "rm"
+        execution: "trash {file}"
+        leave_broot: false
+    }
 
     # This verb lets you launch a terminal on ctrl-T
     # (on exit you'll be back in broot)
@@ -155,10 +155,25 @@ verbs: [
 
     # If you develop using git, you might like to often switch
     # to the git status filter:
-    # {
-    #     key: alt-g
-    #     execution: ":toggle_git_status"
-    # }
+    {
+        key: alt-g
+        execution: ":toggle_git_status"
+    }
+
+    {
+        key: alt-]
+        execution: ":panel_right"
+    }
+
+    {
+        key: alt-[
+        execution: ":panel_left_no_open"
+    }
+
+    {
+        key: alt-p
+        execution: ":toggle_preview"
+    }
 
     # You can reproduce the bindings of Norton Commander
     # on copying or moving to the other panel:

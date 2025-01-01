@@ -23,8 +23,8 @@
 # if you don't want the hidden files at a specific launch,
 # you can launch broot with `br -H`).
 # A popular flag is the `g` one which displays git related info.
-#
-# default_flags:
+
+default_flags: "-ipg"
 
 ###############################################################
 # Terminal's title
@@ -42,7 +42,7 @@
 # following line and change it according to
 # https://docs.rs/chrono/0.4.11/chrono/format/strftime/index.html
 #
-# date_time_format: %Y/%m/%d %R
+date_time_format: %d/%m/%Y %R
 
 ###############################################################
 # uncomment to activate modal mode
@@ -85,7 +85,7 @@ show_selection_mark: true
 # and set it to false or true if you notice the colors in
 # previewed images are too off.
 #
-# true_colors: false
+true_colors: true
 
 ###############################################################
 # Icons
@@ -93,7 +93,7 @@ show_selection_mark: true
 # (see https://dystroy.org/broot/icons for installation and
 # troubleshooting)
 #
-# icon_theme: vscode
+icon_theme: nerdfont
 
 ###############################################################
 # Special paths
@@ -204,7 +204,7 @@ content_search_max_file_size: 10MB
 # This makes it possible to use shortcuts like 'space-n', 
 # 'ctrl-alt-a-b', 'shift-space', etc.
 #
-enable_kitty_keyboard: false
+enable_kitty_keyboard: true
 
 ###############################################################
 # lines around matching line in filtered preview
@@ -240,18 +240,6 @@ imports: [
         ]
         # (un)comment to choose your preferred skin
         file: skins/dark-blue.hjson
-        //file: skins/catppuccin-macchiato.hjson
-        //file: skins/catppuccin-mocha.hjson
-        //file: skins/dark-gruvbox.hjson
-        //file: skins/dark-orange.hjson
-        //file: skins/solarized-dark.hjson
-    }
-
-    # This skin is imported when your terminal is light
-    {
-        luma: light
-        # (un)comment to choose your preferred skin
-        //file: skins/solarized-light.hjson
-        file: skins/white.hjson
+        // file: skins/dark-gruvbox.hjson
     }
 ]
