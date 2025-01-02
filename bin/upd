@@ -1,17 +1,12 @@
 #!/usr/bin/env fish
 
 taketmp
-set DOTFILES (dirname (dirname (status --current-filename)))
 
-echo "dotfiles: $DOTFILES"
-
-if test -d $DOTFILES
-    echo "[upd] updating dotfiles $DOTFILES..."
-    cd $DOTFILES
-    git pull
-    ./install
-    cd -
-end
+echo "[upd] updating ~/.dotfiles..."
+cd ~/.dotfiles
+git pull
+./install
+cd -
 
 if using mise
     echo "[upd] updating mise..."
