@@ -40,6 +40,13 @@ verbs: [
         execution: "beet import {directory}"
         leave_broot: false
     }
+    {
+        invocation: beet_import
+        shortcut: bif
+        apply_to: directory
+        execution: "beet import --flat {directory}"
+        leave_broot: false
+    }
 
     {
         invocation: prune
@@ -173,6 +180,26 @@ verbs: [
     {
         key: alt-p
         execution: ":toggle_preview"
+    }
+
+    {
+        key: alt-f
+        execution: ":stage_all_files"
+    }
+
+    {
+        key: alt-d
+        execution: ":stage_all_directories"
+    }
+
+    {
+        key: alt-c
+        execution: ":clear_stage"
+    }
+
+    {
+        key: ctrl-r
+        execution: ":refresh"
     }
 
     # You can reproduce the bindings of Norton Commander
