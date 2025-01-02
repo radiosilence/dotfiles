@@ -1,9 +1,7 @@
 #!/bin/sh
 
 tmpdir=$(mktemp -d)
-mkdir -p "$tmpdir"
 aria2c "$1" -d "$tmpdir"
 unzip "$tmpdir"/*.zip -d "$tmpdir"
 find "$tmpdir" -type f \( -name "*.otf" -o -name "*.ttf" \) -exec cp -v {} ~/Library/Fonts \;
 echo "done."
-rm -rf "$tmpdir"
