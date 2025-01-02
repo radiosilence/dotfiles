@@ -14,7 +14,7 @@ set candidates (find $target_dir -type d -exec du -sk {} + | awk -v min=$min_siz
 set -l to_delete
 
 for candidate in $candidates
-    if test $candidate = "."; or string match -rq ".*.(stfolder|git).*" $candidate
+    if test $candidate = "."; or string match -rq "\.*.(stfolder|git).*" $candidate
         continue
     end
     set to_delete $to_delete $candidate
