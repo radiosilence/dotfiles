@@ -33,13 +33,13 @@ end
 
 read -P "Are you sure you want to delete these directories? [y/N] " confirm
 
-if test $confirm = y
+if string match -i y $confirm
     for dir in $to_delete
         if test $dir = "."
             continue
         end
         if test -d $dir
-            echo "Deleting $dir..."
+            echo "Deleting $dir"
             rm -rf $dir
         end
     end
