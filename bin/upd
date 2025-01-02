@@ -1,7 +1,5 @@
 #!/usr/bin/env fish
 
-taketmp
-
 echo "[upd] updating ~/.dotfiles..."
 cd ~/.dotfiles
 git pull
