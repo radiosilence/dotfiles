@@ -1,4 +1,4 @@
-if type -q pnpm
+if using pnpm
     alias p='pnpm '
     alias pi='pnpm install '
     alias pt='pnpm test '

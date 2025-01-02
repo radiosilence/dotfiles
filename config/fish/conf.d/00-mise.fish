@@ -1,3 +1,3 @@
-if type -q mise
+if using mise
     mise activate fish | source
 end

@@ -1,4 +1,4 @@
-if type -q bat
+if using bat
     alias bat "bat \
         --map-syntax='*.kubeconfig:YAML' \
         --map-syntax='config:YAML'"

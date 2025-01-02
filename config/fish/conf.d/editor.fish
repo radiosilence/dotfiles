@@ -1,6 +1,6 @@
-if type -q hx
+if using hx
     set -gx EDITOR hx
-else if type -q vim
+else if using vim
     set -gx EDITOR vim
 else
     set -gx EDITOR vi

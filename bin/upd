@@ -1,49 +1,47 @@
-#!/bin/sh
-set -e
+#!/usr/bin/env fish
 
-cd "$(mktemp -d)" || exit
-SCRIPT_DIR="$(dirname "$0")"
-DOTFILES="$(dirname "$SCRIPT_DIR")"
+taketmp
+set DOTFILES (dirname (dirname (status --current-filename)))
 
-using() {
-  command -v "$1" >/dev/null 2>&1
-}
+echo "dotfiles: $DOTFILES"
 
-if [ -d "$DOTFILES" ]; then
-  echo "[upd] updating dotfiles $DOTFILES..."
-  (cd "$DOTFILES" && git pull && ./install)
-fi
+if test -d $DOTFILES
+    echo "[upd] updating dotfiles $DOTFILES..."
+    cd $DOTFILES
+    git pull
+    ./install
+    cd -
+end
 
-if using mise; then
-  echo "[upd] updating mise..."
-  mise up
-  rm -rf ~/.local/share/mise/shims && mise reshim
-fi
+if using mise
+    echo "[upd] updating mise..."
+    mise up
+    rm -rf ~/.local/share/mise/shims
+    mise reshim
+end
 
-if using yt-dlp; then
-  echo "[upd] updating yt-dlp..."
-  yt-dlp --update-to nightly
-fi
+if using yt-dlp
+    echo "[upd] updating yt-dlp..."
+    yt-dlp --update-to nightly
+end
 
-if using apt; then
-  echo "[upd] updating apt..."
-  sudo apt update
-  sudo apt upgrade -y
-  sudo apt autoremove -y
-fi
+if using apt
+    echo "[upd] updating apt..."
+    sudo apt update
+    sudo apt upgrade -y
+    sudo apt autoremove -y
+end
 
-if using dnf; then
-  echo "[upd] updating dnf..."
-  sudo dnf update -y
-fi
+if using dnf
+    echo "[upd] updating dnf..."
+    sudo dnf update -y
+end
 
-if using brew; then
-  echo "[upd] updating brew..."
-  brew bundle
-  brew upgrade
-  brew cu -af
-  brew cleanup
-  brew doctor
-fi
-
-cd - || exit
+if using brew
+    echo "[upd] updating brew..."
+    brew bundle
+    brew upgrade
+    brew cu -af
+    brew cleanup
+    brew doctor
+end

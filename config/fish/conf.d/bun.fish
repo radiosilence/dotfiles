@@ -1,4 +1,4 @@
-if type -q bun
+if using bun
     alias b='bun '
     alias bi='bun install '
     alias bt='bun test '

@@ -1,3 +1,3 @@
-if type -q zoxide
+if using zoxide
     zoxide init fish | source
 end
