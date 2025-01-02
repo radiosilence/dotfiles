@@ -4,20 +4,21 @@
 set my_string "default string"
 set my_ints 42 41
 set my_bool false
-
+set script (basename (status -f))
 set -l options \
     s/my-string= \
     i/my-int=+ \
     b/my-bool \
     h/help
 
+echo $script
 # Parse command line arguments
-argparse --name=myscript $options -- $argv
+argparse --name=$script $options -- $argv
 or exit
 
 function show_help
     echo "\
-    Usage: $(basename (status -f)) [OPTIONS] <files>
+    Usage: $(basename $script) [OPTIONS] <files>
     Options:
         -s/--my-string=STRING   Set a custom string (default: $my_string)
         -i/--my-int=NUMBER      Set custom integers (default: $my_ints)
