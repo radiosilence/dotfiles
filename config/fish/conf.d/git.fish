@@ -1,3 +1,5 @@
+using git || exit
+
 function git_current_branch
     git symbolic-ref -q HEAD | sed -e 's|^refs/heads/||'
 end
@@ -72,7 +74,6 @@ alias gfg='git ls-files | grep'
 
 alias gg='git gui citool'
 alias gga='git gui citool --amend'
-
 
 function ggl
     if test (count $argv) -gt 1

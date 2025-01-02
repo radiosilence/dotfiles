@@ -1,3 +1,3 @@
-if using fzf
-    fzf --fish | source
-end
+using fzf || exit
+
+fzf --fish | source

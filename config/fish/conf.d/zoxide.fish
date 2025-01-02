@@ -1,3 +1,3 @@
-if using zoxide
-    zoxide init fish | source
-end
+using zoxide || exit
+
+zoxide init fish | source
