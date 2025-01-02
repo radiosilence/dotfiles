@@ -10,13 +10,22 @@ if set -q _flag_min_size
     set min_size $_flag_min_size
 end
 
-set candidates (find $target_dir -type d -exec du -sk {} + | awk -v min=$min_size '$1 < min { $1=""; sub(/^ /, ""); print }')
+function get_path
+    echo $argv[1] | awk '{print $2}'
+end
 
-for candidate in $candidates
-    if test $candidate = "."; or string match -rq "\.*.(stfolder|git).*" $candidate
+function get_size
+    echo $argv[1] | awk '{print $1 * 1024}' | numfmt --to=iec
+end
+
+set candidates (find $target_dir -type d -exec du -sk {} + | awk -v min=$min_size '$1 < min { print }')
+
+for item in $candidates
+    set path (get_path $item)
+    if test $path = "."; or string match -rq "\.*.(stfolder|git).*" $path
         continue
     end
-    set to_delete $to_delete $candidate
+    set to_delete $to_delete $item
 end
 
 if test (count $to_delete) = 0
@@ -26,20 +35,21 @@ end
 
 echo "The following directories are below $min_size kB and would be deleted:"
 
-for dir in $to_delete
-    echo (du -h $dir | tail -n 1)
+for item in $to_delete
+    echo "$(get_path $item) ($(get_size $item))"
 end
 
 read -P "Are you sure you want to delete these directories? [y/N] " confirm
 
 if string match -i y $confirm
-    for dir in $to_delete
-        if test $dir = "."
+    for $item in $to_delete
+        set path (get_path $item)
+        if test $path = "."
             continue
         end
-        if test -d $dir
-            echo "Deleting $dir"
-            rm -rf $dir
+        if test -d $path
+            echo "Deleting $path"
+            rm -rf $path
         end
     end
     echo "Directories deleted."
