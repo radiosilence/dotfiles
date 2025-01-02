@@ -1,0 +1,68 @@
+#!/usr/bin/env fish
+
+# # Initialize default values
+set my_string "default string"
+set my_int 42 41
+set my_bool false
+
+set -l options \
+    s/my-string=? \
+    (fish_opt -s i -l my-int -r --multiple-vals) \
+    b/my-bool \
+    h/help
+
+echo "options: $options"
+
+# Parse command line arguments
+argparse --name=myscript $options -- $argv or exit
+
+# Show help message if requested
+if set -q _flag_help
+    echo "Usage: myscript [OPTIONS] <file>"
+    echo "Options:"
+    echo "  -s/--my-string=STRING   Set a custom string (default: $my_string)"
+    echo "  -i/--my-int=NUMBER      Set a custom integer (default: $my_int)"
+    echo "  -b/--my-bool            Enable boolean flag"
+    echo "  -h/--help               Show this help message"
+    exit 0
+end
+
+echo "Parsed arguments: $argv[1]"
+
+# Update values based on provided flags
+if set -q _flag_my_string
+    set my_string $_flag_my_string
+end
+
+if set -q _flag_my_int
+    set my_int $_flag_my_int
+end
+
+if set -q _flag_my_bool
+    set my_bool true
+end
+
+# Use the values in your script
+echo "String value: $my_string"
+echo "Integer value: $my_int"
+echo "Boolean value: $my_bool"
+
+# Example usage of the values in a function
+function do_something
+    echo "Doing something with:"
+    echo "- String: $my_string"
+    echo "- Integer:"
+
+    for item in $my_int
+        echo "  - $item"
+    end
+
+    if test "$my_bool" = true
+        echo "- Boolean flag is enabled!"
+    else
+        echo "- Boolean flag is disabled!"
+    end
+end
+
+# Call the function
+do_something
