@@ -5,7 +5,7 @@ set -e
 DIRNAME=$(DIRNAME "$0")
 
 echo "basename: [$(basename "$0")]"
-echo "dir : [$DIRNAME]"
+echo "dir     : [$DIRNAME]"
 echo "pwd     : [$(pwd)]"
 
 using() {
