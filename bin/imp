@@ -1,15 +1,14 @@
-#!/bin/sh
-set -e
+#!/usr/bin/env fish
 
-dst=$(mktemp -d)
-echo "temp dst: $dst"
-[ -d "$dst" ] && rm -r "$dst"
-mkdir -p "$dst"
-echo "downloading..."
-curl "$1" -o "$dst"/dl.zip
-echo "unzipping $dst/dl.zip"
-unzip -d "$dst" "$dst"/dl.zip
-echo "removing $dst/dl.zip"
-rm "$dst"/dl.zip
-echo "importing $dst..."
-beet import "$dst" -I
+for url in $argv
+    set -l dst (mktemp -d)
+    echo [dir] $dst
+
+    echo [dl] $url...
+    curl $url -o $dst/dl.zip
+
+    unzip -d $dst/album $dst/dl.zip
+
+    echo [import] $dst...
+    beet import $dst/album -I
+end
