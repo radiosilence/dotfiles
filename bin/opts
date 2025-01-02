@@ -2,7 +2,7 @@
 
 # # Initialize default values
 set my_string "default string"
-set my_int 42 41
+set my_ints 42 41
 set my_bool false
 
 set -l options \
@@ -17,12 +17,12 @@ or exit
 
 function show_help
     echo "\
-Usage: $(basename (status -f)) [OPTIONS] <files>
-Options:
-    -s/--my-string=STRING   Set a custom string (default: $my_string)
-    -i/--my-int=NUMBER      Set custom integers (default: $my_int)
-    -b/--my-bool            Enable boolean flag
-    -h/--help               Show this help message"
+    Usage: $(basename (status -f)) [OPTIONS] <files>
+    Options:
+        -s/--my-string=STRING   Set a custom string (default: $my_string)
+        -i/--my-int=NUMBER      Set custom integers (default: $my_ints)
+        -b/--my-bool            Enable boolean flag
+        -h/--help               Show this help message"
     exit 0
 end
 
@@ -36,8 +36,8 @@ if set -q _flag_my_string
     set my_string $_flag_my_string
 end
 
-if set -q _flag_my_int
-    set my_int $_flag_my_int
+if set -q _flag_my_ints
+    set my_ints $_flag_my_ints
 end
 
 if set -q _flag_my_bool
@@ -54,7 +54,7 @@ set files $argv
 
 # Use the values in your script
 echo "String value: $my_string"
-echo "Integer value: $my_int"
+echo "Integer value: $my_ints"
 echo "Boolean value: $my_bool"
 
 # Example usage of the values in a function
@@ -63,7 +63,7 @@ function do_something
     echo "- String: $my_string"
     echo "- Integer:"
 
-    for item in $my_int
+    for item in $my_ints
         echo "  - $item"
     end
 
