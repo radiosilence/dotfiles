@@ -15,9 +15,8 @@ set -l options \
 argparse --name=myscript $options -- $argv
 or exit
 
-# Show help message if requested
-if set -q _flag_help
-    echo "Usage: myscript [OPTIONS] <files>"
+function show_help
+    echo "Usage: $(basename (status -f)) [OPTIONS] <files>"
     echo "Options:"
     echo "  -s/--my-string=STRING   Set a custom string (default: $my_string)"
     echo "  -i/--my-int=NUMBER      Set custom integers (default: $my_int)"
@@ -26,7 +25,10 @@ if set -q _flag_help
     exit 0
 end
 
-echo "Parsed arguments: $argv[1]"
+# Show help message if requested
+if set -q _flag_help
+    show_help
+end
 
 # Update values based on provided flags
 if set -q _flag_my_string
@@ -42,7 +44,8 @@ if set -q _flag_my_bool
 end
 
 if test (count $argv) -eq 0
-    echo "Error: No files provided"
+    printf "Error: No files provided\n\n"
+    show_help
     exit 1
 end
 
