@@ -1,33 +1,39 @@
-#!/bin/sh
+#!/usr/bin/env fish
 # Default bitrate
-BITRATE="160"
-
+set bitrate 160
+set -l dirs .
+set -l options \
+    b/bitrate= \
+    h/help
 # Function to display usage
-usage() {
-  echo "Usage: $0 <directory> [-b <bitrate>]"
-  echo "  directory: Path to audio files (required)"
-  echo "  -b: Bitrate for OPUS conversion (optional, default: 160)"
-  echo "  Example: $0 /path/to/audio -b 320"
-  exit 1
-}
+function show_help
+    echo "Usage: $0 <directory> [-b <bitrate>]"
+    echo "  directory: Path to audio files (required)"
+    echo "  -b: Bitrate for OPUS conversion (optional, default: 160)"
+    echo "  Example: $0 /path/to/audio -b 320"
+    exit 1
 
-# Parse bitrate flag if provided
-while getopts ":b:" opt; do
-  case ${opt} in
-  b)
-    BITRATE="$OPTARG"
-    ;;
-  \?)
-    echo "Invalid option: $OPTARG" 1>&2
-    usage
-    ;;
-  :)
-    echo "Invalid option: $OPTARG requires an argument" 1>&2
-    usage
-    ;;
-  esac
-done
+end
 
-for file in *.flac; do
-  ffmpeg -i "$file" -c:a libopus -b:a "${BITRATE}"k "${file%.flac}.$BITRATE.opus"
-done
+# Parse command line arguments
+argparse --name=myscript $options -- $argv
+or exit
+
+# Update values based on provided flags
+if set -q _flag_bitrate
+    set bitrate $_flag_bitrate
+end
+
+if test (count $argv) -gt 0
+    set -l dirs $argv
+end
+
+echo "Directories: $dirs"
+echo "Bitrate: $bitrate kbps"
+
+for dir in $dirs
+    echo "Converting files in $dir to OPUS format at $bitrate kbps..."
+    for file in $dir/*.{flac,alac,mp3,aiff,wav}
+        ffmpeg -i "$file" -c:a libopus -b:a "$bitrate"k $(path basename -E $file).$bitrate.opus
+    end
+end
