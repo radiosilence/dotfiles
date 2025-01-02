@@ -7,7 +7,7 @@ if test -z $argv[1]
     exit 1
 end
 
-set pid (lsof -ti :"$port")
+set pid (lsof -ti ":$port")
 
 if test -z "$pid"
     echo "No process is listening on port $port"
