@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Default bitrate
 BITRATE="160"
 
