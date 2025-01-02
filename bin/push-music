@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 SRC=/Volumes/Turtlehead/music
 DEST=oldboy.local:/mnt/kontent/music
 
