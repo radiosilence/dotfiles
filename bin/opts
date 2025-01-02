@@ -16,12 +16,13 @@ argparse --name=myscript $options -- $argv
 or exit
 
 function show_help
-    echo "Usage: $(basename (status -f)) [OPTIONS] <files>"
-    echo "Options:"
-    echo "  -s/--my-string=STRING   Set a custom string (default: $my_string)"
-    echo "  -i/--my-int=NUMBER      Set custom integers (default: $my_int)"
-    echo "  -b/--my-bool            Enable boolean flag"
-    echo "  -h/--help               Show this help message"
+    echo "\
+Usage: $(basename (status -f)) [OPTIONS] <files>
+Options:
+    -s/--my-string=STRING   Set a custom string (default: $my_string)
+    -i/--my-int=NUMBER      Set custom integers (default: $my_int)
+    -b/--my-bool            Enable boolean flag
+    -h/--help               Show this help message"
     exit 0
 end
 
