@@ -1,3 +1,3 @@
-if type -q kubecolor
+if using kubecolor
     alias 'kubectl=kubecolor '
 end

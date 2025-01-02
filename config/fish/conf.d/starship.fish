@@ -1,4 +1,4 @@
 set -gx STARSHIP_CONFIG ~/.config/starship.toml
-if type -q starship
+if using starship
     starship init fish | source
 end

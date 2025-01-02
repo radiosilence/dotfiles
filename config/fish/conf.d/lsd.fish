@@ -1,4 +1,4 @@
-if type -q lsd
+if using lsd
     alias lsd='lsd -A --color=always --icon=always --hyperlink=auto '
     alias l='lsd '
     alias ls='lsd '

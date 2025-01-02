@@ -1,4 +1,3 @@
-
-if type -q fzf
+if using fzf
     fzf --fish | source
 end
