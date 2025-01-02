@@ -40,6 +40,7 @@ fi
 if using brew; then
   echo "[upd] updating brew..."
   brew bundle
+  brew upgrade
   brew cu -af
   brew cleanup
   brew doctor
