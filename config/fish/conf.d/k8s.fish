@@ -1,3 +1,3 @@
-if using kubecolor
-    alias 'kubectl=kubecolor '
-end
+using kubecolor || exit
+
+alias 'kubectl=kubecolor '

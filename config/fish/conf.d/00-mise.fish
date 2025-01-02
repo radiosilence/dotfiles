@@ -1,3 +1,3 @@
-if using mise
-    mise activate fish | source
-end
+using mise || exit
+
+mise activate fish | source
