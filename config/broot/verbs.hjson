@@ -52,8 +52,8 @@ verbs: [
         invocation: prune
         shortcut: pr
         apply_to: directory
-        execution: "prune {directory}"
         leave_broot: false
+        external: "prune {directory}"
     }
     # Example 1: launching `tail -n` on the selected file (leaving broot)
     # {
