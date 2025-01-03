@@ -10,10 +10,13 @@ paths:
   comp: Various Artists/$album%aunique{} [$format]/$disc$track. $artist - $title
 plugins:
   - ftintitle
+  - discogs
   - fetchart
   - embedart
   - importadded
   - yearfixer
+discogs:
+  index_tracks: true
 replace:
   '[\\/]': "-"
   '^\.': "-"
