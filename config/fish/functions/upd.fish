@@ -1,10 +1,6 @@
 function upd
-
     echo "[upd] updating ~/.dotfiles..."
-    cd ~/.dotfiles
-    git pull
-    ./install
-    cd -
+    sh ~/.dotfiles/install
 
     if using mise
         echo "[upd] updating mise..."
