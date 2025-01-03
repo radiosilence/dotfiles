@@ -29,7 +29,7 @@ function prune
 
     if test (count $to_delete) = 0
         echo "No directories below $min_size kB in $target_dir"
-        exit 1
+        return 1
     end
 
     echo "The following directories are below $min_size kB and would be deleted:"
