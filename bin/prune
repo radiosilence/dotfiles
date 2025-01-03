@@ -1,4 +1,4 @@
-#!/usr/bin/env/fish
+#!/usr/bin/env fish
 
 set min_size 3096
 set target_dir .
@@ -30,7 +30,7 @@ end
 
 if test (count $to_delete) = 0
     echo "No directories below $min_size kB in $target_dir"
-    return 1
+    exit 1
 end
 
 echo "The following directories are below $min_size kB and would be deleted:"
