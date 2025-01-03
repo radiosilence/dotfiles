@@ -1,14 +1,17 @@
 #!/bin/sh
 cd "$(dirname "$0")" || exit
 DOTFILES=~/.dotfiles
-git pull
+(cd $DOTFILES && git pull)
 
 link_dotfile() {
+  if [ "$1" = "." ] || [ "$1" = ".." ]; then
+    return
+  fi
   if [ -h "$HOME/$1" ]; then
     echo "skipping $1 (link) "
     return
   fi
-  if [ -e "$HOME/$1" ]; then
+  if [ -f "$HOME/$1" ]; then
     echo "skipping $1 (file) "
     return
   fi
@@ -37,8 +40,8 @@ link_confdir() {
     mkdir "$HOME/.config"
   fi
   if [ -e "$HOME/.config/$1" ]; then
-    echo "skipping ~/.config/$1 (exists) "
-    return
+    echo "rm ~/.config/$1"
+    rm -rf "$HOME/.config/$1"
   fi
   echo "linking $PWD/$1 --> ~/.config/$1"
   ln -s "$PWD/$1" "$HOME/.config/$1"

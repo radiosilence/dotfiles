@@ -12,7 +12,6 @@ function show_help
     echo "  -b: Bitrate for OPUS conversion (optional, default: 160)"
     echo "  Example: $0 /path/to/audio -b 320"
     exit 1
-
 end
 
 # Parse command line arguments
