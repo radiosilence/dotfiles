@@ -22,6 +22,7 @@ firebase = "latest"
 gcloud = "latest"
 node = "lts"
 zig = "latest"
+"ubi:grafana/jsonnet-language-server" = "latest"
 
 [settings]
 paranoid = false
