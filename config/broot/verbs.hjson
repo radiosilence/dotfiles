@@ -41,6 +41,12 @@ verbs: [
         leave_broot: false
     }
     {
+        invocation: open
+        execution: "open {file}"
+        leave_broot: false
+    }
+    
+    {
         invocation: beet_import
         shortcut: bif
         apply_to: directory
@@ -200,6 +206,11 @@ verbs: [
     {
         key: ctrl-r
         execution: ":refresh"
+    }
+
+    {
+        key: alt-t
+        execution: ":toggle_tree"
     }
 
     # You can reproduce the bindings of Norton Commander
