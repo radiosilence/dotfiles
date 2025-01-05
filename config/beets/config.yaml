@@ -6,7 +6,7 @@ import:
   move: true
   copy: false
 paths:
-  default: $albumartist/%if{$year,($year) }$album [$format]/$disc$track. $artist - $title
+  default: $albumartist/%if{$year,($year) }$album%aunique{} [$format]/$disc$track. $artist - $title
   comp: Various Artists/$album%aunique{} [$format]/$disc$track. $artist - $title
 plugins:
   - ftintitle
