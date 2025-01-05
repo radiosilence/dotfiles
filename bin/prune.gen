@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Create a temporary directory with various files and nested structures
+create_test_structure() {
+    # Create base temp directory
+    TEST_DIR=$(mktemp -d)
+    echo "Created test directory: $TEST_DIR"
+
+    # Create nested directories
+    mkdir -p "$TEST_DIR/dir1/subdir1"
+    mkdir -p "$TEST_DIR/dir1/subdir2"
+    mkdir -p "$TEST_DIR/dir2/subdir1"
+    mkdir -p "$TEST_DIR/emptydir"
+
+    # Create some small files
+    echo "Small file 1" > "$TEST_DIR/dir1/small1.txt"
+    echo "Small file 2" > "$TEST_DIR/dir1/subdir1/small2.txt"
+    echo "Small file 3" > "$TEST_DIR/dir2/small3.txt"
+
+    # Create some larger files
+    dd if=/dev/zero of="$TEST_DIR/dir1/large1.bin" bs=1M count=10 2>/dev/null
+    dd if=/dev/zero of="$TEST_DIR/dir2/subdir1/large2.bin" bs=1M count=20 2>/dev/null
+
+    # Create some files with spaces and special characters
+    touch "$TEST_DIR/dir1/file with spaces.txt"
+    touch "$TEST_DIR/dir1/file_with_underscore.txt"
+    touch "$TEST_DIR/dir1/file-with-dashes.txt"
+
+    echo "$TEST_DIR"
+}
+
+# Run the function and store the path
+TEST_PATH=$(create_test_structure)
+echo "Test directory created at: $TEST_PATH"
+echo "You can remove it with: rm -rf $TEST_PATH"
