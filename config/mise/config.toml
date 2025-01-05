@@ -24,6 +24,7 @@ node = "lts"
 zig = "latest"
 "ubi:grafana/jsonnet-language-server" = "latest"
 "ubi:junegunn/fzf" = "latest"
+perl = "latest"
 
 [settings]
 paranoid = false
