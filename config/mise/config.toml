@@ -25,6 +25,8 @@ zig = "latest"
 "ubi:grafana/jsonnet-language-server" = "latest"
 "ubi:junegunn/fzf" = "latest"
 perl = "latest"
+terraform = "latest"
+terraform-ls = "latest"
 
 [settings]
 paranoid = false
