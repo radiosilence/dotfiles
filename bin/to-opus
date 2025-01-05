@@ -1,18 +1,10 @@
 #!/usr/bin/env fish
 # Default bitrate
+
 set bitrate 160
-set -l dirs .
+set -l dir .
 set -l options \
-    b/bitrate= \
-    h/help
-# Function to display usage
-function show_help
-    echo "Usage: $0 <directory> [-b <bitrate>]"
-    echo "  directory: Path to audio files (required)"
-    echo "  -b: Bitrate for OPUS conversion (optional, default: 160)"
-    echo "  Example: $0 /path/to/audio -b 320"
-    exit 1
-end
+    b/bitrate=
 
 # Parse command line arguments
 argparse --name=myscript $options -- $argv
@@ -23,16 +15,11 @@ if set -q _flag_bitrate
     set bitrate $_flag_bitrate
 end
 
-if test (count $argv) -gt 0
-    set -l dirs $argv
+if test (count $argv) -eq 0
+    set -l dir $argv[0]
 end
 
-echo "Directories: $dirs"
 echo "Bitrate: $bitrate kbps"
+echo "Dir:" $dir
 
-for dir in $dirs
-    echo "Converting files in $dir to OPUS format at $bitrate kbps..."
-    for file in $dir/*.{flac,alac,mp3,aiff,wav}
-        ffmpeg -i "$file" -c:a libopus -b:a "$bitrate"k $(path basename -E $file).$bitrate.opus
-    end
-end
+find . -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.flac" -o name "*.m4a" \) -exec ffmpeg -i {} -c:a libopus -b:a "$bitrate"k "{}.opus" \; -exec rm {} \;
