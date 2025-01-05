@@ -31,6 +31,7 @@ go-jsonnet = "latest"
 jb = "latest"
 kubecolor = "latest"
 starship = "latest"
+gitleaks = "latest"
 
 [settings]
 paranoid = false
