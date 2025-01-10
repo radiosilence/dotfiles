@@ -7,6 +7,8 @@ create_test_structure() {
 
     # Create nested directories
     mkdir -p "$TEST_DIR/dir1/subdir1"
+    mkdir -p "$TEST_DIR/largdir1"
+    mkdir -p "$TEST_DIR/largedir2/subdir1"
     mkdir -p "$TEST_DIR/dir with spaces1/subdir2"
     mkdir -p "$TEST_DIR/dir1/subdir2 with spaces"
     mkdir -p "$TEST_DIR/dir2/subdir1/2/3/4/"
@@ -20,8 +22,10 @@ create_test_structure() {
     echo "Small file 3" >"$TEST_DIR/dir2/small3.txt"
 
     # Create some larger files
-    dd if=/dev/zero of="$TEST_DIR/dir1/large1.bin" bs=1M count=10 2>/dev/null
-    dd if=/dev/zero of="$TEST_DIR/dir2/subdir1/large2.bin" bs=1M count=20 2>/dev/null
+    dd if=/dev/zero of="$TEST_DIR/largdir1/large1.wav" bs=1M count=210 2>/dev/null
+    dd if=/dev/zero of="$TEST_DIR/dir1/small1.jpg" bs=1M count=1 2>/dev/null
+    dd if=/dev/zero of="$TEST_DIR/dir1/subdir1/small2.jpg" bs=1M count=2 2>/dev/null
+    dd if=/dev/zero of="$TEST_DIR/largedir2/subdir1/large2.aiff" bs=1M count=50 2>/dev/null
 
     # Create some files with spaces and special characters
     touch "$TEST_DIR/dir1/file with spaces.txt"
