@@ -2,11 +2,6 @@
 
 ---
 
-> **"Organized Chaos" for Your Terminal Setup**  
-> _- Keep it clean, keep it lean, and make it sparkle._
-
----
-
 ## ⚡ Requirements
 
 | 📝 Requirement                |
@@ -25,7 +20,7 @@ This repository contains configuration files for:
 | 🐟 **fish**     | Friendly interactive shell |
 | 👻 **ghostty**  | Minimal terminal theme     |
 | 🖌️ **helix**    | Text editor                |
-| 🏋️‍♂️ **mise**     | Modern environment manager |
+| 🛠️ **mise**     | Modern environment manager |
 | 🚀 **starship** | Prompt for any shell       |
 | 🔧 **git**      | Version control            |
 | 🔐 **ssh**      | Secure shell               |
