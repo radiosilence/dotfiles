@@ -2,6 +2,7 @@
 MIN_SIZE=${MIN_SIZE:-3096}
 TARGET_DIR=${1:-.}
 RESULTS=$(find "$TARGET_DIR" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
+COUNT=$(echo "$RESULTS" | wc -l)
 
 if [ -z "$RESULTS" ]; then
     printf "No directories below %d KB in %s\n" "$MIN_SIZE" "$TARGET_DIR"
@@ -21,7 +22,7 @@ read -r REPLY
 
 if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
     echo "$RESULTS" | tr '\n' '\0' | xargs -0 -I{} rm -rf "{}"
-    printf "\n%d Directories deleted.\n" "$COUNT"
+    printf "\n%d directories deleted.\n" "$COUNT"
 else
     printf "\nOperation canceled, %d directories spared.\n" "$COUNT"
 fi
