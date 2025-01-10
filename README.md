@@ -1,39 +1,51 @@
-# dotfiles
+# ✨ Dotfiles ✨
 
 ## Requirements
 
-- Recent version of fish
+- 📄 Recent version of **fish**
 
 ## Includes
 
-- configs for:
-  - beets
-  - fish
-  - ghostty
-  - helix
-  - mise
-  - starship
-  - git
-  - ssh
-  - wezterm
-- some posix compliant utility scripts in `./bin`
-- sane default packages for various stuff
+This repository contains configuration files for:
 
-## Install dependencies (macOS)
+- 🎧 **beets** (music library manager)
+- 🐟 **fish** (friendly interactive shell)
+- 👻 **ghostty** (minimal terminal)
+- 🧬 **helix** (text editor)
+- 🛠️ **mise** (modern environment manager)
+- 🚀 **starship** (prompt for any shell)
+- 🔧 **git** (version control)
+- 🔐 **ssh** (secure shell)
+- 💻 **wezterm** (terminal emulator)
 
-Easy:
+Additional features:
 
-```
+- 💾 POSIX-compliant utility scripts in `./bin`
+- 🔄 Sane default packages for various applications
+
+---
+
+## 🔧 Install Dependencies (macOS)
+
+Quick setup:
+
+```sh
 ~/.dotfiles/bin/setup-macos
 ```
 
-- [homebrew](https://brew.sh/) a package manager for macOS
-- [mise](https://mise.jdx.dev) a thing to replace nvm, rvm, etc. (`brew install mise`)
-- [fzf](https://github.com/junegunn/fzf) fuzzy matcher for anything (`brew install fzf`)
+### Included Tools
 
-## Install
+- [🍺 Homebrew](https://brew.sh/) - a package manager for macOS
+- [🛠️ Mise](https://mise.jdx.dev) - a replacement for nvm, rvm, etc. (`brew install mise`)
+- [👀 Fzf](https://github.com/junegunn/fzf) - a fuzzy matcher for everything (`brew install fzf`)
+
+---
+
+## ⚙️ Install
+
+Clone the repository and run the installer:
 
 ```sh
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
-./dotfiles/install
+~/.dotfiles/install
 ```
