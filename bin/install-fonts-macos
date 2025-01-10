@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 for url in "$@"; do
   TMP_DIR=$(mktemp -d)

@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 BITRATE="${BITRATE:-160}"
 DIR="${1:-.}"

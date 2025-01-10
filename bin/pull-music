@@ -1,4 +1,6 @@
 #!/bin/sh
+set -eu
+
 SRC=oldboy:/mnt/kontent/music
 DST=/Volumes/Turtlehead/music
 
