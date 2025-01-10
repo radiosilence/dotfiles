@@ -1,25 +1,9 @@
-#!/usr/bin/env fish
-# Default bitrate
+#!/bin/sh
 
-set bitrate 160
-set -l dir .
-set -l options \
-    b/bitrate=
+BITRATE="${BITRATE:-160}"
+DIR="${1:-.}"
 
-# Parse command line arguments
-argparse --name=myscript $options -- $argv
-or exit
+echo "Bitrate: $BITRATE kbps"
+echo "Dir: $DIR"
 
-# Update values based on provided flags
-if set -q _flag_bitrate
-    set bitrate $_flag_bitrate
-end
-
-if test (count $argv) -eq 0
-    set -l dir $argv[0]
-end
-
-echo "Bitrate: $bitrate kbps"
-echo "Dir:" $dir
-
-find . -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.flac" -o name "*.m4a" \) -exec ffmpeg -i {} -c:a libopus -b:a "$bitrate"k "{}.opus" \; -exec rm {} \;
+find "$DIR" -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.flac" -o -name "*.m4a" \) -exec ffmpeg -i {} -c:a libopus -b:a "$BITRATE"k "{}.opus" \; -exec rm {} \;

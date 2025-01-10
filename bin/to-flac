@@ -1,2 +1,5 @@
 #!/bin/sh
-find . -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.m4a" \) -exec ffmpeg -i {} -c:a flac "{}.flac" \; -exec rm {} \;
+
+DIR="${1:-.}"
+
+find "$DIR" -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.m4a" \) -exec ffmpeg -i {} -c:a flac "{}.flac" \; -exec rm {} \;
