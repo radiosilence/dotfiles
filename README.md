@@ -33,7 +33,7 @@ Quick setup:
 ~/.dotfiles/bin/setup-macos
 ```
 
-### Included Tools
+### Required Tools
 
 - [🍺 Homebrew](https://brew.sh/) - a package manager for macOS
 - [🛠️ Mise](https://mise.jdx.dev) - a replacement for nvm, rvm, etc. (`brew install mise`)
