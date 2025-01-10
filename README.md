@@ -16,6 +16,8 @@
   - git
   - ssh
   - wezterm
+- some posix compliant utility scripts in `./bin`
+- sane default packages for various stuff
 
 ## Install dependencies (macOS)
 
