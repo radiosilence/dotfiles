@@ -7,8 +7,8 @@ create_test_structure() {
 
     # Create nested directories
     mkdir -p "$TEST_DIR/dir1/subdir1"
-    mkdir -p "$TEST_DIR/dir1/subdir2"
-    mkdir -p "$TEST_DIR/dir1/subdir2"
+    mkdir -p "$TEST_DIR/dir with spaces1/subdir2"
+    mkdir -p "$TEST_DIR/dir1/subdir2 with spaces"
     mkdir -p "$TEST_DIR/dir2/subdir1/2/3/4/"
     mkdir -p "$TEST_DIR/emptydir"
     mkdir -p "$TEST_DIR/.stfolder"
