@@ -24,8 +24,6 @@ zig = "latest"
 "ubi:grafana/jsonnet-language-server" = "latest"
 "ubi:junegunn/fzf" = "latest"
 perl = "latest"
-terraform = "latest"
-terraform-ls = "latest"
 yt-dlp = "latest"
 go-jsonnet = "latest"
 jb = "latest"
@@ -34,6 +32,8 @@ starship = "latest"
 gitleaks = "latest"
 yq = "latest"
 jq = "latest"
+erlang = "latest"
+elixir = "latest"
 
 [settings]
 paranoid = false

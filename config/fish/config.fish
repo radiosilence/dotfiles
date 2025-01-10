@@ -7,3 +7,5 @@ fish_add_path /usr/local/sbin
 # binds
 bind alt-backspace backward-kill-word
 bind alt-delete kill-word
+
+# unset GITHUB_TOKEN

@@ -1,3 +1,6 @@
 yarn
 pnpm
 jest
+typescript-language-server
+prettier
+lefthook
