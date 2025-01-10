@@ -1,7 +1,0 @@
-#!/bin/sh
-
-TMP_DIR=$(mktemp -d)
-curl "$1" -o "$TMP_DIR/fonts.zsip"
-unzip "$TMP_DIR/fonts.zip" -d "$TMP_DIR"
-find "$TMP_DIR" -type f \( -name "*.otf" -o -name "*.ttf" \) -exec cp -v {} ~/Library/Fonts \;
-echo "done."
