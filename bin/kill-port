@@ -1,19 +1,19 @@
-#!/usr/bin/env fish
+#!/bin/sh
 
-set port $argv[1]
+PORT="$1"
+shift 1
+echo "killing port $PORT with args: $*"
 
-if test -z $argv[1]
-    echo "Usage: $(basename (status -f)) <port>"
+PID="$(lsof -ti ":$PORT")"
+if [ -z "$PORT" ]; then
+    echo "Usage: $(basename "$0") <port >"
     exit 1
-end
+fi
 
-set pid (lsof -ti ":$port")
-
-if test -z "$pid"
-    echo "No process is listening on port $port"
+if [ -z "$PID" ]; then
+    echo "No process is listening on port $PORT"
     exit 1
-end
+fi
 
-echo "Killing process: $pid"
-kill -9 "$pid"
-echo "Killed process: $pid listening on port $port"
+echo "Killing process: $PID"
+kill "$@" "$PID"
