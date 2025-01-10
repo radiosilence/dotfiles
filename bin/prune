@@ -1,7 +1,7 @@
 #!/bin/sh
 MIN_SIZE=${MIN_SIZE:-3096}
 TARGET_DIR=${1:-.}
-RESULTS=$(find "$TARGET_DIR" -type d -not -name '.' -not -name '..' -not -name '.stfolder' -not -name '.git' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | sort -n)
+RESULTS=$(find "$TARGET_DIR" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
 
 if [ -z "$RESULTS" ]; then
     printf "No directories below %d KB in %s\n" "$MIN_SIZE" "$TARGET_DIR"
