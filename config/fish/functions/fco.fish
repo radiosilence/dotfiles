@@ -1,7 +1,3 @@
-# gch() {
-#  git checkout “$(git branch — all | fzf| tr -d ‘[:space:]’)”
-# }
-
 function fco
-    git checkout (git branch --all | fzf | tr -d '[:space:]')
+    git checkout (git --no-pager branch --all --sort=-committerdate | fzf | tr -d '[:space:]')
 end
