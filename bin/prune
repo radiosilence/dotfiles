@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 MIN_SIZE=${MIN_SIZE:-3096}
 TARGET_DIR=${1:-.}
 RESULTS=$(find "$TARGET_DIR" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
