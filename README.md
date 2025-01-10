@@ -1,22 +1,35 @@
 # ✨ Dotfiles ✨
 
-## Requirements
+---
 
-- 📄 Recent version of **fish**
+> **"Organized Chaos" for Your Terminal Setup**  
+> _- Keep it clean, keep it lean, and make it sparkle._
 
-## Includes
+---
+
+## ⚡ Requirements
+
+| 📝 Requirement                |
+| ----------------------------- |
+| 📄 Recent version of **fish** |
+
+---
+
+## 📂 Includes
 
 This repository contains configuration files for:
 
-- 🎧 **beets** (music library manager)
-- 🐟 **fish** (friendly interactive shell)
-- 👻 **ghostty** (minimal terminal)
-- 🧬 **helix** (text editor)
-- 🛠️ **mise** (modern environment manager)
-- 🚀 **starship** (prompt for any shell)
-- 🔧 **git** (version control)
-- 🔐 **ssh** (secure shell)
-- 💻 **wezterm** (terminal emulator)
+| Tool            | Description                |
+| --------------- | -------------------------- |
+| 🎧 **beets**    | Music library manager      |
+| 🐟 **fish**     | Friendly interactive shell |
+| 👻 **ghostty**  | Minimal terminal theme     |
+| 🖌️ **helix**    | Text editor                |
+| 🏋️‍♂️ **mise**     | Modern environment manager |
+| 🚀 **starship** | Prompt for any shell       |
+| 🔧 **git**      | Version control            |
+| 🔐 **ssh**      | Secure shell               |
+| 💻 **wezterm**  | Terminal emulator          |
 
 Additional features:
 
@@ -25,9 +38,9 @@ Additional features:
 
 ---
 
-## 🔧 Install Dependencies (macOS)
+## 🛠️ Install Dependencies (macOS)
 
-Quick setup:
+**Quick setup:**
 
 ```sh
 ~/.dotfiles/bin/setup-macos
@@ -35,17 +48,27 @@ Quick setup:
 
 ### Required Tools
 
-- [🍺 Homebrew](https://brew.sh/) - a package manager for macOS
-- [🛠️ Mise](https://mise.jdx.dev) - a replacement for nvm, rvm, etc. (`brew install mise`)
-- [👀 Fzf](https://github.com/junegunn/fzf) - a fuzzy matcher for everything (`brew install fzf`)
+| Tool                                      | Description                                          |
+| ----------------------------------------- | ---------------------------------------------------- |
+| [🍺 Homebrew](https://brew.sh/)           | A package manager for macOS                          |
+| [🛠️ Mise](https://mise.jdx.dev)           | Replacement for nvm, rvm, etc. (`brew install mise`) |
+| [👀 Fzf](https://github.com/junegunn/fzf) | Fuzzy matcher for everything (`brew install fzf`)    |
 
 ---
 
-## ⚙️ Install
+## 💣 Installation Guide
 
-Clone the repository and run the installer:
+**Clone the repository and run the installer:**
 
 ```sh
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/install
 ```
+
+---
+
+## 🌟 Tips & Tricks
+
+- 🎯 Customize your `starship` prompt to match your workflow.
+- 🚦 Use `fzf` for supercharged file navigation and command history search.
+- 🧩 Keep your configuration modular for easier maintenance.
