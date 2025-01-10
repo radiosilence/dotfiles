@@ -1,26 +1,21 @@
 #!/bin/sh
 
-# Default values
 MIN_SIZE=${MIN_SIZE:-3096}
 TARGET_DIR=${1:-.}
-
-# Find directories below the minimum size, escaping special characters
 TO_DELETE=$(find "$TARGET_DIR" -type d -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
+COUNT="$(echo "$TO_DELETE" | wc -l)"
 
-# Exit if no directories match the criteria
 if [ -z "$TO_DELETE" ]; then
     printf "No directories below %d KB in %s\n" "$MIN_SIZE" "$TARGET_DIR"
     exit 0
 fi
 
-# Display directories that would be deleted using tree
 printf "The following directories are below %d KB and would be deleted:\n\n" "$MIN_SIZE"
 printf "%s\n\n" "$TO_DELETE"
-COUNT="$(echo "$TO_DELETE" | wc -l)"
-
-# Confirm deletion
 printf "Are you sure you want to delete these directories? [y/N] "
+
 read -r REPLY
+
 if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
     echo "$TO_DELETE" | tr '\n' '\0' | xargs -0 -I{} rm -rf "{}"
     printf "\n%d Directories deleted.\n" "$COUNT"
