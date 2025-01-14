@@ -1,25 +1,22 @@
 local wezterm = require 'wezterm';
--- local font = 'Hack JBM Ligatured CCG';
 
-local font = 'Geist Mono';
-local path = os.getenv('PATH')
 return {
   initial_rows = 64,
   initial_cols = 160,
-  font = wezterm.font(font),
+  font = wezterm.font('Geist Mono', { weight = "Regular" }),
   font_rules = {
     {
       intensity = "Bold",
-      font = wezterm.font(font, { bold = true })
-    }, {
-    italic = true,
-    intensity = "Bold",
-    font = wezterm.font(font,
-      { bold = true, italic = true })
-  },
+      font = wezterm.font('Geist Mono', { bold = true })
+    },
     {
       italic = true,
-      font = wezterm.font(font, { italic = true })
+      intensity = "Bold",
+      font = wezterm.font('Geist Mono', { bold = true, italic = true })
+    },
+    {
+      italic = true,
+      font = wezterm.font('Geist Mono', { italic = true })
     }
   },
   send_composed_key_when_left_alt_is_pressed = true,
@@ -126,10 +123,13 @@ return {
   },
   hide_tab_bar_if_only_one_tab = true,
   window_padding = { left = 2, right = 2, top = 2, bottom = 2 },
+  window_decorations = "RESIZE|TITLE",
   window_close_confirmation = "NeverPrompt",
   use_fancy_tab_bar = false,
   tab_bar_at_bottom = true,
+  window_background_opacity = 0.75,
+  macos_window_background_blur = 20,
   set_environment_variables = {
-    PATH = path .. "/opt/homebrew/bin:/usr/local/bin:"
+    -- PATH = path .. "/opt/homebrew/bin:/usr/local/bin:"
   },
 }
