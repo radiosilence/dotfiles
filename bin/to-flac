@@ -3,4 +3,4 @@ set -eu
 
 DIR="${1:-.}"
 
-find "$DIR" -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.m4a" \) -exec ffmpeg -i {} -c:a flac "{}.flac" \; -exec rm {} \;
+find "$DIR" -type f \( -name "*.wav" -o -name "*.aiff" \) -exec ffmpeg -i {} -c:a flac "{}.flac" \; -exec rm {} \;
