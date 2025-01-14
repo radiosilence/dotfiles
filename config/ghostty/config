@@ -1,6 +1,9 @@
-theme = Monokai Pro
+theme = monokai-pro
 font-family = Geist Mono
 font-size = 12
 font-style = Regular
-background-blur-radius = 20
-background-opacity = 0.85
+# background-blur-radius = 20
+# background-opacity = 0.85
+keybind = global:§=toggle_quick_terminal
+quick-terminal-animation-duration = 0
+# quick-terminal-height = 0.5
