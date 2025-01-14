@@ -76,49 +76,49 @@ return {
   },
   colors = {
     -- The default text color
-    foreground = "#f7f1ff",
+    foreground = "#fcfcfa",
     -- The default background color
-    background = "#221f22",
+    background = "#2d2a2e",
 
     -- Overrides the cell background color when the current cell is occupied by the
     -- cursor and the cursor style is set to Block
-    cursor_bg = "#52ad70",
+    cursor_bg = "#c1c0c0",
     -- Overrides the text color when the current cell is occupied by the cursor
     cursor_fg = "black",
     -- Specifies the border color of the cursor when the cursor style is set to Block,
     -- of the color of the vertical or horizontal bar when the cursor style is set to
     -- Bar or Underline.
-    cursor_border = "#52ad70",
+    cursor_border = "#c1c0c0",
 
     -- the foreground color of selected text
-    selection_fg = "white",
+    selection_fg = "#fcfcfa",
     -- the background color of selected text
-    selection_bg = "#314f78",
+    selection_bg = "#5b595c",
 
     -- The color of the scrollbar "thumb"; the portion that represents the current viewport
     scrollbar_thumb = "#222222",
 
     -- The color of the split lines between panes
     split = "#444444",
-    brights = {
-      "#b195b1",
-      "#ff5c8a",
-      "#55fc79",
-      "#ffe342",
-      "#61efff",
-      "#8e80ff",
-      "#4dffff",
-      "#ffffff",
-    },
     ansi = {
-      "#221f22",
-      "#fc618d",
-      "#7bd88f",
-      "#fce566",
-      "#78DCE8",
-      "#948ae3",
-      "#5ad4e6",
-      "#f7f1ff",
+      "#4d4a4e",
+      "#ff6188",
+      "#a9dc76",
+      "#ffd866",
+      "#fc9867",
+      "#ab9df2",
+      "#78dce8",
+      "#fcfcfa",
+    },
+    brights = {
+      "#727072",
+      "#ff6188",
+      "#a9dc76",
+      "#ffd866",
+      "#fc9867",
+      "#ab9df2",
+      "#78dce8",
+      "#fcfcfa",
     },
   },
   hide_tab_bar_if_only_one_tab = true,
