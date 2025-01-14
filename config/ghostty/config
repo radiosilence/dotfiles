@@ -1,4 +1,5 @@
 theme = monokai-pro
 font-family = "Geist Mono"
 font-size = 12
-term = "tmux-256color"
+font-style = "Regular"
+#term = "tmux-256color"
