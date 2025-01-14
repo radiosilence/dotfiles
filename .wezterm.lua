@@ -22,25 +22,9 @@ return {
       font = wezterm.font(font, { italic = true })
     }
   },
-  default_prog = {
-    "zsh", "-c",
-    "(tmux a || tmux) || zsh"
-  },
-  -- default_prog = { "zsh" },
   send_composed_key_when_left_alt_is_pressed = false,
   send_composed_key_when_right_alt_is_pressed = true,
   keys = {
-    -- Rebind OPT-Left, OPT-Right as ALT-b, ALT-f respectively to match Terminal.app behavior
-    {
-      key = "LeftArrow",
-      mods = "OPT",
-      action = { SendKey = { key = "b", mods = "ALT" } }
-    },
-    {
-      key = "RightArrow",
-      mods = "OPT",
-      action = { SendKey = { key = "f", mods = "ALT" } }
-    },
     {
       key = "3",
       mods = "ALT",
@@ -55,6 +39,42 @@ return {
       key = "0",
       mods = "ALT",
       action = { SendKey = { key = "º" } }
+    },
+    {
+      key = "w",
+      mods = "CMD",
+      action = wezterm.action.CloseCurrentPane { confirm = false }
+    },
+    {
+      key = "d",
+      mods = "CMD",
+      action = wezterm.action.SplitPane { direction = "Right" }
+    },
+
+    {
+      key = "d",
+      mods = "CMD|SHIFT",
+      action = wezterm.action.SplitPane { direction = "Down" }
+    },
+    {
+      key = "LeftArrow",
+      mods = "CMD",
+      action = wezterm.action.ActivatePaneDirection "Left",
+    },
+    {
+      key = "RightArrow",
+      mods = "CMD",
+      action = wezterm.action.ActivatePaneDirection "Right",
+    },
+    {
+      key = "UpArrow",
+      mods = "CMD",
+      action = wezterm.action.ActivatePaneDirection "Up",
+    },
+    {
+      key = "DownArrow",
+      mods = "CMD",
+      action = wezterm.action.ActivatePaneDirection "Down",
     },
   },
   colors = {
@@ -107,6 +127,8 @@ return {
   hide_tab_bar_if_only_one_tab = true,
   window_padding = { left = 2, right = 2, top = 2, bottom = 2 },
   window_close_confirmation = "NeverPrompt",
+  use_fancy_tab_bar = false,
+  tab_bar_at_bottom = true,
   set_environment_variables = {
     PATH = path .. "/opt/homebrew/bin:/usr/local/bin:"
   },

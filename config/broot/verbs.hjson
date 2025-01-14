@@ -96,13 +96,13 @@ verbs: [
     # as an example to demonstrate rare standard groups like {file-stem}
     # and {file-dot-extension} and the auto_exec verb property which
     # allows verbs to stay unexecuted until you hit enter
-    {
-        invocation: "backup {version}"
-        key: ctrl-b
-        leave_broot: false
-        auto_exec: false
-        execution: "cp -r {file} {parent}/{file-stem}-{version}{file-dot-extension}"
-    }
+    // {
+    //     invocation: "backup {version}"
+    //     key: ctrl-b
+    //     leave_broot: false
+    //     auto_exec: false
+    //     execution: "cp -r {file} {parent}/{file-stem}-{version}{file-dot-extension}"
+    // }
 
     # By default, `rm` does the system rm, and completely removes
     # the file. If you prefer to have the file moved to the system
@@ -174,12 +174,12 @@ verbs: [
     }
 
     {
-        key: alt-]
+        key: tab
         execution: ":panel_right"
     }
 
     {
-        key: alt-[
+        key: alt-tab
         execution: ":panel_left_no_open"
     }
 
