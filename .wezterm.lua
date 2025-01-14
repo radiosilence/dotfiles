@@ -127,7 +127,7 @@ return {
   window_close_confirmation = "NeverPrompt",
   use_fancy_tab_bar = false,
   tab_bar_at_bottom = true,
-  window_background_opacity = 0.75,
+  window_background_opacity = 0.85,
   macos_window_background_blur = 20,
   set_environment_variables = {
     -- PATH = path .. "/opt/homebrew/bin:/usr/local/bin:"
