@@ -239,7 +239,7 @@ imports: [
             unknown
         ]
         # (un)comment to choose your preferred skin
-        file: skins/dark-blue.hjson
-        // file: skins/native-16.hjson
+        // file: skins/dark-blue.hjson
+        file: skins/native-16.hjson
     }
 ]
