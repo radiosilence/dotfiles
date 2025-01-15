@@ -1,6 +1,3 @@
-[language-server.efm-lsp-prettier]
-command = "efm-langserver"
-
 
 [language-server.rust-analyzer]
 config = { checkOnSave = { command = "clippy" } }
@@ -23,13 +20,21 @@ name = "css"
 formatter = { command = 'prettier', args = ["--parser", "css"] }
 
 [[language]]
+name = "bash"
+formatter = { command = "shfmt" }
+auto-format = true
+
+[[language]]
+name = "jsonnet"
+auto-format = true
+
+
+[[language]]
 name = "javascript"
 formatter = { command = 'prettier', args = ["--parser", "typescript"] }
 auto-format = true
 language-servers = [
-  { name = "efm-lsp-prettier", only-features = [
-    "format",
-  ] },
+  "vscode-eslint-language-server",
   "typescript-language-server",
 ]
 
@@ -38,9 +43,7 @@ name = "typescript"
 formatter = { command = 'prettier', args = ["--parser", "typescript"] }
 auto-format = true
 language-servers = [
-  { name = "efm-lsp-prettier", only-features = [
-    "format",
-  ] },
+  "vscode-eslint-language-server",
   "typescript-language-server",
 ]
 
@@ -48,12 +51,7 @@ language-servers = [
 name = "tsx"
 formatter = { command = 'prettier', args = ["--parser", "typescript"] }
 auto-format = true
-
-[[language]]
-name = "bash"
-formatter = { command = "shfmt" }
-auto-format = true
-
-[[language]]
-name = "jsonnet"
-auto-format = true
+language-servers = [
+  "typescript-language-server",
+  "vscode-eslint-language-server",
+]

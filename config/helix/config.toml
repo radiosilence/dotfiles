@@ -1,8 +1,21 @@
+
 theme = "monokai_pro"
 
 [editor]
 auto-format = true
 true-color = true
+bufferline = "always"
+cursorline = true
+rulers = [120]
+end-of-line-diagnostics = "hint"
+line-number = "relative"
+
+[editor.inline-diagnostics]
+cursor-line = "error"
+
+[editor.indent-guides]
+# character = "|"
+render = false
 
 [editor.whitespace.render]
 space = "all"
@@ -13,4 +26,11 @@ newline = "none"
 
 [editor.file-picker]
 hidden = false
+
+[editor.lsp]
+display-messages = true
+
+
+[editor.statusline]
+left = ["mode", "spinner", "version-control", "file-name"]
 
