@@ -32,6 +32,7 @@ starship = "latest"
 gitleaks = "latest"
 yq = "latest"
 jq = "latest"
+erlang = "latest"
 elixir = "latest"
 
 [settings]
