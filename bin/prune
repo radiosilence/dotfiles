@@ -1,14 +1,14 @@
 #!/bin/sh
 set -u
 
-T="${@:-.}"
-echo "[target] $T"
-MIN_SIZE=${MIN_SIZE:-3096}
-RESULTS=$(find "$T" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
+echo "[target] $@"
+
+MIN_SIZE="${MIN_SIZE:-3096}"
+RESULTS=$(find "$@" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
 COUNT=$(echo "$RESULTS" | wc -l)
 
 if [ -z "$RESULTS" ]; then
-	printf "No directories below %d KB in %s\n" "$MIN_SIZE" "$T"
+	echo "No directories below $MIN_SIZE KB"
 	exit 0
 fi
 

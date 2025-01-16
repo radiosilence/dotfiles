@@ -39,10 +39,10 @@ left = ["mode", "spinner", "version-control", "file-name"]
 [keys.normal]
 A-w = ":bc"
 A-W = ":wbc"
-"A-[" = ":buffer-previous"
-"A-]" = ":buffer-next"
+A-tab = ":buffer-next"
+A-S-tab = ":buffer-previous"
 C-r = ":reload"
-
-[keys.normal."+"]
-a = ":sh git add -a"
-c = ":sh git commit"
+Cmd-p = "file_picker"
+Cmd-S-p = "command_palette"
+Cmd-S-f = "global_search"
+Cmd-s = ":w"
