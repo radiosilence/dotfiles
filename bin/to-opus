@@ -1,10 +1,12 @@
 #!/bin/sh
 set -eu
-
 BITRATE="${BITRATE:-160}"
-DIR="${1:-.}"
+CORES=$(nproc)
 
-echo "Bitrate: $BITRATE kbps"
-echo "Dir: $DIR"
+echo "[bits] $BITRATE kbps"
+echo "[paths] $*"
+echo "[cores] using $CORES cores"
 
-find "$DIR" -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.flac" -o -name "*.m4a" \) -exec ffmpeg -i {} -c:a libopus -b:a "$BITRATE"k "{}.opus" \; -exec rm {} \;
+find "$@" -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.flac" -o -name "*.m4a" \) -print0 |
+	parallel -0 -j "$CORES" \
+		"ffmpeg -i {} -c:a libopus -b:a ${BITRATE}k {}.opus && rm {}"
