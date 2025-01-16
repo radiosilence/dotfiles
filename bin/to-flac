@@ -1,6 +1,4 @@
 #!/bin/sh
 set -eu
 
-DIR="${1:-.}"
-
-find "$DIR" -type f \( -name "*.wav" -o -name "*.aiff" \) -exec ffmpeg -i {} -c:a flac "{}.flac" \; -exec rm {} \;
+find "$@" -type f \( -name "*.wav" -o -name "*.aiff" \) -exec ffmpeg -i {} -c:a flac "{}.flac" \; -exec rm {} \;
