@@ -10,11 +10,13 @@ rulers = [120]
 end-of-line-diagnostics = "hint"
 line-number = "relative"
 
+[editor.soft-wrap]
+enable = true
+
 [editor.inline-diagnostics]
 cursor-line = "error"
 
 [editor.indent-guides]
-# character = "|"
 render = false
 
 [editor.whitespace.render]
@@ -34,3 +36,8 @@ display-messages = true
 [editor.statusline]
 left = ["mode", "spinner", "version-control", "file-name"]
 
+[keys.normal]
+A-w = ":bc"
+A-W = ":wbc"
+"A-[" = ":buffer-previous"
+"A-]" = ":buffer-next"

@@ -7,3 +7,7 @@ font-style = Regular
 keybind = global:§=toggle_quick_terminal
 quick-terminal-animation-duration = 0
 # quick-terminal-height = 0.5
+macos-option-as-alt = true
+keybind = alt+3=text:#
+keybind = alt+2=text:€
+keybind = alt=0=text:º
