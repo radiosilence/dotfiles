@@ -1,8 +1,7 @@
 #!/bin/sh
 set -eu
 CORES=$(nproc)
-T="${@:-.}"
 
-find "$T" -type f \( -name "*.wav" -o -name "*.aiff" -o -name '*.m4a' \) -print0 |
+find "$@" -type f \( -name "*.wav" -o -name "*.aiff" -o -name '*.m4a' \) -print0 |
 	parallel -0 -j "$CORES" \
 		"ffmpeg -i {} -c:a flac {}.flac && rm {}"

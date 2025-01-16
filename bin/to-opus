@@ -2,12 +2,11 @@
 set -eu
 BITRATE="${BITRATE:-160}"
 CORES=$(nproc)
-T="${@:-.}"
 
 echo "[bits] $BITRATE kbps"
 echo "[paths] $*"
 echo "[cores] using $CORES cores"
 
-find "$T" -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.flac" -o -name "*.m4a" \) -print0 |
+find "$@" -type f \( -name "*.wav" -o -name "*.aiff" -o -name "*.flac" -o -name "*.m4a" \) -print0 |
 	parallel -0 -j "$CORES" \
 		"ffmpeg -i {} -c:a libopus -b:a ${BITRATE}k {}.opus && rm {}"
