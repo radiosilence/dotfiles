@@ -1,21 +1,22 @@
 #!/bin/sh
-set -eu
+set -u
 
+T="${@:-.}"
+echo "[target] $T"
 MIN_SIZE=${MIN_SIZE:-3096}
-TARGET_DIR=${1:-.}
-RESULTS=$(find "$TARGET_DIR" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
+RESULTS=$(find "$T" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')
 COUNT=$(echo "$RESULTS" | wc -l)
 
 if [ -z "$RESULTS" ]; then
-    printf "No directories below %d KB in %s\n" "$MIN_SIZE" "$TARGET_DIR"
-    exit 0
+	printf "No directories below %d KB in %s\n" "$MIN_SIZE" "$T"
+	exit 0
 fi
 
 printf "The following directories are below %d KB and would be deleted:\n\n" "$MIN_SIZE"
 
 echo "$RESULTS" | while read -r line; do
-    printf "\n%s\n" "$(du -sh "$line")"
-    lsd --tree -l "$line"
+	printf "\n%s\n" "$(du -sh "$line")"
+	lsd --tree -l "$line"
 done
 
 printf "\nAre you sure you want to delete these directories? [y/N] "
@@ -23,8 +24,8 @@ printf "\nAre you sure you want to delete these directories? [y/N] "
 read -r REPLY
 
 if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
-    echo "$RESULTS" | tr '\n' '\0' | xargs -0 -I{} rm -rf "{}"
-    printf "\n%d directories deleted.\n" "$COUNT"
+	echo "$RESULTS" | tr '\n' '\0' | xargs -0 -I{} rm -rf "{}"
+	printf "\n%d directories deleted.\n" "$COUNT"
 else
-    printf "\nOperation canceled, %d directories spared.\n" "$COUNT"
+	printf "\nOperation canceled, %d directories spared.\n" "$COUNT"
 fi
