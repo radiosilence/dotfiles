@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+
+infocmp -x | ssh "$1" -- tic -x -
