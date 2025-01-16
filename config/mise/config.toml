@@ -22,7 +22,6 @@ gcloud = "latest"
 node = "lts"
 zig = "latest"
 "ubi:grafana/jsonnet-language-server" = "latest"
-"ubi:helix-editor/helix" = { version = "latest", exe = "hx" }
 "ubi:junegunn/fzf" = "latest"
 perl = "latest"
 yt-dlp = "latest"
