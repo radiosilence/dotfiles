@@ -42,3 +42,7 @@ A-W = ":wbc"
 "A-[" = ":buffer-previous"
 "A-]" = ":buffer-next"
 C-r = ":reload"
+
+[keys.normal."+"]
+a = ":sh git add -a"
+c = ":sh git commit"
