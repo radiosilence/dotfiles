@@ -4,7 +4,7 @@ function upd
 
     if using mise
         echo "[upd] updating mise..."
-        mise up
+        mise up --bump
         rm -rf ~/.local/share/mise/shims
         mise reshim
     end
