@@ -2,4 +2,6 @@ fish_variables
 
 # broot
 functions/br.fish
+
+# config where apps seem to want to write their stuff
 config.fish
