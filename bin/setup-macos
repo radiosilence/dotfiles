@@ -1,7 +1,9 @@
 #!/bin/sh
+# Set up macOS development environment
+# This script installs Homebrew and runs the dotfiles installer
 set -eu
 
-DIRNAME=$(DIRNAME "$0")
+DIRNAME=$(dirname "$0")
 
 echo "basename: [$(basename "$0")]"
 echo "dir     : [$DIRNAME]"
