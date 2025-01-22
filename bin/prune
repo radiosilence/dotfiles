@@ -1,7 +1,17 @@
 #!/bin/sh
 set -u
 
-echo "[target] $@"
+# If no arguments provided, use "." as the default
+if [ $# -eq 0 ]; then
+    set -- "."
+fi
+
+echo "[target] $*"
+
+if [ -z "$*" ]; then
+	echo "Usage: $(basename "$0") <path> [<path2>]"
+	exit 1
+fi
 
 MIN_SIZE="${MIN_SIZE:-3096}"
 RESULTS=$(find "$@" -type d -not -name '.' -not -name '..' -exec du -sk {} + | awk -v min="$MIN_SIZE" '$1 < min { $1=""; sub(/^ /, ""); print }' | grep -v '.stfolder' | grep -v '.git')

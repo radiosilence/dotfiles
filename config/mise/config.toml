@@ -1,6 +1,7 @@
 [tools]
 awscli = "latest"
 bun = "latest"
+buf = "latest"
 fd = "latest"
 go = "latest"
 kubectl = "latest"
