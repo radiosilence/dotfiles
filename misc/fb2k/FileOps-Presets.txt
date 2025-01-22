@@ -1,0 +1,25 @@
+﻿# This is a foo_fileops copy/move/link preset list file.
+# Use | character in preset names to create menu hierarchy: groupname|presetname.
+
+[preset]
+name=beets
+operation=move
+targetDirectory=mac-volume://23CA7F0A-044F-E31F-D951-B01D412E8DDB/music
+fileNamePattern=%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$left(%date%,4)')' ])%album% '['%codec%']'/[$num(%discnumber%,2)][%tracknumber%. ][%artist% - ]%title%
+moveOtherFiles=yes
+removeEmpty=yes
+
+[preset]
+name=beets dl
+operation=move
+targetDirectory=mac-volume://23CA7F0A-044F-E31F-D951-B01D412E8DDB/music
+fileNamePattern=%album artist%/%album%/[$num(%discnumber%,2)][%tracknumber%. ][%artist% - ]%title%
+
+[preset]
+name=beets various
+operation=move
+targetDirectory=mac-volume://23CA7F0A-044F-E31F-D951-B01D412E8DDB/music
+fileNamePattern=$if2(%label%,%album artist%)/%album% '['%codec%']'/[$num(%discnumber%,2)][%tracknumber%. ][%artist% - ]%title%
+moveOtherFiles=yes
+removeEmpty=yes
+
