@@ -3,6 +3,11 @@ set -eu
 BITRATE="${BITRATE:-160}"
 CORES=$(nproc)
 
+# If no arguments provided, use "." as the default
+if [ $# -eq 0 ]; then
+    set -- "."
+fi
+
 echo "[bits] $BITRATE kbps"
 echo "[paths] $*"
 echo "[cores] using $CORES cores"
