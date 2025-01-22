@@ -2,3 +2,4 @@ fish_variables
 
 # broot
 functions/br.fish
+config.fish
