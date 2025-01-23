@@ -1,3 +1,3 @@
 function fco
-    git checkout (git --no-pager branch --all --sort=-committerdate | fzf | tr -d '[:space:]')
+    git checkout (git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:iso8601) %(refname:short)' | fzf | awk '{ print $NF }')
 end
