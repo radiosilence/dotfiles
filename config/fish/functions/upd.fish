@@ -28,7 +28,7 @@ function upd
 
     if using brew
         echo "[upd] updating brew..."
-        brew bundle
+        brew bundle --force
         brew upgrade
         brew cu -af
         brew cleanup
