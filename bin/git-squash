@@ -5,9 +5,9 @@ TEMP=$(mktemp)
 SPLIT_COMMIT=$(git merge-base HEAD "$PARENT")
 
 format_commits() {
-  git log --reverse --format="* %s%n%b" "$SPLIT_COMMIT"..HEAD | while IFS= read -r line; do
+  git log --reverse --format="- %s%n%b" "$SPLIT_COMMIT"..HEAD | while IFS= read -r line; do
     if [[ -n "$line" && "$line" != "* " ]]; then
-      echo "$line"
+      printf "# %s\n" "$line"
     fi
   done
 }
@@ -18,7 +18,8 @@ format_commits() {
   printf "\n"
 } >"$TEMP"
 
+cat "$TEMP"
 git reset --soft "$PARENT"
 git add -A
-git commit -t "$TEMP"
+git commit -t "$TEMP" || git reset --hard "HEAD@{1}"
 rm "$TEMP"
