@@ -1,0 +1,31 @@
+#!/bin/bash
+set -eu
+PARENT="${1:-main}"
+
+temp_file=$(mktemp)
+
+split_commit=$(git merge-base HEAD "$PARENT")
+
+format_commits() {
+  git log --reverse --format="* %s%n%b" "$split_commit"..HEAD | while IFS= read -r line; do
+    if [[ -n "$line" && "$line" != "* " ]]; then
+      printf "* %s\n" "$line"
+    fi
+  done
+}
+
+{
+  # Add a header to the commit message
+  printf "\n\n"
+  # Add the formatted commits
+  format_commits
+  printf "\n"
+} >"$temp_file"
+
+# Show the commits that will b
+git reset --soft "$PARENT"
+git add -A
+git commit -t "$temp_file"
+
+# Cleanup
+rm "$temp_file"
