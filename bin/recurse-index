@@ -1,0 +1,44 @@
+
+#!/bin/bash
+
+generate_index_recursively() {
+    local dir="$1"
+    
+    # Find all TypeScript files and directories in the current directory
+    local ts_files=$(gfind "$dir" -maxdepth 1 -type f \( -name "*.ts" ! -name "index.ts" \) -printf "%f\n")
+    local subdirs=$(gfind "$dir" -maxdepth 1 -type d ! -name "." ! -name ".." -printf "%f\n")
+    
+    # Create index.ts file if there are exports
+    if [[ -n "$ts_files" ]] || [[ -n "$subdirs" ]]; then
+        local index_path="$dir/index.ts"
+        > "$index_path"  # Clear existing index file
+        
+        # Export individual TypeScript files
+        for file in $ts_files; do
+            # Remove .ts extension
+            filename="${file%.*}"
+            echo "export * from './$filename';" >> "$index_path"
+        done
+        
+        # Export subdirectories
+        for subdir in $subdirs; do
+            echo "export * from './$subdir';" >> "$index_path"
+        done
+        
+        echo "Generated $index_path"
+    fi
+    
+    # Recursively process subdirectories
+    for subdir in $subdirs; do
+        generate_index_recursively "$dir/$subdir"
+    done
+}
+
+# Check if directory is provided
+if [[ $# -eq 0 ]]; then
+    echo "Usage: $0 <directory>"
+    exit 1
+fi
+
+# Start recursive index generation
+generate_index_recursively "$(realpath "$1")"
