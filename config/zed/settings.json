@@ -17,9 +17,16 @@
   "ui_font_size": 16,
   "buffer_font_size": 14,
   "buffer_font_family": "Geist Mono",
+  "toolbar": {
+    "breadcrumbs": true,
+    "quick_actions": true,
+    "selections_menu": true
+  },
   "terminal": {
     "font_family": "Geist Mono",
-    "font_fallbacks": ["Hack Nerd Font Mono FC Ligatured CCG"],
+    "font_fallbacks": [
+      "Hack Nerd Font Mono FC Ligatured CCG"
+    ],
     "font_size": 13
   },
   "theme": {
@@ -27,18 +34,83 @@
     "light": "One Light",
     "dark": "Zedokai"
   },
-  "wrap_guides": [100],
+  "wrap_guides": [
+    80,
+    100
+  ],
+  "inlay_hints": {
+    "enabled": true,
+    "show_type_hints": true,
+    "show_parameter_hints": true,
+    "show_other_hints": true,
+    "show_background": false,
+    "edit_debounce_ms": 700,
+    "scroll_debounce_ms": 50
+  },
+  "formatter": {
+    "language_server": {
+      "name": "biome"
+    }
+  },
   "languages": {
     "TypeScript": {
+      "prettier": {
+        "allowed": false
+      },
       "code_actions_on_format": {
         "source.organizeImports": true,
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": true,
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
       }
     },
     "TSX": {
+      "prettier": {
+        "allowed": false
+      },
       "code_actions_on_format": {
         "source.organizeImports": true,
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": true,
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
+      }
+    }
+  },
+  "lsp": {
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "tsserver": {
+            "maxTsServerMemory": 24000
+          },
+          "inlayHints": {
+            "parameterNames": {
+              "enabled": "all",
+              "suppressWhenArgumentMatchesName": false
+            },
+            "parameterTypes": {
+              "enabled": true
+            },
+            "variableTypes": {
+              "enabled": true,
+              "suppressWhenTypeMatchesName": true
+            },
+            "propertyDeclarationTypes": {
+              "enabled": true
+            },
+            "functionLikeReturnTypes": {
+              "enabled": true
+            },
+            "enumMemberValues": {
+              "enabled": true
+            }
+          }
+        }
+      }
+    },
+    "biome": {
+      "settings": {
+        "require_config_file": true
       }
     }
   }
