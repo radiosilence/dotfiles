@@ -5,4 +5,3 @@ set -g fish_color_command green
 
 # # binds
 bind \e\x7F backward-kill-word
-# bind alt-delete kill-word

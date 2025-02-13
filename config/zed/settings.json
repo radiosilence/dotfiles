@@ -29,13 +29,15 @@
   },
   "wrap_guides": [100],
   "languages": {
-    "JavaScript": {
+    "TypeScript": {
       "code_actions_on_format": {
+        "source.organizeImports": true,
         "source.fixAll.eslint": true
       }
     },
-    "TypeScript": {
+    "TSX": {
       "code_actions_on_format": {
+        "source.organizeImports": true,
         "source.fixAll.eslint": true
       }
     }
