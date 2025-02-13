@@ -3,6 +3,6 @@ status is-interactive || exit
 set -g fish_greeting
 set -g fish_color_command green
 
-# binds
-bind alt-backspace backward-kill-word
-bind alt-delete kill-word
+# # binds
+bind \e\x7F backward-kill-word
+# bind alt-delete kill-word
