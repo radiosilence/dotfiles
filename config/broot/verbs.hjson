@@ -45,7 +45,7 @@ verbs: [
         execution: "open {file}"
         leave_broot: false
     }
-    
+
     {
         invocation: beet_import
         shortcut: bif
@@ -109,7 +109,7 @@ verbs: [
     # trash, you may use the ':trash' internal with the verb below:
     {
         invocation: "rm"
-        execution: "trash {file}"
+        execution: ":trash {file}"
         leave_broot: false
     }
 
@@ -226,4 +226,3 @@ verbs: [
     #     leave_broot: false
     # }
 ]
-
