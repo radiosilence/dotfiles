@@ -9,7 +9,7 @@ fi
 
 echo "[target] $*"
 
-find "$@" -type f \( -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' -o -iname '*sample.*' \) -delete
+find "$@" -type f \( -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' -o -iname '*sample.*' -o -name '._*' \) -delete
 
 echo "pruning..."
 prune "$@"
