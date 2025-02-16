@@ -1,4 +1,29 @@
 {
+  "auto_install_extensions": {
+    "ansible": true,
+    "astro": true,
+    "basher": true,
+    "biome": true,
+    "csv": true,
+    "docker-compose": true,
+    "dockerfile": true,
+    "elixir": true,
+    "fish": true,
+    "git-firefly": true,
+    "graphql": true,
+    "helm": true,
+    "html": true,
+    "ini": true,
+    "kotlin": true,
+    "lua": true,
+    "nginx": true,
+    "pylsp": true,
+    "scss": true,
+    "ssh-config": true,
+    "terraform": true,
+    "toml": true,
+    "zedokai": true
+  },
   "assistant": {
     "default_model": {
       "provider": "zed.dev",
