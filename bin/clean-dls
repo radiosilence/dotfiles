@@ -9,4 +9,4 @@ fi
 
 echo "[target] $*"
 
-find "$@" -type f \( -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' \) -delete
+find "$@" -type f \( -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' -o -iname '*sample.*' \) -delete
