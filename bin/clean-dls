@@ -9,7 +9,13 @@ fi
 
 echo "[target] $*"
 
-find "$@" -type f \( -name '.DS_Store' -o -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' -o -iname '*sample.*' -o -name '._*' \) -delete
+RESULTS=$(find "$@" -type f \( -name '.DS_Store' -o -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' -o -iname '*sample.*' -o -name '._*' \))
+
+echo "$RESULTS" | while read -r line; do
+    printf "\n%s\n" "$(du -sh "$line")"
+    rm -rf "$line"
+    lsd --tree -l "$line"
+done
 
 echo "pruning..."
 prune "$@"
