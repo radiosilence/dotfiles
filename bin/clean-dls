@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+# If no arguments provided, use "." as the default
+if [ $# -eq 0 ]; then
+    set -- "."
+fi
+
+echo "[target] $*"
+
+find "$@" -type f \( -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' \) -delete
