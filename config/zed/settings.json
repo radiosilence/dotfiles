@@ -74,6 +74,19 @@
         "source.organizeImports.biome": true
       }
     },
+    "JavaScript": {
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      },
+      "code_actions_on_format": {
+        "source.organizeImports": true,
+        "source.fixAll.eslint": true,
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
+      }
+    },
     "TSX": {
       "formatter": {
         "language_server": {
@@ -108,6 +121,13 @@
       }
     },
     "JSON": {
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      }
+    },
+    "Astro": {
       "formatter": {
         "language_server": {
           "name": "biome"
