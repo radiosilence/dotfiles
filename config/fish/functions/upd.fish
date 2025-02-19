@@ -31,6 +31,7 @@ function upd
         brew bundle --force
         brew upgrade
         brew cu -af
+        mas upgrade
         brew cleanup
         brew doctor
     end

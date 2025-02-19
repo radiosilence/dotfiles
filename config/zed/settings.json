@@ -1,4 +1,7 @@
 {
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
   "auto_install_extensions": {
     "ansible": true,
     "astro": true,
@@ -10,7 +13,6 @@
     "elixir": true,
     "fish": true,
     "git-firefly": true,
-    "graphql": true,
     "helm": true,
     "html": true,
     "ini": true,
