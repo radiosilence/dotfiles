@@ -91,6 +91,7 @@ brew "vercel-cli"
 brew "vscode-langservers-extracted"
 brew "watchman"
 brew "wget"
+brew "whalebrew"
 brew "withgraphite/tap/graphite"
 brew "wrk"
 brew "xz"
@@ -108,21 +109,21 @@ cask "foobar2000"
 cask "fork"
 cask "ghostty"
 cask "lens"
-cask "messenger"
 cask "notion"
 cask "notion-calendar"
 cask "orbstack"
 cask "rar"
 cask "stolendata-mpv", args: { no_quarantine: true }
-cask "tailscale"
-cask "telegram"
 cask "tidal"
 cask "visual-studio-code"
 cask "wezterm"
-cask "whatsapp"
 cask "windsurf"
 cask "zed"
 cask "zen-browser"
 mas "Adobe Lightroom", id: 1451544217
 mas "Infuse", id: 1136220934
 mas "Slack", id: 803453959
+mas "Tailscale", id: 1475387142
+mas "Telegram", id: 747648890
+mas "WhatsApp Messenger", id: 310633997
+mas "Messenger", id: 1480068668
