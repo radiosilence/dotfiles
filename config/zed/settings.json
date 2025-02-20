@@ -36,31 +36,16 @@
   "ui_font_size": 16,
   "buffer_font_size": 14.0,
   "buffer_font_family": "Geist Mono",
-  "toolbar": {
-    "breadcrumbs": true,
-    "quick_actions": true,
-    "selections_menu": true
-  },
   "terminal": {
     "font_fallbacks": ["FiraCode Nerd Font"],
     "font_size": 13
   },
   "theme": {
-    "mode": "system",
+    "mode": "dark",
     "light": "One Light",
     "dark": "Zedokai"
   },
   "wrap_guides": [80, 100],
-  "inlay_hints": {
-    "enabled": false,
-    "show_type_hints": true,
-    "show_parameter_hints": true,
-    "show_other_hints": true,
-    "show_background": false,
-    "edit_debounce_ms": 700,
-    "scroll_debounce_ms": 50
-  },
-  "format_on_save": "on",
   "languages": {
     "TypeScript": {
       "formatter": {
@@ -142,56 +127,13 @@
         "typescript": {
           "tsserver": {
             "maxTsServerMemory": 24000
-          },
-          "inlayHints": {
-            "parameterNames": {
-              "enabled": "all",
-              "suppressWhenArgumentMatchesName": false
-            },
-            "parameterTypes": {
-              "enabled": true
-            },
-            "variableTypes": {
-              "enabled": true,
-              "suppressWhenTypeMatchesName": true
-            },
-            "propertyDeclarationTypes": {
-              "enabled": true
-            },
-            "functionLikeReturnTypes": {
-              "enabled": true
-            },
-            "enumMemberValues": {
-              "enabled": true
-            }
           }
         }
       }
     },
-    "stylelint-lsp": {
-      "settings": {
-        // these are the default settings, you shouldn't need to set most of them, only add them as needed
-        "config": null,
-        "configFile": "",
-        "configBasedir": "",
-        "customSyntax": "",
-        "ignoreDisables": false,
-        "packageManager": "npm",
-        "reportDescriptionlessDisables": false,
-        "reportInvalidScopeDisables": false,
-        "reportNeedlessDisables": false,
-        "snippet": ["css", "postcss"],
-        "stylelintPath": "",
-        // if you are using a plugin to process other syntaxes (for instance scss, or css-in-js)
-        // you also need to set the syntax in your stylelint config or in the `customSyntax` setting above
-        // then specify the language identifier related to your custom syntax (for instance `javascript` for `css-in-js`)
-        // for more info refer to: https://github.com/stylelint/vscode-stylelint?tab=readme-ov-file#%EF%B8%8F-only-css-and-postcss-are-validated-by-default
-        "validate": ["css", "postcss"]
-      }
-    },
     "biome": {
       "settings": {
-        // "require_config_file": true
+        "require_config_file": false
       }
     }
   }
