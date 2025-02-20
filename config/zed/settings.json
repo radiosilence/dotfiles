@@ -35,9 +35,8 @@
   },
   "ui_font_size": 15,
   "buffer_font_size": 14.0,
-  "buffer_font_family": "Geist Mono",
+  "buffer_font_family": "GeistMono Nerd Font",
   "terminal": {
-    "font_fallbacks": ["FiraCode Nerd Font"],
     "font_size": 12
   },
   "theme": {
