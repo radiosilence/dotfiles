@@ -2,9 +2,6 @@
 * text=auto eol=lf
 * whitespace=tab-in-indent,trailing-space,space-before-tab,cr-at-eol
 
-# Define binary file attributes
-[attr]binary -diff -merge -text -delta
-
 # TypeScript
 *.ts text diff=typescript
 *.tsx text diff=typescript
@@ -30,7 +27,6 @@ Cargo.lock text
 *.leex text diff=elixir
 *.heex text diff=elixir
 mix.lock text
-*.beam binary
 
 # Markdown
 *.md text diff=markdown
@@ -53,7 +49,6 @@ mix.lock text
 # Documentation
 *.txt text
 *.doc text diff=astextplain
-*.pdf binary
 *.rtf text diff=astextplain
 
 # Media and binary files handled by Git LFS
@@ -82,19 +77,6 @@ mix.lock text
 *.glb filter=lfs diff=lfs merge=lfs -text
 *.gltf filter=lfs diff=lfs merge=lfs -text
 *.obj filter=lfs diff=lfs merge=lfs -text
-
-# Fonts
-*.ttf binary
-*.eot binary
-*.woff binary
-*.woff2 binary
-
-# Archives
-*.7z binary
-*.gz binary
-*.tar binary
-*.tgz binary
-*.zip binary
 
 # IDE/Editor specific files
 .vscode/* text
