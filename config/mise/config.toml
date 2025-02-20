@@ -1,5 +1,4 @@
 [tools]
-awscli = "latest"
 bun = "latest"
 buf = "latest"
 fd = "latest"
