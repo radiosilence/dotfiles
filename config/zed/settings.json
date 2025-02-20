@@ -42,8 +42,7 @@
     "selections_menu": true
   },
   "terminal": {
-    "font_family": "Geist Mono",
-    "font_fallbacks": ["Hack Nerd Font Mono FC Ligatured CCG"],
+    "font_fallbacks": ["FiraCode Nerd Font"],
     "font_size": 13
   },
   "theme": {
