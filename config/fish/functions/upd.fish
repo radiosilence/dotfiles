@@ -30,8 +30,7 @@ function upd
         echo "[upd] updating brew..."
         brew bundle --force
         brew upgrade
-        brew cu -af
-        mas upgrade
+        brew cu -afyq --include-mas
         brew cleanup
         brew doctor
     end
