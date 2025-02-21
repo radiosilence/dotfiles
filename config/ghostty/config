@@ -1,5 +1,5 @@
 theme = monokai-pro
-font-family = Geist Mono
+font-family = GeistMono Nerd Font
 font-size = 14
 font-style = Regular
 keybind = global:§=toggle_quick_terminal
