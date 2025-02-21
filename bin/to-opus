@@ -5,7 +5,7 @@ CORES=$(nproc)
 
 # If no arguments provided, use "." as the default
 if [ $# -eq 0 ]; then
-    set -- "."
+	set -- "."
 fi
 
 echo "[bits] $BITRATE kbps"
