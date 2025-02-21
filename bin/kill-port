@@ -7,13 +7,13 @@ echo "killing port $PORT with args: $*"
 
 PID="$(lsof -ti ":$PORT")"
 if [ -z "$PORT" ]; then
-    echo "Usage: $(basename "$0") <port >"
-    exit 1
+	echo "Usage: $(basename "$0") <port >"
+	exit 1
 fi
 
 if [ -z "$PID" ]; then
-    echo "No process is listening on port $PORT"
-    exit 1
+	echo "No process is listening on port $PORT"
+	exit 1
 fi
 
 echo "Killing process: $PID"

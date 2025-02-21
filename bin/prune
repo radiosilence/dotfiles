@@ -3,14 +3,14 @@ set -u
 
 # If no arguments provided, use "." as the default
 if [ $# -eq 0 ]; then
-    set -- "."
+	set -- "."
 fi
 
 echo "[target] $*"
 
 if [ -z "$*" ]; then
-    echo "Usage: $(basename "$0") <path> [<path2>]"
-    exit 1
+	echo "Usage: $(basename "$0") <path> [<path2>]"
+	exit 1
 fi
 
 MIN_SIZE="${MIN_SIZE:-3096}"
@@ -18,15 +18,15 @@ RESULTS=$(find "$@" -type d -not -name '.' -not -name '..' -exec du -sk {} + | a
 COUNT=$(echo "$RESULTS" | wc -l)
 
 if [ -z "$RESULTS" ]; then
-    echo "No directories below $MIN_SIZE KB"
-    exit 0
+	echo "No directories below $MIN_SIZE KB"
+	exit 0
 fi
 
 printf "The following directories are below %d KB and would be deleted:\n\n" "$MIN_SIZE"
 
 echo "$RESULTS" | while read -r line; do
-    printf "\n%s\n" "$(du -sh "$line")"
-    lsd --tree -l "$line"
+	printf "\n%s\n" "$(du -sh "$line")"
+	lsd --tree -l "$line"
 done
 
 printf "\nAre you sure you want to delete these directories? [y/N] "
@@ -34,8 +34,8 @@ printf "\nAre you sure you want to delete these directories? [y/N] "
 read -r REPLY
 
 if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
-    echo "$RESULTS" | tr '\n' '\0' | xargs -0 -I{} rm -rf "{}"
-    printf "\n%d directories deleted.\n" "$COUNT"
+	echo "$RESULTS" | tr '\n' '\0' | xargs -0 -I{} rm -rf "{}"
+	printf "\n%d directories deleted.\n" "$COUNT"
 else
-    printf "\nOperation canceled, %d directories spared.\n" "$COUNT"
+	printf "\nOperation canceled, %d directories spared.\n" "$COUNT"
 fi
