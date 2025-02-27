@@ -3,3 +3,4 @@ pnpm
 jest
 typescript-language-server
 prettier
+serve
