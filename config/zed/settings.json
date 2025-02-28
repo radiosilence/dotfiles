@@ -48,6 +48,11 @@
   "format_on_save": "on",
   "languages": {
     "TypeScript": {
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      },
       "code_actions_on_format": {
         "source.organizeImports": true,
         "source.fixAll.eslint": true,
@@ -64,6 +69,11 @@
       }
     },
     "TSX": {
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      },
       "code_actions_on_format": {
         "source.organizeImports": true,
         "source.fixAll.eslint": true,
@@ -83,7 +93,13 @@
         "source.fixAll.stylelint": true
       }
     },
-    "JSON": {},
+    "JSON": {
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      }
+    },
     "Astro": {}
   },
   "lsp": {
