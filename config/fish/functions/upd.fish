@@ -2,11 +2,11 @@ function upd
     echo "[upd] updating ~/.dotfiles..."
     sh ~/.dotfiles/install
 
-    if using apt
+    if using apt-get
         echo "[upd] updating apt..."
-        sudo apt update
-        sudo apt upgrade -y
-        sudo apt autoremove -y
+        sudo apt-get update
+        sudo apt-get upgrade -y
+        sudo apt-get autoremove -y
     end
 
     if using dnf
