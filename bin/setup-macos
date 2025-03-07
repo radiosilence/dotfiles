@@ -4,6 +4,7 @@
 set -eu
 
 DIRNAME=$(dirname "$0")
+export PATH="$DIRNAME:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 echo "basename: [$(basename "$0")]"
 echo "dir     : [$DIRNAME]"
@@ -14,12 +15,15 @@ using() {
 	command -v "$1" >/dev/null 2>&1
 }
 
-# add bin to path
-export PATH="$DIRNAME:$PATH"
-
 # install brew if we don't have it
 if ! using brew; then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# create ssh dir
+if [ ! -d ~/.ssh ]; then
+	mkdir ~/.ssh
+	chmod 700 ~/.ssh
 fi
 
 # run install/link script for dotfiles
@@ -27,6 +31,16 @@ fi
 
 # homebrew
 brew bundle
+
+# change shell to fish
+# Ensure fish is in shells and set as default shell if not already
+if ! grep -q "$(which fish)" /etc/shells; then
+	which fish | sudo tee -a /etc/shells
+fi
+
+if ! echo "$SHELL" | grep -q "fish"; then
+	chsh -s "$(which fish)"
+fi
 
 # mise
 mise i
