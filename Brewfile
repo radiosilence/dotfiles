@@ -120,6 +120,7 @@ cask "wezterm"
 cask "windsurf"
 cask "zed"
 cask "zen-browser"
+mas "1password for Safari", id: 1569813296
 mas "Adobe Lightroom", id: 1451544217
 mas "Infuse", id: 1136220934
 mas "Slack", id: 803453959
