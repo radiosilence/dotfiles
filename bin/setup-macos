@@ -3,6 +3,9 @@
 # This script installs Homebrew and runs the dotfiles installer
 set -eu
 
+# shellcheck disable=all
+echo 'export PATH="$HOME/.dotfiles/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"' >>~/.zshrc
+
 DIRNAME=$(dirname "$0")
 export PATH="$DIRNAME:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
