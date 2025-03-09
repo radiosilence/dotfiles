@@ -60,14 +60,6 @@
         "source.organizeImports.biome": true
       }
     },
-    "JavaScript": {
-      "code_actions_on_format": {
-        "source.organizeImports": true,
-        "source.fixAll.eslint": true,
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
-      }
-    },
     "TSX": {
       "formatter": {
         "language_server": {
@@ -92,27 +84,20 @@
         "source.fixAll.stylelint": true
       }
     },
-    "SCSS": {
-      "code_actions_on_format": {
-        "source.organizeImports": true,
-        "source.fixAll.stylelint": true
-      }
-    },
     "JSON": {
       "formatter": {
         "language_server": {
           "name": "biome"
         }
       }
-    },
-    "Astro": {}
+    }
   },
   "lsp": {
     "vtsls": {
       "settings": {
         "typescript": {
           "tsserver": {
-            "maxTsServerMemory": 24000
+            "maxTsServerMemory": 16384
           }
         }
       }
