@@ -82,6 +82,11 @@
       }
     },
     "CSS": {
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
+      },
       "code_actions_on_format": {
         "source.organizeImports": true,
         "source.fixAll.stylelint": true
