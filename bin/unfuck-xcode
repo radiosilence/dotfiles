@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Script to remove and reinstall Xcode Command Line Tools
+# This can fix Homebrew cask installation issues related to Swift errors
+
+echo "=== Xcode Command Line Tools Reinstallation ==="
+echo "This script will remove existing Xcode Command Line Tools and reinstall them."
+echo "This may help resolve Homebrew cask installation issues related to Swift errors."
+echo ""
+
+# Check if running as root/sudo
+if [ "$(id -u)" != "0" ]; then
+   echo "⚠️  This script must be run with sudo privileges."
+   echo "Please run: sudo $0"
+   exit 1
+fi
+
+echo "🔍 Checking for existing Xcode Command Line Tools installation..."
+
+# Remove existing Command Line Tools
+echo "🗑️  Removing existing Xcode Command Line Tools..."
+rm -rf /Library/Developer/CommandLineTools
+echo "✅ Removed existing installation."
+
+# Clear xcode-select path
+echo "🧹 Clearing xcode-select path..."
+xcode-select --reset
+echo "✅ Path reset."
+
+# Force the "Install Command Line Developer Tools" prompt
+echo "📥 Triggering installation prompt for Command Line Tools..."
+xcode-select --install
+
+echo ""
+echo "✨ Installation prompt has been triggered."
+echo "📋 Please follow the prompts in the dialog box to complete installation."
+echo ""
+echo "After installation completes, you can verify it worked with:"
+echo "   xcode-select -p"
+echo "   gcc --version"
+echo ""
+echo "Then try your Homebrew commands again."
