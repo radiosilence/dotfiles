@@ -5,7 +5,7 @@ cd "$(mktemp -d)"
 printf '%s\n' "$@" | parallel -j "$(nproc)" '
     echo "downloading {}"
     mkdir -p {#}
-    curl -L {} -o {#}/font.zip
+    aria2c -x 16 -s 16 {} -d {#} -o font.zip
     cd {#}
     unzip font.zip
     find . -type f \( -name "*.otf" -o -name "*.ttf" \) -exec cp -v \{\} ~/Library/Fonts \;

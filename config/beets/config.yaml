@@ -10,7 +10,6 @@ paths:
   comp: Various Artists/$album%aunique{} [$format]/$disc$track. $artist - $title
 plugins:
   - ftintitle
-  - discogs
   - fetchart
   - embedart
   - importadded

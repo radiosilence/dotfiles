@@ -1,0 +1,28 @@
+#!/bin/sh
+
+using() {
+  command -v "$1" > /dev/null 2>&1
+}
+
+DST="$(mktemp -d)"
+cd "$DST" || exit 1
+echo "[dir] $DST"
+
+for url in "$@"; do
+  echo "[dl] $url..."
+  echo "$url" >> "$DST/urls.txt"
+  dir=$(echo "$url" | sha256sum)
+  echo "  dir==$dir" >> "$DST/urls.txt"
+  echo "  out=album.zip" >> "$DST/urls.txt"
+done
+
+aria2c -i urls.txt -j 8 -x 8 -d "$DST"
+find "$DST" -iname "*.zip" -exec sh -c 'unzip "$0" -d "$(dirname "$0")"' {} \; -delete
+
+if using lsd; then
+  lsd --tree .
+elif using tree; then
+  tree .
+fi
+
+beet import "$DST"
