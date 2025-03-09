@@ -4,7 +4,7 @@ set -eu
 
 # If no arguments provided, use "." as the default
 if [ $# -eq 0 ]; then
-	set -- "."
+  set -- "."
 fi
 
 echo "[target] $*"
@@ -12,8 +12,8 @@ echo "[target] $*"
 RESULTS=$(find "$@" -type f \( -name '.DS_Store' -o -name "*.nfo" -o -name "*.txt" -o -name '*.png' -o -name '*.jpg' -o -name '*.sfv' -o -iname '*sample.*' -o -name '._*' \))
 
 echo "$RESULTS" | while read -r line; do
-	echo "$line"
-	rm -rf "$line"
+  echo "$line"
+  rm -rf "$line"
 done
 
 echo "pruning..."

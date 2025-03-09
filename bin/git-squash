@@ -5,18 +5,18 @@ TEMP=$(mktemp)
 SPLIT_COMMIT=$(git merge-base HEAD "$PARENT")
 
 format_commits() {
-    git log --reverse --format="- %s%n%b" "$SPLIT_COMMIT"..HEAD | while IFS= read -r line; do
-        if [[ -n "$line" && "$line" != "* " ]]; then
-            printf "# %s\n" "$line"
-        fi
-    done
+  git log --reverse --format="- %s%n%b" "$SPLIT_COMMIT"..HEAD | while IFS= read -r line; do
+    if [[ -n "$line" && "$line" != "* " ]]; then
+      printf "# %s\n" "$line"
+    fi
+  done
 }
 
 {
-    printf "\n\n"
-    format_commits
-    printf "\n"
-} >"$TEMP"
+  printf "\n\n"
+  format_commits
+  printf "\n"
+} > "$TEMP"
 
 cat "$TEMP"
 git reset --soft "$PARENT"
