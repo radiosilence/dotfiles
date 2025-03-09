@@ -4,7 +4,7 @@
 set -eu
 
 # shellcheck disable=all
-echo 'export PATH="$HOME/.dotfiles/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"' >>~/.zshrc
+echo 'export PATH="$HOME/.dotfiles/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"' >> ~/.zshrc
 
 DIRNAME=$(dirname "$0")
 export PATH="$DIRNAME:/opt/homebrew/bin:/usr/local/bin:$PATH"
@@ -15,18 +15,18 @@ echo "pwd     : [$(pwd)]"
 
 # check if a command exists
 using() {
-	command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 # install brew if we don't have it
 if ! using brew; then
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # create ssh dir
 if [ ! -d ~/.ssh ]; then
-	mkdir ~/.ssh
-	chmod 700 ~/.ssh
+  mkdir ~/.ssh
+  chmod 700 ~/.ssh
 fi
 
 # run install/link script for dotfiles
@@ -38,11 +38,11 @@ brew bundle
 # change shell to fish
 # Ensure fish is in shells and set as default shell if not already
 if ! grep -q "$(which fish)" /etc/shells; then
-	which fish | sudo tee -a /etc/shells
+  which fish | sudo tee -a /etc/shells
 fi
 
 if ! echo "$SHELL" | grep -q "fish"; then
-	chsh -s "$(which fish)"
+  chsh -s "$(which fish)"
 fi
 
 # mise
@@ -50,7 +50,7 @@ mise i
 
 # adding Geist and Hack
 install-font-macos \
-	"https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip" \
-	"https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip" \
-	"https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.zip" \
-	"https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip"
+  "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip" \
+  "https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip" \
+  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.zip" \
+  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip"

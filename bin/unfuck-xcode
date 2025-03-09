@@ -10,9 +10,9 @@ echo ""
 
 # Check if running as root/sudo
 if [ "$(id -u)" != "0" ]; then
-   echo "⚠️  This script must be run with sudo privileges."
-   echo "Please run: sudo $0"
-   exit 1
+  echo "⚠️  This script must be run with sudo privileges."
+  echo "Please run: sudo $0"
+  exit 1
 fi
 
 echo "🔍 Checking for existing Xcode Command Line Tools installation..."

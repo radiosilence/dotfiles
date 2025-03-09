@@ -2,37 +2,37 @@
 
 # Create a temporary directory with various files and nested structures
 create_test_structure() {
-    # Create base temp directory
-    TEST_DIR=$(mktemp -d)
+  # Create base temp directory
+  TEST_DIR=$(mktemp -d)
 
-    # Create nested directories
-    mkdir -p "$TEST_DIR/dir1/subdir1"
-    mkdir -p "$TEST_DIR/largdir1"
-    mkdir -p "$TEST_DIR/largedir2/subdir1"
-    mkdir -p "$TEST_DIR/dir with spaces1/subdir2"
-    mkdir -p "$TEST_DIR/dir1/subdir2 with spaces"
-    mkdir -p "$TEST_DIR/dir2/subdir1/2/3/4/"
-    mkdir -p "$TEST_DIR/emptydir"
-    mkdir -p "$TEST_DIR/.stfolder"
-    mkdir -p "$TEST_DIR/.git"
+  # Create nested directories
+  mkdir -p "$TEST_DIR/dir1/subdir1"
+  mkdir -p "$TEST_DIR/largdir1"
+  mkdir -p "$TEST_DIR/largedir2/subdir1"
+  mkdir -p "$TEST_DIR/dir with spaces1/subdir2"
+  mkdir -p "$TEST_DIR/dir1/subdir2 with spaces"
+  mkdir -p "$TEST_DIR/dir2/subdir1/2/3/4/"
+  mkdir -p "$TEST_DIR/emptydir"
+  mkdir -p "$TEST_DIR/.stfolder"
+  mkdir -p "$TEST_DIR/.git"
 
-    # Create some small files
-    echo "Small file 1" >"$TEST_DIR/dir1/small1.txt"
-    echo "Small file 2" >"$TEST_DIR/dir1/subdir1/small2.txt"
-    echo "Small file 3" >"$TEST_DIR/dir2/small3.txt"
+  # Create some small files
+  echo "Small file 1" > "$TEST_DIR/dir1/small1.txt"
+  echo "Small file 2" > "$TEST_DIR/dir1/subdir1/small2.txt"
+  echo "Small file 3" > "$TEST_DIR/dir2/small3.txt"
 
-    # Create some larger files
-    dd if=/dev/zero of="$TEST_DIR/largdir1/large1.wav" bs=1M count=210 2>/dev/null
-    dd if=/dev/zero of="$TEST_DIR/dir1/small1.jpg" bs=1M count=1 2>/dev/null
-    dd if=/dev/zero of="$TEST_DIR/dir1/subdir1/small2.jpg" bs=1M count=2 2>/dev/null
-    dd if=/dev/zero of="$TEST_DIR/largedir2/subdir1/large2.aiff" bs=1M count=50 2>/dev/null
+  # Create some larger files
+  dd if=/dev/zero of="$TEST_DIR/largdir1/large1.wav" bs=1M count=210 2> /dev/null
+  dd if=/dev/zero of="$TEST_DIR/dir1/small1.jpg" bs=1M count=1 2> /dev/null
+  dd if=/dev/zero of="$TEST_DIR/dir1/subdir1/small2.jpg" bs=1M count=2 2> /dev/null
+  dd if=/dev/zero of="$TEST_DIR/largedir2/subdir1/large2.aiff" bs=1M count=50 2> /dev/null
 
-    # Create some files with spaces and special characters
-    touch "$TEST_DIR/dir1/file with spaces.txt"
-    touch "$TEST_DIR/dir1/file_with_underscore.txt"
-    touch "$TEST_DIR/dir1/file-with-dashes.txt"
+  # Create some files with spaces and special characters
+  touch "$TEST_DIR/dir1/file with spaces.txt"
+  touch "$TEST_DIR/dir1/file_with_underscore.txt"
+  touch "$TEST_DIR/dir1/file-with-dashes.txt"
 
-    echo "$TEST_DIR"
+  echo "$TEST_DIR"
 }
 
 # Run the function and store the path
