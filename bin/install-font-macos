@@ -1,12 +1,26 @@
 #!/bin/sh
 set -eu
 
-cd "$(mktemp -d)"
-printf '%s\n' "$@" | parallel -j "$(nproc)" '
-    echo "downloading {}"
-    mkdir -p {#}
-    aria2c -x 16 -s 16 {} -d {#} -o font.zip
-    cd {#}
-    unzip font.zip
-    find . -type f \( -name "*.otf" -o -name "*.ttf" \) -exec cp -v \{\} ~/Library/Fonts \;
-'
+DST="$(mktemp -d)"
+cd "$DST" || exit 1
+echo "[dir] $DST"
+
+for url in "$@"; do
+  echo "[dl] $url..."
+  echo "$url" >> "$DST/urls.txt"
+  dir=$(echo "$url" | sha256sum)
+  echo "  dir==$dir" >> "$DST/urls.txt"
+  echo "  out=font.zip" >> "$DST/urls.txt"
+done
+
+aria2c -i urls.txt -j 8 -x 8 -d "$DST"
+
+find "$DST" -iname "*.zip" -exec sh -c 'unzip "$0" -d "$(dirname "$0")"' {} \; -delete
+
+if using lsd; then
+  lsd --tree .
+elif using tree; then
+  tree .
+fi
+
+find . -type f \( -name "*.otf" -o -name "*.ttf" \) -exec cp -v \{\} ~/Library/Fonts \;
