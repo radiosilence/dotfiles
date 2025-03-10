@@ -1,0 +1,37 @@
+#!/bin/sh
+
+echo "======================================================"
+echo "   Git Branch Management: Fetch and Prune Script"
+echo "======================================================"
+
+# Check if current directory is a git repository
+if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+  echo "Error: Not a git repository. Please run this script from within a git repository."
+  exit 1
+fi
+
+echo "Pruning branches that no longer exist on remote..."
+git remote prune origin
+
+echo "Fetching updates from remote..."
+git fetch --all
+
+echo "Local branches with deleted remote tracking branches:"
+for branch in $(git branch -vv | grep ": gone]" | awk '{print $1}'); do
+  echo "- $branch"
+done
+
+echo "Would you like to delete these local branches? (y/n)"
+read -r answer
+
+if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+  for branch in $(git branch -vv | grep ": gone]" | awk '{print $1}'); do
+    git branch -D "$branch"
+    echo "Deleted branch: $branch"
+  done
+  echo "All local branches with deleted remote tracking branches have been removed."
+else
+  echo "No branches were deleted."
+fi
+
+echo "Operation completed."
