@@ -118,6 +118,7 @@ cask "tidal"
 cask "wezterm"
 cask "windsurf"
 cask "zed"
+cask "zed@preview"
 cask "zen-browser"
 mas "1password for Safari", id: 1569813296
 mas "Adobe Lightroom", id: 1451544217
