@@ -54,7 +54,6 @@
         }
       },
       "code_actions_on_format": {
-        "source.organizeImports": true,
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
         "source.organizeImports.biome": true
@@ -67,7 +66,6 @@
         }
       },
       "code_actions_on_format": {
-        "source.organizeImports": true,
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
         "source.organizeImports.biome": true
@@ -80,7 +78,8 @@
         }
       },
       "code_actions_on_format": {
-        "source.organizeImports": true,
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
         "source.fixAll.stylelint": true
       }
     },
@@ -89,6 +88,10 @@
         "language_server": {
           "name": "biome"
         }
+      },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
       }
     }
   },
