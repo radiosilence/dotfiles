@@ -115,7 +115,6 @@ cask "orbstack"
 cask "rar"
 cask "stolendata-mpv", args: { no_quarantine: true }
 cask "tidal"
-cask "visual-studio-code"
 cask "wezterm"
 cask "windsurf"
 cask "zed"
