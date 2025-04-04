@@ -2,6 +2,10 @@
   "features": {
     "edit_prediction_provider": "zed"
   },
+  "edit_predictions": {
+    "mode": "subtle"
+  },
+  "use_system_prompts": true,
   "auto_install_extensions": {
     "ansible": true,
     "astro": true,
@@ -22,6 +26,7 @@
     "pylsp": true,
     "scss": true,
     "ssh-config": true,
+    "stylelint": true,
     "terraform": true,
     "toml": true,
     "zedokai": true
@@ -48,54 +53,49 @@
   "format_on_save": "on",
   "languages": {
     "TypeScript": {
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
+      "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
+        "source.organizeImports.biome": true,
+        "quickfix.biome": true
       }
     },
     "TSX": {
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
+      "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
+        "source.organizeImports.biome": true,
+        "quickfix.biome": true
       }
     },
     "CSS": {
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
+      "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.biome": true,
         "source.organizeImports.biome": true,
-        "source.fixAll.stylelint": true
+        "source.fixAll.stylelint": true,
+        "quickfix.biome": true
       }
     },
+    "SCSS": {
+      "language_servers": ["some-sass"]
+    },
     "JSON": {
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      },
+      "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
+        "source.organizeImports.biome": true,
+        "quickfix.biome": true
       }
     }
   },
   "lsp": {
+    "some-sass": {
+      "settings": {}
+    },
+
     "vtsls": {
       "settings": {
         "typescript": {
