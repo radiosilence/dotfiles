@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Script to create a visual diff of two images
+# Usage: ./image_diff.sh image1.jpg image2.jpg output.jpg
+
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 image1 image2 output"
+    exit 1
+fi
+
+IMAGE1="$1"
+IMAGE2="$2"
+OUTPUT="$3"
+
+# Check if ImageMagick is installed
+if ! command -v convert &> /dev/null; then
+    echo "ImageMagick is not installed. Please install it first."
+    exit 1
+fi
+
+# Check if input files exist
+if [ ! -f "$IMAGE1" ] || [ ! -f "$IMAGE2" ]; then
+    echo "One or both input files do not exist."
+    exit 1
+fi
+
+# Create visual diff
+# 1. Convert both images to same size
+# 2. Create difference image
+# 3. Negate the result so differences appear white and unchanged parts appear black
+convert "$IMAGE1" "$IMAGE2" \
+    -resize 1024x1024\> \
+    -gravity center \
+    \( -clone 0-1 -compose difference -composite -threshold 0 \) \
+    -delete 0-1 \
+    -negate \
+    "$OUTPUT"
+
+echo "Visual diff created at $OUTPUT"
