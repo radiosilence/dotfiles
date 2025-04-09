@@ -24,6 +24,7 @@
     "lua": true,
     "nginx": true,
     "pylsp": true,
+    "proto": true,
     "scss": true,
     "ssh-config": true,
     "stylelint": true,
