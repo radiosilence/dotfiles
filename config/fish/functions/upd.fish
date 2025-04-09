@@ -16,8 +16,8 @@ function upd
 
     if using brew
         echo "[upd] updating brew..."
-        brew cu -afyq --include-mas
-        brew bundle --force
+        brew cu -afyq
+        brew bundle
         brew upgrade
         brew cleanup
         brew doctor
