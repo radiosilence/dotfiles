@@ -29,7 +29,6 @@ kubecolor = "latest"
 starship = "latest"
 gitleaks = "latest"
 yq = "latest"
-jq = "latest"
 
 [settings]
 paranoid = false
