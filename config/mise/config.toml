@@ -30,7 +30,6 @@ starship = "latest"
 gitleaks = "latest"
 yq = "latest"
 jq = "latest"
-elixir = "latest"
 
 [settings]
 paranoid = false
