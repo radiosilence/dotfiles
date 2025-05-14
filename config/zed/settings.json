@@ -39,8 +39,8 @@
     },
     "version": "2"
   },
-  "ui_font_size": 15,
-  "buffer_font_size": 14.0,
+  "ui_font_size": 14,
+  "buffer_font_size": 12.0,
   "buffer_font_family": "GeistMono Nerd Font",
   "terminal": {
     "font_size": 12
@@ -72,9 +72,7 @@
       }
     },
     "CSS": {
-      "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
-        "source.fixAll.biome": true,
         "source.organizeImports.biome": true,
         "source.fixAll.stylelint": true,
         "quickfix.biome": true
@@ -106,10 +104,6 @@
         }
       }
     },
-    "biome": {
-      "settings": {
-        "require_config_file": false
-      }
-    }
+    "biome": {}
   }
 }
