@@ -1,4 +1,4 @@
-
+fish_add_path /Users/jc/workspace/microsoft/typescript-go/built/local/
 # Added by Windsurf
 fish_add_path /Users/jc/.codeium/windsurf/bin
 

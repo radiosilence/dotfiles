@@ -1,33 +1,34 @@
+[env]
+KERL_BUILD_DOCS = "yes"
+
 [tools]
-bun = "latest"
+"ubi:junegunn/fzf" = "latest"
 buf = "latest"
+bun = "latest"
+elixir = "latest"
+erlang = "latest"
 fd = "latest"
 go = "latest"
+jb = "latest"
+kubecolor = "latest"
 kubectl = "latest"
 lua-language-server = "latest"
+node = "lts"
 pipx = "latest"
 pulumi = "latest"
 python = "latest"
+ruby = "3.4.1"
 rust = "latest"
 rust-analyzer = "latest"
 shellcheck = "latest"
 shfmt = "latest"
+starship = "latest"
+task = "latest"
 tilt = "latest"
 usage = "latest"
-ruby = "3.4.1"
-firebase = "latest"
-gcloud = "latest"
-node = "lts"
-zig = "latest"
-"ubi:grafana/jsonnet-language-server" = "latest"
-"ubi:junegunn/fzf" = "latest"
-perl = "latest"
-yt-dlp = "latest"
-jb = "latest"
-kubecolor = "latest"
-starship = "latest"
-gitleaks = "latest"
 yq = "latest"
+yt-dlp = "latest"
+# zig = "latest"
 
 [settings]
 paranoid = false
@@ -38,3 +39,4 @@ trusted_config_paths = ['~/Workspace']
 jobs = 8
 env_file = ".env"
 disable_tools = ["ruby"]
+idiomatic_version_file_enable_tools = ["node"]
