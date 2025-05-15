@@ -1,4 +1,10 @@
 {
+  "outline_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
   "features": {
     "edit_prediction_provider": "zed"
   },
@@ -32,10 +38,16 @@
     "toml": true,
     "zedokai": true
   },
-  "assistant": {
+  "agent": {
+    "default_profile": "write",
+    "inline_assistant_model": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-latest"
+    },
+    "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-3-7-sonnet-latest"
+      "provider": "anthropic",
+      "model": "claude-opus-4-thinking-latest"
     },
     "version": "2"
   },
@@ -50,10 +62,14 @@
     "light": "One Light",
     "dark": "Zedokai"
   },
+  "minimap": {
+    "show": "never"
+  },
   "wrap_guides": [80, 100],
   "format_on_save": "on",
   "languages": {
     "TypeScript": {
+      // "language_servers": ["tsgo", "!vtsls", "!typescript-language-server"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -63,6 +79,7 @@
       }
     },
     "TSX": {
+      // "language_servers": ["tsgo", "!vtsls", "!typescript-language-server"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
