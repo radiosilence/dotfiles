@@ -32,7 +32,7 @@
     "toml": true,
     "zedokai": true
   },
-  "assistant": {
+  "agent": {
     "default_model": {
       "provider": "zed.dev",
       "model": "claude-3-7-sonnet-latest"
@@ -54,7 +54,7 @@
   "format_on_save": "on",
   "languages": {
     "TypeScript": {
-      "formatter": { "language_server": { "name": "biome" } },
+      // "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
@@ -63,7 +63,7 @@
       }
     },
     "TSX": {
-      "formatter": { "language_server": { "name": "biome" } },
+      // "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
@@ -82,7 +82,7 @@
       "language_servers": ["some-sass"]
     },
     "JSON": {
-      "formatter": { "language_server": { "name": "biome" } },
+      // "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.biome": true,
         "source.organizeImports.biome": true,
