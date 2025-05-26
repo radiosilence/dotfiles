@@ -74,7 +74,6 @@ brew "rclone"
 brew "readline"
 brew "ripgrep"
 brew "rsync"
-brew "ruby"
 brew "sheldon"
 brew "starship"
 brew "syncthing"
@@ -127,3 +126,12 @@ cask "zen-browser"
 # mas "Tailscale", id: 1475387142
 # mas "Telegram", id: 747648890
 # mas "WhatsApp", id: 310633997
+
+# Added by go-brew-search on 2025-05-26 14:08:07
+cask "font-inconsolata-nerd-font"
+
+# Added by go-brew-search on 2025-05-26 14:09:26
+brew "ruby" # Powerful, clean, object-oriented scripting language
+
+# Added by go-brew-search on 2025-05-26 17:32:35
+brew "golangci-lint" # Fast linters runner for Go
