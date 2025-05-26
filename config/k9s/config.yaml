@@ -1,0 +1,17 @@
+# $XDG_CONFIG_HOME/k9s/config.yaml
+# Global skin is specified
+k9s:
+  liveViewAutoRefresh: true
+  refreshRate: 2
+  maxConnRetry: 5
+  readOnly: false
+  ui:
+    enableMouse: true
+    headless: false
+    logoless: false
+    crumbsless: false
+    noIcons: false
+    # Toggles reactive UI. This option provide for watching on disk artifacts changes and update the UI live  Defaults to false.
+    reactive: false
+    # Uses in_the_navy skin located in your $XDG_CONFIG_HOME/skins/in_the_navy.yaml
+    skin: monokai # => All clusters will use this skin unless otherwise specified
