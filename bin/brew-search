@@ -10,168 +10,173 @@ RED=$'\033[0;31m'
 GRAY=$'\033[0;90m'
 NC=$'\033[0m'
 
-# Icons
-BEER="🍺"
-CASK="🍷"
-CHECK="✅"
-PLUS="➕"
-
 # Paths
 BREWFILE="$HOME/Brewfile"
-CACHE_DIR="$HOME/.cache/brew-quick"
-CACHE_FILE="$CACHE_DIR/packages.txt"
+CACHE_DIR="$HOME/.cache/brew-search"
+FORMULA_CACHE="$CACHE_DIR/formulae.txt"
+CASK_CACHE="$CACHE_DIR/casks.txt"
 
-# Ensure cache dir exists
+# Create cache directory
 mkdir -p "$CACHE_DIR"
 
-# Function to update cache
-update_cache() {
-    echo "${BLUE}Updating package cache...${NC}"
+# Function to build cache
+build_cache() {
+    echo "${BLUE}Building package cache...${NC}"
     
-    # Get API cache location
-    API_DIR="$(brew --cache)/api"
+    local api_dir="$(brew --cache)/api"
     
-    # Clear old cache
-    > "$CACHE_FILE"
-    
-    # Get existing packages from Brewfile
-    existing_brew=""
-    existing_cask=""
-    if [[ -f "$BREWFILE" ]]; then
-        existing_brew=$(grep '^brew "' "$BREWFILE" | sed 's/^brew "\([^"]*\)".*/\1/' | paste -sd '|' -)
-        existing_cask=$(grep '^cask "' "$BREWFILE" | sed 's/^cask "\([^"]*\)".*/\1/' | paste -sd '|' -)
+    # Build formula cache
+    if [[ -f "$api_dir/formula.jws.json" ]]; then
+        jq -r '.payload | fromjson | .[] | select(.desc != null) | "\(.name)|\(.desc[:70])|\(.tap // "homebrew/core")"' \
+            "$api_dir/formula.jws.json" > "$FORMULA_CACHE" 2>/dev/null || true
     fi
     
-    # Parse formulae
-    if [[ -f "$API_DIR/formula.jws.json" ]]; then
-        jq -r '.payload | fromjson | .[] | "\(.name)##\(.desc // "")##formula##\(.tap // "homebrew/core")"' "$API_DIR/formula.jws.json" 2>/dev/null | \
-        while IFS='##' read -r name desc type tap; do
-            if [[ -n "$existing_brew" ]] && echo "|$existing_brew|" | grep -q "|$name|"; then
-                echo "$CHECK##$name##${desc:0:60}##$type##$tap"
-            else
-                echo "$BEER##$name##${desc:0:60}##$type##$tap"
-            fi
-        done >> "$CACHE_FILE"
+    # Build cask cache
+    if [[ -f "$api_dir/cask.jws.json" ]]; then
+        jq -r '.payload | fromjson | .[] | "\(.token)|\(.desc // .name[0] // "No description" | tostring[:70])|\(.tap // "homebrew/cask")"' \
+            "$api_dir/cask.jws.json" > "$CASK_CACHE" 2>/dev/null || true
     fi
     
-    # Parse casks
-    if [[ -f "$API_DIR/cask.jws.json" ]]; then
-        jq -r '.payload | fromjson | .[] | "\(.token)##\(.desc // .name[0] // "")##cask##\(.tap // "homebrew/cask")"' "$API_DIR/cask.jws.json" 2>/dev/null | \
-        while IFS='##' read -r name desc type tap; do
-            if [[ -n "$existing_cask" ]] && echo "|$existing_cask|" | grep -q "|$name|"; then
-                echo "$CHECK##$name##${desc:0:60}##$type##$tap"
-            else
-                echo "$CASK##$name##${desc:0:60}##$type##$tap"
-            fi
-        done >> "$CACHE_FILE"
-    fi
-    
-    echo "${GREEN}Cache updated with $(wc -l < "$CACHE_FILE") packages${NC}"
+    echo "${GREEN}Cache built!${NC}"
 }
 
-# Check if cache is older than 24 hours
-if [[ ! -f "$CACHE_FILE" ]] || [[ $(find "$CACHE_FILE" -mtime +1 -print 2>/dev/null) ]]; then
-    update_cache
+# Check if cache needs update (older than 24 hours)
+if [[ ! -f "$FORMULA_CACHE" ]] || [[ ! -f "$CASK_CACHE" ]] || \
+   [[ $(find "$FORMULA_CACHE" -mtime +1 2>/dev/null) ]] || \
+   [[ $(find "$CASK_CACHE" -mtime +1 2>/dev/null) ]]; then
+    build_cache
 fi
 
-# Display packages for selection
-echo "${BLUE}🔍 Search packages (TAB to select, ENTER to confirm)${NC}"
+# Get existing packages from Brewfile
+existing_formulae=""
+existing_casks=""
+if [[ -f "$BREWFILE" ]]; then
+    existing_formulae=$(grep '^brew "' "$BREWFILE" | sed 's/^brew "\([^"]*\)".*/|\1|/' || true)
+    existing_casks=$(grep '^cask "' "$BREWFILE" | sed 's/^cask "\([^"]*\)".*/|\1|/' || true)
+fi
 
-# Format for display and select with fzf
-selected=$(awk -F'##' '{printf "%-2s %-30s %s\n", $1, $2, $3}' "$CACHE_FILE" | \
-    fzf --multi \
-        --height=80% \
-        --layout=reverse \
-        --header="TAB=select, ENTER=install, ESC=cancel" \
-        --ansi)
+# Create display list
+display_file=$(mktemp)
+selection_map=$(mktemp)
 
-[[ -z "$selected" ]] && exit 0
+# Add formulae to display
+line_num=1
+while IFS='|' read -r name desc tap; do
+    if echo "$existing_formulae" | grep -qF "|$name|"; then
+        echo "✅ $name - $desc" >> "$display_file"
+        echo "$line_num:skip:formula:$name:$tap" >> "$selection_map"
+    else
+        echo "🍺 $name - $desc" >> "$display_file"
+        echo "$line_num:new:formula:$name:$tap" >> "$selection_map"
+    fi
+    ((line_num++))
+done < "$FORMULA_CACHE"
+
+# Add casks to display
+while IFS='|' read -r name desc tap; do
+    if echo "$existing_casks" | grep -qF "|$name|"; then
+        echo "✅ $name - $desc" >> "$display_file"
+        echo "$line_num:skip:cask:$name:$tap" >> "$selection_map"
+    else
+        echo "🍷 $name - $desc" >> "$display_file"
+        echo "$line_num:new:cask:$name:$tap" >> "$selection_map"
+    fi
+    ((line_num++))
+done < "$CASK_CACHE"
+
+# Show selection interface
+echo "${BLUE}🔍 Search packages (TAB to select, ENTER to install)${NC}"
+selected=$(cat "$display_file" | fzf --multi --height=80% --layout=reverse --ansi)
+
+# Clean up temp files
+rm -f "$display_file"
+
+# Exit if nothing selected
+[[ -z "$selected" ]] && { rm -f "$selection_map"; exit 0; }
 
 # Process selections
-declare -a new_formulae=()
-declare -a new_casks=()
-declare -a new_taps=()
-declare -a skipped=()
+new_formulae=()
+new_casks=()
+new_taps=()
+skipped=()
 
 while IFS= read -r line; do
-    # Skip empty lines
-    [[ -z "$line" ]] && continue
+    # Get line number from display
+    line_text=$(echo "$line" | sed 's/^[^ ]* //')
+    pkg_name=$(echo "$line_text" | cut -d' ' -f1)
     
-    # Extract icon and name (handle multiple spaces)
-    icon=$(echo "$line" | awk '{print $1}')
-    name=$(echo "$line" | awk '{print $2}')
-    
-    # Find full info from cache (use fixed string grep to handle special chars)
-    info=$(grep -F "##${name}##" "$CACHE_FILE" | head -1)
-    
-    # If not found, skip this package
-    if [[ -z "$info" ]]; then
-        echo "${RED}Warning: Could not find info for package: $name${NC}" >&2
-        continue
-    fi
-    
-    # Parse the info
-    IFS='##' read -r stored_icon stored_name stored_desc type tap <<< "$info"
-    
-    if [[ "$icon" == "$CHECK" ]]; then
-        skipped+=("$name")
-    elif [[ "$icon" == "$BEER" && "$type" == "formula" ]]; then
-        new_formulae+=("$name")
-        if [[ "$tap" != "homebrew/core" ]] && ! grep -q "^tap \"$tap\"" "$BREWFILE" 2>/dev/null; then
-            new_taps+=("$tap")
+    # Find matching entry in selection map
+    while IFS=':' read -r num status type name tap; do
+        if [[ "$name" == "$pkg_name" ]]; then
+            if [[ "$status" == "skip" ]]; then
+                skipped+=("$name")
+            elif [[ "$status" == "new" ]]; then
+                if [[ "$type" == "formula" ]]; then
+                    new_formulae+=("$name")
+                    if [[ "$tap" != "homebrew/core" ]] && ! grep -qF "tap \"$tap\"" "$BREWFILE" 2>/dev/null; then
+                        new_taps+=("$tap")
+                    fi
+                else
+                    new_casks+=("$name")
+                    if [[ "$tap" != "homebrew/cask" ]] && ! grep -qF "tap \"$tap\"" "$BREWFILE" 2>/dev/null; then
+                        new_taps+=("$tap")
+                    fi
+                fi
+            fi
+            break
         fi
-    elif [[ "$icon" == "$CASK" && "$type" == "cask" ]]; then
-        new_casks+=("$name")
-        if [[ "$tap" != "homebrew/cask" ]] && ! grep -q "^tap \"$tap\"" "$BREWFILE" 2>/dev/null; then
-            new_taps+=("$tap")
-        fi
-    fi
+    done < "$selection_map"
 done <<< "$selected"
+
+# Clean up
+rm -f "$selection_map"
 
 # Show summary
 echo
 echo "${BLUE}📋 Summary:${NC}"
 
-if [[ ${#skipped[@]} -gt 0 ]]; then
-    echo "${GRAY}Already installed: ${skipped[*]}${NC}"
-fi
+[[ ${#skipped[@]} -gt 0 ]] && echo "${GRAY}Already installed: ${skipped[*]}${NC}"
+[[ ${#new_taps[@]} -gt 0 ]] && echo "${GREEN}New taps: ${new_taps[*]}${NC}"
+[[ ${#new_formulae[@]} -gt 0 ]] && echo "${GREEN}Formulae to install: ${new_formulae[*]}${NC}"
+[[ ${#new_casks[@]} -gt 0 ]] && echo "${GREEN}Casks to install: ${new_casks[*]}${NC}"
 
 if [[ ${#new_formulae[@]} -eq 0 && ${#new_casks[@]} -eq 0 ]]; then
-    echo "${YELLOW}Nothing new to install${NC}"
+    echo "${YELLOW}Nothing new to install!${NC}"
     exit 0
 fi
 
-[[ ${#new_formulae[@]} -gt 0 ]] && echo "${GREEN}Formulae: ${new_formulae[*]}${NC}"
-[[ ${#new_casks[@]} -gt 0 ]] && echo "${GREEN}Casks: ${new_casks[*]}${NC}"
-[[ ${#new_taps[@]} -gt 0 ]] && echo "${GREEN}New taps: ${new_taps[*]}${NC}"
-
 # Confirm
 echo
-read -p "${YELLOW}Install these packages? [y/N] ${NC}" -n 1 -r
+read -p "${YELLOW}Add to Brewfile and install? [y/N] ${NC}" -n 1 -r
 echo
 
-[[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
+[[ ! $REPLY =~ ^[Yy]$ ]] && { echo "${RED}Cancelled${NC}"; exit 0; }
 
 # Update Brewfile
 echo "${BLUE}Updating Brewfile...${NC}"
 
-# Add taps
+# Add new taps
 for tap in "${new_taps[@]}"; do
     echo "tap \"$tap\"" >> "$BREWFILE"
+    echo "${GREEN}  + tap \"$tap\"${NC}"
 done
 
-# Add formulae
+# Add new formulae
 for pkg in "${new_formulae[@]}"; do
     echo "brew \"$pkg\"" >> "$BREWFILE"
+    echo "${GREEN}  + brew \"$pkg\"${NC}"
 done
 
-# Add casks
+# Add new casks
 for pkg in "${new_casks[@]}"; do
     echo "cask \"$pkg\"" >> "$BREWFILE"
+    echo "${GREEN}  + cask \"$pkg\"${NC}"
 done
 
 # Run brew bundle
+echo
 echo "${BLUE}Running brew bundle...${NC}"
 cd "$HOME" && brew bundle
 
+echo
 echo "${GREEN}✅ Done!${NC}"
