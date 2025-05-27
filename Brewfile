@@ -2,6 +2,7 @@ tap "bufbuild/buf"
 tap "buo/cask-upgrade"
 tap "cloudflare/cloudflare"
 tap "facebook/fb"
+tap "go-task/tap"
 tap "hashicorp/tap"
 tap "homebrew/bundle"
 tap "homebrew/services"
@@ -10,6 +11,7 @@ tap "nanovms/qemu"
 tap "withgraphite/tap"
 tap "metalbear-co/mirrord"
 brew "ansible"
+brew "go-task/tap/go-task"
 brew "ansible-language-server"
 brew "ansible-lint"
 brew "argocd"
@@ -135,3 +137,6 @@ brew "ruby" # Powerful, clean, object-oriented scripting language
 
 # Added by go-brew-search on 2025-05-26 17:32:35
 brew "golangci-lint" # Fast linters runner for Go
+
+# Added by go-brew-search on 2025-05-26 23:12:15
+brew "btop" # Resource monitor. C++ version and continuation of bashtop an...

@@ -52,13 +52,13 @@
   "agent": {
     "default_profile": "write",
     "inline_assistant_model": {
-      "provider": "anthropic",
+      "provider": "zed.dev",
       "model": "claude-sonnet-4-latest"
     },
     "always_allow_tool_actions": true,
     "default_model": {
       "provider": "anthropic",
-      "model": "claude-sonnet-4-latest"
+      "model": "claude-sonnet-4-thinking-latest"
     },
     "version": "2"
   },
