@@ -40,4 +40,3 @@ trusted_config_paths = ['~/Workspace']
 jobs = 8
 env_file = ".env"
 disable_tools = ["ruby"]
-idiomatic_version_file_enable_tools = ["node"]

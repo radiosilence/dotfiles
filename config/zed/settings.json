@@ -13,7 +13,7 @@
     "dock": "left"
   },
   "git_panel": {
-    "dock": "left"
+    "dock": "right"
   },
   "features": {
     "edit_prediction_provider": "zed"
@@ -52,7 +52,7 @@
   "agent": {
     "default_profile": "write",
     "inline_assistant_model": {
-      "provider": "zed.dev",
+      "provider": "anthropic",
       "model": "claude-sonnet-4-latest"
     },
     "always_allow_tool_actions": true,
