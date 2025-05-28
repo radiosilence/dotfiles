@@ -18,6 +18,7 @@ This repository contains configuration files for:
 | --------------- | -------------------------- |
 | 🎧 **beets**    | Music library manager      |
 | 🐟 **fish**     | Friendly interactive shell |
+| 🤖 **fish-ai**  | AI-powered shell assistant |
 | 👻 **ghostty**  | Minimal terminal theme     |
 | 🖌️ **helix**    | Text editor                |
 | 🛠️ **mise**     | Modern environment manager |
@@ -59,6 +60,24 @@ Additional features:
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/install
 ```
+
+**🤖 Enable AI Features (Optional):**
+
+First, switch to the AI branch:
+```sh
+cd ~/.dotfiles && git checkout ai
+```
+
+Then run the AI setup:
+```sh
+~/.dotfiles/bin/setup-fish-ai
+```
+
+This sets up AI-powered shell assistance with:
+- **Ctrl + P**: Transform comments to commands and vice versa  
+- **Ctrl + Space**: Autocomplete commands or suggest fixes
+
+> 💡 **Note**: AI features are currently available on the `ai` branch and require an Anthropic API key.
 
 ---
 
