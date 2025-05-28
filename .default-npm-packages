@@ -1,4 +1,4 @@
 jest
-typescript-language-server
+vtsls
 prettier
-serve
+@anthropic-ai/claude-code
