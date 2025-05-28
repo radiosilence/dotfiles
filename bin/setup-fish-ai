@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONFIG_FILE="$DOTFILES_DIR/config/fish-ai.ini"
+TEMPLATE_FILE="$DOTFILES_DIR/config/fish-ai.ini.template"
+TARGET_CONFIG="$HOME/.config/fish-ai.ini"
+
+echo "🤖 Fish AI Setup"
+echo "=================="
+
+# Check if fish-ai is installed
+if ! command -v fish >/dev/null 2>&1; then
+    echo "❌ Fish shell is not installed"
+    exit 1
+fi
+
+# Check if fisher and fish-ai are installed
+if ! fish -c "type -q fisher" >/dev/null 2>&1; then
+    echo "❌ Fisher is not installed. Run the dotfiles install script first."
+    exit 1
+fi
+
+if ! fish -c "functions -q _fish_ai_autocomplete" >/dev/null 2>&1; then
+    echo "❌ fish-ai plugin is not installed. Install it with: fisher install realiserad/fish-ai"
+    exit 1
+fi
+
+# Create config from template if it doesn't exist
+if [ ! -f "$CONFIG_FILE" ]; then
+    if [ ! -f "$TEMPLATE_FILE" ]; then
+        echo "❌ Template file not found: $TEMPLATE_FILE"
+        exit 1
+    fi
+    echo "📄 Creating config from template..."
+    cp "$TEMPLATE_FILE" "$CONFIG_FILE"
+fi
+
+# Prompt for API key if not already set
+if grep -q "your-anthropic-api-key-here" "$CONFIG_FILE" 2>/dev/null; then
+    echo ""
+    echo "🔑 Please enter your Anthropic API key:"
+    echo "   You can get one from: https://console.anthropic.com/settings/keys"
+    echo ""
+    read -r -s -p "API Key: " api_key
+    echo ""
+    
+    if [ -z "$api_key" ]; then
+        echo "❌ No API key provided"
+        exit 1
+    fi
+    
+    # Update the config file
+    if command -v sed >/dev/null 2>&1; then
+        sed -i.bak "s/your-anthropic-api-key-here/$api_key/" "$CONFIG_FILE" && rm "$CONFIG_FILE.bak"
+    else
+        echo "❌ sed command not found"
+        exit 1
+    fi
+    
+    echo "✅ API key updated in config"
+fi
+
+# Ensure the config is linked
+if [ ! -e "$TARGET_CONFIG" ] || [ ! -L "$TARGET_CONFIG" ]; then
+    echo "🔗 Linking config to ~/.config/fish-ai.ini"
+    [ -e "$TARGET_CONFIG" ] && rm -f "$TARGET_CONFIG"
+    ln -s "$CONFIG_FILE" "$TARGET_CONFIG"
+fi
+
+echo ""
+echo "✅ Fish AI setup complete!"
+echo ""
+echo "Usage:"
+echo "  Ctrl + P    - Transform comments to commands and vice versa"
+echo "  Ctrl + Space - Autocomplete commands or suggest fixes"
+echo ""
+echo "For more options, edit: $CONFIG_FILE"

@@ -88,10 +88,34 @@ install_sshconfig() {
   fi
 }
 
+install_fisher() {
+  if command -v fish > /dev/null 2>&1; then
+    if ! fish -c "type -q fisher" > /dev/null 2>&1; then
+      echo "Installing fisher..."
+      fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"
+    else
+      echo "Fisher already installed"
+    fi
+  fi
+}
+
+install_fish_ai_config() {
+  if [ -e "$DOTFILES/config/fish-ai.ini" ]; then
+    if [ -e "$HOME/.config/fish-ai.ini" ]; then
+      echo "rm ~/.config/fish-ai.ini"
+      rm -f "$HOME/.config/fish-ai.ini"
+    fi
+    echo "linking $DOTFILES/config/fish-ai.ini --> ~/.config/fish-ai.ini"
+    ln -s "$DOTFILES/config/fish-ai.ini" "$HOME/.config/fish-ai.ini"
+  fi
+}
+
 install_dotfiles
 install_confdirs
 install_brewfile
 install_sshconfig
 install_gitconfig
+install_fisher
+install_fish_ai_config
 
 cd - > /dev/null || exit
