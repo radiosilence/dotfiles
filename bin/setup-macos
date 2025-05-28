@@ -3,6 +3,12 @@
 # This script installs Homebrew and runs the dotfiles installer
 set -eu
 
+# Check if running on macOS
+if [ "$(uname)" != "Darwin" ]; then
+  echo "Error: This script is designed for macOS only"
+  exit 1
+fi
+
 # shellcheck disable=all
 echo 'export PATH="$HOME/.dotfiles/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"' >> ~/.zshrc
 
@@ -20,7 +26,18 @@ using() {
 
 # install brew if we don't have it
 if ! using brew; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "Installing Homebrew..."
+  if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    echo "Error: Homebrew installation failed"
+    exit 1
+  fi
+  
+  # Add Homebrew to PATH for this session
+  if [ -f /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -f /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
 fi
 
 # create ssh dir
@@ -30,27 +47,75 @@ if [ ! -d ~/.ssh ]; then
 fi
 
 # run install/link script for dotfiles
-"$DIRNAME/../install"
+if [ ! -f "$DIRNAME/../install" ]; then
+  echo "Error: Install script not found at $DIRNAME/../install"
+  echo "Are you running this from the correct location?"
+  exit 1
+fi
 
-# homebrew
-brew bundle
+echo "Running dotfiles installer..."
+if ! "$DIRNAME/../install"; then
+  echo "Error: Dotfiles installation failed"
+  exit 1
+fi
+
+# homebrew - check if Brewfile exists before running bundle
+if [ -f "$HOME/Brewfile" ] || [ -f "$DIRNAME/../Brewfile" ]; then
+  echo "Installing Homebrew packages..."
+  if ! brew bundle; then
+    echo "Warning: Some Homebrew packages failed to install"
+  fi
+else
+  echo "Warning: No Brewfile found, skipping brew bundle"
+fi
 
 # change shell to fish
-# Ensure fish is in shells and set as default shell if not already
-if ! grep -q "$(which fish)" /etc/shells; then
-  which fish | sudo tee -a /etc/shells
+# Ensure fish is installed first
+if using fish; then
+  fish_path="$(which fish)"
+  # Ensure fish is in shells and set as default shell if not already
+  if ! grep -q "$fish_path" /etc/shells; then
+    echo "Adding fish to /etc/shells..."
+    if ! echo "$fish_path" | sudo tee -a /etc/shells > /dev/null; then
+      echo "Warning: Could not add fish to /etc/shells"
+    fi
+  fi
+
+  if ! echo "$SHELL" | grep -q "fish"; then
+    echo "Changing default shell to fish..."
+    if ! chsh -s "$fish_path"; then
+      echo "Warning: Could not change default shell to fish"
+      echo "You may need to run: chsh -s $fish_path"
+    fi
+  fi
+else
+  echo "Warning: fish not found, skipping shell change"
 fi
 
-if ! echo "$SHELL" | grep -q "fish"; then
-  chsh -s "$(which fish)"
+# mise - install tools if mise is available
+if using mise; then
+  echo "Installing mise tools..."
+  if ! mise i; then
+    echo "Warning: Some mise tools failed to install"
+  fi
+else
+  echo "Warning: mise not found, skipping tool installation"
 fi
-
-# mise
-mise i
 
 # adding Geist and Hack
-install-font-macos \
-  "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip" \
-  "https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip" \
-  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.zip" \
-  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip"
+if using install-font-macos; then
+  echo "Installing fonts..."
+  if ! install-font-macos \
+    "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip" \
+    "https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip" \
+    "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.zip" \
+    "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip"; then
+    echo "Warning: Some fonts failed to install"
+  fi
+else
+  echo "Warning: install-font-macos not found, skipping font installation"
+fi
+
+echo ""
+echo "✅ macOS setup complete!"
+echo "You may need to restart your terminal or run 'exec fish' to use the new shell."
