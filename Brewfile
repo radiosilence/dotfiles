@@ -143,3 +143,5 @@ brew "btop" # Resource monitor. C++ version and continuation of bashtop an...
 
 # Added by go-brew-search on 2025-05-27 19:49:49
 brew "lefthook" # Fast and powerful Git hooks manager for any type of projects
+
+brew "uv"
