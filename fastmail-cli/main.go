@@ -169,6 +169,7 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(getCmd)
 	rootCmd.AddCommand(searchCmd)
+	rootCmd.AddCommand(sendCmd)
 }
 
 var authCmd = &cobra.Command{
@@ -254,6 +255,30 @@ var searchCmd = &cobra.Command{
 	},
 }
 
+var sendCmd = &cobra.Command{
+	Use:   "send",
+	Short: "Send an email",
+	Run: func(cmd *cobra.Command, args []string) {
+		if err := ensureAuth(); err != nil {
+			outputError(err.Error())
+			return
+		}
+		
+		to, _ := cmd.Flags().GetString("to")
+		subject, _ := cmd.Flags().GetString("subject")
+		body, _ := cmd.Flags().GetString("body")
+		cc, _ := cmd.Flags().GetString("cc")
+		bcc, _ := cmd.Flags().GetString("bcc")
+		
+		if to == "" || subject == "" || body == "" {
+			outputError("--to, --subject, and --body are required")
+			return
+		}
+		
+		sendEmail(to, subject, body, cc, bcc)
+	},
+}
+
 func initConfig() {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -318,7 +343,7 @@ func getSession(token string) (*JMAPSession, error) {
 
 func makeJMAPRequest(methodCalls []interface{}) (*JMAPResponse, error) {
 	request := JMAPRequest{
-		Using:       []string{"urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail"},
+		Using:       []string{"urn:ietf:params:jmap:core", "urn:ietf:params:jmap:mail", "urn:ietf:params:jmap:submission"},
 		MethodCalls: methodCalls,
 	}
 	
@@ -850,4 +875,228 @@ func outputError(message string) {
 func init() {
 	listCmd.Flags().Int("limit", 50, "Maximum number of emails to retrieve")
 	listCmd.Flags().String("mailbox", "INBOX", "Mailbox to list emails from")
+	
+	sendCmd.Flags().String("to", "", "Recipient email address(es), comma-separated")
+	sendCmd.Flags().String("subject", "", "Email subject")
+	sendCmd.Flags().String("body", "", "Email body text")
+	sendCmd.Flags().String("cc", "", "CC email address(es), comma-separated")
+	sendCmd.Flags().String("bcc", "", "BCC email address(es), comma-separated")
+	sendCmd.MarkFlagRequired("to")
+	sendCmd.MarkFlagRequired("subject")
+	sendCmd.MarkFlagRequired("body")
+}
+
+func sendEmail(to, subject, body, cc, bcc string) {
+	accountID := getAccountID()
+	
+	// Parse email addresses
+	toAddresses := parseEmailAddressString(to)
+	var ccAddresses, bccAddresses []EmailAddress
+	
+	if cc != "" {
+		ccAddresses = parseEmailAddressString(cc)
+	}
+	if bcc != "" {
+		bccAddresses = parseEmailAddressString(bcc)
+	}
+	
+	// Get user's identity
+	identity, err := getDefaultIdentity(accountID)
+	if err != nil {
+		outputError(fmt.Sprintf("Failed to get identity: %v", err))
+		return
+	}
+	
+	// Upload email body as blob
+	blobID, err := uploadBlob(body, accountID)
+	if err != nil {
+		outputError(fmt.Sprintf("Failed to upload email body: %v", err))
+		return
+	}
+	
+	// Create email object for sending
+	emailCreate := map[string]interface{}{
+		"from":    []map[string]string{{"email": identity.Email, "name": identity.Name}},
+		"to":      emailAddressesToMap(toAddresses),
+		"subject": subject,
+		"textBody": []map[string]interface{}{{
+			"type":   "text/plain",
+			"partId": "text",
+			"blobId": blobID,
+		}},
+		"keywords": map[string]bool{"$seen": true, "$draft": false},
+	}
+	
+	if len(ccAddresses) > 0 {
+		emailCreate["cc"] = emailAddressesToMap(ccAddresses)
+	}
+	if len(bccAddresses) > 0 {
+		emailCreate["bcc"] = emailAddressesToMap(bccAddresses)
+	}
+	
+	// Create and send email
+	methodCalls := []interface{}{
+		[]interface{}{
+			"Email/set",
+			map[string]interface{}{
+				"accountId": accountID,
+				"create": map[string]interface{}{
+					"draft": emailCreate,
+				},
+			},
+			"0",
+		},
+		[]interface{}{
+			"EmailSubmission/set",
+			map[string]interface{}{
+				"accountId": accountID,
+				"create": map[string]interface{}{
+					"submission": map[string]interface{}{
+						"identityId": identity.ID,
+						"emailId": map[string]interface{}{
+							"resultOf": "0",
+							"name":     "Email/set",
+							"path":     "/created/draft/id",
+						},
+					},
+				},
+			},
+			"1",
+		},
+	}
+	
+	resp, err := makeJMAPRequest(methodCalls)
+	if err != nil {
+		outputError(fmt.Sprintf("Failed to send email: %v", err))
+		return
+	}
+	
+	if len(resp.MethodResponses) < 2 {
+		outputError("Incomplete response from server")
+		return
+	}
+	
+	// Check for errors
+	emailResp := resp.MethodResponses[0].([]interface{})
+	if emailResp[0].(string) == "error" {
+		outputError(fmt.Sprintf("Email creation failed: %v", emailResp[1]))
+		return
+	}
+	
+	submissionResp := resp.MethodResponses[1].([]interface{})
+	if submissionResp[0].(string) == "error" {
+		outputError(fmt.Sprintf("Email submission failed: %v", submissionResp[1]))
+		return
+	}
+	
+	outputSuccess(map[string]interface{}{
+		"message": "Email sent successfully",
+		"to":      to,
+		"subject": subject,
+	})
+}
+
+func getDefaultIdentity(accountID string) (*Identity, error) {
+	methodCalls := []interface{}{
+		[]interface{}{
+			"Identity/get",
+			map[string]interface{}{
+				"accountId": accountID,
+			},
+			"0",
+		},
+	}
+	
+	resp, err := makeJMAPRequest(methodCalls)
+	if err != nil {
+		return nil, err
+	}
+	
+	if len(resp.MethodResponses) == 0 {
+		return nil, fmt.Errorf("no response from server")
+	}
+	
+	methodResp := resp.MethodResponses[0].([]interface{})
+	if methodResp[0].(string) == "error" {
+		return nil, fmt.Errorf("JMAP error: %v", methodResp[1])
+	}
+	
+	data := methodResp[1].(map[string]interface{})
+	identities := data["list"].([]interface{})
+	
+	if len(identities) == 0 {
+		return nil, fmt.Errorf("no identities found")
+	}
+	
+	// Use the first identity
+	identityMap := identities[0].(map[string]interface{})
+	identity := &Identity{
+		ID:    identityMap["id"].(string),
+		Email: identityMap["email"].(string),
+	}
+	
+	if name, ok := identityMap["name"]; ok && name != nil {
+		identity.Name = name.(string)
+	}
+	
+	return identity, nil
+}
+
+func uploadBlob(content string, accountID string) (string, error) {
+	uploadURL := session.UploadURL + "?accountId=" + accountID
+	req, err := http.NewRequest("POST", uploadURL, strings.NewReader(content))
+	if err != nil {
+		return "", err
+	}
+	
+	req.Header.Set("Authorization", "Bearer "+apiToken)
+	req.Header.Set("Content-Type", "text/plain; charset=utf-8")
+	
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	
+	if resp.StatusCode != http.StatusCreated {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("HTTP %d: %s", resp.StatusCode, string(body))
+	}
+	
+	var uploadResp struct {
+		BlobID string `json:"blobId"`
+	}
+	
+	if err := json.NewDecoder(resp.Body).Decode(&uploadResp); err != nil {
+		return "", err
+	}
+	
+	return uploadResp.BlobID, nil
+}
+
+func parseEmailAddressString(addresses string) []EmailAddress {
+	var result []EmailAddress
+	
+	for _, addr := range strings.Split(addresses, ",") {
+		addr = strings.TrimSpace(addr)
+		if addr != "" {
+			result = append(result, EmailAddress{Email: addr})
+		}
+	}
+	
+	return result
+}
+
+func emailAddressesToMap(addresses []EmailAddress) []map[string]string {
+	var result []map[string]string
+	
+	for _, addr := range addresses {
+		addrMap := map[string]string{"email": addr.Email}
+		if addr.Name != "" {
+			addrMap["name"] = addr.Name
+		}
+		result = append(result, addrMap)
+	}
+	
+	return result
 }
