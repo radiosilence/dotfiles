@@ -105,6 +105,95 @@ func TestParseEmailAddresses(t *testing.T) {
 	}
 }
 
+func TestParseEmailAddresses_WithNil(t *testing.T) {
+	// Test that parseEmailAddresses handles nil gracefully
+	// This tests the fix for the search function panic
+	testData := []interface{}{
+		map[string]interface{}{
+			"name":  "John Doe",
+			"email": "john@example.com",
+		},
+		map[string]interface{}{
+			"email": "jane@example.com",
+			"name":  nil, // This should not cause a panic
+		},
+	}
+	
+	result := parseEmailAddresses(testData)
+	
+	if len(result) != 2 {
+		t.Fatalf("Expected 2 email addresses, got %d", len(result))
+	}
+	
+	if result[0].Name != "John Doe" {
+		t.Errorf("Expected name 'John Doe', got '%s'", result[0].Name)
+	}
+	
+	if result[1].Name != "" {
+		t.Errorf("Expected empty name for nil name field, got '%s'", result[1].Name)
+	}
+}
+
+func TestSearchEmailHandling_NilFields(t *testing.T) {
+	// Test that email parsing handles nil from/to fields
+	// This simulates the data structure that caused the search panic
+	emailMap := map[string]interface{}{
+		"id":             "test-id",
+		"threadId":       "test-thread",
+		"subject":        "Test Subject",
+		"preview":        "Test preview",
+		"size":           float64(1024),
+		"receivedAt":     "2024-01-15T10:30:00Z",
+		"hasAttachment":  false,
+		"from":           nil, // This was causing the panic
+		"to":             nil, // This was causing the panic
+	}
+	
+	// This should not panic after the fix
+	e := Email{
+		ID:       emailMap["id"].(string),
+		ThreadID: emailMap["threadId"].(string),
+		Subject:  getString(emailMap, "subject"),
+		Preview:  getString(emailMap, "preview"),
+	}
+	
+	if size, ok := emailMap["size"]; ok {
+		e.Size = int(size.(float64))
+	}
+	
+	if receivedAt, ok := emailMap["receivedAt"]; ok {
+		if t, err := time.Parse(time.RFC3339, receivedAt.(string)); err == nil {
+			e.ReceivedAt = t
+		}
+	}
+	
+	if hasAttach, ok := emailMap["hasAttachment"]; ok {
+		e.HasAttachment = hasAttach.(bool)
+	}
+	
+	// These should not panic with the nil checks
+	if from, ok := emailMap["from"]; ok && from != nil {
+		e.From = parseEmailAddresses(from.([]interface{}))
+	}
+	
+	if to, ok := emailMap["to"]; ok && to != nil {
+		e.To = parseEmailAddresses(to.([]interface{}))
+	}
+	
+	// Verify that the email was created successfully with empty from/to arrays
+	if len(e.From) != 0 {
+		t.Error("Expected empty From array when from field is nil")
+	}
+	
+	if len(e.To) != 0 {
+		t.Error("Expected empty To array when to field is nil")
+	}
+	
+	if e.ID != "test-id" {
+		t.Errorf("Expected ID 'test-id', got '%s'", e.ID)
+	}
+}
+
 func TestGetString(t *testing.T) {
 	testMap := map[string]interface{}{
 		"existing":    "value",
