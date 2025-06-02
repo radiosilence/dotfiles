@@ -529,11 +529,11 @@ func listEmails(cmd *cobra.Command) {
 			e.HasAttachment = hasAttach.(bool)
 		}
 		
-		if from, ok := emailMap["from"]; ok {
+		if from, ok := emailMap["from"]; ok && from != nil {
 			e.From = parseEmailAddresses(from.([]interface{}))
 		}
 		
-		if to, ok := emailMap["to"]; ok {
+		if to, ok := emailMap["to"]; ok && to != nil {
 			e.To = parseEmailAddresses(to.([]interface{}))
 		}
 		
@@ -772,11 +772,11 @@ func searchEmails(query string) {
 			e.HasAttachment = hasAttach.(bool)
 		}
 		
-		if from, ok := emailMap["from"]; ok {
+		if from, ok := emailMap["from"]; ok && from != nil {
 			e.From = parseEmailAddresses(from.([]interface{}))
 		}
 		
-		if to, ok := emailMap["to"]; ok {
+		if to, ok := emailMap["to"]; ok && to != nil {
 			e.To = parseEmailAddresses(to.([]interface{}))
 		}
 		
