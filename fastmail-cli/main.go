@@ -826,8 +826,40 @@ func getMailboxID(name string) (string, error) {
 	for _, mb := range mailboxes {
 		mbMap := mb.(map[string]interface{})
 		mbName := mbMap["name"].(string)
-		if strings.EqualFold(mbName, name) || (name == "INBOX" && mbMap["role"] == "inbox") {
+		// Check by name first
+		if strings.EqualFold(mbName, name) {
 			return mbMap["id"].(string), nil
+		}
+		
+		// Check by role for standard mailboxes
+		role, hasRole := mbMap["role"].(string)
+		if hasRole {
+			switch strings.ToLower(name) {
+			case "inbox":
+				if role == "inbox" {
+					return mbMap["id"].(string), nil
+				}
+			case "sent", "sent items":
+				if role == "sent" {
+					return mbMap["id"].(string), nil
+				}
+			case "drafts":
+				if role == "drafts" {
+					return mbMap["id"].(string), nil
+				}
+			case "trash":
+				if role == "trash" {
+					return mbMap["id"].(string), nil
+				}
+			case "junk", "spam":
+				if role == "junk" {
+					return mbMap["id"].(string), nil
+				}
+			case "archive":
+				if role == "archive" {
+					return mbMap["id"].(string), nil
+				}
+			}
 		}
 	}
 	
@@ -914,6 +946,13 @@ func sendEmail(to, subject, body, cc, bcc string) {
 		return
 	}
 	
+	// Get sent mailbox ID
+	sentID, err := getMailboxID("Sent")
+	if err != nil {
+		outputError(fmt.Sprintf("Failed to find Sent mailbox: %v", err))
+		return
+	}
+	
 	// Create email object for sending
 	emailCreate := map[string]interface{}{
 		"from":    []map[string]string{{"email": identity.Email, "name": identity.Name}},
@@ -991,8 +1030,38 @@ func sendEmail(to, subject, body, cc, bcc string) {
 		return
 	}
 	
+	// Extract the created email ID to copy to Sent folder
+	emailRespData := emailResp[1].(map[string]interface{})
+	created := emailRespData["created"].(map[string]interface{})
+	draftData := created["draft"].(map[string]interface{})
+	emailID := draftData["id"].(string)
+	
+	// Copy the sent email to Sent folder and remove draft status
+	copyMethodCalls := []interface{}{
+		[]interface{}{
+			"Email/set",
+			map[string]interface{}{
+				"accountId": accountID,
+				"update": map[string]interface{}{
+					emailID: map[string]interface{}{
+						"mailboxIds": map[string]bool{sentID: true},
+						"keywords": map[string]bool{"$seen": true},
+					},
+				},
+			},
+			"0",
+		},
+	}
+	
+	_, err = makeJMAPRequest(copyMethodCalls)
+	if err != nil {
+		// Don't fail the whole operation if copying to Sent fails
+		outputError(fmt.Sprintf("Email sent but failed to copy to Sent folder: %v", err))
+		return
+	}
+	
 	outputSuccess(map[string]interface{}{
-		"message": "Email sent successfully",
+		"message": "Email sent successfully and copied to Sent folder",
 		"to":      to,
 		"subject": subject,
 	})
