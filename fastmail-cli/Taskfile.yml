@@ -1,0 +1,95 @@
+version: '3'
+
+vars:
+  BINARY_NAME: fastmail-cli
+  BUILD_DIR: ./bin
+  INSTALL_PATH: /usr/local/bin
+
+tasks:
+  build:
+    desc: Build the CLI binary
+    cmds:
+      - mkdir -p {{.BUILD_DIR}}
+      - go build -o {{.BUILD_DIR}}/{{.BINARY_NAME}} .
+    sources:
+      - "*.go"
+      - go.mod
+      - go.sum
+    generates:
+      - "{{.BUILD_DIR}}/{{.BINARY_NAME}}"
+
+  install:
+    desc: Install the CLI to system PATH
+    deps: [build]
+    cmds:
+      - sudo cp {{.BUILD_DIR}}/{{.BINARY_NAME}} {{.INSTALL_PATH}}/{{.BINARY_NAME}}
+      - sudo chmod +x {{.INSTALL_PATH}}/{{.BINARY_NAME}}
+
+  install-local:
+    desc: Install the CLI to ~/bin
+    deps: [build]
+    cmds:
+      - mkdir -p ~/bin
+      - cp {{.BUILD_DIR}}/{{.BINARY_NAME}} ~/bin/{{.BINARY_NAME}}
+      - chmod +x ~/bin/{{.BINARY_NAME}}
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf {{.BUILD_DIR}}
+      - go clean
+
+  deps:
+    desc: Download and tidy dependencies
+    cmds:
+      - go mod download
+      - go mod tidy
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test ./...
+
+  lint:
+    desc: Run linter
+    cmds:
+      - go vet ./...
+      - go fmt ./...
+
+  run:
+    desc: Run the CLI directly
+    cmds:
+      - go run . {{.CLI_ARGS}}
+
+  dev:
+    desc: Build and run for development
+    deps: [build]
+    cmds:
+      - "{{.BUILD_DIR}}/{{.BINARY_NAME}} {{.CLI_ARGS}}"
+
+  uninstall:
+    desc: Remove installed binary
+    cmds:
+      - sudo rm -f {{.INSTALL_PATH}}/{{.BINARY_NAME}}
+
+  uninstall-local:
+    desc: Remove locally installed binary
+    cmds:
+      - rm -f ~/bin/{{.BINARY_NAME}}
+
+  help:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  setup:
+    desc: Initial setup - download deps and build
+    cmds:
+      - task: deps
+      - task: build
+
+  release:
+    desc: Build optimized release binary
+    cmds:
+      - mkdir -p {{.BUILD_DIR}}
+      - go build -ldflags="-s -w" -o {{.BUILD_DIR}}/{{.BINARY_NAME}} .
