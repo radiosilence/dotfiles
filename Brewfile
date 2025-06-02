@@ -145,3 +145,6 @@ brew "btop" # Resource monitor. C++ version and continuation of bashtop an...
 brew "lefthook" # Fast and powerful Git hooks manager for any type of projects
 
 brew "uv"
+
+# Added by go-brew-search on 2025-06-02 11:33:40
+cask "claude" # Anthropic's official Claude AI desktop app
