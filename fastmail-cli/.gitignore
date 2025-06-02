@@ -52,6 +52,7 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+mise.local.yml
 
 # Temporary files
 *.tmp
