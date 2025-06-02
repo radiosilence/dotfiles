@@ -14,18 +14,19 @@
 
 This repository contains configuration files for:
 
-| Tool            | Description                |
-| --------------- | -------------------------- |
-| 🎧 **beets**    | Music library manager      |
-| 🐟 **fish**     | Friendly interactive shell |
-| 🤖 **fish-ai**  | AI-powered shell assistant |
-| 👻 **ghostty**  | Minimal terminal theme     |
-| 🖌️ **helix**    | Text editor                |
-| 🛠️ **mise**     | Modern environment manager |
-| 🚀 **starship** | Prompt for any shell       |
-| 🔧 **git**      | Version control            |
-| 🔐 **ssh**      | Secure shell               |
-| 💻 **wezterm**  | Terminal emulator          |
+| Tool               | Description                |
+| ------------------ | -------------------------- |
+| 🎧 **beets**       | Music library manager      |
+| 📧 **fastmail-cli** | Fastmail JMAP API client   |
+| 🐟 **fish**        | Friendly interactive shell |
+| 🤖 **fish-ai**     | AI-powered shell assistant |
+| 👻 **ghostty**     | Minimal terminal theme     |
+| 🖌️ **helix**       | Text editor                |
+| 🛠️ **mise**        | Modern environment manager |
+| 🚀 **starship**    | Prompt for any shell       |
+| 🔧 **git**         | Version control            |
+| 🔐 **ssh**         | Secure shell               |
+| 💻 **wezterm**     | Terminal emulator          |
 
 Additional features:
 
@@ -63,12 +64,6 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 
 **🤖 Enable AI Features (Optional):**
 
-First, switch to the AI branch:
-```sh
-cd ~/.dotfiles && git checkout ai
-```
-
-Then run the AI setup:
 ```sh
 ~/.dotfiles/bin/setup-fish-ai
 ```
@@ -77,7 +72,20 @@ This sets up AI-powered shell assistance with:
 - **Ctrl + P**: Transform comments to commands and vice versa  
 - **Ctrl + Space**: Autocomplete commands or suggest fixes
 
-> 💡 **Note**: AI features are currently available on the `ai` branch and require an Anthropic API key.
+> 💡 **Note**: AI features require an Anthropic API key.
+
+**📧 Install Fastmail CLI (Optional):**
+
+```sh
+cd ~/.dotfiles/fastmail-cli && task setup && task install
+```
+
+Then authenticate with your Fastmail API token:
+```sh
+fastmail-cli auth YOUR_API_TOKEN_HERE
+```
+
+> 💡 **Note**: Get your API token from Fastmail Settings → Privacy & Security → Integrations.
 
 ---
 
