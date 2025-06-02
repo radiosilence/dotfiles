@@ -1043,7 +1043,7 @@ func getDefaultIdentity(accountID string) (*Identity, error) {
 }
 
 func uploadBlob(content string, accountID string) (string, error) {
-	uploadURL := session.UploadURL + "?accountId=" + accountID
+	uploadURL := strings.Replace(session.UploadURL, "{accountId}", accountID, 1)
 	req, err := http.NewRequest("POST", uploadURL, strings.NewReader(content))
 	if err != nil {
 		return "", err
@@ -1058,7 +1058,7 @@ func uploadBlob(content string, accountID string) (string, error) {
 	}
 	defer resp.Body.Close()
 	
-	if resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
 		return "", fmt.Errorf("HTTP %d: %s", resp.StatusCode, string(body))
 	}
