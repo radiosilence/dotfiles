@@ -77,7 +77,8 @@ This sets up AI-powered shell assistance with:
 **📧 Install Fastmail CLI (Optional):**
 
 ```sh
-cd ~/.dotfiles/fastmail-cli && task setup && task install
+brew tap radiosilence/dotfiles https://github.com/radiosilence/dotfiles.git
+brew install fastmail-cli
 ```
 
 Then authenticate with your Fastmail API token:
