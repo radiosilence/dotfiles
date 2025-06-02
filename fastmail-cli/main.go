@@ -907,10 +907,10 @@ func sendEmail(to, subject, body, cc, bcc string) {
 		return
 	}
 	
-	// Upload email body as blob
-	blobID, err := uploadBlob(body, accountID)
+	// Get drafts mailbox ID
+	draftsID, err := getMailboxID("Drafts")
 	if err != nil {
-		outputError(fmt.Sprintf("Failed to upload email body: %v", err))
+		outputError(fmt.Sprintf("Failed to find Drafts mailbox: %v", err))
 		return
 	}
 	
@@ -919,12 +919,17 @@ func sendEmail(to, subject, body, cc, bcc string) {
 		"from":    []map[string]string{{"email": identity.Email, "name": identity.Name}},
 		"to":      emailAddressesToMap(toAddresses),
 		"subject": subject,
+		"mailboxIds": map[string]bool{draftsID: true},
+		"keywords": map[string]bool{"$draft": true},
 		"textBody": []map[string]interface{}{{
-			"type":   "text/plain",
 			"partId": "text",
-			"blobId": blobID,
+			"type":   "text/plain",
 		}},
-		"keywords": map[string]bool{"$seen": true, "$draft": false},
+		"bodyValues": map[string]interface{}{
+			"text": map[string]interface{}{
+				"value": body,
+			},
+		},
 	}
 	
 	if len(ccAddresses) > 0 {
@@ -953,11 +958,7 @@ func sendEmail(to, subject, body, cc, bcc string) {
 				"create": map[string]interface{}{
 					"submission": map[string]interface{}{
 						"identityId": identity.ID,
-						"emailId": map[string]interface{}{
-							"resultOf": "0",
-							"name":     "Email/set",
-							"path":     "/created/draft/id",
-						},
+						"emailId": "#draft",
 					},
 				},
 			},
@@ -971,6 +972,7 @@ func sendEmail(to, subject, body, cc, bcc string) {
 		return
 	}
 	
+
 	if len(resp.MethodResponses) < 2 {
 		outputError("Incomplete response from server")
 		return
