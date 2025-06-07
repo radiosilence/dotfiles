@@ -16,9 +16,9 @@ function upd
 
     if using brew
         echo "[upd] updating brew..."
-        brew cu -afyq
-        brew bundle
-        brew upgrade
+        brew bundle --verbose
+        # brew cu -afyq
+        # brew upgrade
         brew cleanup
         brew doctor
     end
