@@ -15,11 +15,14 @@ function upd
     end
 
     if using brew
-        echo "[upd] updating brew..."
-        brew bundle --upgrade
-        brew cu -afyq
-        brew upgrade --greedy
-        brew cleanup
+      echo "[upd] updating brew bundle..."
+      brew bundle --upgrade
+      echo "[upd] updating brew cask..."
+      brew cu -afyq
+      echo "[upd] upgrading brew packages..."
+      brew upgrade --greedy
+      echo "[upd] cleaning up brew..."
+      brew cleanup
     end
 
     if using mise
