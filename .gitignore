@@ -20,3 +20,4 @@ config/fish/conf.d/lf-icons.fish
 config/fish/conf.d/sponge.fish
 
 # Keep fish_plugins file - this tracks which plugins should be installed
+.ruby-lsp
