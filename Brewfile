@@ -96,25 +96,28 @@ brew "xz"
 brew "yaml-language-server"
 brew "zoxide"
 brew "zsh"
-cask "1password", greedy: true
-cask "1password-cli", greedy: true
-cask "discord", greedy: true
-cask "beekeeper-studio", greedy: true
-cask "figma", greedy: true
-cask "firefox", greedy: true
-cask "focusrite-control", greedy: true
-cask "foobar2000", greedy: true
-cask "fork", greedy: true
-cask "ghostty", greedy: true
-cask "lens", greedy: true
-cask "notion", greedy: true
-cask "notion-calendar", greedy: true
-cask "orbstack", greedy: true
-cask "rar", greedy: true
-cask "stolendata-mpv", args: { no_quarantine: true }, greedy: true
-cask "zed", greedy: true
-cask "zed@preview", greedy: true
-cask "zen", greedy: true
+
+cask_args greedy: true, require_sha: true
+
+cask "1password"
+cask "1password-cli"
+cask "discord"
+cask "beekeeper-studio"
+cask "figma"
+cask "firefox"
+cask "focusrite-control"
+cask "foobar2000"
+cask "fork"
+cask "ghostty"
+cask "lens"
+cask "notion"
+cask "notion-calendar"
+cask "orbstack"
+cask "rar", args: { no_quarantine: true }
+cask "stolendata-mpv", args: { no_quarantine: true }
+cask "zed"
+cask "zed@preview"
+cask "zen"
 mas "1Password for Safari", id: 1569813296
 mas "Adobe Lightroom", id: 1451544217
 mas "Infuse", id: 1136220934
@@ -136,7 +139,7 @@ brew "lefthook" # Fast and powerful Git hooks manager for any type of projects
 brew "uv"
 
 # Added by go-brew-search on 2025-06-02 11:33:40
-cask "claude", greedy: true # Anthropic's official Claude AI desktop app
+cask "claude" # Anthropic's official Claude AI desktop app
 tap "radiosilence/nano-web", "https://github.com/radiosilence/nano-web.git"
 brew "nano-web"
 brew "fastmail-cli"
