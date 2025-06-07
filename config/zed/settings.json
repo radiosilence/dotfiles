@@ -118,19 +118,34 @@
       }
     },
     "Elixir": {
+      "language_servers": ["lexical", "!elixir-ls", "..."],
       "format_on_save": {
         "external": {
           "command": "mix",
           "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
         }
       }
+    },
+    "Ruby": {
+      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."]
     }
   },
   "lsp": {
     "some-sass": {
       "settings": {}
     },
-
+    "rubocop": {
+      "initialization_options": {
+        "safeAutocorrect": false
+      }
+    },
+    "ruby-lsp": {
+      "initialization_options": {
+        "enabledFeatures": {
+          "diagnostics": false
+        }
+      }
+    },
     "vtsls": {
       "settings": {
         "typescript": {
