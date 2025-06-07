@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 tap 'buo/cask-upgrade'
 tap 'nanovms/ops'
 tap 'withgraphite/tap'
@@ -131,14 +133,14 @@ cask 'zed', greedy: true
 cask 'zed@preview', greedy: true
 cask 'zen', greedy: true
 
-mas '1Password for Safari', id: 1569813296
-mas 'Adobe Lightroom', id: 1451544217
-mas 'Infuse', id: 1136220934
-mas 'Messenger', id: 1480068668
-mas 'Slack', id: 803453959
-mas 'Tailscale', id: 1475387142
-mas 'Telegram', id: 747648890
-mas 'WhatsApp', id: 310633997
+mas '1Password for Safari', id: 1_569_813_296
+mas 'Adobe Lightroom', id: 1_451_544_217
+mas 'Infuse', id: 1_136_220_934
+mas 'Messenger', id: 1_480_068_668
+mas 'Slack', id: 803_453_959
+mas 'Tailscale', id: 1_475_387_142
+mas 'Telegram', id: 747_648_890
+mas 'WhatsApp', id: 310_633_997
 
 # Added by go-brew-search on 2025-05-26 17:32:35
 brew 'golangci-lint' # Fast linters runner for Go
