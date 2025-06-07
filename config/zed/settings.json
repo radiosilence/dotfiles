@@ -116,6 +116,14 @@
         "source.organizeImports.biome": true,
         "quickfix.biome": true
       }
+    },
+    "Elixir": {
+      "format_on_save": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
+        }
+      }
     }
   },
   "lsp": {
