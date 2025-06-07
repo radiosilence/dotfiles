@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 # Homebrew formula for FastmailCli - a command-line interface for Fastmail using JMAP API
