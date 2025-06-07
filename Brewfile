@@ -1,8 +1,7 @@
-# tap "buo/cask-upgrade"
-tap "facebook/fb"
 tap "nanovms/ops"
 tap "withgraphite/tap"
 tap "metalbear-co/mirrord"
+tap "hashicorp/tap"
 tap "radiosilence/dotfiles", "https://github.com/radiosilence/dotfiles.git"
 brew "ansible"
 brew "go-task"
@@ -76,8 +75,8 @@ brew "starship"
 brew "syncthing"
 brew "taplo"
 brew "telnet"
-brew "terraform"
-brew "terraform-ls"
+brew "hashicorp/tap/terraform"
+brew "hashicorp/tap/terraform-ls"
 brew "testdisk"
 brew "tig"
 brew "tmux"
@@ -123,12 +122,6 @@ mas "Slack", id: 803453959
 mas "Tailscale", id: 1475387142
 mas "Telegram", id: 747648890
 mas "WhatsApp", id: 310633997
-
-# Added by go-brew-search on 2025-05-26 14:08:07
-cask "font-inconsolata-nerd-font"
-
-# Added by go-brew-search on 2025-05-26 14:09:26
-brew "ruby" # Powerful, clean, object-oriented scripting language
 
 # Added by go-brew-search on 2025-05-26 17:32:35
 brew "golangci-lint" # Fast linters runner for Go
