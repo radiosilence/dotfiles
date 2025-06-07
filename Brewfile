@@ -121,14 +121,14 @@ cask "stolendata-mpv", args: { no_quarantine: true }
 cask "zed"
 cask "zed@preview"
 cask "zen-browser"
-# mas "1Password for Safari", id: 1569813296
-# mas "Adobe Lightroom", id: 1451544217
-# mas "Infuse", id: 1136220934
-# mas "Messenger", id: 1480068668
-# mas "Slack", id: 803453959
-# mas "Tailscale", id: 1475387142
-# mas "Telegram", id: 747648890
-# mas "WhatsApp", id: 310633997
+mas "1Password for Safari", id: 1569813296
+mas "Adobe Lightroom", id: 1451544217
+mas "Infuse", id: 1136220934
+mas "Messenger", id: 1480068668
+mas "Slack", id: 803453959
+mas "Tailscale", id: 1475387142
+mas "Telegram", id: 747648890
+mas "WhatsApp", id: 310633997
 
 # Added by go-brew-search on 2025-05-26 14:08:07
 cask "font-inconsolata-nerd-font"

@@ -57,7 +57,7 @@
     },
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "zed.dev",
+      "provider": "anthropic",
       "model": "claude-sonnet-4-thinking-latest"
     },
     "version": "2"

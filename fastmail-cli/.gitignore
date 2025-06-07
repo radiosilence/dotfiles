@@ -56,4 +56,4 @@ mise.local.yml
 
 # Temporary files
 *.tmp
-*.temp
+*.temp.task
