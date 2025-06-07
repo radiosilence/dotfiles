@@ -3,7 +3,6 @@ KERL_BUILD_DOCS = "yes"
 
 [tools]
 "ubi:junegunn/fzf" = "latest"
-buf = "latest"
 bun = "latest"
 elixir = "latest"
 erlang = "latest"
@@ -17,8 +16,6 @@ pnpm = "latest"
 python = "latest"
 rust = "latest"
 rust-analyzer = "latest"
-yq = "latest"
-# zig = "latest"
 
 [settings]
 paranoid = false
