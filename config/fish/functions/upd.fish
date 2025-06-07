@@ -17,10 +17,10 @@ function upd
     if using brew
       echo "[upd] updating brew bundle..."
       brew bundle --upgrade
-      echo "[upd] updating brew cask..."
-      brew cu --all --force --yes --quiet --include-mas
-      echo "[upd] upgrading brew packages..."
-      brew upgrade --greedy
+      # echo "[upd] updating brew cask..."
+      # brew cu --all --force --yes --quiet --include-mas
+      # echo "[upd] upgrading brew packages..."
+      # brew upgrade --greedy
       echo "[upd] cleaning up brew..."
       brew cleanup
     end
