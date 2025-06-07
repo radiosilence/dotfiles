@@ -1,3 +1,4 @@
+tap "buo/cask-upgrade"
 tap "nanovms/ops"
 tap "withgraphite/tap"
 tap "metalbear-co/mirrord"

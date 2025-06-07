@@ -20,7 +20,6 @@ function upd
         brew cu -afyq
         brew upgrade --greedy
         brew cleanup
-        brew doctor
     end
 
     if using mise
