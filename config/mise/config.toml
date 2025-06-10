@@ -14,6 +14,7 @@ pulumi = "latest"
 python = "latest"
 rust = "latest"
 rust-analyzer = "latest"
+yt-dlp = "latest"
 
 [settings]
 paranoid = false

@@ -119,6 +119,7 @@
     },
     "Elixir": {
       "language_servers": ["lexical", "!next-ls", "!elixir-ls", "..."],
+      // "language_servers": ["next-ls", "!lexical", "!elixir-ls", "..."],
       "format_on_save": {
         "external": {
           "command": "mix",
