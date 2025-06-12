@@ -1,5 +1,4 @@
 jest
-vtsls
 prettier
 @anthropic-ai/claude-code
 pnpm
