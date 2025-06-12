@@ -13,7 +13,7 @@ class FastmailCli < Formula
   depends_on 'go' => :build
 
   def install
-    cd 'fastmail-cli' do
+    cd 'packages/fastmail-cli' do
       system 'go', 'build', *std_go_args(ldflags: '-s -w'), '-o', bin / 'fastmail-cli', 'main.go'
     end
 
