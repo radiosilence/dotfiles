@@ -8,5 +8,3 @@ alias pa='pnpm add '
 alias paW='pnpm add -W '
 alias paD='pnpm add -D '
 alias paDW='pnpm add -DW '
-
-pnpm completion fish > ~/.config/fish/completions/pnpm.fish
