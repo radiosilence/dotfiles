@@ -80,7 +80,7 @@
   "languages": {
     "TypeScript": {
       // "language_servers": ["tsgo", "!vtsls", "!typescript-language-server"],
-      // "formatter": { "language_server": { "name": "biome" } },
+      "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
@@ -90,7 +90,7 @@
     },
     "TSX": {
       // "language_servers": ["tsgo", "!vtsls", "!typescript-language-server"],
-      // "formatter": { "language_server": { "name": "biome" } },
+      "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
