@@ -160,7 +160,7 @@ brew 'lefthook' # Fast and powerful Git hooks manager for any type of projects
 brew 'uv'
 
 # Added by go-brew-search on 2025-06-02 11:33:40
-cask 'claude' # Anthropic's official Claude AI desktop app, greedy: true
+cask 'claude' # Anthropic"s official Claude AI desktop app, greedy: true
 tap 'radiosilence/nano-web', 'https://github.com/radiosilence/nano-web.git'
 brew 'nano-web'
 brew 'fastmail-cli'
