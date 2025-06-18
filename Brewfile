@@ -164,3 +164,4 @@ brew 'nano-web'
 brew 'fastmail-cli'
 brew 'wget', greedy: true
 cask 'firefox', greedy: true
+brew 'uv'
