@@ -1,0 +1,26 @@
+pre-commit:
+  parallel: true
+  commands:
+    rubocop:
+      glob: "{*.{rb,ru,rake,gemspec,podspec,jbuilder,rabl,thor},Brewfile,Gemfile,Rakefile,Guardfile,Vagrantfile,Capfile,Thorfile,Fastfile,Appfile,Deliverfile,Matchfile,Scanfile,Snapfile,Gymfile}"
+      run: |
+        if [ -f Gemfile ] || [ -d .bundle ]; then
+          bundle exec rubocop --force-exclusion --autocorrect {staged_files}
+        elif command -v rubocop >/dev/null 2>&1; then
+          rubocop --force-exclusion --autocorrect {staged_files}
+        else
+          echo "RuboCop not available, skipping"
+          exit 0
+        fi
+      stage_fixed: true
+
+    shfmt:
+      glob: "*.{sh,bash,zsh}"
+      skip: "! command -v shfmt >/dev/null 2>&1"
+      run: shfmt -w -s -i 2 {staged_files}
+      stage_fixed: true
+
+    shfmt-check:
+      glob: "*.{sh,bash,zsh}"
+      skip: "! command -v shfmt >/dev/null 2>&1"
+      run: shfmt -d -s -i 2 {staged_files}

@@ -1,3 +1,4 @@
+# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 # Homebrew formula for FastmailCli - a command-line interface for Fastmail using JMAP API
@@ -28,3 +29,5 @@ class FastmailCli < Formula
     assert_match 'fastmail-cli', shell_output("#{bin}/fastmail-cli --help")
   end
 end
+
+# rubocop:enable Naming/FileName
