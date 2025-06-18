@@ -86,6 +86,7 @@ brew 'rsync'
 brew 'sheldon'
 brew 'shfmt'
 brew 'shellcheck'
+
 brew 'solargraph'
 brew 'starship'
 brew 'syncthing'
@@ -133,6 +134,7 @@ cask 'notion-calendar', greedy: true
 cask 'orbstack', greedy: true
 cask 'rar', args: { no_quarantine: true }, greedy: true
 cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
+cask 'signal', greedy: true
 cask 'zed', greedy: true
 cask 'zed@preview', greedy: true
 cask 'zen', greedy: true
@@ -162,3 +164,5 @@ cask 'claude' # Anthropic's official Claude AI desktop app, greedy: true
 tap 'radiosilence/nano-web', 'https://github.com/radiosilence/nano-web.git'
 brew 'nano-web'
 brew 'fastmail-cli'
+brew 'wget', greedy: true
+cask 'firefox', greedy: true
