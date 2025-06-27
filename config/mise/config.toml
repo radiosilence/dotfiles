@@ -15,6 +15,7 @@ python = "latest"
 rust = "latest"
 rust-analyzer = "latest"
 yt-dlp = "latest"
+houston = "latest"
 
 [settings]
 paranoid = false
