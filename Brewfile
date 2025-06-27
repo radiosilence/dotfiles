@@ -144,7 +144,8 @@ mas 'Adobe Lightroom', id: 1_451_544_217
 mas 'Infuse', id: 1_136_220_934
 mas 'Messenger', id: 1_480_068_668
 mas 'Slack', id: 803_453_959
-mas 'Tailscale', id: 1_475_387_142
+# mas 'Tailscale', id: 1_475_387_142
+cask 'tailscale', greedy: true
 mas 'Telegram', id: 747_648_890
 mas 'WhatsApp', id: 310_633_997
 
@@ -166,5 +167,5 @@ brew 'wget', greedy: true
 cask 'firefox', greedy: true
 brew 'uv'
 brew 'fswatch'
-cask 'aws-vpn-client'
-cask 'pgadmin4'
+cask 'aws-vpn-client', greedy: true
+cask 'pgadmin4', greedy: true
