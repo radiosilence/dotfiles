@@ -15,6 +15,7 @@ format = "[$hostname]($style) "
 
 [username]
 format = "[$user]($style)@"
+show_always = false
 
 [git_branch]
 symbol = "  "
