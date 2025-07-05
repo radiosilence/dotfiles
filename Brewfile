@@ -170,3 +170,19 @@ brew 'fswatch'
 cask 'aws-vpn-client', greedy: true
 cask 'pgadmin4', greedy: true
 brew 'atomicparsley'
+tap 'homebrew/bundle'
+
+# CD Ripping Tools Dependencies
+brew 'bash'    # CD ripping dependency
+brew 'flac'    # CD ripping dependency
+brew 'cdparanoia' # CD ripping dependency
+brew 'python@3.11' # CD ripping dependency
+brew 'beets' # CD ripping dependency
+brew 'musicbrainz-picard' # CD ripping dependency
+brew 'vim'    # CD ripping dependency
+brew 'sox'    # CD ripping dependency
+brew 'lame' # CD ripping dependency
+brew 'opus-tools' # CD ripping dependency
+
+# CD Ripping Tools GUI Applications
+cask 'vlc' # CD ripping dependency
