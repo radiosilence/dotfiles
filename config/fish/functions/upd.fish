@@ -1,5 +1,6 @@
 function upd
     echo "[upd] updating ~/.dotfiles..."
+    pushd ~
     sh ~/.dotfiles/install
 
     if using apt-get
@@ -34,4 +35,6 @@ function upd
         echo "[upd] updating yt-dlp..."
         yt-dlp --update-to nightly
     end
+
+    popd
 end
