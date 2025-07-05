@@ -156,16 +156,30 @@ func Load(configFile, workspaceOverride string) (*Config, error) {
 	// Set defaults
 	config.setDefaults()
 
-	// Override workspace if provided
-	if workspaceOverride != "" {
-		config.Workspace.BaseDir = workspaceOverride
+	// Load from file if provided, or try default config file
+	var configToLoad string
+	if configFile != "" {
+		configToLoad = configFile
+	} else {
+		// Try default config file
+		home, err := os.UserHomeDir()
+		if err == nil {
+			defaultConfig := filepath.Join(home, ".rip-cd.yaml")
+			if fileExists(defaultConfig) {
+				configToLoad = defaultConfig
+			}
+		}
 	}
 
-	// Load from file if provided
-	if configFile != "" && fileExists(configFile) {
-		if err := config.loadFromFile(configFile); err != nil {
+	if configToLoad != "" && fileExists(configToLoad) {
+		if err := config.loadFromFile(configToLoad); err != nil {
 			return nil, fmt.Errorf("failed to load config file: %w", err)
 		}
+	}
+
+	// Override workspace if provided (takes precedence over config file)
+	if workspaceOverride != "" {
+		config.Workspace.BaseDir = workspaceOverride
 	}
 
 	// Compute paths
