@@ -125,7 +125,7 @@ tasks:
       - git tag -a {{.VERSION}} -m "Release {{.VERSION}}"
       - git push origin {{.VERSION}}
       - echo "Published {{.VERSION}} to GitHub"
-      - echo "Go module available at: github.com/radiosilence/dotfiles/packages/rip-cd@{{.VERSION}}"
+      - echo "Go module available at github.com/radiosilence/dotfiles/packages/rip-cd@{{.VERSION}}"
 
   release:
     desc: Full release process (test, build, tag, publish)

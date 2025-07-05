@@ -187,3 +187,8 @@ cask 'musicbrainz-picard' # CD ripping dependency
 
 # CD Ripping Tools GUI Applications
 cask 'xld' # CD ripping dependency
+
+# CD ripping dependencies (added by rip-cd setup)
+brew 'flac'
+brew 'ffmpeg'
+cask 'xld'
