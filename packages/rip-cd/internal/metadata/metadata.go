@@ -96,6 +96,12 @@ func GenerateTemplate(cfg *config.Config, format string) error {
 		return fmt.Errorf("only YAML format is supported for templates")
 	}
 
+	// Auto-generate schema for IDE support
+	if err := GenerateSchema(cfg, "json"); err != nil {
+		logrus.Warnf("Failed to auto-generate schema: %v", err)
+		// Continue with template generation even if schema fails
+	}
+
 	templateFile := filepath.Join(cfg.Paths.MetadataDir, "template.yaml")
 
 	template := createSampleMetadata()
