@@ -178,7 +178,7 @@ var versionCmd = &cobra.Command{
 	Short: "Show version information",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%s v%s\n", name, version)
-		fmt.Println("The audiophile's choice for CD ripping 🎵")
+		fmt.Println("CD ripper with verification and metadata management 🎵")
 	},
 }
 

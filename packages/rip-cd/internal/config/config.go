@@ -326,7 +326,7 @@ func (c *Config) setDefaults() {
 		Temp:     "temp",
 	}
 
-	// Ripper defaults (audiophile-grade)
+	// Ripper defaults
 	c.Ripper.Engine = "xld"
 	c.Ripper.XLD.Profile = "flac_rip"
 	c.Ripper.Quality.Format = "flac"

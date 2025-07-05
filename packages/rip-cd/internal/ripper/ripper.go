@@ -81,8 +81,8 @@ func Rip(cfg *config.Config, meta *metadata.CDMetadata) error {
 		driveInfo.C2Support, driveInfo.AccurateStream, driveInfo.ReadOffset)
 	logrus.Infof("📁 Output directory: %s", outputDir)
 
-	// Build XLD command with audiophile settings
-	cmd, err := buildAudiophileXLDCommand(cfg, meta, driveInfo, outputDir)
+	// Build XLD command with enhanced settings
+	cmd, err := buildEnhancedXLDCommand(cfg, meta, driveInfo, outputDir)
 	if err != nil {
 		return fmt.Errorf("failed to build XLD command: %w", err)
 	}
@@ -192,7 +192,7 @@ func DryRun(cfg *config.Config, meta *metadata.CDMetadata) error {
 	}
 
 	// Show XLD command
-	cmd, err := buildAudiophileXLDCommand(cfg, meta, driveInfo, outputDir)
+	cmd, err := buildEnhancedXLDCommand(cfg, meta, driveInfo, outputDir)
 	if err != nil {
 		logrus.Warnf("⚠️  XLD command build would fail: %v", err)
 	} else {
@@ -310,8 +310,8 @@ func detectAndAnalyzeDrive(cfg *config.Config) (*metadata.DriveInfo, error) {
 	return driveInfo, nil
 }
 
-// buildAudiophileXLDCommand constructs the XLD command line with audiophile settings
-func buildAudiophileXLDCommand(cfg *config.Config, meta *metadata.CDMetadata, driveInfo *metadata.DriveInfo, outputDir string) (*exec.Cmd, error) {
+// buildEnhancedXLDCommand constructs the XLD command line with enhanced settings
+func buildEnhancedXLDCommand(cfg *config.Config, meta *metadata.CDMetadata, driveInfo *metadata.DriveInfo, outputDir string) (*exec.Cmd, error) {
 	xldPath := cfg.Ripper.XLD.ExecutablePath
 	if xldPath == "" {
 		xldPath = "xld"
@@ -324,7 +324,7 @@ func buildAudiophileXLDCommand(cfg *config.Config, meta *metadata.CDMetadata, dr
 		"--cddb-skip",     // Skip CDDB lookup, use our metadata
 	}
 
-	// Add format-specific arguments with audiophile settings
+	// Add format-specific arguments with quality settings
 	switch cfg.Ripper.Quality.Format {
 	case "flac":
 		args = append(args, "-f", "flac")
@@ -339,7 +339,7 @@ func buildAudiophileXLDCommand(cfg *config.Config, meta *metadata.CDMetadata, dr
 		args = append(args, "--flac-verify")
 	}
 
-	// Add audiophile verification settings
+	// Add verification settings
 	if cfg.Ripper.Quality.Verify {
 		args = append(args, "--verify")
 		args = append(args, "--test-and-copy") // Enable test & copy mode

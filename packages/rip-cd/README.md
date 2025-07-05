@@ -166,7 +166,7 @@ $EDITOR ~/.rip-cd.yaml
 The generated `~/.rip-cd.yaml` includes:
 
 - **Workspace**: Where files are stored and organized
-- **Ripper**: XLD settings with audiophile-grade quality options
+- **Ripper**: XLD settings with quality options
 - **Quality**: AccurateRip, C2 error correction, secure ripping modes
 - **Analysis**: Spectrogram generation and audio analysis settings
 - **Output**: File and directory naming templates
