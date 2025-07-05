@@ -187,8 +187,8 @@ func DryRun(cfg *config.Config, meta *metadata.CDMetadata) error {
 		logrus.Warnf("⚠️  Drive detection would fail: %v", err)
 	} else {
 		logrus.Infof("📀 Would use CD drive: %s %s", driveInfo.Manufacturer, driveInfo.Model)
-		logrus.Infof("🔧 Drive capabilities: C2=%v, AccurateStream=%v, Offset=%d",
-			driveInfo.C2Support, driveInfo.AccurateStream, driveInfo.ReadOffset)
+		logrus.Infof("🔧 Drive info: %s %s, Offset=%d",
+			driveInfo.Manufacturer, driveInfo.Model, driveInfo.ReadOffset)
 	}
 
 	// Show XLD command
@@ -236,6 +236,18 @@ func validatePrerequisites(cfg *config.Config) error {
 
 	if _, err := exec.LookPath(xldPath); err != nil {
 		return fmt.Errorf("XLD not found: %w", err)
+	}
+
+	// Check/create XLD profile
+	if cfg.Ripper.XLD.Profile != "" {
+		if exists, err := xldProfileExists(cfg.Ripper.XLD.Profile); err != nil {
+			logrus.Warnf("Failed to check XLD profile: %v", err)
+		} else if !exists {
+			logrus.Infof("🔧 Creating XLD profile: %s", cfg.Ripper.XLD.Profile)
+			if err := createXLDProfile(cfg.Ripper.XLD.Profile, cfg); err != nil {
+				return fmt.Errorf("failed to create XLD profile: %w", err)
+			}
+		}
 	}
 
 	// Check beets if enabled
@@ -307,6 +319,11 @@ func detectAndAnalyzeDrive(cfg *config.Config) (*metadata.DriveInfo, error) {
 		driveInfo.ReadOffset = 6 // Common Lite-On offset
 	}
 
+	// Override with config if specified
+	if cfg.Drive.ReadOffset != 0 {
+		driveInfo.ReadOffset = cfg.Drive.ReadOffset
+	}
+
 	return driveInfo, nil
 }
 
@@ -318,67 +335,182 @@ func buildEnhancedXLDCommand(cfg *config.Config, meta *metadata.CDMetadata, driv
 	}
 
 	args := []string{
-		"-c", cfg.Ripper.XLD.Profile,
 		"-o", outputDir,
-		"--secure-ripper", // Enable secure ripping
-		"--cddb-skip",     // Skip CDDB lookup, use our metadata
 	}
 
-	// Add format-specific arguments with quality settings
+	// Add profile if specified
+	if cfg.Ripper.XLD.Profile != "" {
+		args = append(args, "--profile", cfg.Ripper.XLD.Profile)
+	}
+
+	// Add format (XLD CLI only supports basic format selection)
 	switch cfg.Ripper.Quality.Format {
 	case "flac":
 		args = append(args, "-f", "flac")
-		args = append(args, fmt.Sprintf("--flac-compression=%d", cfg.Ripper.Quality.Compression))
-		args = append(args, "--flac-verify") // Enable FLAC verification
 	case "mp3":
 		args = append(args, "-f", "mp3")
-		args = append(args, "--mp3-bitrate=320") // Use highest quality MP3
+	case "wav":
+		args = append(args, "-f", "wav")
+	case "aif":
+		args = append(args, "-f", "aif")
+	case "aac":
+		args = append(args, "-f", "aac")
+	case "alac":
+		args = append(args, "-f", "alac")
+	case "vorbis":
+		args = append(args, "-f", "vorbis")
+	case "wavpack":
+		args = append(args, "-f", "wavpack")
+	case "opus":
+		args = append(args, "-f", "opus")
 	default:
 		args = append(args, "-f", "flac")
-		args = append(args, fmt.Sprintf("--flac-compression=%d", cfg.Ripper.Quality.Compression))
-		args = append(args, "--flac-verify")
 	}
 
-	// Add verification settings
-	if cfg.Ripper.Quality.Verify {
-		args = append(args, "--verify")
-		args = append(args, "--test-and-copy") // Enable test & copy mode
-	}
+	// NOTE: XLD CLI is very basic - advanced features like secure ripping,
+	// AccurateRip, C2 error correction, etc. are only available in the GUI.
+	// Quality settings must be configured in the XLD profile.
 
-	// Add maximum error correction
-	args = append(args, fmt.Sprintf("--error-correction=%d", cfg.Ripper.Quality.ErrorCorrection))
-	args = append(args, fmt.Sprintf("--max-retry=%d", cfg.Ripper.Quality.MaxRetryAttempts))
-
-	// Add C2 error correction if supported
-	if driveInfo.C2Support && cfg.Ripper.Quality.C2ErrorCorrection {
-		args = append(args, "--c2-error-correction")
-	}
-
-	// Add read offset correction
-	if driveInfo.ReadOffset != 0 {
-		args = append(args, fmt.Sprintf("--read-offset=%d", driveInfo.ReadOffset))
-	}
-
-	// Add AccurateRip support
+	// Warn about unsupported features
 	if cfg.Ripper.Quality.AccurateRip.Enabled {
-		args = append(args, "--accurate-rip")
+		logrus.Warn("⚠️  AccurateRip verification requires XLD GUI - not available in CLI mode")
 	}
-
-	// Add detailed logging
-	if cfg.Ripper.Quality.EnhancedLogging.EACStyle {
-		args = append(args, "--detailed-log")
-		args = append(args, "--log-file", filepath.Join(outputDir, "rip.log"))
+	if cfg.Ripper.Quality.C2ErrorCorrection {
+		logrus.Warn("⚠️  C2 error correction requires XLD GUI - not available in CLI mode")
+	}
+	if cfg.Ripper.Quality.SecureRipping {
+		logrus.Warn("⚠️  Secure ripping mode requires XLD GUI - not available in CLI mode")
 	}
 
 	// Add extra args
 	args = append(args, cfg.Ripper.XLD.ExtraArgs...)
 
-	// Add drive specification
-	if cfg.Drive.DevicePath != "" {
-		args = append(args, "-d", cfg.Drive.DevicePath)
-	}
+	// Note: XLD CLI doesn't support drive selection - it uses the system default
+
+	// Add the CD device (typically /dev/disk1 or similar on macOS)
+	// XLD CLI expects the input file/device as the last argument
+	args = append(args, "/dev/disk1") // Default CD device on macOS
 
 	return exec.Command(xldPath, args...), nil
+}
+
+// xldProfileExists checks if an XLD profile exists
+func xldProfileExists(profileName string) (bool, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return false, err
+	}
+
+	plistPath := filepath.Join(homeDir, "Library", "Preferences", "jp.tmkk.XLD.plist")
+	if _, err := os.Stat(plistPath); os.IsNotExist(err) {
+		return false, nil
+	}
+
+	// Use plutil to read the plist
+	cmd := exec.Command("plutil", "-extract", "Profiles", "xml1", "-o", "-", plistPath)
+	output, err := cmd.Output()
+	if err != nil {
+		return false, err
+	}
+
+	// Check if profile name exists in the output
+	return strings.Contains(string(output), profileName), nil
+}
+
+// createXLDProfile creates a new XLD profile with optimal settings
+func createXLDProfile(profileName string, cfg *config.Config) error {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	plistPath := filepath.Join(homeDir, "Library", "Preferences", "jp.tmkk.XLD.plist")
+
+	// Create the profile dictionary
+	profile := map[string]interface{}{
+		"name":        profileName,
+		"description": "Auto-generated rip-cd profile for high-quality archival ripping",
+		"settings": map[string]interface{}{
+			"TestAndCopy":              cfg.Ripper.Quality.TestAndCopy,
+			"UseC2Pointer":             cfg.Ripper.Quality.C2ErrorCorrection,
+			"QueryAccurateRip":         cfg.Ripper.Quality.AccurateRip.Enabled,
+			"RetryCount":               cfg.Ripper.Quality.MaxRetryAttempts,
+			"RipperMode":               4, // Secure mode
+			"ReadOffsetUseRipperValue": true,
+			"VerifySector":             cfg.Ripper.Quality.Verify,
+			"SaveLogMode":              1, // Always save log
+			"Priority":                 0, // Normal priority
+		},
+	}
+
+	// Add format-specific settings
+	if cfg.Ripper.Quality.Format == "flac" {
+		profile["settings"].(map[string]interface{})["XLDFlacOutput_Compression"] = cfg.Ripper.Quality.Compression
+		profile["settings"].(map[string]interface{})["XLDFlacOutput_EmbedChapter"] = true
+	}
+
+	// Convert profile to plist XML
+	profileXML, err := createProfileXML(profile)
+	if err != nil {
+		return err
+	}
+
+	// Use plutil to add the profile to the existing plist
+	tempFile := filepath.Join(os.TempDir(), "xld_profile.plist")
+	if err := os.WriteFile(tempFile, []byte(profileXML), 0644); err != nil {
+		return err
+	}
+	defer os.Remove(tempFile)
+
+	// Add the profile to the Profiles array
+	cmd := exec.Command("plutil", "-insert", "Profiles.0", "-xml", profileXML, plistPath)
+	if err := cmd.Run(); err != nil {
+		// If adding fails, try to create the Profiles array first
+		createCmd := exec.Command("plutil", "-replace", "Profiles", "-xml",
+			"<array><dict>"+profileXML+"</dict></array>", plistPath)
+		if err := createCmd.Run(); err != nil {
+			return fmt.Errorf("failed to create XLD profile: %w", err)
+		}
+	}
+
+	logrus.Infof("✅ Created XLD profile: %s", profileName)
+	return nil
+}
+
+// createProfileXML creates XML representation of XLD profile
+func createProfileXML(profile map[string]interface{}) (string, error) {
+	xml := `<dict>
+	<key>name</key>
+	<string>` + profile["name"].(string) + `</string>
+	<key>description</key>
+	<string>` + profile["description"].(string) + `</string>`
+
+	settings := profile["settings"].(map[string]interface{})
+	for key, value := range settings {
+		xml += `
+	<key>` + key + `</key>`
+
+		switch v := value.(type) {
+		case bool:
+			if v {
+				xml += `
+	<true/>`
+			} else {
+				xml += `
+	<false/>`
+			}
+		case int:
+			xml += `
+	<integer>` + fmt.Sprintf("%d", v) + `</integer>`
+		case string:
+			xml += `
+	<string>` + v + `</string>`
+		}
+	}
+
+	xml += `
+</dict>`
+	return xml, nil
 }
 
 // executeSecureRip runs the actual ripping command with enhanced monitoring

@@ -89,9 +89,6 @@ type QualityConfig struct {
 	// Verification settings
 	Verify bool `yaml:"verify" mapstructure:"verify"`
 
-	// Error correction attempts
-	ErrorCorrection int `yaml:"error_correction" mapstructure:"error_correction"`
-
 	// C2 error correction (hardware-level)
 	C2ErrorCorrection bool `yaml:"c2_error_correction" mapstructure:"c2_error_correction"`
 
@@ -118,15 +115,6 @@ type QualityConfig struct {
 type AccurateRipConfig struct {
 	// Enable AccurateRip verification
 	Enabled bool `yaml:"enabled" mapstructure:"enabled"`
-
-	// AccurateRip database path
-	DatabasePath string `yaml:"database_path" mapstructure:"database_path"`
-
-	// Require AccurateRip match for successful rip
-	RequireMatch bool `yaml:"require_match" mapstructure:"require_match"`
-
-	// Minimum confidence level (number of matching submissions)
-	MinConfidence int `yaml:"min_confidence" mapstructure:"min_confidence"`
 }
 
 // SpectrogramConfig defines spectrogram generation settings
@@ -148,38 +136,20 @@ type SpectrogramConfig struct {
 }
 
 // LoggingConfig defines enhanced logging settings
+// Note: XLD CLI has basic logging - advanced options configured in XLD profiles
 type LoggingConfig struct {
 	// Enable EAC-style detailed logging
 	EACStyle bool `yaml:"eac_style" mapstructure:"eac_style"`
-
-	// Include drive information in logs
-	DriveInfo bool `yaml:"drive_info" mapstructure:"drive_info"`
-
-	// Include matrix/runout numbers
-	MatrixInfo bool `yaml:"matrix_info" mapstructure:"matrix_info"`
-
-	// Include detailed error information
-	DetailedErrors bool `yaml:"detailed_errors" mapstructure:"detailed_errors"`
 
 	// Save log files
 	SaveLogs bool `yaml:"save_logs" mapstructure:"save_logs"`
 }
 
 // DriveConfig defines CD drive-specific settings
+// Note: XLD CLI has limited drive control - most settings are configured in XLD profiles
 type DriveConfig struct {
-	// Auto-detect best drive
-	AutoDetect bool `yaml:"auto_detect" mapstructure:"auto_detect"`
-
-	// Specific drive path (if not auto-detecting)
-	DevicePath string `yaml:"device_path" mapstructure:"device_path"`
-
-	// Drive read offset correction
+	// Drive read offset correction (configured in XLD profile)
 	ReadOffset int `yaml:"read_offset" mapstructure:"read_offset"`
-
-	// Drive capabilities
-	SupportsCDText         bool `yaml:"supports_cd_text" mapstructure:"supports_cd_text"`
-	SupportsC2             bool `yaml:"supports_c2" mapstructure:"supports_c2"`
-	SupportsAccurateStream bool `yaml:"supports_accurate_stream" mapstructure:"supports_accurate_stream"`
 }
 
 // MatrixConfig defines matrix/runout number detection
@@ -264,7 +234,7 @@ func Load(configFile, workspaceOverride string) (*Config, error) {
 	config := &Config{}
 
 	// Set defaults
-	config.setDefaults()
+	config.SetDefaults()
 
 	// Load from file if provided, or try default config file
 	var configToLoad string
@@ -307,8 +277,8 @@ func Load(configFile, workspaceOverride string) (*Config, error) {
 	return config, nil
 }
 
-// setDefaults sets default configuration values
-func (c *Config) setDefaults() {
+// SetDefaults sets default configuration values
+func (c *Config) SetDefaults() {
 	// Get user home directory
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -332,7 +302,7 @@ func (c *Config) setDefaults() {
 	c.Ripper.Quality.Format = "flac"
 	c.Ripper.Quality.Compression = 8 // Maximum compression for archival
 	c.Ripper.Quality.Verify = true
-	c.Ripper.Quality.ErrorCorrection = 10 // Maximum error correction attempts
+
 	c.Ripper.Quality.C2ErrorCorrection = true
 	c.Ripper.Quality.MaxRetryAttempts = 20
 	c.Ripper.Quality.SecureRipping = true
@@ -340,8 +310,6 @@ func (c *Config) setDefaults() {
 
 	// AccurateRip defaults
 	c.Ripper.Quality.AccurateRip.Enabled = true
-	c.Ripper.Quality.AccurateRip.RequireMatch = false // Don't fail if no match
-	c.Ripper.Quality.AccurateRip.MinConfidence = 2
 
 	// Spectrogram defaults
 	c.Ripper.Quality.Spectrograms.Enabled = true
@@ -351,9 +319,6 @@ func (c *Config) setDefaults() {
 
 	// Enhanced logging defaults
 	c.Ripper.Quality.EnhancedLogging.EACStyle = true
-	c.Ripper.Quality.EnhancedLogging.DriveInfo = true
-	c.Ripper.Quality.EnhancedLogging.MatrixInfo = true
-	c.Ripper.Quality.EnhancedLogging.DetailedErrors = true
 	c.Ripper.Quality.EnhancedLogging.SaveLogs = true
 
 	// Output defaults
@@ -362,11 +327,7 @@ func (c *Config) setDefaults() {
 	c.Output.SanitizeFilenames = true
 
 	// Drive defaults
-	c.Drive.AutoDetect = true
-	c.Drive.ReadOffset = 0 // Will be auto-detected
-	c.Drive.SupportsCDText = true
-	c.Drive.SupportsC2 = true
-	c.Drive.SupportsAccurateStream = true
+	c.Drive.ReadOffset = 0 // Will be auto-detected or configured in XLD profile
 
 	// Matrix defaults
 	c.Matrix.Enabled = true
@@ -471,7 +432,7 @@ func GenerateDefault(overwrite bool) error {
 
 	// Create config with defaults
 	config := &Config{}
-	config.setDefaults()
+	config.SetDefaults()
 
 	// Create the file with comments
 	file, err := os.Create(configPath)
@@ -536,8 +497,7 @@ workspace:
     # compression: {{.Ripper.Quality.Compression}}
     # Enable verification after ripping (default: {{.Ripper.Quality.Verify}})
     # verify: {{.Ripper.Quality.Verify}}
-    # Number of error correction attempts (default: {{.Ripper.Quality.ErrorCorrection}})
-    # error_correction: {{.Ripper.Quality.ErrorCorrection}}
+
     # Use C2 error correction if drive supports it (default: {{.Ripper.Quality.C2ErrorCorrection}})
     # c2_error_correction: {{.Ripper.Quality.C2ErrorCorrection}}
     # Maximum retry attempts for bad sectors (default: {{.Ripper.Quality.MaxRetryAttempts}})
@@ -551,10 +511,7 @@ workspace:
     # accurate_rip:
       # Enable AccurateRip database verification (default: {{.Ripper.Quality.AccurateRip.Enabled}})
       # enabled: {{.Ripper.Quality.AccurateRip.Enabled}}
-      # Require AccurateRip match for successful rip (default: {{.Ripper.Quality.AccurateRip.RequireMatch}})
-      # require_match: {{.Ripper.Quality.AccurateRip.RequireMatch}}
-      # Minimum confidence level (number of matching submissions) (default: {{.Ripper.Quality.AccurateRip.MinConfidence}})
-      # min_confidence: {{.Ripper.Quality.AccurateRip.MinConfidence}}
+
 
     # Spectrogram generation settings
     # spectrograms:
@@ -569,16 +526,10 @@ workspace:
       # Output format (options: png, svg) (default: {{.Ripper.Quality.Spectrograms.Format}})
       # format: "{{.Ripper.Quality.Spectrograms.Format}}"
 
-    # Enhanced logging settings
+    # Enhanced logging settings (basic controls - detailed settings in XLD profiles)
     # enhanced_logging:
       # Generate EAC-style detailed logs (default: {{.Ripper.Quality.EnhancedLogging.EACStyle}})
       # eac_style: {{.Ripper.Quality.EnhancedLogging.EACStyle}}
-      # Include drive information in logs (default: {{.Ripper.Quality.EnhancedLogging.DriveInfo}})
-      # drive_info: {{.Ripper.Quality.EnhancedLogging.DriveInfo}}
-      # Include matrix/runout numbers (default: {{.Ripper.Quality.EnhancedLogging.MatrixInfo}})
-      # matrix_info: {{.Ripper.Quality.EnhancedLogging.MatrixInfo}}
-      # Include detailed error information (default: {{.Ripper.Quality.EnhancedLogging.DetailedErrors}})
-      # detailed_errors: {{.Ripper.Quality.EnhancedLogging.DetailedErrors}}
       # Save log files to disk (default: {{.Ripper.Quality.EnhancedLogging.SaveLogs}})
       # save_logs: {{.Ripper.Quality.EnhancedLogging.SaveLogs}}
 
@@ -594,19 +545,10 @@ workspace:
   # sanitize_filenames: {{.Output.SanitizeFilenames}}
 
 # CD Drive Configuration
+# Note: XLD CLI uses system default drive - advanced drive settings configured in XLD profiles
 # drive:
-  # Automatically detect best available drive (default: {{.Drive.AutoDetect}})
-  # auto_detect: {{.Drive.AutoDetect}}
-  # Specific drive device path (empty = auto-detect) (default: "{{.Drive.DevicePath}}")
-  # device_path: "{{.Drive.DevicePath}}"
   # Drive read offset correction in samples (default: {{.Drive.ReadOffset}})
   # read_offset: {{.Drive.ReadOffset}}
-  # Drive supports CD-Text reading (default: {{.Drive.SupportsCDText}})
-  # supports_cd_text: {{.Drive.SupportsCDText}}
-  # Drive supports C2 error correction (default: {{.Drive.SupportsC2}})
-  # supports_c2: {{.Drive.SupportsC2}}
-  # Drive supports accurate stream mode (default: {{.Drive.SupportsAccurateStream}})
-  # supports_accurate_stream: {{.Drive.SupportsAccurateStream}}
 
 # Matrix/Runout Number Configuration
 # matrix:

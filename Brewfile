@@ -174,4 +174,4 @@ brew 'atomicparsley'
 # CD ripping dependencies (added by rip-cd setup)
 brew 'flac'
 brew 'ffmpeg'
-cask 'xld', greedy: true
+cask 'xld', greedy: true, args: { no_quarantine: true }

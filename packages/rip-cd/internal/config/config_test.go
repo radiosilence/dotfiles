@@ -126,7 +126,7 @@ func TestLoadFromUnsupportedFormat(t *testing.T) {
 
 func TestComputePaths(t *testing.T) {
 	cfg := &Config{}
-	cfg.setDefaults()
+	cfg.SetDefaults()
 
 	// Override workspace for testing
 	tmpDir := t.TempDir()
@@ -154,7 +154,7 @@ func TestComputePaths(t *testing.T) {
 
 func TestCreateDirectories(t *testing.T) {
 	cfg := &Config{}
-	cfg.setDefaults()
+	cfg.SetDefaults()
 
 	// Override workspace for testing
 	tmpDir := t.TempDir()
@@ -188,7 +188,7 @@ func TestCreateDirectories(t *testing.T) {
 
 func TestSave(t *testing.T) {
 	cfg := &Config{}
-	cfg.setDefaults()
+	cfg.SetDefaults()
 
 	tmpDir := t.TempDir()
 	configFile := filepath.Join(tmpDir, "saved_config.yaml")
@@ -265,7 +265,7 @@ func TestFileExists(t *testing.T) {
 
 func TestSetDefaults(t *testing.T) {
 	cfg := &Config{}
-	cfg.setDefaults()
+	cfg.SetDefaults()
 
 	// Test workspace defaults
 	if cfg.Workspace.BaseDir == "" {
@@ -295,6 +295,17 @@ func TestSetDefaults(t *testing.T) {
 	}
 	if cfg.Ripper.Quality.Compression != 8 {
 		t.Errorf("Expected compression 8, got %d", cfg.Ripper.Quality.Compression)
+	}
+
+	// Test quality defaults
+	if !cfg.Ripper.Quality.Verify {
+		t.Error("Verify should be enabled by default")
+	}
+	if !cfg.Ripper.Quality.C2ErrorCorrection {
+		t.Error("C2 error correction should be enabled by default")
+	}
+	if cfg.Ripper.Quality.MaxRetryAttempts != 20 {
+		t.Errorf("Expected max retry attempts 20, got %d", cfg.Ripper.Quality.MaxRetryAttempts)
 	}
 
 	// Test integration defaults
