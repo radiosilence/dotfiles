@@ -276,16 +276,16 @@ func TestGenerateExpectedFiles(t *testing.T) {
 func TestDetectDrive(t *testing.T) {
 	cfg := &config.Config{}
 
-	// detectDrive currently returns empty string on macOS
-	// This is correct behavior since XLD auto-detects
-	drive, err := detectDrive(cfg)
+	// detectAndAnalyzeDrive returns drive info on macOS
+	// This is correct behavior since XLD can detect drive capabilities
+	driveInfo, err := detectAndAnalyzeDrive(cfg)
 	if err != nil {
-		t.Errorf("detectDrive failed: %v", err)
+		t.Errorf("detectAndAnalyzeDrive failed: %v", err)
 	}
 
-	// Empty string is expected for auto-detection
-	if drive != "" {
-		t.Logf("Drive detected: %s", drive)
+	// DriveInfo should be populated
+	if driveInfo != nil {
+		t.Logf("Drive detected: %s %s", driveInfo.Manufacturer, driveInfo.Model)
 	}
 }
 
