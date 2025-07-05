@@ -6,6 +6,7 @@ import (
 	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/config"
 	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/metadata"
 	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/ripper"
+	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/setup"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -145,6 +146,20 @@ Supports YAML format with JSON schema validation.`,
 	},
 }
 
+var setupCmd = &cobra.Command{
+	Use:   "setup",
+	Short: "Install essential dependencies for CD ripping",
+	Long: `Install only the essential dependencies needed for CD ripping and tagging.
+This will update your Brewfile with the minimal required packages:
+- XLD (for CD ripping)
+- flac (for metadata tools)
+- ffmpeg (for audio processing)
+- Python packages (beets, musicbrainzngs, etc.)`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return setup.Run(dryRun, verbose)
+	},
+}
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Show version information",
@@ -166,6 +181,7 @@ func init() {
 	rootCmd.AddCommand(ripCmd)
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(validateCmd)
+	rootCmd.AddCommand(setupCmd)
 	rootCmd.AddCommand(versionCmd)
 
 	// Add generate subcommands

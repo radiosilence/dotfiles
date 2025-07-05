@@ -2,6 +2,10 @@
 
 ---
 
+**Disclaimer: There are some slop-coded utilities in here**
+
+---
+
 ## ⚡ Requirements
 
 | 📝 Requirement                |
@@ -14,19 +18,20 @@
 
 This repository contains configuration files for:
 
-| Tool               | Description                |
-| ------------------ | -------------------------- |
-| 🎧 **beets**       | Music library manager      |
-| 📧 **fastmail-cli** | Fastmail JMAP API client   |
-| 🐟 **fish**        | Friendly interactive shell |
-| 🤖 **fish-ai**     | AI-powered shell assistant |
-| 👻 **ghostty**     | Minimal terminal theme     |
-| 🖌️ **helix**       | Text editor                |
-| 🛠️ **mise**        | Modern environment manager |
-| 🚀 **starship**    | Prompt for any shell       |
-| 🔧 **git**         | Version control            |
-| 🔐 **ssh**         | Secure shell               |
-| 💻 **wezterm**     | Terminal emulator          |
+| Tool                | Description                        |
+| ------------------- | ---------------------------------- |
+| 🎧 **beets**        | Music library manager              |
+| 📧 **fastmail-cli** | Fastmail JMAP API client           |
+| 🐟 **fish**         | Friendly interactive shell         |
+| 🤖 **fish-ai**      | AI-powered shell assistant         |
+| 👻 **ghostty**      | Minimal terminal theme             |
+| 🖌️ **helix**        | Text editor                        |
+| 🛠️ **mise**         | Modern environment manager         |
+| 💿 **rip-cd**       | CD ripper with metadata management |
+| 🚀 **starship**     | Prompt for any shell               |
+| 🔧 **git**          | Version control                    |
+| 🔐 **ssh**          | Secure shell                       |
+| 💻 **wezterm**      | Terminal emulator                  |
 
 Additional features:
 
@@ -69,7 +74,8 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ```
 
 This sets up AI-powered shell assistance with:
-- **Ctrl + P**: Transform comments to commands and vice versa  
+
+- **Ctrl + P**: Transform comments to commands and vice versa
 - **Ctrl + Space**: Autocomplete commands or suggest fixes
 
 > 💡 **Note**: AI features require an Anthropic API key.
@@ -82,11 +88,18 @@ brew install fastmail-cli
 ```
 
 Then authenticate with your Fastmail API token:
+
 ```sh
 fastmail-cli auth YOUR_API_TOKEN_HERE
 ```
 
 > 💡 **Note**: Get your API token from Fastmail Settings → Privacy & Security → Integrations.
+
+**💿 Install rip-cd (Optional):**
+
+```sh
+# Local Homebrew formula
+brew install --formula ~/.dotfiles/Formula/rip-c
 
 ---
 
@@ -95,3 +108,4 @@ fastmail-cli auth YOUR_API_TOKEN_HERE
 - 🎯 Customize your `starship` prompt to match your workflow.
 - 🚦 Use `fzf` for supercharged file navigation and command history search.
 - 🧩 Keep your configuration modular for easier maintenance.
+```
