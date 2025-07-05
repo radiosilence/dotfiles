@@ -29,14 +29,14 @@ Controls where rip-cd stores its files and how it organizes them.
 
 ```yaml
 workspace:
-  base_dir: "~/cd_ripping"           # Base directory for all operations
-  auto_create_dirs: true             # Automatically create subdirectories
+  base_dir: "~/cd_ripping" # Base directory for all operations
+  auto_create_dirs: true # Automatically create subdirectories
   dir_structure:
-    metadata: "metadata"             # Directory for YAML metadata files
-    schemas: "schemas"               # Directory for JSON schemas
-    output: "output"                 # Directory for ripped audio files
-    logs: "logs"                     # Directory for log files
-    temp: "temp"                     # Directory for temporary files
+    metadata: "metadata" # Directory for YAML metadata files
+    schemas: "schemas" # Directory for JSON schemas
+    output: "output" # Directory for ripped audio files
+    logs: "logs" # Directory for log files
+    temp: "temp" # Directory for temporary files
 ```
 
 #### Ripper Settings
@@ -45,18 +45,18 @@ Controls the CD ripping engine and quality settings.
 
 ```yaml
 ripper:
-  engine: "xld"                      # Primary ripper (currently only XLD supported)
+  engine: "xld" # Primary ripper (currently only XLD supported)
 
   xld:
-    profile: "flac_rip"              # XLD profile to use
-    executable_path: ""              # Path to XLD (empty = auto-detect)
-    extra_args: []                   # Additional XLD command line arguments
+    profile: "flac_rip" # XLD profile to use
+    executable_path: "" # Path to XLD (empty = auto-detect)
+    extra_args: [] # Additional XLD command line arguments
 
   quality:
-    format: "flac"                   # Output format (flac, mp3, etc.)
-    compression: 5                   # FLAC compression level (0-8)
-    verify: true                     # Enable verification after ripping
-    error_correction: 3              # Number of error correction attempts
+    format: "flac" # Output format (flac, mp3, etc.)
+    compression: 5 # FLAC compression level (0-8)
+    verify: true # Enable verification after ripping
+    error_correction: 3 # Number of error correction attempts
 ```
 
 #### Output Settings
@@ -65,12 +65,13 @@ Controls how files and directories are named.
 
 ```yaml
 output:
-  filename_template: "{{.TrackNumber}} - {{.Title}}"     # Template for track filenames
-  dir_template: "{{.Artist}} - {{.Album}} ({{.Year}})"  # Template for album directories
-  sanitize_filenames: true                               # Remove invalid characters
+  filename_template: "{{.TrackNumber}} - {{.Title}}" # Template for track filenames
+  dir_template: "{{.Artist}} - {{.Album}} ({{.Year}})" # Template for album directories
+  sanitize_filenames: true # Remove invalid characters
 ```
 
 **Available Template Variables:**
+
 - `{{.Artist}}` - Album artist
 - `{{.Album}}` - Album title
 - `{{.Year}}` - Year extracted from date
@@ -86,16 +87,16 @@ Controls external service integrations.
 ```yaml
 integrations:
   musicbrainz:
-    enabled: true                                    # Enable MusicBrainz lookup
-    server_url: "https://musicbrainz.org/ws/2"       # MusicBrainz server URL
-    rate_limit: 1.0                                  # Requests per second
-    user_agent: "rip-cd/2.0.0"                      # User agent string
+    enabled: true # Enable MusicBrainz lookup
+    server_url: "https://musicbrainz.org/ws/2" # MusicBrainz server URL
+    rate_limit: 1.0 # Requests per second
+    user_agent: "rip-cd/2.0.0" # User agent string
 
   beets:
-    enabled: true                                    # Enable beets integration
-    executable_path: ""                              # Path to beets (empty = auto-detect)
-    config_path: ""                                  # Path to beets config
-    auto_import: true                                # Auto-import after ripping
+    enabled: true # Enable beets integration
+    executable_path: "" # Path to beets (empty = auto-detect)
+    config_path: "" # Path to beets config
+    auto_import: true # Auto-import after ripping
 ```
 
 ## Metadata Configuration
@@ -116,20 +117,21 @@ This creates a template file with IDE autocompletion support.
 
 ```yaml
 album:
-  title: "Album Title"                    # Required: Album name
-  artist: "Artist Name"                   # Required: Primary artist
-  date: "2023-03-15"                      # Optional: Release date (YYYY, YYYY-MM, or YYYY-MM-DD)
-  label: "Record Label"                   # Optional: Record label
-  catalog_number: "CAT-001"               # Optional: Catalog number
-  barcode: "123456789012"                 # Optional: UPC/EAN barcode (12-14 digits)
-  genre: "Rock"                           # Optional: Primary genre
-  country: "US"                           # Optional: Country code (ISO 3166-1 alpha-2)
-  disambiguation: "2023 remaster"        # Optional: Disambiguation comment
-  total_time: "45:30"                     # Optional: Total album time (MM:SS or HH:MM:SS)
-  packaging: "Jewel Case"                 # Optional: Physical packaging type
+  title: "Album Title" # Required: Album name
+  artist: "Artist Name" # Required: Primary artist
+  date: "2023-03-15" # Optional: Release date (YYYY, YYYY-MM, or YYYY-MM-DD)
+  label: "Record Label" # Optional: Record label
+  catalog_number: "CAT-001" # Optional: Catalog number
+  barcode: "123456789012" # Optional: UPC/EAN barcode (12-14 digits)
+  genre: "Rock" # Optional: Primary genre
+  country: "US" # Optional: Country code (ISO 3166-1 alpha-2)
+  disambiguation: "2023 remaster" # Optional: Disambiguation comment
+  total_time: "45:30" # Optional: Total album time (MM:SS or HH:MM:SS)
+  packaging: "Jewel Case" # Optional: Physical packaging type
 ```
 
 **Valid Packaging Types:**
+
 - `"Jewel Case"`
 - `"Digipak"`
 - `"Cardboard Sleeve"`
@@ -140,11 +142,11 @@ album:
 
 ```yaml
 tracks:
-  - number: 1                             # Required: Track number (1-99)
-    title: "Track Title"                  # Required: Track name
-    artist: "Featured Artist"             # Optional: Track-specific artist
-    length: "3:45"                        # Optional: Track length (MM:SS)
-    isrc: "USRC17607839"                  # Optional: ISRC code (format: LLCCCNNNNNNN)
+  - number: 1 # Required: Track number (1-99)
+    title: "Track Title" # Required: Track name
+    artist: "Featured Artist" # Optional: Track-specific artist
+    length: "3:45" # Optional: Track length (MM:SS)
+    isrc: "USRC17607839" # Optional: ISRC code (format: LLCCCNNNNNNN)
 
   - number: 2
     title: "Another Track"
@@ -157,11 +159,11 @@ Credits can be either strings or arrays of strings.
 
 ```yaml
 credits:
-  producer: "Producer Name"                          # Single producer
-  engineer: ["Engineer 1", "Engineer 2"]            # Multiple engineers
-  mastered_by: "Mastering Engineer"                  # Mastering credit
-  recorded_at: "Abbey Road Studios"                  # Recording location
-  mixed_by: "Mix Engineer"                           # Mixing credit
+  producer: "Producer Name" # Single producer
+  engineer: ["Engineer 1", "Engineer 2"] # Multiple engineers
+  mastered_by: "Mastering Engineer" # Mastering credit
+  recorded_at: "Abbey Road Studios" # Recording location
+  mixed_by: "Mix Engineer" # Mixing credit
 ```
 
 #### Additional Information
@@ -172,15 +174,16 @@ notes: |
   Special edition information, pressing details, etc.
 
 ripping:
-  drive: ""                               # CD drive used (auto-populated)
-  ripper: "XLD"                          # Ripper software used (auto-populated)
-  date: ""                               # Rip date (auto-populated)
-  checksum: ""                           # Verification checksum (auto-populated)
+  drive: "" # CD drive used (auto-populated)
+  ripper: "XLD" # Ripper software used (auto-populated)
+  date: "" # Rip date (auto-populated)
+  checksum: "" # Verification checksum (auto-populated)
 ```
 
 ### Validation Rules
 
 #### Album Validation
+
 - `title` and `artist` are required
 - `date` must be in format `YYYY`, `YYYY-MM`, or `YYYY-MM-DD`
 - `barcode` must be 12-14 digits
@@ -188,6 +191,7 @@ ripping:
 - `packaging` must be one of the predefined values
 
 #### Track Validation
+
 - `number` and `title` are required for each track
 - `number` must be between 1 and 99
 - `length` must be in format `MM:SS`
@@ -198,6 +202,7 @@ ripping:
 ### Minimal Configuration
 
 **~/.rip-cd.yaml:**
+
 ```yaml
 workspace:
   base_dir: "~/music-rips"
@@ -212,6 +217,7 @@ output:
 ```
 
 **metadata/album.yaml:**
+
 ```yaml
 album:
   title: "OK Computer"
@@ -228,15 +234,16 @@ tracks:
 ### Complete Configuration
 
 **~/.rip-cd.yaml:**
+
 ```yaml
 workspace:
-  base_dir: "~/audiophile-rips"
+  base_dir: "~/music-rips"
   auto_create_dirs: true
 
 ripper:
   engine: "xld"
   xld:
-    profile: "audiophile_flac"
+    profile: "flac_rip"
   quality:
     format: "flac"
     compression: 8
@@ -258,6 +265,7 @@ integrations:
 ```
 
 **metadata/pink-floyd-dsotm.yaml:**
+
 ```yaml
 # yaml-language-server: $schema=../schemas/cd-metadata-schema.json
 
@@ -320,12 +328,14 @@ notes: |
 ## Best Practices
 
 ### Global Configuration
+
 1. **Use descriptive directory templates** to organize your collection
 2. **Enable verification** for critical archival work
 3. **Set appropriate rate limits** for MusicBrainz to be respectful
 4. **Use high FLAC compression** for archival purposes (level 8)
 
 ### Metadata Configuration
+
 1. **Always validate metadata** before ripping: `rip-cd validate metadata.yaml`
 2. **Use dry runs** to test your configuration: `rip-cd rip metadata.yaml --dry-run`
 3. **Include as much metadata as possible** for better organization
@@ -333,6 +343,7 @@ notes: |
 5. **Store metadata files in version control** for backup and tracking changes
 
 ### Workflow Recommendations
+
 1. Create workspace-specific configurations for different projects
 2. Use templates to maintain consistency across similar releases
 3. Validate metadata files in your editor using the JSON schema
@@ -340,7 +351,9 @@ notes: |
 5. Backup both your configuration and metadata files regularly
 
 ### IDE Integration
+
 The generated templates include YAML Language Server schema references for:
+
 - **VS Code** (with YAML extension)
 - **Zed** (built-in YAML support)
 - **Neovim** (with yaml-language-server)

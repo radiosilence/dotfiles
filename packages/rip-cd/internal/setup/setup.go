@@ -23,8 +23,11 @@ type EssentialDependencies struct {
 func getEssentialDeps() EssentialDependencies {
 	return EssentialDependencies{
 		Brews: []string{
-			"flac",   // FLAC codec and metaflac tool
-			"ffmpeg", // Audio processing and conversion
+			"flac",       // FLAC codec and metaflac tool
+			"ffmpeg",     // Audio processing and conversion
+			"sox",        // Sound processing for spectrograms
+			"libsndfile", // Audio file format support
+			"cdparanoia", // Alternative CD ripper for verification
 		},
 		Casks: []string{
 			"xld", // X Lossless Decoder for CD ripping
@@ -34,6 +37,9 @@ func getEssentialDeps() EssentialDependencies {
 			"musicbrainzngs>=0.7.1", // MusicBrainz API client
 			"PyYAML>=6.0",           // YAML processing
 			"jsonschema>=4.0.0",     // JSON schema validation
+			"matplotlib>=3.5.0",     // For spectrogram generation
+			"numpy>=1.21.0",         // Audio analysis support
+			"scipy>=1.7.0",          // Signal processing
 		},
 	}
 }
