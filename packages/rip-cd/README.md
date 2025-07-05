@@ -2,6 +2,33 @@
 
 CD ripper with metadata management, MusicBrainz integration, and strongly-typed configuration.
 
+## 🚀 Quickstart
+
+Get started in under 5 minutes:
+
+```bash
+# 1. Install dependencies
+rip-cd setup
+
+# 2. Create default config
+rip-cd generate config
+
+# 3. Setup workspace
+rip-cd generate template --workspace ~/my-cd-rips
+rip-cd generate schema --workspace ~/my-cd-rips
+
+# 4. Edit metadata for your CD
+cp ~/my-cd-rips/metadata/template.yaml ~/my-cd-rips/metadata/my-album.yaml
+# Edit my-album.yaml with your CD information
+
+# 5. Rip your CD
+rip-cd validate ~/my-cd-rips/metadata/my-album.yaml
+rip-cd rip ~/my-cd-rips/metadata/my-album.yaml --dry-run  # test first
+rip-cd rip ~/my-cd-rips/metadata/my-album.yaml            # actual rip
+```
+
+📖 **[Full Quickstart Guide](./docs/quickstart.md)** | 📋 **[Configuration Guide](./docs/configuration.md)**
+
 ## Features
 
 - High-quality FLAC ripping via XLD integration
@@ -42,122 +69,99 @@ task build
 
 The binary will be installed to `~/.dotfiles/bin/rip-cd`.
 
-## Quick Start
-
-```bash
-# Generate workspace and template
-rip-cd generate template --workspace ~/my-rips
-
-# Edit the template with your CD information
-$EDITOR ~/my-rips/metadata/template.yaml
-
-# Validate metadata
-rip-cd validate ~/my-rips/metadata/template.yaml --workspace ~/my-rips
-
-# Test what would happen (dry run)
-rip-cd rip ~/my-rips/metadata/template.yaml --workspace ~/my-rips --dry-run
-
-# Rip the CD
-rip-cd rip ~/my-rips/metadata/template.yaml --workspace ~/my-rips
-```
-
-## Configuration
-
-### Global Configuration
-
-Create `~/.rip-cd.yaml`:
-
-```yaml
-workspace:
-  base_dir: "~/music-rips"
-  auto_create_dirs: true
-
-ripper:
-  engine: "xld"
-  quality:
-    format: "flac"
-    compression: 5
-    verify: true
-
-output:
-  dir_template: "{{.Artist}} - {{.Album}} ({{.Year}})"
-  filename_template: "{{.TrackNumber}} - {{.Title}}"
-
-integrations:
-  musicbrainz:
-    enabled: true
-    rate_limit: 1.0
-  beets:
-    enabled: true
-    auto_import: true
-```
-
-### Metadata Files
-
-Metadata files use YAML with JSON schema validation:
-
-```yaml
-# yaml-language-server: $schema=../schemas/cd-metadata-schema.json
-album:
-  title: "Album Title"
-  artist: "Artist Name"
-  date: "2023"
-  label: "Record Label"
-  catalog_number: "CAT-001"
-  barcode: "123456789012"
-  genre: "Rock"
-  country: "US"
-  packaging: "Jewel Case"
-
-tracks:
-  - number: 1
-    title: "First Track"
-    length: "3:45"
-  - number: 2
-    title: "Second Track"
-    length: "4:20"
-
-credits:
-  producer: "Producer Name"
-  engineer: "Engineer Name"
-```
-
 ## Commands
 
-### Generate Templates and Schemas
+### Setup Dependencies
 
 ```bash
-# Generate metadata template
-rip-cd generate template [--workspace DIR]
+# Install essential CD ripping tools (XLD, flac, ffmpeg, beets, etc.)
+rip-cd setup --verbose
 
-# Generate JSON schema
-rip-cd generate schema [--workspace DIR]
+# See what would be installed without making changes
+rip-cd setup --dry-run
 ```
 
-### Validate Metadata
+### Generate Files
 
 ```bash
-rip-cd validate <metadata-file> [--workspace DIR]
+# Create default ~/.rip-cd.yaml configuration
+rip-cd generate config
+
+# Generate metadata template
+rip-cd generate template --workspace ~/my-rips
+
+# Generate JSON schema for IDE autocompletion
+rip-cd generate schema --workspace ~/my-rips
 ```
 
 ### Rip CDs
 
 ```bash
-# Dry run (shows what would happen)
-rip-cd rip <metadata-file> --dry-run [--workspace DIR]
+# Validate metadata file
+rip-cd validate ~/my-rips/metadata/album.yaml
 
-# Actual ripping
-rip-cd rip <metadata-file> [--workspace DIR]
+# Test rip (dry run)
+rip-cd rip ~/my-rips/metadata/album.yaml --dry-run
+
+# Actually rip the CD
+rip-cd rip ~/my-rips/metadata/album.yaml
 ```
 
-### Global Options
+## Configuration
+
+📖 **[Complete Configuration Guide](./docs/configuration.md)**
+
+### Quick Configuration
 
 ```bash
+# Generate default config with sensible defaults
+rip-cd generate config
+
+# Edit configuration
+$EDITOR ~/.rip-cd.yaml
+```
+
+### Essential Settings
+
+The generated `~/.rip-cd.yaml` includes:
+
+- **Workspace**: Where files are stored and organized
+- **Ripper**: XLD settings and audio quality options
+- **Output**: File and directory naming templates
+- **Integrations**: MusicBrainz and beets configuration
+
+### Metadata Templates
+
+```bash
+# Generate template with IDE autocompletion support
+rip-cd generate template --workspace ~/rips
+rip-cd generate schema --workspace ~/rips
+
+# Edit metadata for your CD
+cp ~/rips/metadata/template.yaml ~/rips/metadata/my-album.yaml
+$EDITOR ~/rips/metadata/my-album.yaml
+```
+
+## Documentation
+
+- 📖 **[Quickstart Guide](./docs/quickstart.md)** - Get up and running in 5 minutes
+- 📋 **[Configuration Guide](./docs/configuration.md)** - Complete configuration reference
+- 🔧 **Command Reference** - See `rip-cd --help` for all available commands
+
+### Command Line Options
+
+```bash
+# Global flags (available on all commands)
 --workspace DIR     Override workspace directory (default: ~/cd_ripping)
 --config FILE       Config file (default: ~/.rip-cd.yaml)
 --verbose          Verbose output
 --debug            Debug output
 --dry-run          Show what would be done without executing
+
+# Get help for any command
+rip-cd --help
+rip-cd setup --help
+rip-cd generate --help
 ```
 
 ## Workspace Structure

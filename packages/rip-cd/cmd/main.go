@@ -128,6 +128,17 @@ Supported formats: json (default)`,
 	},
 }
 
+var generateConfigCmd = &cobra.Command{
+	Use:   "config",
+	Short: "Generate default configuration file",
+	Long: `Generate a default configuration file at ~/.rip-cd.yaml.
+This creates a configuration file with sensible defaults for CD ripping.
+The file will not be overwritten if it already exists.`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return config.GenerateDefault()
+	},
+}
+
 var validateCmd = &cobra.Command{
 	Use:   "validate [config-file]",
 	Short: "Validate a configuration file",
@@ -187,4 +198,5 @@ func init() {
 	// Add generate subcommands
 	generateCmd.AddCommand(generateTemplateCmd)
 	generateCmd.AddCommand(generateSchemaCmd)
+	generateCmd.AddCommand(generateConfigCmd)
 }

@@ -299,6 +299,50 @@ func (c *Config) Save(configFile string) error {
 	return nil
 }
 
+// GenerateDefault creates a default configuration file at ~/.rip-cd.yaml
+func GenerateDefault() error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("failed to get home directory: %w", err)
+	}
+
+	configPath := filepath.Join(home, ".rip-cd.yaml")
+
+	// Check if file already exists
+	if fileExists(configPath) {
+		return fmt.Errorf("configuration file already exists: %s", configPath)
+	}
+
+	// Create config with defaults
+	config := &Config{}
+	config.setDefaults()
+
+	// Create the file with comments
+	file, err := os.Create(configPath)
+	if err != nil {
+		return fmt.Errorf("failed to create config file: %w", err)
+	}
+	defer file.Close()
+
+	// Write header comments
+	fmt.Fprintln(file, "# rip-cd Configuration File")
+	fmt.Fprintln(file, "# This file contains default settings for CD ripping")
+	fmt.Fprintln(file, "# Edit these values according to your preferences")
+	fmt.Fprintln(file, "")
+
+	// Write YAML content
+	encoder := yaml.NewEncoder(file)
+	encoder.SetIndent(2)
+	if err := encoder.Encode(config); err != nil {
+		return fmt.Errorf("failed to write config: %w", err)
+	}
+
+	fmt.Printf("✅ Created default configuration file: %s\n", configPath)
+	fmt.Println("📝 Edit this file to customize your CD ripping settings")
+
+	return nil
+}
+
 // fileExists checks if a file exists
 func fileExists(filename string) bool {
 	_, err := os.Stat(filename)
