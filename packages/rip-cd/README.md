@@ -109,10 +109,20 @@ rip-cd rip ~/my-rips/metadata/album.yaml
 
 ### Shell Completions
 
-````bash
-# Generate completions for your shell
+```bash
+# Fish shell
 rip-cd completion fish > ~/.config/fish/completions/rip-cd.fish
-rip-cd completion z
+
+# Zsh shell
+rip-cd completion zsh > "${fpath[1]}/_rip-cd"
+
+# Bash shell (macOS)
+rip-cd completion bash > $(brew --prefix)/etc/bash_completion.d/rip-cd
+
+# Or source directly
+source <(rip-cd completion fish)  # Fish
+source <(rip-cd completion bash)  # Bash
+```
 
 ## Configuration
 
@@ -126,7 +136,7 @@ rip-cd generate config
 
 # Edit configuration
 $EDITOR ~/.rip-cd.yaml
-````
+```
 
 ### Essential Settings
 
@@ -169,6 +179,7 @@ $EDITOR ~/rips/metadata/my-album.yaml
 rip-cd --help
 rip-cd setup --help
 rip-cd generate --help
+rip-cd completion --help
 ```
 
 ## Workspace Structure
