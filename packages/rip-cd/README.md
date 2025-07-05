@@ -1,6 +1,6 @@
 # rip-cd
 
-Audiophile-grade CD ripper with AccurateRip verification, EAC-style logging, spectrogram generation, and comprehensive metadata management for archival purposes.
+CD ripper with AccurateRip verification, EAC-style logging, spectrogram generation, and comprehensive metadata management for archival purposes.
 
 ## 🚀 Quickstart
 
@@ -31,20 +31,20 @@ rip-cd rip ~/my-cd-rips/metadata/my-album.yaml            # actual rip
 
 ## Features
 
-### Audiophile & Archival Grade
+### Verification & Analysis
 
 - **AccurateRip verification** - Verify rips against the AccurateRip database
 - **EAC-style detailed logging** - Comprehensive ripping logs with drive info
 - **Spectrogram generation** - Visual frequency analysis of tracks
-- **Secure ripping mode** - Maximum error correction and verification
+- **Secure ripping mode** - Enhanced error correction and verification
 - **C2 error correction** - Hardware-level error detection
-- **Test & Copy mode** - Dual-pass verification for critical accuracy
+- **Test & Copy mode** - Dual-pass verification
 - **Drive capability detection** - Auto-detect read offsets and capabilities
 - **Matrix number support** - Track pressing plant and runout information
 
 ### Quality & Metadata
 
-- **Maximum FLAC compression** - Level 8 compression for archival storage
+- **FLAC compression** - Configurable compression levels for storage efficiency
 - **Comprehensive metadata** - Matrix numbers, ISRC, pressing details
 - **Audio analysis** - Peak/RMS levels, dynamic range calculation
 - **CRC32 verification** - File integrity checking
@@ -53,7 +53,7 @@ rip-cd rip ~/my-cd-rips/metadata/my-album.yaml            # actual rip
 
 ### Workflow & Integration
 
-- **XLD integration** - Best-in-class macOS CD ripper
+- **XLD integration** - macOS CD ripper integration
 - **Beets library management** - Automatic import and organization
 - **Template generation** - IDE autocompletion support
 - **Dry-run testing** - Verify configuration before ripping
@@ -227,19 +227,19 @@ workspace/
 └── temp/              # Temporary files
 ```
 
-## Audiophile Configuration
+## Enhanced Configuration
 
-### Maximum Quality Settings
+### High Quality Settings
 
 ```yaml
 ripper:
   quality:
     format: "flac"
-    compression: 8 # Maximum compression
+    compression: 8 # High compression level
     secure_ripping: true # Secure mode
     c2_error_correction: true # Hardware error correction
     test_and_copy: true # Dual-pass verification
-    max_retry_attempts: 20 # Maximum retries
+    max_retry_attempts: 20 # High retry count
 
     accurate_rip:
       enabled: true
@@ -354,7 +354,7 @@ tracks:
     title: "Paranoid Android"
 ```
 
-### Complete Archival Metadata
+### Complete Metadata Example
 
 ```yaml
 album:
@@ -409,11 +409,11 @@ ripping:
   settings:
     secure_mode: true
     accurate_rip: true
-    compression_level: 8
+    compression_level: 8 # High compression
   stats:
     total_tracks: 10
     accurate_rip_matches: 10
-    peak_level: 0.95
+    peak_level: 0.95 # Audio analysis results
 ```
 
 ## License

@@ -23,6 +23,7 @@ var (
 	dryRun    bool
 	verbose   bool
 	debug     bool
+	overwrite bool
 )
 
 func main() {
@@ -104,7 +105,7 @@ Supported formats: yaml (default)`,
 			return fmt.Errorf("failed to load config: %w", err)
 		}
 
-		return metadata.GenerateTemplate(cfg, format)
+		return metadata.GenerateTemplate(cfg, format, overwrite)
 	},
 }
 
@@ -125,7 +126,7 @@ Supported formats: json (default)`,
 			return fmt.Errorf("failed to load config: %w", err)
 		}
 
-		return metadata.GenerateSchema(cfg, format)
+		return metadata.GenerateSchema(cfg, format, overwrite)
 	},
 }
 
@@ -136,7 +137,7 @@ var generateConfigCmd = &cobra.Command{
 This creates a configuration file with sensible defaults for CD ripping.
 The file will not be overwritten if it already exists.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return config.GenerateDefault()
+		return config.GenerateDefault(overwrite)
 	},
 }
 
@@ -247,4 +248,9 @@ func init() {
 	generateCmd.AddCommand(generateTemplateCmd)
 	generateCmd.AddCommand(generateSchemaCmd)
 	generateCmd.AddCommand(generateConfigCmd)
+
+	// Add overwrite flag to generation commands
+	generateTemplateCmd.Flags().BoolVar(&overwrite, "overwrite", false, "overwrite existing files")
+	generateSchemaCmd.Flags().BoolVar(&overwrite, "overwrite", false, "overwrite existing files")
+	generateConfigCmd.Flags().BoolVar(&overwrite, "overwrite", false, "overwrite existing files")
 }

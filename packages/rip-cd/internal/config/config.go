@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
@@ -455,7 +456,7 @@ func (c *Config) Save(configFile string) error {
 }
 
 // GenerateDefault creates a default configuration file at ~/.rip-cd.yaml
-func GenerateDefault() error {
+func GenerateDefault(overwrite bool) error {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("failed to get home directory: %w", err)
@@ -464,8 +465,8 @@ func GenerateDefault() error {
 	configPath := filepath.Join(home, ".rip-cd.yaml")
 
 	// Check if file already exists
-	if fileExists(configPath) {
-		return fmt.Errorf("configuration file already exists: %s", configPath)
+	if fileExists(configPath) && !overwrite {
+		return fmt.Errorf("configuration file already exists: %s (use --overwrite to replace)", configPath)
 	}
 
 	// Create config with defaults
@@ -479,23 +480,179 @@ func GenerateDefault() error {
 	}
 	defer file.Close()
 
-	// Write header comments
-	fmt.Fprintln(file, "# rip-cd Configuration File")
-	fmt.Fprintln(file, "# This file contains audiophile-grade settings for CD ripping")
-	fmt.Fprintln(file, "# Edit these values according to your preferences")
-	fmt.Fprintln(file, "")
-
-	// Write YAML content
-	encoder := yaml.NewEncoder(file)
-	encoder.SetIndent(2)
-	if err := encoder.Encode(config); err != nil {
-		return fmt.Errorf("failed to write config: %w", err)
+	// Write comprehensive configuration with detailed comments
+	if err := writeDetailedConfig(file, config); err != nil {
+		return fmt.Errorf("failed to write detailed config: %w", err)
 	}
 
 	fmt.Printf("✅ Created default configuration file: %s\n", configPath)
 	fmt.Println("📝 Edit this file to customize your CD ripping settings")
 
 	return nil
+}
+
+// configTemplate defines the configuration file template with detailed comments
+const configTemplate = `# rip-cd Configuration File
+# Zero-configuration CD ripping with sane defaults
+# All settings are optional - defaults work out of the box
+# Uncomment and modify values to customize behavior
+
+# Workspace Configuration
+# Controls where files are stored and organized
+workspace:
+  # Base directory for all ripping operations (default: {{.Workspace.BaseDir}})
+  base_dir: "{{.Workspace.BaseDir}}"
+
+  # Automatically create subdirectories (default: {{.Workspace.AutoCreateDirs}})
+  # auto_create_dirs: {{.Workspace.AutoCreateDirs}}
+
+  # Directory structure within workspace
+  # dir_structure:
+  #   metadata: "{{.Workspace.DirStructure.Metadata}}"    # YAML metadata files
+  #   schemas: "{{.Workspace.DirStructure.Schemas}}"     # JSON validation schemas
+  #   output: "{{.Workspace.DirStructure.Output}}"      # Ripped audio files
+  #   logs: "{{.Workspace.DirStructure.Logs}}"        # Ripping log files
+  #   temp: "{{.Workspace.DirStructure.Temp}}"        # Temporary files
+
+# CD Ripper Configuration
+# ripper:
+  # Ripping engine to use (options: xld) (default: {{.Ripper.Engine}})
+  # engine: "{{.Ripper.Engine}}"
+
+  # XLD-specific settings
+  # xld:
+    # XLD profile name (default: {{.Ripper.XLD.Profile}})
+    # profile: "{{.Ripper.XLD.Profile}}"
+    # Path to XLD executable (empty = auto-detect) (default: "{{.Ripper.XLD.ExecutablePath}}")
+    # executable_path: "{{.Ripper.XLD.ExecutablePath}}"
+    # Additional command line arguments
+    # extra_args: []
+
+  # Audio quality and verification settings
+  # quality:
+    # Output format (options: flac, mp3) (default: {{.Ripper.Quality.Format}})
+    # format: "{{.Ripper.Quality.Format}}"
+    # FLAC compression level (0-8, higher = smaller files) (default: {{.Ripper.Quality.Compression}})
+    # compression: {{.Ripper.Quality.Compression}}
+    # Enable verification after ripping (default: {{.Ripper.Quality.Verify}})
+    # verify: {{.Ripper.Quality.Verify}}
+    # Number of error correction attempts (default: {{.Ripper.Quality.ErrorCorrection}})
+    # error_correction: {{.Ripper.Quality.ErrorCorrection}}
+    # Use C2 error correction if drive supports it (default: {{.Ripper.Quality.C2ErrorCorrection}})
+    # c2_error_correction: {{.Ripper.Quality.C2ErrorCorrection}}
+    # Maximum retry attempts for bad sectors (default: {{.Ripper.Quality.MaxRetryAttempts}})
+    # max_retry_attempts: {{.Ripper.Quality.MaxRetryAttempts}}
+    # Use secure ripping mode (slower but more accurate) (default: {{.Ripper.Quality.SecureRipping}})
+    # secure_ripping: {{.Ripper.Quality.SecureRipping}}
+    # Use Test & Copy mode for dual-pass verification (default: {{.Ripper.Quality.TestAndCopy}})
+    # test_and_copy: {{.Ripper.Quality.TestAndCopy}}
+
+    # AccurateRip verification settings
+    # accurate_rip:
+      # Enable AccurateRip database verification (default: {{.Ripper.Quality.AccurateRip.Enabled}})
+      # enabled: {{.Ripper.Quality.AccurateRip.Enabled}}
+      # Require AccurateRip match for successful rip (default: {{.Ripper.Quality.AccurateRip.RequireMatch}})
+      # require_match: {{.Ripper.Quality.AccurateRip.RequireMatch}}
+      # Minimum confidence level (number of matching submissions) (default: {{.Ripper.Quality.AccurateRip.MinConfidence}})
+      # min_confidence: {{.Ripper.Quality.AccurateRip.MinConfidence}}
+
+    # Spectrogram generation settings
+    # spectrograms:
+      # Enable spectrogram generation (requires sox) (default: {{.Ripper.Quality.Spectrograms.Enabled}})
+      # enabled: {{.Ripper.Quality.Spectrograms.Enabled}}
+      # Generate spectrograms for all tracks (default: {{.Ripper.Quality.Spectrograms.GenerateAll}})
+      # generate_all: {{.Ripper.Quality.Spectrograms.GenerateAll}}
+      # Generate spectrogram for sample track only (default: {{.Ripper.Quality.Spectrograms.GenerateSample}})
+      # generate_sample: {{.Ripper.Quality.Spectrograms.GenerateSample}}
+      # Spectrogram resolution (higher = more detailed) (default: {{.Ripper.Quality.Spectrograms.Resolution}})
+      # resolution: {{.Ripper.Quality.Spectrograms.Resolution}}
+      # Output format (options: png, svg) (default: {{.Ripper.Quality.Spectrograms.Format}})
+      # format: "{{.Ripper.Quality.Spectrograms.Format}}"
+
+    # Enhanced logging settings
+    # enhanced_logging:
+      # Generate EAC-style detailed logs (default: {{.Ripper.Quality.EnhancedLogging.EACStyle}})
+      # eac_style: {{.Ripper.Quality.EnhancedLogging.EACStyle}}
+      # Include drive information in logs (default: {{.Ripper.Quality.EnhancedLogging.DriveInfo}})
+      # drive_info: {{.Ripper.Quality.EnhancedLogging.DriveInfo}}
+      # Include matrix/runout numbers (default: {{.Ripper.Quality.EnhancedLogging.MatrixInfo}})
+      # matrix_info: {{.Ripper.Quality.EnhancedLogging.MatrixInfo}}
+      # Include detailed error information (default: {{.Ripper.Quality.EnhancedLogging.DetailedErrors}})
+      # detailed_errors: {{.Ripper.Quality.EnhancedLogging.DetailedErrors}}
+      # Save log files to disk (default: {{.Ripper.Quality.EnhancedLogging.SaveLogs}})
+      # save_logs: {{.Ripper.Quality.EnhancedLogging.SaveLogs}}
+
+# Output File Configuration
+# output:
+  # Template for track filenames (default: {{.Output.FilenameTemplate}})
+  # Available variables: TrackNumber, Title, Artist
+  # filename_template: "{{.Output.FilenameTemplate}}"
+  # Template for album directories (default: {{.Output.DirTemplate}})
+  # Available variables: Artist, Album, Year, Date, Label
+  # dir_template: "{{.Output.DirTemplate}}"
+  # Remove invalid characters from filenames (default: {{.Output.SanitizeFilenames}})
+  # sanitize_filenames: {{.Output.SanitizeFilenames}}
+
+# CD Drive Configuration
+# drive:
+  # Automatically detect best available drive (default: {{.Drive.AutoDetect}})
+  # auto_detect: {{.Drive.AutoDetect}}
+  # Specific drive device path (empty = auto-detect) (default: "{{.Drive.DevicePath}}")
+  # device_path: "{{.Drive.DevicePath}}"
+  # Drive read offset correction in samples (default: {{.Drive.ReadOffset}})
+  # read_offset: {{.Drive.ReadOffset}}
+  # Drive supports CD-Text reading (default: {{.Drive.SupportsCDText}})
+  # supports_cd_text: {{.Drive.SupportsCDText}}
+  # Drive supports C2 error correction (default: {{.Drive.SupportsC2}})
+  # supports_c2: {{.Drive.SupportsC2}}
+  # Drive supports accurate stream mode (default: {{.Drive.SupportsAccurateStream}})
+  # supports_accurate_stream: {{.Drive.SupportsAccurateStream}}
+
+# Matrix/Runout Number Configuration
+# matrix:
+  # Enable matrix number detection and recording (default: {{.Matrix.Enabled}})
+  # enabled: {{.Matrix.Enabled}}
+  # Manual matrix numbers (found etched in the dead wax)
+  # side_a: ""
+  # side_b: ""
+  # Mould SID code (IFPI identifier)
+  # mould_sid: ""
+  # IFPI codes (anti-piracy identifiers)
+  # ifpi_codes: []
+
+# External Service Integration
+# integrations:
+  # MusicBrainz metadata service
+  # musicbrainz:
+    # Enable MusicBrainz metadata lookup (default: {{.Integrations.MusicBrainz.Enabled}})
+    # enabled: {{.Integrations.MusicBrainz.Enabled}}
+    # MusicBrainz server URL (default: {{.Integrations.MusicBrainz.ServerURL}})
+    # server_url: "{{.Integrations.MusicBrainz.ServerURL}}"
+    # Request rate limit (requests per second) (default: {{.Integrations.MusicBrainz.RateLimit}})
+    # rate_limit: {{.Integrations.MusicBrainz.RateLimit}}
+    # User agent string for requests (default: {{.Integrations.MusicBrainz.UserAgent}})
+    # user_agent: "{{.Integrations.MusicBrainz.UserAgent}}"
+
+  # Beets music library management
+  # beets:
+    # Enable beets integration (default: {{.Integrations.Beets.Enabled}})
+    # enabled: {{.Integrations.Beets.Enabled}}
+    # Path to beets executable (empty = auto-detect) (default: "{{.Integrations.Beets.ExecutablePath}}")
+    # executable_path: "{{.Integrations.Beets.ExecutablePath}}"
+    # Path to beets config file (empty = default) (default: "{{.Integrations.Beets.ConfigPath}}")
+    # config_path: "{{.Integrations.Beets.ConfigPath}}"
+    # Automatically import after ripping (default: {{.Integrations.Beets.AutoImport}})
+    # auto_import: {{.Integrations.Beets.AutoImport}}
+`
+
+// writeDetailedConfig writes a comprehensive configuration file using templates
+func writeDetailedConfig(file *os.File, config *Config) error {
+	tmpl, err := template.New("config").Parse(configTemplate)
+	if err != nil {
+		return fmt.Errorf("failed to parse config template: %w", err)
+	}
+
+	return tmpl.Execute(file, config)
 }
 
 // fileExists checks if a file exists

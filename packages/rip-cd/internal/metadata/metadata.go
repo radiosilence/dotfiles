@@ -182,18 +182,23 @@ func Parse(metadataFile string) (*CDMetadata, error) {
 }
 
 // GenerateTemplate generates a metadata template file
-func GenerateTemplate(cfg *config.Config, format string) error {
+func GenerateTemplate(cfg *config.Config, format string, overwrite bool) error {
 	if format != "yaml" {
 		return fmt.Errorf("only YAML format is supported for templates")
 	}
 
 	// Auto-generate schema for IDE support
-	if err := GenerateSchema(cfg, "json"); err != nil {
+	if err := GenerateSchema(cfg, "json", overwrite); err != nil {
 		logrus.Warnf("Failed to auto-generate schema: %v", err)
 		// Continue with template generation even if schema fails
 	}
 
 	templateFile := filepath.Join(cfg.Paths.MetadataDir, "template.yaml")
+
+	// Check if file already exists
+	if fileExists(templateFile) && !overwrite {
+		return fmt.Errorf("template file already exists: %s (use --overwrite to replace)", templateFile)
+	}
 
 	template := createSampleMetadata()
 
@@ -232,12 +237,17 @@ func GenerateTemplate(cfg *config.Config, format string) error {
 }
 
 // GenerateSchema generates a JSON schema file
-func GenerateSchema(cfg *config.Config, format string) error {
+func GenerateSchema(cfg *config.Config, format string, overwrite bool) error {
 	if format != "json" {
 		return fmt.Errorf("only JSON format is supported for schemas")
 	}
 
 	schemaFile := filepath.Join(cfg.Paths.SchemasDir, "cd-metadata-schema.json")
+
+	// Check if file already exists
+	if fileExists(schemaFile) && !overwrite {
+		return fmt.Errorf("schema file already exists: %s (use --overwrite to replace)", schemaFile)
+	}
 
 	schema := createJSONSchema()
 

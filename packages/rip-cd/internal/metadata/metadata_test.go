@@ -245,7 +245,7 @@ func TestGenerateTemplate(t *testing.T) {
 	}
 
 	// Test template generation
-	if err := GenerateTemplate(cfg, "yaml"); err != nil {
+	if err := GenerateTemplate(cfg, "yaml", false); err != nil {
 		t.Errorf("GenerateTemplate failed: %v", err)
 	}
 
@@ -270,7 +270,7 @@ func TestGenerateTemplate(t *testing.T) {
 	}
 
 	// Test invalid format
-	if err := GenerateTemplate(cfg, "invalid"); err == nil {
+	if err := GenerateTemplate(cfg, "invalid", false); err == nil {
 		t.Error("Expected error for invalid format, got nil")
 	}
 }
@@ -285,7 +285,7 @@ func TestGenerateSchema(t *testing.T) {
 	}
 
 	// Test schema generation
-	if err := GenerateSchema(cfg, "json"); err != nil {
+	if err := GenerateSchema(cfg, "json", false); err != nil {
 		t.Errorf("GenerateSchema failed: %v", err)
 	}
 
@@ -310,7 +310,7 @@ func TestGenerateSchema(t *testing.T) {
 	}
 
 	// Test invalid format
-	if err := GenerateSchema(cfg, "invalid"); err == nil {
+	if err := GenerateSchema(cfg, "invalid", false); err == nil {
 		t.Error("Expected error for invalid format, got nil")
 	}
 }
