@@ -1,0 +1,48 @@
+# Task runner artifacts
+.task/
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+rip-cd
+rip-cd-dev
+
+# Test coverage
+*.out
+coverage.html
+*.test
+
+# Go workspace file
+go.work
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Local configuration overrides
+*.local.yaml
+*.local.yml
+
+# Build directories (if any custom build outputs)
+build/
+dist/

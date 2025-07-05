@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/config"
 	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/metadata"
@@ -180,6 +181,52 @@ var versionCmd = &cobra.Command{
 	},
 }
 
+var completionCmd = &cobra.Command{
+	Use:   "completion [bash|zsh|fish]",
+	Short: "Generate completion script",
+	Long: `Generate the autocompletion script for the specified shell.
+
+To load completions:
+
+Bash:
+  $ source <(rip-cd completion bash)
+
+  # To load completions for each session, execute once:
+  # Linux:
+  $ rip-cd completion bash > /etc/bash_completion.d/rip-cd
+  # macOS:
+  $ rip-cd completion bash > $(brew --prefix)/etc/bash_completion.d/rip-cd
+
+Zsh:
+  # If shell completion is not already enabled, enable it:
+  $ echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+  # To load completions for each session, execute once:
+  $ rip-cd completion zsh > "${fpath[1]}/_rip-cd"
+
+  # Start a new shell for this setup to take effect.
+
+Fish:
+  $ rip-cd completion fish | source
+
+  # To load completions for each session, execute once:
+  $ rip-cd completion fish > ~/.config/fish/completions/rip-cd.fish
+`,
+	DisableFlagsInUseLine: true,
+	ValidArgs:             []string{"bash", "zsh", "fish"},
+	Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+	Run: func(cmd *cobra.Command, args []string) {
+		switch args[0] {
+		case "bash":
+			cmd.Root().GenBashCompletion(os.Stdout)
+		case "zsh":
+			cmd.Root().GenZshCompletion(os.Stdout)
+		case "fish":
+			cmd.Root().GenFishCompletion(os.Stdout, true)
+		}
+	},
+}
+
 func init() {
 	// Global flags
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default: $HOME/.rip-cd.yaml)")
@@ -193,6 +240,7 @@ func init() {
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(validateCmd)
 	rootCmd.AddCommand(setupCmd)
+	rootCmd.AddCommand(completionCmd)
 	rootCmd.AddCommand(versionCmd)
 
 	// Add generate subcommands
