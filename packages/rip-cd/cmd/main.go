@@ -1,0 +1,174 @@
+package main
+
+import (
+	"fmt"
+
+	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/config"
+	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/metadata"
+	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/ripper"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+)
+
+const (
+	version = "2.0.0"
+	name    = "rip-cd"
+)
+
+var (
+	cfgFile   string
+	workspace string
+	dryRun    bool
+	verbose   bool
+	debug     bool
+)
+
+func main() {
+	if err := rootCmd.Execute(); err != nil {
+		logrus.Fatal(err)
+	}
+}
+
+var rootCmd = &cobra.Command{
+	Use:   name,
+	Short: "CD Ripper with metadata management and strong typing",
+	Long: `A modern CD ripper with metadata management, MusicBrainz integration,
+and strongly-typed configuration support.
+
+Supports YAML configuration with JSON schema validation for type safety.`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if debug {
+			logrus.SetLevel(logrus.DebugLevel)
+		} else if verbose {
+			logrus.SetLevel(logrus.InfoLevel)
+		} else {
+			logrus.SetLevel(logrus.WarnLevel)
+		}
+
+		logrus.SetFormatter(&logrus.TextFormatter{
+			FullTimestamp: true,
+		})
+	},
+}
+
+var ripCmd = &cobra.Command{
+	Use:   "rip [config-file]",
+	Short: "Rip a CD using the provided configuration",
+	Long: `Rip a CD using the metadata and settings from the configuration file.
+The configuration file should be in YAML format.`,
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		configFile := args[0]
+
+		cfg, err := config.Load(configFile, workspace)
+		if err != nil {
+			return fmt.Errorf("failed to load config: %w", err)
+		}
+
+		meta, err := metadata.Parse(configFile)
+		if err != nil {
+			return fmt.Errorf("failed to parse metadata: %w", err)
+		}
+
+		if dryRun {
+			logrus.Info("🎯 Dry run mode - showing what would be done")
+			return ripper.DryRun(cfg, meta)
+		}
+
+		return ripper.Rip(cfg, meta)
+	},
+}
+
+var generateCmd = &cobra.Command{
+	Use:   "generate",
+	Short: "Generate templates and schemas",
+	Long:  "Generate configuration templates and validation schemas",
+}
+
+var generateTemplateCmd = &cobra.Command{
+	Use:   "template [format]",
+	Short: "Generate a configuration template",
+	Long: `Generate a configuration template file.
+Supported formats: yaml (default)`,
+	Args: cobra.MaximumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		format := "yaml"
+		if len(args) > 0 {
+			format = args[0]
+		}
+
+		cfg, err := config.Load("", workspace)
+		if err != nil {
+			return fmt.Errorf("failed to load config: %w", err)
+		}
+
+		return metadata.GenerateTemplate(cfg, format)
+	},
+}
+
+var generateSchemaCmd = &cobra.Command{
+	Use:   "schema [format]",
+	Short: "Generate validation schema",
+	Long: `Generate a validation schema file.
+Supported formats: json (default)`,
+	Args: cobra.MaximumNArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		format := "json"
+		if len(args) > 0 {
+			format = args[0]
+		}
+
+		cfg, err := config.Load("", workspace)
+		if err != nil {
+			return fmt.Errorf("failed to load config: %w", err)
+		}
+
+		return metadata.GenerateSchema(cfg, format)
+	},
+}
+
+var validateCmd = &cobra.Command{
+	Use:   "validate [config-file]",
+	Short: "Validate a configuration file",
+	Long: `Validate a configuration file against the schema.
+Supports YAML format with JSON schema validation.`,
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		configFile := args[0]
+
+		cfg, err := config.Load("", workspace)
+		if err != nil {
+			return fmt.Errorf("failed to load config: %w", err)
+		}
+
+		return metadata.Validate(cfg, configFile)
+	},
+}
+
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Show version information",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("%s v%s\n", name, version)
+		fmt.Println("The audiophile's choice for CD ripping 🎵")
+	},
+}
+
+func init() {
+	// Global flags
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default: $HOME/.rip-cd.yaml)")
+	rootCmd.PersistentFlags().StringVar(&workspace, "workspace", "", "workspace directory (default: $HOME/cd_ripping)")
+	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "show what would be done without actually doing it")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug output")
+
+	// Add subcommands
+	rootCmd.AddCommand(ripCmd)
+	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(validateCmd)
+	rootCmd.AddCommand(versionCmd)
+
+	// Add generate subcommands
+	generateCmd.AddCommand(generateTemplateCmd)
+	generateCmd.AddCommand(generateSchemaCmd)
+}

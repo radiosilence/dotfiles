@@ -39,6 +39,7 @@
     "ruby": true,
     "kotlin": true,
     "lua": true,
+    "nickel": true,
     "nginx": true,
     "proto": true,
     "scss": true,
