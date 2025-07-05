@@ -16,6 +16,7 @@ rip-cd setup --verbose
 ```
 
 This installs:
+
 - **XLD** - CD ripper application
 - **flac** - FLAC codec and metadata tools
 - **ffmpeg** - Audio processing
@@ -45,6 +46,7 @@ rip-cd generate schema --workspace ~/my-cd-rips
 ```
 
 This creates:
+
 ```
 ~/my-cd-rips/
 ├── metadata/
@@ -60,6 +62,7 @@ This creates:
 
 1. **Insert CD** into your drive
 2. **Edit metadata template**:
+
    ```bash
    cd ~/my-cd-rips
    cp metadata/template.yaml metadata/my-album.yaml
@@ -67,6 +70,7 @@ This creates:
    ```
 
 3. **Example metadata** (`metadata/my-album.yaml`):
+
    ```yaml
    album:
      title: "OK Computer"
@@ -101,6 +105,7 @@ rip-cd rip metadata/my-album.yaml --workspace ~/my-cd-rips
 ## 6. Find Your Music
 
 Ripped files will be in:
+
 ```
 ~/my-cd-rips/output/Radiohead - OK Computer (1997)/
 ├── 01 - Airbag.flac
@@ -125,6 +130,11 @@ rip-cd validate metadata/album.yaml    # Check metadata
 rip-cd rip metadata/album.yaml --dry-run # Test
 rip-cd rip metadata/album.yaml         # Rip CD
 
+# Shell completions
+rip-cd completion fish > ~/.config/fish/completions/rip-cd.fish
+rip-cd completion zsh > "${fpath[1]}/_rip-cd"
+rip-cd completion bash > $(brew --prefix)/etc/bash_completion.d/rip-cd
+
 # Help
 rip-cd --help                          # General help
 rip-cd setup --help                    # Setup options
@@ -141,6 +151,7 @@ rip-cd generate --help                 # Generate commands
 ## Troubleshooting
 
 **XLD not found?**
+
 ```bash
 # Check if XLD is installed
 ls /Applications/XLD.app
@@ -149,6 +160,7 @@ ls /Applications/XLD.app
 ```
 
 **Dependencies missing?**
+
 ```bash
 # Check what's installed
 brew bundle check --file=~/Brewfile
@@ -158,6 +170,7 @@ brew bundle install --file=~/Brewfile
 ```
 
 **Metadata validation errors?**
+
 - Check required fields: `album.title`, `album.artist`, track `number` and `title`
 - Verify date format: `YYYY`, `YYYY-MM`, or `YYYY-MM-DD`
 - Use IDE with YAML language server for real-time validation
