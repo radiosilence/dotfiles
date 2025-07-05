@@ -107,6 +107,13 @@ rip-cd rip ~/my-rips/metadata/album.yaml --dry-run
 rip-cd rip ~/my-rips/metadata/album.yaml
 ```
 
+### Shell Completions
+
+````bash
+# Generate completions for your shell
+rip-cd completion fish > ~/.config/fish/completions/rip-cd.fish
+rip-cd completion z
+
 ## Configuration
 
 📖 **[Complete Configuration Guide](./docs/configuration.md)**
@@ -119,7 +126,7 @@ rip-cd generate config
 
 # Edit configuration
 $EDITOR ~/.rip-cd.yaml
-```
+````
 
 ### Essential Settings
 

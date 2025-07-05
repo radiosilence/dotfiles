@@ -171,24 +171,7 @@ cask 'aws-vpn-client', greedy: true
 cask 'pgadmin4', greedy: true
 brew 'atomicparsley'
 
-# CD Ripping Tools Dependencies
-brew 'bash'    # CD ripping dependency
-brew 'flac'    # CD ripping dependency
-brew 'vim'    # CD ripping dependency
-brew 'sox'    # CD ripping dependency
-brew 'lame' # CD ripping dependency
-brew 'opus-tools' # CD ripping dependency
-
-# CD Ripping Tools GUI Applications
-cask 'vlc' # CD ripping dependency
-
-# CD Ripping Tools GUI Applications
-cask 'musicbrainz-picard' # CD ripping dependency
-
-# CD Ripping Tools GUI Applications
-cask 'xld' # CD ripping dependency
-
 # CD ripping dependencies (added by rip-cd setup)
 brew 'flac'
 brew 'ffmpeg'
-cask 'xld'
+cask 'xld', greedy: true
