@@ -1,0 +1,745 @@
+#!/usr/bin/env bash
+
+# CD Ripping to FLAC with Metadata Management and MusicBrainz Integration
+# Requirements: XLD, beets, yq (for YAML parsing), jsonschema (for validation)
+# Usage: ./rip_cd.sh [options] [metadata.yaml]
+
+set -euo pipefail
+
+# Script version and info
+SCRIPT_VERSION="1.0.0"
+SCRIPT_NAME="CD Ripper Pro"
+
+# Configuration
+WORK_DIR="${HOME}/cd_ripping"
+OUTPUT_DIR="${WORK_DIR}/output"
+METADATA_DIR="${WORK_DIR}/metadata"
+SCHEMA_DIR="${WORK_DIR}/schemas"
+LOGS_DIR="${WORK_DIR}/logs"
+SCHEMA_FILE="${SCHEMA_DIR}/cd-metadata-schema.json"
+XLD_PROFILE="flac_rip"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Global variables for parsed metadata
+declare -A ALBUM_META
+declare -a TRACK_LIST
+
+# Global flags
+DRY_RUN=${DRY_RUN:-0}
+DEBUG=${DEBUG:-0}
+NO_BEETS=${NO_BEETS:-0}
+FORCE=${FORCE:-0}
+
+# Logging functions
+log() {
+    local timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+    echo -e "${GREEN}[$timestamp]${NC} $1"
+    if [[ -d "$LOGS_DIR" ]]; then
+        echo "[$timestamp] $1" >> "$LOGS_DIR/rip_session.log"
+    fi
+}
+
+warn() {
+    local timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+    echo -e "${YELLOW}[WARN $timestamp]${NC} $1"
+    if [[ -d "$LOGS_DIR" ]]; then
+        echo "[WARN $timestamp] $1" >> "$LOGS_DIR/rip_session.log"
+    fi
+}
+
+error() {
+    local timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+    echo -e "${RED}[ERROR $timestamp]${NC} $1"
+    if [[ -d "$LOGS_DIR" ]]; then
+        echo "[ERROR $timestamp] $1" >> "$LOGS_DIR/rip_session.log"
+    fi
+    exit 1
+}
+
+info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+debug() {
+    if [[ "${DEBUG}" == "1" ]]; then
+        echo -e "${PURPLE}[DEBUG]${NC} $1"
+        if [[ -d "$LOGS_DIR" ]]; then
+            echo "[DEBUG $(date +'%Y-%m-%d %H:%M:%S')] $1" >> "$LOGS_DIR/rip_session.log"
+        fi
+    fi
+}
+
+# Show usage information
+show_usage() {
+    cat << EOF
+${SCRIPT_NAME} v${SCRIPT_VERSION}
+
+USAGE:
+    $0 [OPTIONS] [metadata.yaml]
+
+OPTIONS:
+    -h, --help              Show this help message
+    -v, --version           Show version information
+    --generate-schema       Generate JSON schema file for metadata validation
+    --generate-template     Generate sample metadata YAML template
+    --validate FILE         Validate a metadata file against schema
+    --list-drives          List available CD drives
+    --dry-run              Show what would be done without actually ripping
+    --debug                Enable debug logging
+    --profile PROFILE      XLD profile to use (default: ${XLD_PROFILE})
+    --output-dir DIR       Override output directory
+    --no-beets             Skip beets import
+    --force                Overwrite existing files
+
+EXAMPLES:
+    $0 --generate-template               # Create sample metadata template
+    $0 --generate-schema                 # Create JSON schema file
+    $0 --validate metadata/album.yaml   # Validate metadata file
+    $0 metadata/my_album.yaml           # Rip CD using metadata file
+    $0 --dry-run metadata/album.yaml    # Preview what would be done
+
+WORKFLOW:
+    1. Generate template: $0 --generate-template
+    2. Edit metadata file: \$EDITOR metadata/album.yaml
+    3. Validate metadata: $0 --validate metadata/album.yaml
+    4. Rip CD: $0 metadata/album.yaml
+
+EOF
+}
+
+# Check dependencies
+check_dependencies() {
+    local deps=("yq" "python3")
+    local missing=()
+    
+    for dep in "${deps[@]}"; do
+        if ! command -v "$dep" &> /dev/null; then
+            missing+=("$dep")
+        fi
+    done
+    
+    # Check for XLD
+    if [[ ! -f "/Applications/XLD.app/Contents/MacOS/XLD" ]] && ! command -v xld &> /dev/null; then
+        missing+=("XLD")
+    fi
+    
+    # Check Python libraries
+    local python_libs=("jsonschema" "musicbrainzngs" "yaml")
+    for lib in "${python_libs[@]}"; do
+        if ! python3 -c "import $lib" 2>/dev/null; then
+            missing+=("python3-$lib")
+        fi
+    done
+    
+    if [ ${#missing[@]} -ne 0 ]; then
+        error "Missing dependencies: ${missing[*]}\nRun the setup script first!"
+    fi
+    
+    debug "All dependencies satisfied"
+}
+
+# Setup directories
+setup_directories() {
+    local dirs=("$WORK_DIR" "$OUTPUT_DIR" "$METADATA_DIR" "$SCHEMA_DIR" "$LOGS_DIR")
+    for dir in "${dirs[@]}"; do
+        mkdir -p "$dir"
+        debug "Created/verified directory: $dir"
+    done
+}
+
+# Generate JSON schema
+generate_schema() {
+    log "Generating JSON schema for metadata validation"
+    
+    cat > "$SCHEMA_FILE" << 'EOF'
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CD Metadata Schema",
+  "description": "Schema for CD ripping metadata files",
+  "type": "object",
+  "required": ["album", "tracks"],
+  "properties": {
+    "album": {
+      "type": "object",
+      "required": ["title", "artist"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "artist": {"type": "string", "minLength": 1},
+        "date": {"type": "string", "pattern": "^(\\d{4}(-\\d{2})?(-\\d{2})?)?$"},
+        "label": {"type": "string"},
+        "catalog_number": {"type": "string"},
+        "barcode": {"type": "string", "pattern": "^\\d{12,14}$"},
+        "genre": {"type": "string"},
+        "country": {"type": "string", "pattern": "^[A-Z]{2}$"},
+        "disambiguation": {"type": "string"},
+        "total_time": {"type": "string", "pattern": "^\\d{1,2}:\\d{2}(:\\d{2})?$"},
+        "packaging": {"type": "string", "enum": ["Jewel Case", "Digipak", "Cardboard Sleeve", "Gatefold Cover", "Other"]}
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["number", "title"],
+        "properties": {
+          "number": {"type": "integer", "minimum": 1, "maximum": 99},
+          "title": {"type": "string", "minLength": 1},
+          "artist": {"type": "string"},
+          "length": {"type": "string", "pattern": "^\\d{1,2}:\\d{2}$"},
+          "isrc": {"type": "string", "pattern": "^[A-Z]{2}[A-Z0-9]{3}\\d{7}$"}
+        }
+      }
+    },
+    "credits": {
+      "type": "object",
+      "properties": {
+        "producer": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+        "engineer": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+        "mastered_by": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+        "recorded_at": {"type": "string"},
+        "mixed_by": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]}
+      }
+    },
+    "notes": {"type": "string"},
+    "ripping": {
+      "type": "object",
+      "properties": {
+        "drive": {"type": "string"},
+        "ripper": {"type": "string"},
+        "date": {"type": "string"},
+        "checksum": {"type": "string"}
+      }
+    }
+  }
+}
+EOF
+    
+    info "Schema generated: $SCHEMA_FILE"
+    info "Use --validate to check metadata files against this schema"
+}
+
+# Generate sample metadata template
+generate_template() {
+    local template_file="$METADATA_DIR/template.yaml"
+    
+    log "Generating metadata template"
+    
+    cat > "$template_file" << 'EOF'
+# CD Metadata Template
+# Edit this file with your album information
+# Use --validate to check your metadata before ripping
+
+album:
+  title: "Album Title Here"
+  artist: "Artist Name Here"
+  date: "2023"                    # YYYY, YYYY-MM, or YYYY-MM-DD
+  label: "Record Label"
+  catalog_number: "CAT-123"
+  barcode: "123456789012"         # 12-14 digit UPC/EAN barcode
+  genre: "Genre"
+  country: "US"                   # ISO 3166-1 alpha-2 country code
+  packaging: "Jewel Case"         # Jewel Case, Digipak, Cardboard Sleeve, etc.
+  disambiguation: ""              # Optional: distinguishing info
+  total_time: "45:30"            # Optional: total album duration
+
+tracks:
+  - number: 1
+    title: "First Track Title"
+    artist: "Track Artist"        # Optional: if different from album artist
+    length: "3:45"               # Optional: MM:SS format
+    isrc: ""                     # Optional: International Standard Recording Code
+  - number: 2
+    title: "Second Track Title"
+    length: "4:20"
+  - number: 3
+    title: "Third Track Title"
+    length: "2:15"
+  # Add more tracks as needed...
+
+# Optional: Production credits
+credits:
+  producer: "Producer Name"
+  engineer: "Engineer Name"
+  mastered_by: "Mastering Engineer"
+  recorded_at: "Studio Name"
+  mixed_by: "Mix Engineer"
+
+# Optional: Additional notes
+notes: |
+  Any additional information about this release.
+  Rare pressing, special edition notes, etc.
+
+# Ripping metadata (automatically filled)
+ripping:
+  drive: ""                      # Will be auto-detected
+  ripper: "XLD"
+  date: ""                       # Will be auto-filled
+  checksum: ""                   # Will be calculated
+EOF
+    
+    info "Template generated: $template_file"
+    info "Edit this file with your album information, then run:"
+    info "  $0 --validate $template_file"
+    info "  $0 $template_file"
+}
+
+# Validate metadata file
+validate_metadata() {
+    local metadata_file="$1"
+    
+    if [ ! -f "$metadata_file" ]; then
+        error "Metadata file not found: $metadata_file"
+    fi
+    
+    if [ ! -f "$SCHEMA_FILE" ]; then
+        warn "Schema file not found, generating..."
+        generate_schema
+    fi
+    
+    log "Validating metadata file: $metadata_file"
+    
+    # Convert YAML to JSON and validate
+    if yq eval '.' "$metadata_file" | python3 -c "
+import json
+import sys
+from jsonschema import validate, ValidationError
+
+try:
+    # Read JSON from stdin
+    data = json.load(sys.stdin)
+    
+    # Read schema
+    with open('$SCHEMA_FILE', 'r') as f:
+        schema = json.load(f)
+    
+    # Validate
+    validate(data, schema)
+    print('✅ Metadata validation passed!')
+    
+except ValidationError as e:
+    print(f'❌ Validation error: {e.message}')
+    if e.path:
+        print(f'   Path: {\" -> \".join(str(p) for p in e.path)}')
+    sys.exit(1)
+except Exception as e:
+    print(f'❌ Error during validation: {e}')
+    sys.exit(1)
+"; then
+        log "Metadata validation successful"
+        return 0
+    else
+        error "Metadata validation failed"
+    fi
+}
+
+# List available CD drives
+list_drives() {
+    log "Scanning for CD drives..."
+    
+    local drives=()
+    
+    # Check for mounted CD volumes
+    for mount in /Volumes/*/; do
+        if [ -d "$mount" ]; then
+            local mount_name=$(basename "$mount")
+            if diskutil info "$mount_name" 2>/dev/null | grep -q "CD\|DVD"; then
+                drives+=("$mount")
+            fi
+        fi
+    done
+    
+    # Check system devices
+    for device in /dev/disk*; do
+        if diskutil info "$device" 2>/dev/null | grep -q "CD\|DVD"; then
+            drives+=("$device")
+        fi
+    done
+    
+    if [ ${#drives[@]} -eq 0 ]; then
+        warn "No CD drives found"
+        info "Make sure a CD is inserted and the drive is properly connected"
+    else
+        info "Found CD drives:"
+        for drive in "${drives[@]}"; do
+            info "  - $drive"
+        done
+    fi
+}
+
+# Parse metadata YAML file
+parse_metadata() {
+    local metadata_file="$1"
+    
+    debug "Parsing metadata file: $metadata_file"
+    
+    # Parse album metadata
+    ALBUM_META[title]=$(yq '.album.title' "$metadata_file" | tr -d '"')
+    ALBUM_META[artist]=$(yq '.album.artist' "$metadata_file" | tr -d '"')
+    ALBUM_META[date]=$(yq '.album.date // ""' "$metadata_file" | tr -d '"')
+    ALBUM_META[label]=$(yq '.album.label // ""' "$metadata_file" | tr -d '"')
+    ALBUM_META[barcode]=$(yq '.album.barcode // ""' "$metadata_file" | tr -d '"')
+    ALBUM_META[genre]=$(yq '.album.genre // ""' "$metadata_file" | tr -d '"')
+    ALBUM_META[country]=$(yq '.album.country // ""' "$metadata_file" | tr -d '"')
+    
+    # Parse track count
+    local track_count=$(yq '.tracks | length' "$metadata_file")
+    ALBUM_META[track_count]=$track_count
+    
+    log "Parsed metadata: ${ALBUM_META[artist]} - ${ALBUM_META[title]} (${ALBUM_META[date]})"
+    log "Track count: $track_count"
+}
+
+# Create detailed ripping log
+create_rip_log() {
+    local output_path="$1"
+    local log_file="$output_path/rip_detailed.log"
+    
+    cat > "$log_file" << EOF
+========================================
+CD RIPPING LOG
+========================================
+Script: $SCRIPT_NAME v$SCRIPT_VERSION
+Date: $(date)
+Host: $(hostname)
+User: $(whoami)
+Working Directory: $output_path
+
+ALBUM INFORMATION:
+Artist: ${ALBUM_META[artist]}
+Title: ${ALBUM_META[title]}
+Date: ${ALBUM_META[date]}
+Label: ${ALBUM_META[label]}
+Genre: ${ALBUM_META[genre]}
+Track Count: ${ALBUM_META[track_count]}
+
+SYSTEM INFORMATION:
+OS: $(uname -s) $(uname -r)
+XLD Version: $(xld --version 2>/dev/null || echo "Unknown")
+Python: $(python3 --version)
+
+DRIVE INFORMATION:
+$(diskutil list | grep -E "(CD|DVD)" || echo "Drive info not available")
+
+========================================
+RIPPING PROCESS LOG:
+========================================
+EOF
+    
+    echo "$log_file"
+}
+
+# Detect CD device
+detect_cd_device() {
+    local devices=()
+    
+    # Try common device locations
+    for device in /dev/disk{1..9}; do
+        if diskutil info "$device" 2>/dev/null | grep -q "CD\|DVD"; then
+            devices+=("$device")
+        fi
+    done
+    
+    if [ ${#devices[@]} -eq 0 ]; then
+        warn "No CD device found, using default /dev/disk2"
+        echo "/dev/disk2"
+    else
+        debug "Found CD device: ${devices[0]}"
+        echo "${devices[0]}"
+    fi
+}
+
+# Rip CD using XLD
+rip_cd() {
+    local metadata_file="$1"
+    local output_path="$OUTPUT_DIR/${ALBUM_META[artist]// /_}-${ALBUM_META[title]// /_}"
+    
+    # Remove problematic characters from path
+    output_path=$(echo "$output_path" | tr '/' '_' | tr ':' '_')
+    
+    if [[ "${FORCE}" != "1" ]] && [ -d "$output_path" ]; then
+        error "Output directory already exists: $output_path\nUse --force to overwrite"
+    fi
+    
+    mkdir -p "$output_path"
+    
+    log "Starting CD rip to: $output_path"
+    
+    # Create detailed log
+    local rip_log=$(create_rip_log "$output_path")
+    
+    # Detect CD drive
+    local cd_device=$(detect_cd_device)
+    
+    log "Ripping CD with XLD from device: $cd_device"
+    
+    # Determine XLD command
+    local xld_cmd=""
+    if command -v xld &> /dev/null; then
+        xld_cmd="xld"
+    elif [[ -f "/Applications/XLD.app/Contents/MacOS/XLD" ]]; then
+        xld_cmd="/Applications/XLD.app/Contents/MacOS/XLD"
+    else
+        error "XLD not found. Please install XLD."
+    fi
+    
+    # XLD arguments
+    local xld_args=(
+        "--output-dir" "$output_path"
+        "--format" "flac"
+        "--flac-compression" "8"
+    )
+    
+    # Add profile if supported
+    if "$xld_cmd" --help 2>/dev/null | grep -q "profile"; then
+        xld_args+=("--profile" "$XLD_PROFILE")
+        debug "Using XLD profile: $XLD_PROFILE"
+    fi
+    
+    # Execute XLD
+    if [[ "${DRY_RUN}" == "1" ]]; then
+        info "DRY RUN: Would execute: $xld_cmd ${xld_args[*]} $cd_device"
+        echo "$output_path"
+        return 0
+    fi
+    
+    {
+        echo "XLD Command: $xld_cmd ${xld_args[*]} $cd_device"
+        echo "Started: $(date)"
+        echo "----------------------------------------"
+    } >> "$rip_log"
+    
+    # Run XLD and capture output
+    if "$xld_cmd" "${xld_args[@]}" "$cd_device" 2>&1 | tee -a "$rip_log"; then
+        {
+            echo "----------------------------------------"
+            echo "Completed: $(date)"
+            echo "Status: SUCCESS"
+        } >> "$rip_log"
+        log "CD ripping completed successfully"
+    else
+        {
+            echo "----------------------------------------"
+            echo "Failed: $(date)"
+            echo "Status: FAILED"
+        } >> "$rip_log"
+        error "CD ripping failed - check log: $rip_log"
+    fi
+    
+    echo "$output_path"
+}
+
+# Apply metadata to FLAC files
+apply_metadata() {
+    local output_path="$1"
+    local metadata_file="$2"
+    
+    log "Applying metadata to FLAC files"
+    
+    local track_count=${ALBUM_META[track_count]}
+    
+    for i in $(seq 1 "$track_count"); do
+        local track_idx=$((i - 1))
+        
+        # Find the FLAC file for this track
+        local track_file
+        track_file=$(find "$output_path" -name "*$(printf "%02d" "$i")*.flac" -o -name "*$i.flac" | head -1)
+        
+        if [ -n "$track_file" ] && [ -f "$track_file" ]; then
+            local track_title=$(yq ".tracks[$track_idx].title" "$metadata_file" | tr -d '"')
+            local track_artist=$(yq ".tracks[$track_idx].artist // \"${ALBUM_META[artist]}\"" "$metadata_file" | tr -d '"')
+            local track_length=$(yq ".tracks[$track_idx].length // \"\"" "$metadata_file" | tr -d '"')
+            
+            log "Tagging track $i: $track_title"
+            
+            # Apply comprehensive tags using metaflac
+            if command -v metaflac &> /dev/null; then
+                metaflac --remove-all-tags \
+                    --set-tag="TITLE=$track_title" \
+                    --set-tag="ARTIST=$track_artist" \
+                    --set-tag="ALBUM=${ALBUM_META[title]}" \
+                    --set-tag="ALBUMARTIST=${ALBUM_META[artist]}" \
+                    --set-tag="DATE=${ALBUM_META[date]}" \
+                    --set-tag="GENRE=${ALBUM_META[genre]}" \
+                    --set-tag="LABEL=${ALBUM_META[label]}" \
+                    --set-tag="TRACKNUMBER=$i" \
+                    --set-tag="TRACKTOTAL=$track_count" \
+                    --set-tag="SCRIPT=${SCRIPT_NAME} v${SCRIPT_VERSION}" \
+                    "$track_file"
+                
+                # Add track length if available
+                if [ -n "$track_length" ]; then
+                    metaflac --set-tag="LENGTH=$track_length" "$track_file"
+                fi
+            else
+                warn "metaflac not found, skipping metadata tagging"
+            fi
+        else
+            warn "Could not find FLAC file for track $i"
+        fi
+    done
+    
+    log "Metadata tagging completed"
+}
+
+# Import with beets (if enabled)
+import_with_beets() {
+    local output_path="$1"
+    
+    if [[ "${NO_BEETS}" == "1" ]]; then
+        log "Skipping beets import (--no-beets specified)"
+        return 0
+    fi
+    
+    log "Importing with beets"
+    
+    if [[ "${DRY_RUN}" == "1" ]]; then
+        info "DRY RUN: Would import with beets: $output_path"
+        return 0
+    fi
+    
+    if ! command -v beet &> /dev/null; then
+        warn "Beets not found, skipping import"
+        return 0
+    fi
+    
+    if beet import "$output_path"; then
+        log "Successfully imported with beets"
+    else
+        warn "Beets import had issues, but files are still available at: $output_path"
+    fi
+}
+
+# Main function
+main() {
+    local metadata_file=""
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                show_usage
+                exit 0
+                ;;
+            -v|--version)
+                echo "$SCRIPT_NAME v$SCRIPT_VERSION"
+                exit 0
+                ;;
+            --generate-schema)
+                setup_directories
+                generate_schema
+                exit 0
+                ;;
+            --generate-template)
+                setup_directories
+                generate_template
+                exit 0
+                ;;
+            --validate)
+                if [ -z "${2:-}" ]; then
+                    error "--validate requires a filename"
+                fi
+                setup_directories
+                validate_metadata "$2"
+                exit 0
+                ;;
+            --list-drives)
+                list_drives
+                exit 0
+                ;;
+            --dry-run)
+                DRY_RUN=1
+                ;;
+            --debug)
+                DEBUG=1
+                ;;
+            --profile)
+                if [ -z "${2:-}" ]; then
+                    error "--profile requires a profile name"
+                fi
+                XLD_PROFILE="$2"
+                shift
+                ;;
+            --output-dir)
+                if [ -z "${2:-}" ]; then
+                    error "--output-dir requires a directory path"
+                fi
+                OUTPUT_DIR="$2"
+                shift
+                ;;
+            --no-beets)
+                NO_BEETS=1
+                ;;
+            --force)
+                FORCE=1
+                ;;
+            -*)
+                error "Unknown option: $1"
+                ;;
+            *)
+                if [ -n "$metadata_file" ]; then
+                    error "Multiple metadata files specified"
+                fi
+                metadata_file="$1"
+                ;;
+        esac
+        shift
+    done
+    
+    # If no metadata file and no special commands, show usage
+    if [ -z "$metadata_file" ]; then
+        show_usage
+        exit 0
+    fi
+    
+    log "Starting CD ripping workflow"
+    
+    check_dependencies
+    setup_directories
+    
+    # Validate metadata file
+    validate_metadata "$metadata_file"
+    
+    # Parse metadata
+    parse_metadata "$metadata_file"
+    
+    # Search MusicBrainz (using the helper script if available)
+    if [ -f "$(dirname "$0")/mb_helper.py" ]; then
+        log "Searching MusicBrainz for existing releases..."
+        python3 "$(dirname "$0")/mb_helper.py" "$metadata_file" --search-only || true
+    fi
+    
+    # Confirm before proceeding
+    if [[ "${DRY_RUN}" != "1" ]]; then
+        echo
+        read -p "Continue with ripping? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            log "Aborted by user"
+            exit 0
+        fi
+    fi
+    
+    # Execute workflow
+    output_path=$(rip_cd "$metadata_file")
+    apply_metadata "$output_path" "$metadata_file"
+    import_with_beets "$output_path"
+    
+    log "Workflow completed successfully!"
+    log "Files location: $output_path"
+    info "Ripping log: $output_path/rip_detailed.log"
+    info "Session log: $LOGS_DIR/rip_session.log"
+}
+
+# Run main function
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
