@@ -175,3 +175,10 @@ brew 'atomicparsley'
 brew 'flac'
 brew 'ffmpeg'
 cask 'xld', greedy: true, args: { no_quarantine: true }
+
+# CD ripping dependencies (added by rip-cd setup)
+brew 'flac'
+brew 'ffmpeg'
+brew 'sox'
+brew 'libsndfile'
+cask 'xld', args: { no_quarantine: true }

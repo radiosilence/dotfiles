@@ -28,7 +28,6 @@ func getEssentialDeps() EssentialDependencies {
 			"ffmpeg",     // Audio processing and conversion
 			"sox",        // Sound processing for spectrograms
 			"libsndfile", // Audio file format support
-			"cdparanoia", // Alternative CD ripper for verification
 		},
 		Casks: []string{
 			"xld", // X Lossless Decoder for CD ripping
@@ -375,7 +374,16 @@ func setupXLDProfiles(dryRun bool) error {
 
 	// Check if XLD has been run at least once
 	if _, err := os.Stat(plistPath); os.IsNotExist(err) {
-		logrus.Warn("⚠️  XLD preferences not found. Please run XLD GUI once to initialize settings.")
+		logrus.Warn("⚠️  XLD preferences not found.")
+		logrus.Warn("📝 Please run XLD GUI once to initialize settings, then run 'rip-cd setup' again.")
+		return nil
+	}
+
+	// Check if XLD is currently running
+	if isXLDRunning() {
+		logrus.Warn("⚠️  XLD is currently running. Please quit XLD and run 'rip-cd setup' again.")
+		logrus.Warn("📝 Or create profiles manually using the instructions below.")
+		printManualProfileInstructions()
 		return nil
 	}
 
@@ -436,6 +444,24 @@ func setupXLDProfiles(dryRun bool) error {
 		}
 
 		logrus.Infof("✅ Created XLD profile: %s", profile.name)
+	}
+
+	// Verify profiles were created successfully
+	profilesExist := true
+	for _, profile := range profiles {
+		if exists, err := checkXLDProfile(profile.name, plistPath); err != nil || !exists {
+			profilesExist = false
+			break
+		}
+	}
+
+	if !profilesExist {
+		logrus.Warn("⚠️  Automatic profile creation may have failed.")
+		logrus.Warn("📝 If profiles don't appear in XLD, create them manually:")
+		printManualProfileInstructions()
+	} else {
+		logrus.Info("✅ XLD profiles created successfully!")
+		logrus.Info("📝 Restart XLD to see the new profiles in the Profiles menu.")
 	}
 
 	return nil
@@ -499,4 +525,34 @@ func createXLDProfileInPlist(name, description string, settings map[string]inter
 		createCmd := exec.Command("plutil", "-replace", "Profiles", "-xml", arrayXML, plistPath)
 		return createCmd.Run()
 	}
+}
+
+// isXLDRunning checks if XLD is currently running
+func isXLDRunning() bool {
+	cmd := exec.Command("pgrep", "-f", "XLD")
+	return cmd.Run() == nil
+}
+
+// printManualProfileInstructions prints instructions for manual profile creation
+func printManualProfileInstructions() {
+	logrus.Info("")
+	logrus.Info("📋 Manual XLD Profile Creation Instructions:")
+	logrus.Info("1. Open XLD application")
+	logrus.Info("2. Go to Preferences (⌘,)")
+	logrus.Info("3. Click the 'Profiles' tab")
+	logrus.Info("4. Click '+' to create a new profile")
+	logrus.Info("5. Name it 'flac_rip' and configure:")
+	logrus.Info("   • Ripper Mode: Secure")
+	logrus.Info("   • Test & Copy: Enabled")
+	logrus.Info("   • Use C2 Pointer: Enabled (if drive supports)")
+	logrus.Info("   • Query AccurateRip: Enabled")
+	logrus.Info("   • Retry Count: 20")
+	logrus.Info("   • Save Log: Always")
+	logrus.Info("   • Output Format: FLAC")
+	logrus.Info("   • Compression: 8 (Maximum)")
+	logrus.Info("6. Create another profile 'secure_rip' with:")
+	logrus.Info("   • Same settings as above")
+	logrus.Info("   • Retry Count: 50 (for maximum security)")
+	logrus.Info("7. Click 'OK' to save")
+	logrus.Info("")
 }
