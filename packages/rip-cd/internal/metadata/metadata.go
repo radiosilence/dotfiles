@@ -129,9 +129,6 @@ type RippingSettings struct {
 	TestAndCopy       bool `yaml:"test_and_copy,omitempty" json:"test_and_copy,omitempty"`
 	AccurateRip       bool `yaml:"accurate_rip,omitempty" json:"accurate_rip,omitempty"`
 	MaxRetries        int  `yaml:"max_retries,omitempty" json:"max_retries,omitempty"`
-	FillSilence       bool `yaml:"fill_silence,omitempty" json:"fill_silence,omitempty"`
-	DeleteSilence     bool `yaml:"delete_silence,omitempty" json:"delete_silence,omitempty"`
-	NormalizeVolume   bool `yaml:"normalize_volume,omitempty" json:"normalize_volume,omitempty"`
 	CompressionLevel  int  `yaml:"compression_level,omitempty" json:"compression_level,omitempty"`
 }
 
@@ -476,9 +473,6 @@ func createSampleMetadata() *CDMetadata {
 				AccurateRip:       true,
 				MaxRetries:        20,
 				CompressionLevel:  8,
-				FillSilence:       false,
-				DeleteSilence:     false,
-				NormalizeVolume:   false,
 			},
 			Stats: &RippingStats{
 				TotalTime:          "45:30",
@@ -611,9 +605,6 @@ func createJSONSchema() map[string]interface{} {
 							"test_and_copy":       map[string]interface{}{"type": "boolean"},
 							"accurate_rip":        map[string]interface{}{"type": "boolean"},
 							"max_retries":         map[string]interface{}{"type": "integer"},
-							"fill_silence":        map[string]interface{}{"type": "boolean"},
-							"delete_silence":      map[string]interface{}{"type": "boolean"},
-							"normalize_volume":    map[string]interface{}{"type": "boolean"},
 							"compression_level":   map[string]interface{}{"type": "integer"},
 						},
 					},

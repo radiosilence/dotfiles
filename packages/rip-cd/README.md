@@ -53,11 +53,17 @@ rip-cd rip ~/my-cd-rips/metadata/my-album.yaml            # actual rip
 
 ### Workflow & Integration
 
-- **XLD integration** - macOS CD ripper integration
+- **XLD integration** - macOS CD ripper integration (profiles auto-created)
 - **Beets library management** - Automatic import and organization
 - **Template generation** - IDE autocompletion support
 - **Dry-run testing** - Verify configuration before ripping
 - **Configurable workspace** - Organized file structure
+
+### XLD Integration Notes
+
+**Important**: XLD's command-line interface is basic and only supports format selection and profile usage. Advanced features like secure ripping, AccurateRip verification, C2 error correction, and detailed logging are **only available through XLD profiles** configured in the GUI.
+
+The `rip-cd setup` command automatically creates optimized XLD profiles (`flac_rip` and `secure_rip`) with all quality settings properly configured.
 
 ## Requirements
 
@@ -98,6 +104,7 @@ The binary will be installed to `~/.dotfiles/bin/rip-cd`.
 
 ```bash
 # Install essential CD ripping tools (XLD, flac, ffmpeg, sox, beets, etc.)
+# This also creates XLD profiles with optimal settings
 rip-cd setup --verbose
 
 # See what would be installed without making changes
@@ -166,12 +173,27 @@ $EDITOR ~/.rip-cd.yaml
 The generated `~/.rip-cd.yaml` includes:
 
 - **Workspace**: Where files are stored and organized
-- **Ripper**: XLD settings with quality options
+- **Ripper**: XLD settings with quality options (uses XLD profiles)
 - **Quality**: AccurateRip, C2 error correction, secure ripping modes
 - **Analysis**: Spectrogram generation and audio analysis settings
 - **Output**: File and directory naming templates
 - **Drive**: CD drive capability detection and offset correction
 - **Integrations**: MusicBrainz and beets configuration
+
+### XLD Profile Setup
+
+Quality settings are configured through XLD profiles rather than command-line options. The `rip-cd setup` command automatically creates:
+
+- **`flac_rip`** - High-quality FLAC profile with maximum compression
+- **`secure_rip`** - Maximum security profile with extensive verification
+
+These profiles include:
+
+- Test & Copy mode for dual-pass verification
+- C2 error correction (if drive supports it)
+- AccurateRip verification
+- Secure ripping mode with maximum retry attempts
+- Detailed logging for archival purposes
 
 ### Metadata Templates
 
@@ -415,6 +437,55 @@ ripping:
     accurate_rip_matches: 10
     peak_level: 0.95 # Audio analysis results
 ```
+
+## XLD Profile Troubleshooting
+
+### Profile Not Found
+
+If you get errors about missing XLD profiles:
+
+```bash
+# Run setup to create profiles
+rip-cd setup
+
+# Or run XLD GUI once to initialize preferences
+open -a XLD
+```
+
+### XLD CLI Limitations
+
+XLD's command-line interface only supports:
+
+- Format selection (`-f flac`, `-f mp3`, etc.)
+- Profile usage (`--profile profile_name`)
+- Basic output path specification (`-o output_dir`)
+
+**Advanced features require XLD profiles configured via the GUI:**
+
+- Secure ripping mode
+- AccurateRip verification
+- C2 error correction
+- Test & Copy mode
+- Detailed EAC-style logging
+- Drive offset correction
+
+The `rip-cd setup` command creates these profiles automatically with optimal settings.
+
+### Manual Profile Creation
+
+If automatic profile creation fails, create profiles manually in XLD:
+
+1. Open XLD application
+2. Go to Preferences → Profiles
+3. Create new profile with these settings:
+   - **Ripper Mode**: Secure
+   - **Test & Copy**: Enabled
+   - **Use C2 Pointer**: Enabled (if drive supports)
+   - **Query AccurateRip**: Enabled
+   - **Retry Count**: 20-50
+   - **Save Log**: Always
+4. Name the profile `flac_rip` or `secure_rip`
+5. Save and close XLD
 
 ## License
 

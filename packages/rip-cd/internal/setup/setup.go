@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/radiosilence/dotfiles/packages/rip-cd/internal/config"
 	"github.com/sirupsen/logrus"
 )
 
@@ -91,6 +92,11 @@ func Run(dryRun bool, verbose bool) error {
 		return fmt.Errorf("failed to install Python dependencies: %w", err)
 	}
 
+	// Setup XLD profiles
+	if err := setupXLDProfiles(dryRun); err != nil {
+		return fmt.Errorf("failed to setup XLD profiles: %w", err)
+	}
+
 	// Verify installation
 	if !dryRun {
 		if err := verifyInstallation(deps); err != nil {
@@ -154,7 +160,11 @@ func updateBrewfile(deps EssentialDependencies, dryRun bool) error {
 
 	for _, cask := range deps.Casks {
 		if !existing[cask] {
-			toAdd = append(toAdd, fmt.Sprintf("cask \"%s\", greedy: true", cask))
+			if cask == "xld" {
+				toAdd = append(toAdd, fmt.Sprintf("cask \"%s\", args: { no_quarantine: true }", cask))
+			} else {
+				toAdd = append(toAdd, fmt.Sprintf("cask \"%s\", greedy: true", cask))
+			}
 		}
 	}
 
@@ -342,4 +352,151 @@ func verifyInstallation(deps EssentialDependencies) error {
 	}
 
 	return nil
+}
+
+// setupXLDProfiles creates essential XLD profiles for CD ripping
+func setupXLDProfiles(dryRun bool) error {
+	// Load default config to get quality settings
+	cfg := &config.Config{}
+	cfg.SetDefaults()
+	if dryRun {
+		logrus.Info("🔧 Would create XLD profiles:")
+		logrus.Info("  + flac_rip (high-quality FLAC profile)")
+		logrus.Info("  + secure_rip (maximum security profile)")
+		return nil
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("failed to get home directory: %w", err)
+	}
+
+	plistPath := filepath.Join(homeDir, "Library", "Preferences", "jp.tmkk.XLD.plist")
+
+	// Check if XLD has been run at least once
+	if _, err := os.Stat(plistPath); os.IsNotExist(err) {
+		logrus.Warn("⚠️  XLD preferences not found. Please run XLD GUI once to initialize settings.")
+		return nil
+	}
+
+	// Create essential profiles using config defaults
+	profiles := []struct {
+		name        string
+		description string
+		settings    map[string]interface{}
+	}{
+		{
+			name:        "flac_rip",
+			description: "High-quality FLAC ripping profile for archival purposes",
+			settings: map[string]interface{}{
+				"TestAndCopy":                cfg.Ripper.Quality.TestAndCopy,
+				"UseC2Pointer":               cfg.Ripper.Quality.C2ErrorCorrection,
+				"QueryAccurateRip":           cfg.Ripper.Quality.AccurateRip.Enabled,
+				"RetryCount":                 cfg.Ripper.Quality.MaxRetryAttempts,
+				"RipperMode":                 4, // Secure mode (XLD constant)
+				"ReadOffsetUseRipperValue":   true,
+				"VerifySector":               cfg.Ripper.Quality.Verify,
+				"SaveLogMode":                1, // Always save log (XLD constant)
+				"Priority":                   0, // Normal priority (XLD constant)
+				"XLDFlacOutput_Compression":  cfg.Ripper.Quality.Compression,
+				"XLDFlacOutput_EmbedChapter": true,
+			},
+		},
+		{
+			name:        "secure_rip",
+			description: "Maximum security ripping profile with all verification enabled",
+			settings: map[string]interface{}{
+				"TestAndCopy":                cfg.Ripper.Quality.TestAndCopy,
+				"UseC2Pointer":               cfg.Ripper.Quality.C2ErrorCorrection,
+				"QueryAccurateRip":           cfg.Ripper.Quality.AccurateRip.Enabled,
+				"RetryCount":                 50, // Override for maximum security
+				"RipperMode":                 4,  // Secure mode (XLD constant)
+				"ReadOffsetUseRipperValue":   true,
+				"VerifySector":               cfg.Ripper.Quality.Verify,
+				"SaveLogMode":                1, // Always save log (XLD constant)
+				"Priority":                   0, // Normal priority (XLD constant)
+				"XLDFlacOutput_Compression":  cfg.Ripper.Quality.Compression,
+				"XLDFlacOutput_EmbedChapter": true,
+			},
+		},
+	}
+
+	for _, profile := range profiles {
+		if exists, err := checkXLDProfile(profile.name, plistPath); err != nil {
+			logrus.Warnf("Failed to check XLD profile %s: %v", profile.name, err)
+			continue
+		} else if exists {
+			logrus.Infof("✅ XLD profile already exists: %s", profile.name)
+			continue
+		}
+
+		if err := createXLDProfileInPlist(profile.name, profile.description, profile.settings, plistPath); err != nil {
+			logrus.Warnf("Failed to create XLD profile %s: %v", profile.name, err)
+			continue
+		}
+
+		logrus.Infof("✅ Created XLD profile: %s", profile.name)
+	}
+
+	return nil
+}
+
+// checkXLDProfile checks if a profile exists in XLD preferences
+func checkXLDProfile(profileName, plistPath string) (bool, error) {
+	cmd := exec.Command("plutil", "-extract", "Profiles", "xml1", "-o", "-", plistPath)
+	output, err := cmd.Output()
+	if err != nil {
+		return false, err
+	}
+
+	return strings.Contains(string(output), profileName), nil
+}
+
+// createXLDProfileInPlist creates a new XLD profile in the preferences plist
+func createXLDProfileInPlist(name, description string, settings map[string]interface{}, plistPath string) error {
+	// Build the profile dictionary XML (just the dict, not a complete plist)
+	profileDict := fmt.Sprintf(`<dict>
+	<key>name</key>
+	<string>%s</string>
+	<key>description</key>
+	<string>%s</string>`, name, description)
+
+	// Add settings to the dictionary
+	for key, value := range settings {
+		profileDict += fmt.Sprintf(`
+	<key>%s</key>`, key)
+
+		switch v := value.(type) {
+		case bool:
+			if v {
+				profileDict += `
+	<true/>`
+			} else {
+				profileDict += `
+	<false/>`
+			}
+		case int:
+			profileDict += fmt.Sprintf(`
+	<integer>%d</integer>`, v)
+		case string:
+			profileDict += fmt.Sprintf(`
+	<string>%s</string>`, v)
+		}
+	}
+
+	profileDict += `
+</dict>`
+
+	// Check if Profiles array exists
+	cmd := exec.Command("plutil", "-extract", "Profiles", "xml1", "-o", "-", plistPath)
+	if output, err := cmd.Output(); err == nil && strings.Contains(string(output), "<array>") {
+		// Profiles array exists, insert new profile at the beginning
+		insertCmd := exec.Command("plutil", "-insert", "Profiles.0", "-xml", profileDict, plistPath)
+		return insertCmd.Run()
+	} else {
+		// Create Profiles array with our profile
+		arrayXML := fmt.Sprintf(`<array>%s</array>`, profileDict)
+		createCmd := exec.Command("plutil", "-replace", "Profiles", "-xml", arrayXML, plistPath)
+		return createCmd.Run()
+	}
 }
