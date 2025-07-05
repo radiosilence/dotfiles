@@ -293,8 +293,8 @@ func TestSetDefaults(t *testing.T) {
 	if cfg.Ripper.Quality.Format != "flac" {
 		t.Errorf("Expected format 'flac', got '%s'", cfg.Ripper.Quality.Format)
 	}
-	if cfg.Ripper.Quality.Compression != 5 {
-		t.Errorf("Expected compression 5, got %d", cfg.Ripper.Quality.Compression)
+	if cfg.Ripper.Quality.Compression != 8 {
+		t.Errorf("Expected compression 8, got %d", cfg.Ripper.Quality.Compression)
 	}
 
 	// Test integration defaults

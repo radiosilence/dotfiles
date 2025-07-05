@@ -12,7 +12,7 @@ func TestGetEssentialDeps(t *testing.T) {
 	deps := getEssentialDeps()
 
 	// Check that we have the essential brews
-	expectedBrews := []string{"flac", "ffmpeg"}
+	expectedBrews := []string{"flac", "ffmpeg", "sox", "libsndfile", "cdparanoia"}
 	if len(deps.Brews) != len(expectedBrews) {
 		t.Errorf("Expected %d brews, got %d", len(expectedBrews), len(deps.Brews))
 	}
@@ -36,7 +36,7 @@ func TestGetEssentialDeps(t *testing.T) {
 	}
 
 	// Check that we have essential Python packages
-	expectedPythonPackages := []string{"beets", "musicbrainzngs", "PyYAML", "jsonschema"}
+	expectedPythonPackages := []string{"beets", "musicbrainzngs", "PyYAML", "jsonschema", "matplotlib", "numpy", "scipy"}
 	if len(deps.PythonPackages) < len(expectedPythonPackages) {
 		t.Errorf("Expected at least %d Python packages, got %d", len(expectedPythonPackages), len(deps.PythonPackages))
 	}

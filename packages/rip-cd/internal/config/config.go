@@ -24,6 +24,10 @@ type Config struct {
 	// Integration settings
 	Integrations IntegrationConfig `yaml:"integrations" mapstructure:"integrations"`
 
+	// Drive and matrix information
+	Drive  DriveConfig  `yaml:"drive" mapstructure:"drive"`
+	Matrix MatrixConfig `yaml:"matrix" mapstructure:"matrix"`
+
 	// Paths (computed at runtime)
 	Paths PathConfig `yaml:"-" mapstructure:"-"`
 }
@@ -86,6 +90,111 @@ type QualityConfig struct {
 
 	// Error correction attempts
 	ErrorCorrection int `yaml:"error_correction" mapstructure:"error_correction"`
+
+	// C2 error correction (hardware-level)
+	C2ErrorCorrection bool `yaml:"c2_error_correction" mapstructure:"c2_error_correction"`
+
+	// Maximum retry attempts for bad sectors
+	MaxRetryAttempts int `yaml:"max_retry_attempts" mapstructure:"max_retry_attempts"`
+
+	// Secure ripping mode (slowest but most accurate)
+	SecureRipping bool `yaml:"secure_ripping" mapstructure:"secure_ripping"`
+
+	// Test & Copy mode for maximum accuracy
+	TestAndCopy bool `yaml:"test_and_copy" mapstructure:"test_and_copy"`
+
+	// AccurateRip verification
+	AccurateRip AccurateRipConfig `yaml:"accurate_rip" mapstructure:"accurate_rip"`
+
+	// Spectrogram generation
+	Spectrograms SpectrogramConfig `yaml:"spectrograms" mapstructure:"spectrograms"`
+
+	// Enhanced logging for archival purposes
+	EnhancedLogging LoggingConfig `yaml:"enhanced_logging" mapstructure:"enhanced_logging"`
+}
+
+// AccurateRipConfig defines AccurateRip verification settings
+type AccurateRipConfig struct {
+	// Enable AccurateRip verification
+	Enabled bool `yaml:"enabled" mapstructure:"enabled"`
+
+	// AccurateRip database path
+	DatabasePath string `yaml:"database_path" mapstructure:"database_path"`
+
+	// Require AccurateRip match for successful rip
+	RequireMatch bool `yaml:"require_match" mapstructure:"require_match"`
+
+	// Minimum confidence level (number of matching submissions)
+	MinConfidence int `yaml:"min_confidence" mapstructure:"min_confidence"`
+}
+
+// SpectrogramConfig defines spectrogram generation settings
+type SpectrogramConfig struct {
+	// Enable spectrogram generation
+	Enabled bool `yaml:"enabled" mapstructure:"enabled"`
+
+	// Generate spectrograms for all tracks
+	GenerateAll bool `yaml:"generate_all" mapstructure:"generate_all"`
+
+	// Generate spectrogram for random sample track
+	GenerateSample bool `yaml:"generate_sample" mapstructure:"generate_sample"`
+
+	// Spectrogram resolution (higher = more detailed)
+	Resolution int `yaml:"resolution" mapstructure:"resolution"`
+
+	// Output format (png, svg)
+	Format string `yaml:"format" mapstructure:"format"`
+}
+
+// LoggingConfig defines enhanced logging settings
+type LoggingConfig struct {
+	// Enable EAC-style detailed logging
+	EACStyle bool `yaml:"eac_style" mapstructure:"eac_style"`
+
+	// Include drive information in logs
+	DriveInfo bool `yaml:"drive_info" mapstructure:"drive_info"`
+
+	// Include matrix/runout numbers
+	MatrixInfo bool `yaml:"matrix_info" mapstructure:"matrix_info"`
+
+	// Include detailed error information
+	DetailedErrors bool `yaml:"detailed_errors" mapstructure:"detailed_errors"`
+
+	// Save log files
+	SaveLogs bool `yaml:"save_logs" mapstructure:"save_logs"`
+}
+
+// DriveConfig defines CD drive-specific settings
+type DriveConfig struct {
+	// Auto-detect best drive
+	AutoDetect bool `yaml:"auto_detect" mapstructure:"auto_detect"`
+
+	// Specific drive path (if not auto-detecting)
+	DevicePath string `yaml:"device_path" mapstructure:"device_path"`
+
+	// Drive read offset correction
+	ReadOffset int `yaml:"read_offset" mapstructure:"read_offset"`
+
+	// Drive capabilities
+	SupportsCDText         bool `yaml:"supports_cd_text" mapstructure:"supports_cd_text"`
+	SupportsC2             bool `yaml:"supports_c2" mapstructure:"supports_c2"`
+	SupportsAccurateStream bool `yaml:"supports_accurate_stream" mapstructure:"supports_accurate_stream"`
+}
+
+// MatrixConfig defines matrix/runout number detection
+type MatrixConfig struct {
+	// Enable matrix number detection
+	Enabled bool `yaml:"enabled" mapstructure:"enabled"`
+
+	// Manual matrix numbers
+	SideA string `yaml:"side_a" mapstructure:"side_a"`
+	SideB string `yaml:"side_b" mapstructure:"side_b"`
+
+	// Mould SID codes
+	MouldSID string `yaml:"mould_sid" mapstructure:"mould_sid"`
+
+	// IFPI codes
+	IFPICodes []string `yaml:"ifpi_codes" mapstructure:"ifpi_codes"`
 }
 
 // OutputConfig defines output-related settings
@@ -216,18 +325,50 @@ func (c *Config) setDefaults() {
 		Temp:     "temp",
 	}
 
-	// Ripper defaults
+	// Ripper defaults (audiophile-grade)
 	c.Ripper.Engine = "xld"
 	c.Ripper.XLD.Profile = "flac_rip"
 	c.Ripper.Quality.Format = "flac"
-	c.Ripper.Quality.Compression = 5
+	c.Ripper.Quality.Compression = 8 // Maximum compression for archival
 	c.Ripper.Quality.Verify = true
-	c.Ripper.Quality.ErrorCorrection = 3
+	c.Ripper.Quality.ErrorCorrection = 10 // Maximum error correction attempts
+	c.Ripper.Quality.C2ErrorCorrection = true
+	c.Ripper.Quality.MaxRetryAttempts = 20
+	c.Ripper.Quality.SecureRipping = true
+	c.Ripper.Quality.TestAndCopy = true
+
+	// AccurateRip defaults
+	c.Ripper.Quality.AccurateRip.Enabled = true
+	c.Ripper.Quality.AccurateRip.RequireMatch = false // Don't fail if no match
+	c.Ripper.Quality.AccurateRip.MinConfidence = 2
+
+	// Spectrogram defaults
+	c.Ripper.Quality.Spectrograms.Enabled = true
+	c.Ripper.Quality.Spectrograms.GenerateSample = true
+	c.Ripper.Quality.Spectrograms.Resolution = 2048
+	c.Ripper.Quality.Spectrograms.Format = "png"
+
+	// Enhanced logging defaults
+	c.Ripper.Quality.EnhancedLogging.EACStyle = true
+	c.Ripper.Quality.EnhancedLogging.DriveInfo = true
+	c.Ripper.Quality.EnhancedLogging.MatrixInfo = true
+	c.Ripper.Quality.EnhancedLogging.DetailedErrors = true
+	c.Ripper.Quality.EnhancedLogging.SaveLogs = true
 
 	// Output defaults
 	c.Output.FilenameTemplate = "{{.TrackNumber}} - {{.Title}}"
 	c.Output.DirTemplate = "{{.Artist}} - {{.Album}} ({{.Year}})"
 	c.Output.SanitizeFilenames = true
+
+	// Drive defaults
+	c.Drive.AutoDetect = true
+	c.Drive.ReadOffset = 0 // Will be auto-detected
+	c.Drive.SupportsCDText = true
+	c.Drive.SupportsC2 = true
+	c.Drive.SupportsAccurateStream = true
+
+	// Matrix defaults
+	c.Matrix.Enabled = true
 
 	// Integration defaults
 	c.Integrations.MusicBrainz.Enabled = true
@@ -340,7 +481,7 @@ func GenerateDefault() error {
 
 	// Write header comments
 	fmt.Fprintln(file, "# rip-cd Configuration File")
-	fmt.Fprintln(file, "# This file contains default settings for CD ripping")
+	fmt.Fprintln(file, "# This file contains audiophile-grade settings for CD ripping")
 	fmt.Fprintln(file, "# Edit these values according to your preferences")
 	fmt.Fprintln(file, "")
 

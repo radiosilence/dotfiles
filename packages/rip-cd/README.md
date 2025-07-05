@@ -1,6 +1,6 @@
 # rip-cd
 
-CD ripper with metadata management, MusicBrainz integration, and strongly-typed configuration.
+Audiophile-grade CD ripper with AccurateRip verification, EAC-style logging, spectrogram generation, and comprehensive metadata management for archival purposes.
 
 ## 🚀 Quickstart
 
@@ -31,19 +31,42 @@ rip-cd rip ~/my-cd-rips/metadata/my-album.yaml            # actual rip
 
 ## Features
 
-- High-quality FLAC ripping via XLD integration
-- YAML configuration with JSON schema validation
-- MusicBrainz metadata lookup
-- Beets music library integration
-- Configurable workspace directory
-- Dry-run support for testing
-- Template generation with IDE autocompletion support
+### Audiophile & Archival Grade
+
+- **AccurateRip verification** - Verify rips against the AccurateRip database
+- **EAC-style detailed logging** - Comprehensive ripping logs with drive info
+- **Spectrogram generation** - Visual frequency analysis of tracks
+- **Secure ripping mode** - Maximum error correction and verification
+- **C2 error correction** - Hardware-level error detection
+- **Test & Copy mode** - Dual-pass verification for critical accuracy
+- **Drive capability detection** - Auto-detect read offsets and capabilities
+- **Matrix number support** - Track pressing plant and runout information
+
+### Quality & Metadata
+
+- **Maximum FLAC compression** - Level 8 compression for archival storage
+- **Comprehensive metadata** - Matrix numbers, ISRC, pressing details
+- **Audio analysis** - Peak/RMS levels, dynamic range calculation
+- **CRC32 verification** - File integrity checking
+- **MusicBrainz integration** - Automatic metadata enrichment
+- **JSON schema validation** - Type-safe configuration
+
+### Workflow & Integration
+
+- **XLD integration** - Best-in-class macOS CD ripper
+- **Beets library management** - Automatic import and organization
+- **Template generation** - IDE autocompletion support
+- **Dry-run testing** - Verify configuration before ripping
+- **Configurable workspace** - Organized file structure
 
 ## Requirements
 
 - macOS (XLD integration)
 - [XLD](https://tmkk.undo.jp/xld/index_e.html) for CD ripping
 - [beets](https://beets.io/) (optional, for library management)
+- [sox](http://sox.sourceforge.net/) for spectrogram generation
+- [ffmpeg](https://ffmpeg.org/) for audio analysis
+- Python 3.x with matplotlib, numpy, scipy for advanced analysis
 
 ## Installation
 
@@ -74,7 +97,7 @@ The binary will be installed to `~/.dotfiles/bin/rip-cd`.
 ### Setup Dependencies
 
 ```bash
-# Install essential CD ripping tools (XLD, flac, ffmpeg, beets, etc.)
+# Install essential CD ripping tools (XLD, flac, ffmpeg, sox, beets, etc.)
 rip-cd setup --verbose
 
 # See what would be installed without making changes
@@ -143,8 +166,11 @@ $EDITOR ~/.rip-cd.yaml
 The generated `~/.rip-cd.yaml` includes:
 
 - **Workspace**: Where files are stored and organized
-- **Ripper**: XLD settings and audio quality options
+- **Ripper**: XLD settings with audiophile-grade quality options
+- **Quality**: AccurateRip, C2 error correction, secure ripping modes
+- **Analysis**: Spectrogram generation and audio analysis settings
 - **Output**: File and directory naming templates
+- **Drive**: CD drive capability detection and offset correction
 - **Integrations**: MusicBrainz and beets configuration
 
 ### Metadata Templates
@@ -192,8 +218,54 @@ workspace/
 │   └── cd-metadata-schema.json
 ├── output/            # Ripped audio files
 │   └── Artist - Album (Year)/
+│       ├── *.flac           # Audio files
+│       ├── metadata.yaml    # Complete metadata
+│       ├── rip.log         # EAC-style ripping log
+│       └── spectrograms/   # Frequency analysis
+│           └── *.png
 ├── logs/              # Log files
 └── temp/              # Temporary files
+```
+
+## Audiophile Configuration
+
+### Maximum Quality Settings
+
+```yaml
+ripper:
+  quality:
+    format: "flac"
+    compression: 8 # Maximum compression
+    secure_ripping: true # Secure mode
+    c2_error_correction: true # Hardware error correction
+    test_and_copy: true # Dual-pass verification
+    max_retry_attempts: 20 # Maximum retries
+
+    accurate_rip:
+      enabled: true
+      min_confidence: 2
+
+    spectrograms:
+      enabled: true
+      generate_sample: true
+      resolution: 2048
+
+    enhanced_logging:
+      eac_style: true
+      drive_info: true
+      matrix_info: true
+```
+
+### Matrix Number Support
+
+```yaml
+matrix:
+  enabled: true
+  side_a: "MATRIX-A1"
+  side_b: "MATRIX-B1"
+  mould_sid: "IFPI L123"
+  ifpi_codes: ["IFPI 1234", "IFPI 5678"]
+  mastering_code: "STERLING"
 ```
 
 ## IDE Integration
@@ -282,7 +354,7 @@ tracks:
     title: "Paranoid Android"
 ```
 
-### Complete Metadata
+### Complete Archival Metadata
 
 ```yaml
 album:
@@ -295,19 +367,53 @@ album:
   genre: "Progressive Rock"
   country: "GB"
   packaging: "Gatefold Cover"
+  pressing_plant: "EMI Hayes"
+  edition: "First Press"
+  musicbrainz_id: "a1234567-1234-1234-1234-123456789012"
+
+  matrix:
+    side_a: "SHVL-804-A-2U"
+    side_b: "SHVL-804-B-2U"
+    mould_sid: "IFPI L123"
+    ifpi_codes: ["IFPI 1234"]
+    mastering_code: "STERLING"
 
 tracks:
   - number: 1
     title: "Speak to Me"
     length: "1:30"
+    isrc: "GBUM71505078"
+    peak: 0.87
+    rms: 0.12
+    accurate_rip:
+      confidence: 3
+      matched: true
+      database_hits: 15
   - number: 2
     title: "Breathe (In the Air)"
     length: "2:43"
+    peak: 0.92
+    rms: 0.15
 
 credits:
   producer: "Pink Floyd"
   engineer: "Alan Parsons"
   recorded_at: "Abbey Road Studios"
+
+ripping:
+  drive_info:
+    manufacturer: "PLEXTOR"
+    model: "PX-W5224A"
+    read_offset: 30
+    c2_support: true
+  settings:
+    secure_mode: true
+    accurate_rip: true
+    compression_level: 8
+  stats:
+    total_tracks: 10
+    accurate_rip_matches: 10
+    peak_level: 0.95
 ```
 
 ## License
