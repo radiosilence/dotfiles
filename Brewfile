@@ -169,3 +169,4 @@ brew 'uv'
 brew 'fswatch'
 cask 'aws-vpn-client', greedy: true
 cask 'pgadmin4', greedy: true
+brew 'atomicparsley'
