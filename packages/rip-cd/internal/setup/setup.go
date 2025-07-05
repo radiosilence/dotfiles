@@ -148,7 +148,7 @@ func updateBrewfile(deps EssentialDependencies, dryRun bool) error {
 
 	for _, cask := range deps.Casks {
 		if !existing[cask] {
-			toAdd = append(toAdd, fmt.Sprintf("cask \"%s\"", cask))
+			toAdd = append(toAdd, fmt.Sprintf("cask \"%s\", greedy: true", cask))
 		}
 	}
 
