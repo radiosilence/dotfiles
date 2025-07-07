@@ -1,11 +1,5 @@
 # ✨ Dotfiles ✨
 
----
-
-**Disclaimer: There are some slop-coded utilities in here**
-
----
-
 ## ⚡ Requirements
 
 | 📝 Requirement                |
@@ -94,3 +88,9 @@ fastmail-cli auth YOUR_API_TOKEN_HERE
 ```
 
 > 💡 **Note**: Get your API token from Fastmail Settings → Privacy & Security → Integrations.
+
+---
+
+**Disclaimer: There are some vibecoded utilities in here**
+
+---
