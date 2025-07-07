@@ -66,5 +66,6 @@ redux
 reproducibility
 resolvers
 starship
+vibecoded
 wezterm
 zsh
