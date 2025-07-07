@@ -189,3 +189,4 @@ brew 'ffmpeg'
 brew 'sox'
 brew 'libsndfile'
 cask 'xld', args: { no_quarantine: true }
+cask 'arc', greedy: true
