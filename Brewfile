@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# =============================================================================
+# TAPS - Third-party repositories
+# =============================================================================
+
 tap 'buo/cask-upgrade'
 tap 'nanovms/ops'
 tap 'withgraphite/tap'
@@ -7,186 +11,268 @@ tap 'metalbear-co/mirrord'
 tap 'hashicorp/tap'
 tap 'bufbuild/buf'
 tap 'radiosilence/dotfiles', 'https://github.com/radiosilence/dotfiles.git'
+tap 'radiosilence/nano-web', 'https://github.com/radiosilence/nano-web.git'
 tap 'tursodatabase/tap'
-brew 'ansible'
+
+# =============================================================================
+# BREW PACKAGES
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Development Tools & Languages
+# -----------------------------------------------------------------------------
+
+brew 'node'
 brew 'go-task'
+brew 'mise'
+brew 'uv'
+brew 'luarocks'
+brew 'cmake'
+brew 'make'
+brew 'llvm'
+brew 'clang-format'
+
+# -----------------------------------------------------------------------------
+# Language Servers & Development Support
+# -----------------------------------------------------------------------------
+
 brew 'ansible-language-server'
+brew 'elixir-ls'
+brew 'lua-language-server'
+brew 'rust-analyzer'
+brew 'ruby-lsp'
+brew 'solargraph'
+brew 'terraform-ls'
+brew 'vscode-langservers-extracted'
+brew 'yaml-language-server'
+
+# -----------------------------------------------------------------------------
+# Infrastructure & DevOps
+# -----------------------------------------------------------------------------
+
+brew 'ansible'
 brew 'ansible-lint'
 brew 'argocd'
-brew 'aria2'
+brew 'awscli'
 brew 'aws-shell'
 brew 'aws-sso-util'
 brew 'aws-vault'
-brew 'awscli'
 brew 'azure-cli'
-brew 'bat'
-brew 'broot'
-brew 'bufbuild/buf/buf'
-brew 'clang-format'
 brew 'cf-terraforming'
-brew 'cmake'
-brew 'cmatrix'
-brew 'cmus'
-brew 'coreutils'
-brew 'curl'
-brew 'metalbear-co/mirrord/mirrord'
-brew 'elixir-ls'
-brew 'evans'
-brew 'fastfetch'
-brew 'fcp'
-brew 'ffmpeg'
-brew 'findutils'
-brew 'fish'
-brew 'fzf'
-brew 'gh'
-brew 'grpcurl'
-brew 'git'
-brew 'git-lfs'
-brew 'gmp'
-brew 'gnupg'
-brew 'terraform'
-brew 'terraform-ls'
-brew 'tursodatabase/tap/turso'
-brew 'helix'
-brew 'htop'
-brew 'hyperfine'
-brew 'ios-deploy'
-brew 'iperf3'
-brew 'jsonnet'
-brew 'jq'
+brew 'hashicorp/tap/terraform'
 brew 'k9s'
 brew 'kubecolor'
 brew 'kubernetes-cli'
-brew 'libpq'
-brew 'libyaml'
-brew 'llvm'
-brew 'lua-language-server'
+brew 'pulumi'
+brew 'tilt'
+brew 'watchman'
+
+# -----------------------------------------------------------------------------
+# Networking & System Tools
+# -----------------------------------------------------------------------------
+
+brew 'curl'
+brew 'wget'
+brew 'nmap'
+brew 'iperf3'
+brew 'telnet'
+brew 'unbound'
+brew 'fswatch'
+brew 'parallel'
+brew 'rsync'
+brew 'rclone'
+brew 'syncthing'
+
+# -----------------------------------------------------------------------------
+# Command Line Utilities
+# -----------------------------------------------------------------------------
+
+brew 'bat'
+brew 'broot'
+brew 'coreutils'
+brew 'fastfetch'
+brew 'fcp'
+brew 'findutils'
+brew 'fish'
+brew 'fzf'
+brew 'htop'
+brew 'btop'
+brew 'hyperfine'
+brew 'jq'
 brew 'lsd'
 brew 'lsix'
-brew 'luarocks'
 brew 'macchina'
-brew 'make'
 brew 'mas'
-brew 'mise'
-brew 'nanovms/ops/ops'
-brew 'nmap'
-brew 'node'
-brew 'openssl@3'
-brew 'ossp-uuid'
-brew 'parallel'
-brew 'postgresql'
-brew 'pulumi'
-brew 'qemu'
-brew 'rclone'
-brew 'readline'
 brew 'ripgrep'
-brew 'rust-analyzer'
-brew 'ruby-lsp'
-brew 'rsync'
 brew 'sheldon'
 brew 'shfmt'
 brew 'shellcheck'
-
-brew 'solargraph'
 brew 'starship'
-brew 'syncthing'
-brew 'taplo'
-brew 'telnet'
-brew 'hashicorp/tap/terraform'
-brew 'hashicorp/tap/terraform-ls'
-brew 'testdisk'
-brew 'tig'
-brew 'tilt'
-brew 'tmux'
-brew 'tpm'
 brew 'tree'
-brew 'ttfautohint'
-brew 'unbound'
-brew 'vercel-cli'
-brew 'vscode-langservers-extracted'
-brew 'watchman'
-brew 'wget'
-brew 'whalebrew'
-brew 'withgraphite/tap/graphite'
-brew 'wrk'
-brew 'xz'
-brew 'yaml-language-server'
-brew 'yt-dlp'
 brew 'yq'
 brew 'zoxide'
 brew 'zsh'
 
+# -----------------------------------------------------------------------------
+# Git & Version Control
+# -----------------------------------------------------------------------------
+
+brew 'git'
+brew 'git-lfs'
+brew 'gh'
+brew 'tig'
+brew 'lefthook'
+
+# -----------------------------------------------------------------------------
+# Media & Audio/Video Processing
+# -----------------------------------------------------------------------------
+
+brew 'ffmpeg'
+brew 'flac'
+brew 'sox'
+brew 'libsndfile'
+brew 'atomicparsley'
+brew 'cmus'
+brew 'yt-dlp'
+brew 'ttfautohint'
+
+# -----------------------------------------------------------------------------
+# Database & Data Tools
+# -----------------------------------------------------------------------------
+
+brew 'postgresql'
+brew 'libpq'
+brew 'tursodatabase/tap/turso'
+
+# -----------------------------------------------------------------------------
+# Security & Cryptography
+# -----------------------------------------------------------------------------
+
+brew 'gnupg'
+brew 'openssl@3'
+
+# -----------------------------------------------------------------------------
+# System Libraries & Dependencies
+# -----------------------------------------------------------------------------
+
+brew 'gmp'
+brew 'libyaml'
+brew 'ossp-uuid'
+brew 'readline'
+brew 'xz'
+
+# -----------------------------------------------------------------------------
+# API & Protocol Tools
+# -----------------------------------------------------------------------------
+
+brew 'bufbuild/buf/buf'
+brew 'evans'
+brew 'grpcurl'
+brew 'jsonnet'
+brew 'taplo'
+
+# -----------------------------------------------------------------------------
+# Specialized Tools
+# -----------------------------------------------------------------------------
+
+brew 'aria2'
+brew 'cmatrix'
+brew 'ios-deploy'
+brew 'metalbear-co/mirrord/mirrord'
+brew 'nano-web'
+brew 'fastmail-cli'
+brew 'nanovms/ops/ops'
+brew 'qemu'
+brew 'testdisk'
+brew 'tmux'
+brew 'tpm'
+brew 'vercel-cli'
+brew 'whalebrew'
+brew 'withgraphite/tap/graphite'
+brew 'wrk'
+brew 'helix'
+brew 'golangci-lint'
+
+# =============================================================================
+# CASK APPLICATIONS
+# =============================================================================
+
 cask_args require_sha: true
 
-cask '1password', greedy: true
-cask '1password-cli', greedy: true
-cask 'discord', greedy: true
-cask 'beekeeper-studio', greedy: true
-cask 'figma', greedy: true
-cask 'firefox', greedy: true
-cask 'focusrite-control', greedy: true
-cask 'foobar2000', greedy: true
-cask 'fork', greedy: true
-cask 'ghostty', greedy: true
-cask 'lens', greedy: true
+# -----------------------------------------------------------------------------
+# Productivity & Office
+# -----------------------------------------------------------------------------
+
 cask 'notion', greedy: true
 cask 'notion-calendar', greedy: true
-cask 'orbstack', greedy: true
-cask 'rar', args: { no_quarantine: true }, greedy: true
-cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
-cask 'signal', greedy: true
+cask '1password', greedy: true
+cask '1password-cli', greedy: true
+
+# -----------------------------------------------------------------------------
+# Development & Design
+# -----------------------------------------------------------------------------
+
 cask 'zed', greedy: true
 cask 'zed@preview', greedy: true
+cask 'figma', greedy: true
+cask 'fork', greedy: true
+cask 'beekeeper-studio', greedy: true
+cask 'lens', greedy: true
+cask 'pgadmin4', greedy: true
+
+# -----------------------------------------------------------------------------
+# Communication
+# -----------------------------------------------------------------------------
+
+cask 'discord', greedy: true
+cask 'signal', greedy: true
+
+# -----------------------------------------------------------------------------
+# Web Browsers
+# -----------------------------------------------------------------------------
+
+cask 'firefox', greedy: true
+cask 'arc', greedy: true
 cask 'zen', greedy: true
+
+# -----------------------------------------------------------------------------
+# Media & Entertainment
+# -----------------------------------------------------------------------------
+
+cask 'foobar2000', greedy: true
+cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
+cask 'xld', args: { no_quarantine: true }, greedy: true
+
+# -----------------------------------------------------------------------------
+# System & Utilities
+# -----------------------------------------------------------------------------
+
+cask 'ghostty', greedy: true
+cask 'orbstack', greedy: true
+cask 'rar', args: { no_quarantine: true }, greedy: true
+cask 'tailscale', greedy: true
+cask 'aws-vpn-client', greedy: true
+
+# -----------------------------------------------------------------------------
+# Audio Production
+# -----------------------------------------------------------------------------
+
+cask 'focusrite-control', greedy: true
+
+# -----------------------------------------------------------------------------
+# AI & Productivity
+# -----------------------------------------------------------------------------
+
+cask 'claude', greedy: true
+
+# =============================================================================
+# MAC APP STORE APPLICATIONS
+# =============================================================================
 
 mas '1Password for Safari', id: 1_569_813_296
 mas 'Adobe Lightroom', id: 1_451_544_217
 mas 'Infuse', id: 1_136_220_934
 mas 'Messenger', id: 1_480_068_668
 mas 'Slack', id: 803_453_959
-# mas 'Tailscale', id: 1_475_387_142
-cask 'tailscale', greedy: true
 mas 'Telegram', id: 747_648_890
 mas 'WhatsApp', id: 310_633_997
-
-# Added by go-brew-search on 2025-05-26 17:32:35
-brew 'golangci-lint' # Fast linters runner for Go
-
-# Added by go-brew-search on 2025-05-26 23:12:15
-brew 'btop' # Resource monitor. C++ version and continuation of bashtop an...
-
-# Added by go-brew-search on 2025-05-27 19:49:49
-brew 'lefthook' # Fast and powerful Git hooks manager for any type of projects
-
-# Added by go-brew-search on 2025-06-02 11:33:40
-cask 'claude' # Anthropic"s official Claude AI desktop app, greedy: true
-tap 'radiosilence/nano-web', 'https://github.com/radiosilence/nano-web.git'
-brew 'nano-web'
-brew 'fastmail-cli'
-brew 'wget', greedy: true
-cask 'firefox', greedy: true
-brew 'uv'
-brew 'fswatch'
-cask 'aws-vpn-client', greedy: true
-cask 'pgadmin4', greedy: true
-brew 'atomicparsley'
-
-# CD ripping dependencies (added by rip-cd setup)
-brew 'flac'
-brew 'ffmpeg'
-cask 'xld', greedy: true, args: { no_quarantine: true }
-
-# CD ripping dependencies (added by rip-cd setup)
-brew 'flac'
-brew 'ffmpeg'
-brew 'sox'
-brew 'libsndfile'
-cask 'xld', args: { no_quarantine: true }
-
-# CD ripping dependencies (added by rip-cd setup)
-brew 'flac'
-brew 'ffmpeg'
-brew 'sox'
-brew 'libsndfile'
-cask 'xld', args: { no_quarantine: true }
-cask 'arc', greedy: true
