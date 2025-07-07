@@ -94,18 +94,3 @@ fastmail-cli auth YOUR_API_TOKEN_HERE
 ```
 
 > 💡 **Note**: Get your API token from Fastmail Settings → Privacy & Security → Integrations.
-
-**💿 Install rip-cd (Optional):**
-
-```sh
-# Local Homebrew formula
-brew install --formula ~/.dotfiles/Formula/rip-c
-
----
-
-## 🌟 Tips & Tricks
-
-- 🎯 Customize your `starship` prompt to match your workflow.
-- 🚦 Use `fzf` for supercharged file navigation and command history search.
-- 🧩 Keep your configuration modular for easier maintenance.
-```
