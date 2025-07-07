@@ -17,5 +17,17 @@
     "bindings": {
       // "j k": ["workspace::SendKeystrokes", "escape"]
     }
+  },
+  {
+    "context": "vim_mode == visual",
+    "bindings": {
+      "alt-;": "vim::OtherEnd"
+    }
+  },
+  {
+    "context": "vim_mode == helix_normal && !menu",
+    "bindings": {
+      "alt-;": "vim::OtherEnd"
+    }
   }
 ]
