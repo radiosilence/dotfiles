@@ -1,14 +1,4 @@
 {
-  "ssh_connections": [
-    {
-      "host": "oldboy",
-      "projects": [
-        {
-          "paths": ["/home/jc"]
-        }
-      ]
-    }
-  ],
   "outline_panel": {
     "dock": "left"
   },
@@ -152,6 +142,16 @@
     }
   },
   "lsp": {
+    "harper-ls": {
+      "settings": {
+        "harper-ls": {
+          "dialect": "British",
+          "linters": {
+            "AvoidCurses": false
+          }
+        }
+      }
+    },
     "some-sass": {
       "settings": {}
     },
