@@ -2,7 +2,7 @@ Anthropic
 Apigee
 Astro
 Auth0
-Auth0_
+Auth0
 Axios
 B2C
 BDD
