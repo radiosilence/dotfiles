@@ -20,6 +20,7 @@ DJing
 DaisyUI
 Dataclasses
 EngineerBetter
+FastmailCli
 Fresha
 GitOps
 HCL
@@ -70,6 +71,7 @@ radiosilence
 redux
 reproducibility
 resolvers
+rubocop
 starship
 vibecoded
 wezterm
