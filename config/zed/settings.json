@@ -146,6 +146,8 @@
       "settings": {
         "harper-ls": {
           "dialect": "British",
+          "userDictPath": "~/.config/harper/dictionary.txt",
+          "fileDictPath": "~/.config/harper/file-dicts",
           "linters": {
             "AvoidCurses": false
           }
