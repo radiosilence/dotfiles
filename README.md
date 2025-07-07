@@ -44,11 +44,11 @@ Additional features:
 
 ### Required Tools
 
-| Tool                                      | Description                                          |
-| ----------------------------------------- | ---------------------------------------------------- |
-| [🍺 homebrew](https://brew.sh/)           | A package manager for macOS                          |
-| [🛠️ mise](https://mise.jdx.dev)           | Replacement for nvm, rvm, etc. (`brew install mise`) |
-| [👀 fzf](https://github.com/junegunn/fzf) | Fuzzy matcher for everything (`brew install fzf`)    |
+| Tool                                      | Description                                                |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| [🍺 homebrew](https://brew.sh/)           | A package manager for macOS                                |
+| [🛠️ mise](https://mise.jdx.dev)           | Replacement for asdf, nvm, rvm, etc. (`brew install mise`) |
+| [👀 fzf](https://github.com/junegunn/fzf) | Fuzzy matcher for everything (`brew install fzf`)          |
 
 ---
 

@@ -1,3 +1,4 @@
+Anthropic
 Apigee
 Astro
 Auth0
@@ -13,6 +14,7 @@ CSPM
 CloudFront
 CouchDB
 Couchbase
+Ctrl
 Cython
 DJing
 DaisyUI
@@ -49,16 +51,19 @@ ZeroMQ
 Zopa
 Zopa's
 Zustand
+asdf
 cli
 devops
 esbuild
 fastmail
+fzf
 ghostty
 github
 i18n
 mise
 mobx
 nginx
+nvm
 observables
 optimise
 radiosilence
