@@ -52,9 +52,9 @@ Additional features:
 
 | Tool                                      | Description                                          |
 | ----------------------------------------- | ---------------------------------------------------- |
-| [🍺 Homebrew](https://brew.sh/)           | A package manager for macOS                          |
-| [🛠️ Mise](https://mise.jdx.dev)           | Replacement for nvm, rvm, etc. (`brew install mise`) |
-| [👀 Fzf](https://github.com/junegunn/fzf) | Fuzzy matcher for everything (`brew install fzf`)    |
+| [🍺 homebrew](https://brew.sh/)           | A package manager for macOS                          |
+| [🛠️ mise](https://mise.jdx.dev)           | Replacement for nvm, rvm, etc. (`brew install mise`) |
+| [👀 fzf](https://github.com/junegunn/fzf) | Fuzzy matcher for everything (`brew install fzf`)    |
 
 ---
 

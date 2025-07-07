@@ -25,6 +25,7 @@ HTML5
 IaC
 Immer
 JIRA
+JMAP
 JSonnet
 JWT
 Jinja2
@@ -48,10 +49,14 @@ ZeroMQ
 Zopa
 Zopa's
 Zustand
+cli
 devops
 esbuild
+fastmail
+ghostty
 github
 i18n
+mise
 mobx
 nginx
 observables
@@ -60,4 +65,6 @@ radiosilence
 redux
 reproducibility
 resolvers
+starship
+wezterm
 zsh
