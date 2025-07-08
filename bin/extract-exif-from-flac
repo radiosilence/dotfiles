@@ -1,0 +1,154 @@
+#!/bin/bash
+set -eu
+
+# Check if required tools are available
+if ! command -v metaflac > /dev/null 2>&1; then
+  echo "Error: metaflac is required but not installed."
+  echo "Install with: brew install flac"
+  exit 1
+fi
+
+if ! command -v exiftool > /dev/null 2>&1; then
+  echo "Error: exiftool is required but not installed."
+  echo "Install with: brew install exiftool"
+  exit 1
+fi
+
+# Check if file argument is provided
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <flac_file>"
+  echo "Extracts embedded artwork from FLAC file and outputs EXIF data as JSON"
+  exit 1
+fi
+
+flac_file="$1"
+
+# Check if file exists and is a FLAC file
+if [ ! -f "$flac_file" ]; then
+  echo "Error: File '$flac_file' not found."
+  exit 1
+fi
+
+if [[ ! "$flac_file" =~ \.(flac|FLAC)$ ]]; then
+  echo "Error: '$flac_file' is not a FLAC file."
+  exit 1
+fi
+
+# Create temporary directory for extracted images
+temp_dir=$(mktemp -d)
+cleanup() {
+  rm -rf "$temp_dir"
+}
+trap cleanup EXIT
+
+# Function to get picture type description
+get_picture_type_desc() {
+  case "$1" in
+    0) echo "Other" ;;
+    1) echo "32x32 pixels file icon" ;;
+    2) echo "Other file icon" ;;
+    3) echo "Cover (front)" ;;
+    4) echo "Cover (back)" ;;
+    5) echo "Leaflet page" ;;
+    6) echo "Media (e.g. label side of CD)" ;;
+    7) echo "Lead artist/lead performer/soloist" ;;
+    8) echo "Artist/performer" ;;
+    9) echo "Conductor" ;;
+    10) echo "Band/Orchestra" ;;
+    11) echo "Composer" ;;
+    12) echo "Lyricist/text writer" ;;
+    13) echo "Recording Location" ;;
+    14) echo "During recording" ;;
+    15) echo "During performance" ;;
+    16) echo "Movie/video screen capture" ;;
+    17) echo "A bright coloured fish" ;;
+    18) echo "Illustration" ;;
+    19) echo "Band/artist logotype" ;;
+    20) echo "Publisher/Studio logotype" ;;
+    *) echo "Unknown ($1)" ;;
+  esac
+}
+
+# Get list of embedded pictures
+picture_info=$(metaflac --list --block-type=PICTURE "$flac_file" 2>/dev/null)
+
+if [ -z "$picture_info" ]; then
+  echo '{"embedded_artwork": []}'
+  exit 0
+fi
+
+# Extract picture information
+pictures=()
+picture_index=0
+
+# Parse metaflac output to extract pictures
+while IFS= read -r line; do
+  if [[ "$line" =~ ^[[:space:]]*type:[[:space:]]*([0-9]+) ]]; then
+    picture_type="${BASH_REMATCH[1]}"
+    picture_desc=$(get_picture_type_desc "$picture_type")
+
+    # Extract this picture to temporary file
+    temp_image="$temp_dir/picture_${picture_index}.jpg"
+
+    if metaflac --export-picture-to="$temp_image" "$flac_file" 2>/dev/null; then
+      # Get EXIF data as JSON
+      exif_data=$(exiftool -json -q "$temp_image" 2>/dev/null)
+
+      if [ $? -eq 0 ] && [ -n "$exif_data" ]; then
+        # Parse the JSON and add our metadata
+        picture_json=$(echo "$exif_data" | jq --arg type "$picture_type" --arg desc "$picture_desc" --arg index "$picture_index" '
+          .[0] |
+          {
+            "picture_index": ($index | tonumber),
+            "flac_picture_type": ($type | tonumber),
+            "picture_type_description": $desc,
+            "exif_data": .
+          }
+        ')
+
+        pictures+=("$picture_json")
+      else
+        # If exiftool fails, still provide basic info
+        basic_info=$(jq -n --arg type "$picture_type" --arg desc "$picture_desc" --arg index "$picture_index" '{
+          "picture_index": ($index | tonumber),
+          "flac_picture_type": ($type | tonumber),
+          "picture_type_description": $desc,
+          "exif_data": null,
+          "error": "Could not extract EXIF data"
+        }')
+
+        pictures+=("$basic_info")
+      fi
+    else
+      # If picture extraction fails
+      error_info=$(jq -n --arg type "$picture_type" --arg desc "$picture_desc" --arg index "$picture_index" '{
+        "picture_index": ($index | tonumber),
+        "flac_picture_type": ($type | tonumber),
+        "picture_type_description": $desc,
+        "exif_data": null,
+        "error": "Could not extract picture from FLAC file"
+      }')
+
+      pictures+=("$error_info")
+    fi
+
+    picture_index=$((picture_index + 1))
+  fi
+done <<< "$picture_info"
+
+# Output final JSON
+if [ ${#pictures[@]} -gt 0 ]; then
+  # Join all picture objects into an array
+  printf '{"embedded_artwork": ['
+  for i in "${!pictures[@]}"; do
+    printf '%s' "${pictures[$i]}"
+    if [ $i -lt $((${#pictures[@]} - 1)) ]; then
+      printf ','
+    fi
+  done
+  printf ']}'
+else
+  echo '{"embedded_artwork": []}'
+fi
+
+echo
