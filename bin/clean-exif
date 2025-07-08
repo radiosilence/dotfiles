@@ -7,19 +7,19 @@ if [ $# -eq 0 ]; then
   set -- "."
 fi
 
-echo "[paths] $*"
-echo "[cores] using $CORES cores"
+echo "🧹 Cleaning EXIF data from images..."
+echo "📁 Searching: $*"
+echo "⚡ Using $CORES cores"
 
 # Check if exiftool is available
 if ! command -v exiftool > /dev/null 2>&1; then
-  echo "Error: exiftool is required but not installed."
-  echo "Install with: brew install exiftool"
+  echo "❌ exiftool not found (brew install exiftool)"
   exit 1
 fi
 
 find "$@" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.tiff" -o -name "*.tif" -o -name "*.heic" -o -name "*.webp" \) -print0 \
   | parallel -0 -j "$CORES" \
-    "exiftool -overwrite_original \
+    "if exiftool -overwrite_original -q \
       -gps:all= \
       -location:all= \
       -creator= \
@@ -56,4 +56,8 @@ find "$@" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "
       -png:warning= \
       -png:source= \
       -png:comment= \
-      {} && echo 'Cleaned: {}'"
+      {} >/dev/null 2>&1; then \
+        echo '✅ Cleaned: $(basename \"{}\")'; \
+      else \
+        echo '❌ Failed: $(basename \"{}\")'; \
+      fi"
