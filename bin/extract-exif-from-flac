@@ -3,21 +3,19 @@ set -eu
 
 # Check if required tools are available
 if ! command -v metaflac > /dev/null 2>&1; then
-  echo "Error: metaflac is required but not installed."
-  echo "Install with: brew install flac"
+  echo "❌ metaflac not found (brew install flac)"
   exit 1
 fi
 
 if ! command -v exiftool > /dev/null 2>&1; then
-  echo "Error: exiftool is required but not installed."
-  echo "Install with: brew install exiftool"
+  echo "❌ exiftool not found (brew install exiftool)"
   exit 1
 fi
 
 # Check if file argument is provided
 if [ $# -eq 0 ]; then
   echo "Usage: $0 <flac_file>"
-  echo "Extracts embedded artwork from FLAC file and outputs EXIF data as JSON"
+  echo "Checks if embedded artwork has been stripped of sensitive EXIF data"
   exit 1
 fi
 
@@ -25,12 +23,12 @@ flac_file="$1"
 
 # Check if file exists and is a FLAC file
 if [ ! -f "$flac_file" ]; then
-  echo "Error: File '$flac_file' not found."
+  echo "❌ File not found: $(basename "$flac_file")"
   exit 1
 fi
 
 if [[ ! "$flac_file" =~ \.(flac|FLAC)$ ]]; then
-  echo "Error: '$flac_file' is not a FLAC file."
+  echo "❌ Not a FLAC file: $(basename "$flac_file")"
   exit 1
 fi
 
@@ -69,16 +67,27 @@ get_picture_type_desc() {
   esac
 }
 
+# Function to check if EXIF data contains sensitive information
+has_sensitive_data() {
+  local exif_json="$1"
+
+  # Check for GPS data, camera serial numbers, and other PII
+  if echo "$exif_json" | jq -e '.GPS? or .CameraSerialNumber? or .LensSerialNumber? or .BodySerialNumber? or .InternalSerialNumber? or .UniqueImageID? or .Artist? or .Copyright? or .Creator? or .Contact? or .Credit? or .Source? or .Comment? or .UserComment?' > /dev/null 2>&1; then
+    return 0  # has sensitive data
+  else
+    return 1  # clean
+  fi
+}
+
 # Get list of embedded pictures
 picture_info=$(metaflac --list --block-type=PICTURE "$flac_file" 2>/dev/null)
 
 if [ -z "$picture_info" ]; then
-  echo '{"embedded_artwork": []}'
+  echo "📁 $(basename "$flac_file"): No embedded artwork"
   exit 0
 fi
 
-# Extract picture information
-pictures=()
+echo "📁 $(basename "$flac_file"):"
 picture_index=0
 
 # Parse metaflac output to extract pictures
@@ -95,60 +104,18 @@ while IFS= read -r line; do
       exif_data=$(exiftool -json -q "$temp_image" 2>/dev/null)
 
       if [ $? -eq 0 ] && [ -n "$exif_data" ]; then
-        # Parse the JSON and add our metadata
-        picture_json=$(echo "$exif_data" | jq --arg type "$picture_type" --arg desc "$picture_desc" --arg index "$picture_index" '
-          .[0] |
-          {
-            "picture_index": ($index | tonumber),
-            "flac_picture_type": ($type | tonumber),
-            "picture_type_description": $desc,
-            "exif_data": .
-          }
-        ')
-
-        pictures+=("$picture_json")
+        if has_sensitive_data "$exif_data"; then
+          echo "   ⚠️  $picture_desc - Contains sensitive EXIF data"
+        else
+          echo "   ✅ $picture_desc - Clean"
+        fi
       else
-        # If exiftool fails, still provide basic info
-        basic_info=$(jq -n --arg type "$picture_type" --arg desc "$picture_desc" --arg index "$picture_index" '{
-          "picture_index": ($index | tonumber),
-          "flac_picture_type": ($type | tonumber),
-          "picture_type_description": $desc,
-          "exif_data": null,
-          "error": "Could not extract EXIF data"
-        }')
-
-        pictures+=("$basic_info")
+        echo "   ✅ $picture_desc - Clean (no EXIF data)"
       fi
     else
-      # If picture extraction fails
-      error_info=$(jq -n --arg type "$picture_type" --arg desc "$picture_desc" --arg index "$picture_index" '{
-        "picture_index": ($index | tonumber),
-        "flac_picture_type": ($type | tonumber),
-        "picture_type_description": $desc,
-        "exif_data": null,
-        "error": "Could not extract picture from FLAC file"
-      }')
-
-      pictures+=("$error_info")
+      echo "   ❌ $picture_desc - Failed to extract"
     fi
 
     picture_index=$((picture_index + 1))
   fi
 done <<< "$picture_info"
-
-# Output final JSON
-if [ ${#pictures[@]} -gt 0 ]; then
-  # Join all picture objects into an array
-  printf '{"embedded_artwork": ['
-  for i in "${!pictures[@]}"; do
-    printf '%s' "${pictures[$i]}"
-    if [ $i -lt $((${#pictures[@]} - 1)) ]; then
-      printf ','
-    fi
-  done
-  printf ']}'
-else
-  echo '{"embedded_artwork": []}'
-fi
-
-echo
