@@ -10,12 +10,23 @@ echo "🎵 Embedding artwork into FLAC files..."
 echo "📁 Searching: $*"
 echo "⚡ Using $CORES cores"
 
-# Check if metaflac is available
+# Check if required tools are available
 if ! command -v metaflac > /dev/null 2>&1; then
   echo "Error: metaflac is required but not installed."
   echo "Install with: brew install flac"
   exit 1
 fi
+
+# Check if clean-exif is available
+if ! command -v clean-exif > /dev/null 2>&1; then
+  echo "Error: clean-exif script is required but not found."
+  echo "Make sure clean-exif is in your PATH."
+  exit 1
+fi
+
+# Clean EXIF data from all images in the search paths first
+echo "🧹 Cleaning EXIF data from images..."
+clean-exif "$@"
 
 # Function to embed art into a FLAC file
 embed_art_to_flac() {
