@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 CORES=$(nproc)
-
+# serialise for debugging
+CORES=1
 # If no arguments provided, use "." as the default
 if [ $# -eq 0 ]; then
   set -- "."
@@ -20,10 +21,24 @@ fi
 # Function to embed art into a FLAC file
 embed_art_to_flac() {
   flac_file="$1"
-  cover_file="$2"
-  temp_file="${flac_file}.tmp"
+  dir="$(dirname "$flac_file")"
 
-  ffmpeg -i "$flac_file" -i "$cover_file" -map 0:a -map 1:v -c:a copy -c:v copy -disposition:v:0 attached_pic "$temp_file" -y > /dev/null 2>&1
+  # Look for common cover art filenames in the same directory
+  cover_file=""
+  for name in "cover.jpg" "folder.jpg" "album.jpg" "front.jpg" "cover.png" "folder.png" "album.png" "front.png"; do
+    if [ -f "$dir/$name" ]; then
+      cover_file="$dir/$name"
+      break
+    fi
+  done
+
+  if [ -z "$cover_file" ]; then
+    echo "No cover art found for: $flac_file"
+    return 1
+  fi
+
+  temp_file="${flac_file}.tmp"
+  ffmpeg -i "$flac_file" -i "$cover_file" -map 0:a -map 1:v -c:a copy -c:v copy -disposition:v:0 attached_pic -f flac "$temp_file" -y
 
   if [ $? -eq 0 ]; then
     mv "$temp_file" "$flac_file"
@@ -36,23 +51,6 @@ embed_art_to_flac() {
 
 export -f embed_art_to_flac
 
-# Find directories containing both FLAC files and cover art
+# Find all FLAC files and process them in parallel
 find "$@" -type f -name "*.flac" -print0 \
-  | xargs -0 -I {} dirname {} \
-  | sort -u \
-  | while read -r dir; do
-    # Look for common cover art filenames
-    cover_file=""
-    for name in "cover.jpg" "folder.jpg" "album.jpg" "front.jpg" "cover.png" "folder.png" "album.png" "front.png"; do
-      if [ -f "$dir/$name" ]; then
-        cover_file="$dir/$name"
-        break
-      fi
-    done
-
-    if [ -n "$cover_file" ]; then
-      # Find all FLAC files in this directory and process them
-      find "$dir" -maxdepth 1 -name "*.flac" -print0 \
-        | parallel -0 -j "$CORES" embed_art_to_flac {} "$cover_file"
-    fi
-  done
+  | parallel -0 -j "$CORES" embed_art_to_flac {}
