@@ -1,8 +1,6 @@
 #!/bin/bash
 set -eu
 CORES=$(nproc)
-# serialise for debugging
-CORES=1
 # If no arguments provided, use "." as the default
 if [ $# -eq 0 ]; then
   set -- "."
