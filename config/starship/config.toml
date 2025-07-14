@@ -1,5 +1,19 @@
 add_newline = false
 
+format = """
+$username\
+$hostname\
+$directory\
+${custom.git_email}\
+$git_branch\
+$gcloud\
+$nodejs\
+$kotlin\
+$java\
+$package\
+$character\
+"""
+
 [character]
 error_symbol = ""
 success_symbol = ""
@@ -17,21 +31,18 @@ format = "[$hostname]($style) "
 format = "[$user]($style)@"
 show_always = false
 
+[custom.git_email]
+symbol = ""
+command = "git config user.email"
+when = "git rev-parse --is-inside-work-tree"
+format = "[ $output]($style) "
+style = "dim"
+
 [git_branch]
 symbol = "  "
 format = "[$symbol$branch]($style) "
 style = "green"
 
-[custom.git_email]
-command = "git config user.email"
-when = "git rev-parse --is-inside-work-tree"
-format = "[ $output]($style) "
-style = "dim cyan"
-
-[aws]
-symbol = "  "
-format = '[$symbol$profile(\($region\))]($style) '
-style = "yellow"
 
 [gcloud]
 disabled = true
