@@ -3,15 +3,49 @@ add_newline = false
 format = """
 $username\
 $hostname\
+$localip\
+$singularity\
+$kubernetes\
 $directory\
 ${custom.git_email}\
 $git_branch\
-$gcloud\
-$nodejs\
-$kotlin\
-$java\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$docker_context\
 $package\
-$character\
+$c\
+$cmake\
+$container\
+$elixir\
+$gleam\
+$golang\
+$kotlin\
+$lua\
+$nodejs\
+$pulumi\
+$python\
+$ruby\
+$rust\
+$terraform\
+$buf\
+$memory_usage\
+$aws\
+$nats\
+$direnv\
+$env_var\
+$mise\
+$sudo\
+$cmd_duration\
+$line_break\
+$jobs\
+$battery\
+$status\
+$os\
+$container\
+$shell\
+$character
 """
 
 [character]
@@ -21,6 +55,7 @@ success_symbol = ""
 [directory]
 truncation_length = 8
 truncate_to_repo = false
+read_only = ""
 style = "fg:8"
 truncation_symbol = ".../"
 
@@ -32,33 +67,27 @@ format = "[$user]($style)@"
 show_always = false
 
 [custom.git_email]
-symbol = ""
-command = "git config user.email"
-when = "git rev-parse --is-inside-work-tree"
+# when = ["git","rev-parse","--git-dir"]
 format = "[ $output]($style) "
 style = "dim"
+shell = ["git", "config", "user.email"]
 
 [git_branch]
-symbol = "  "
+symbol = " "
 format = "[$symbol$branch]($style) "
 style = "green"
 
+[docker_context]
+symbol = " "
 
-[gcloud]
-disabled = true
-symbol = " "
-format = '[$symbol$account(\($region\))]($style) '
+[golang]
+symbol = "󰟓 "
 
 [nodejs]
 symbol = " "
 disabled = false
 style = "green"
 
-[kotlin]
-disabled = false
-
-[java]
-disabled = false
 
 [package]
 disabled = true
