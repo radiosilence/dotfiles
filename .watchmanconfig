@@ -10,6 +10,7 @@
   "fsmonitor_max_delay": 100,
   "fsmonitor_settle": 20,
   "prefer_split_fsevents_watcher": true,
+  "tmp_dir": "/tmp",
   "fsevents_try_resync": true,
   "fsevents_num_deferred": 32768,
   "suppress_recrawl_warnings": true,
@@ -48,9 +49,5 @@
     ".terraform",
     ".angular"
   ],
-  "ignore_vcs": [
-    ".git",
-    ".hg",
-    ".svn"
-  ]
+  "ignore_vcs": [".git", ".hg", ".svn"]
 }
