@@ -67,7 +67,7 @@ format = "[$user]($style)@"
 show_always = false
 
 [custom.git_email]
-# when = ["git","rev-parse","--git-dir"]
+when = true
 format = "[ $output]($style) "
 style = "dim"
 shell = ["git", "config", "user.email"]

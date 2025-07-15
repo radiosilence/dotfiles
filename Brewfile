@@ -277,4 +277,3 @@ mas 'Slack', id: 803_453_959
 mas 'Telegram', id: 747_648_890
 mas 'WhatsApp', id: 310_633_997
 brew 'exiftool'
-brew 'mosh'
