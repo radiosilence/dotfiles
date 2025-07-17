@@ -278,3 +278,4 @@ mas 'Telegram', id: 747_648_890
 mas 'WhatsApp', id: 310_633_997
 brew 'exiftool'
 cask 'steam'
+brew 'mdless'
