@@ -267,6 +267,35 @@ func CalculateHealthScore(events []SleepEvent) (int, []string) {
 		score = 0
 	}
 	
+	// Check for potential battery drain scenarios
+	if len(events) > 0 {
+		// Look for periods with many long-running sleep prevention events
+		longPreventionPeriods := 0
+		for _, event := range events {
+			if event.Duration > 2*time.Hour {
+				longPreventionPeriods++
+			}
+		}
+		
+		if longPreventionPeriods > 2 {
+			score -= 20
+			issues = append(issues, fmt.Sprintf("Found %d very long sleep prevention events (>2h) - laptop may not sleep when closed", longPreventionPeriods))
+		}
+		
+		// Check for excessive audio-related sleep prevention
+		audioPreventions := 0
+		for _, event := range events {
+			if strings.Contains(event.Process, "coreaudiod") || strings.Contains(event.Details, "audio") {
+				audioPreventions++
+			}
+		}
+		
+		if audioPreventions > 20 {
+			score -= 15
+			issues = append(issues, fmt.Sprintf("Audio system prevented sleep %d times - check for stuck audio processes", audioPreventions))
+		}
+	}
+	
 	return score, issues
 }
 
@@ -468,6 +497,70 @@ func FormatMarkdownReport(report *SleepReport, days int, maxCycles int, allCycle
 			sb.WriteString(fmt.Sprintf("- %s: %d times\n", rc.reason, rc.count))
 		}
 		sb.WriteString("\n")
+	}
+	
+	// Battery Drain Analysis
+	if len(allCycles) > 0 {
+		sb.WriteString("## Battery Drain Analysis\n\n")
+		
+		// Look for suspicious gaps between sleep cycles
+		suspiciousGaps := 0
+		var drainWarnings []string
+		
+		for i := 1; i < len(allCycles); i++ {
+			prevCycle := allCycles[i-1]
+			currCycle := allCycles[i]
+			
+			// If there's a gap of more than 30 minutes between wake and next sleep
+			if !prevCycle.WakeTime.IsZero() && currCycle.SleepTime.Sub(prevCycle.WakeTime) > 30*time.Minute {
+				gap := currCycle.SleepTime.Sub(prevCycle.WakeTime)
+				suspiciousGaps++
+				
+				// Check if this was on battery and could indicate failed sleep
+				if strings.Contains(prevCycle.WakePower, "BATT") && gap > 1*time.Hour {
+					drainWarnings = append(drainWarnings, fmt.Sprintf("- %s: %s gap between wake and next sleep (battery power)",
+						prevCycle.WakeTime.Format("Jan 2, 15:04"), formatDuration(gap)))
+				}
+			}
+		}
+		
+		if len(drainWarnings) > 0 {
+			sb.WriteString("**Potential Battery Drain Periods:**\n")
+			for _, warning := range drainWarnings {
+				sb.WriteString(warning + "\n")
+			}
+			sb.WriteString("\n")
+		}
+		
+		// Check for cycles with significant battery drain
+		var highDrainCycles []string
+		for _, cycle := range allCycles {
+			if cycle.SleepBattery > 0 && cycle.WakeBattery > 0 {
+				drain := cycle.SleepBattery - cycle.WakeBattery
+				if drain > 10 && cycle.Duration > 0 {
+					hours := cycle.Duration.Hours()
+					if hours > 0 {
+						drainRate := float64(drain) / hours
+						if drainRate > 5 { // More than 5% per hour
+							highDrainCycles = append(highDrainCycles, fmt.Sprintf("- %s: %d%% in %s (%.1f%%/hour)",
+								cycle.SleepTime.Format("Jan 2, 15:04"), drain, formatDuration(cycle.Duration), drainRate))
+						}
+					}
+				}
+			}
+		}
+		
+		if len(highDrainCycles) > 0 {
+			sb.WriteString("**High Battery Drain During Sleep:**\n")
+			for _, cycle := range highDrainCycles {
+				sb.WriteString(cycle + "\n")
+			}
+			sb.WriteString("\n")
+		}
+		
+		if len(drainWarnings) == 0 && len(highDrainCycles) == 0 {
+			sb.WriteString("✅ No suspicious battery drain periods detected.\n\n")
+		}
 	}
 	
 	// Recent Sleep Prevention Events
