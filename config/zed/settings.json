@@ -11,6 +11,23 @@
   "edit_predictions": {
     "mode": "subtle"
   },
+  "inlay_hints": {
+    "enabled": true,
+    "edit_debounce_ms": 0,
+    "scroll_debounce_ms": 0,
+    "show_background": true,
+    "show_other_hints": true,
+    "show_parameter_hints": true,
+    "show_type_hints": true,
+    "show_value_hints": true,
+    "toggle_on_modifiers_press": {
+      "alt": true,
+      "control": true,
+      "function": true,
+      "platform": true,
+      "shift": true
+    }
+  },
   "use_system_prompts": true,
   "auto_install_extensions": {
     "ansible": true,
