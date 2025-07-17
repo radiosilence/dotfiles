@@ -57,7 +57,7 @@
     "zedokai": true
   },
   "agent": {
-    "default_profile": "write",
+    "default_profile": "ask",
     "inline_assistant_model": {
       "provider": "anthropic",
       "model": "claude-sonnet-4-latest"
