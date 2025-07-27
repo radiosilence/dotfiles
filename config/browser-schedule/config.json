@@ -15,5 +15,5 @@
     "start": "Mon",
     "end": "Fri"
   },
-  "log_enabled": false
+  "log_enabled": true
 }
