@@ -279,3 +279,4 @@ mas 'WhatsApp', id: 310_633_997
 brew 'exiftool'
 cask 'steam'
 brew 'mdless'
+brew 'swiftformat'
