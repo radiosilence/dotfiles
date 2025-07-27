@@ -17,6 +17,7 @@ rust-analyzer = "latest"
 yt-dlp = "latest"
 houston = "latest"
 perl = "latest"
+fcloud = "latest"
 
 [settings]
 paranoid = false
