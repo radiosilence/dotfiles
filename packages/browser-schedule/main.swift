@@ -22,23 +22,24 @@ struct Config: Codable {
         case logPath = "log_path"
     }
     
-    init(workBrowser: String = "Google Chrome", personalBrowser: String = "Zen", workStartHour: Int = 9, workEndHour: Int = 18, workDays: String = "1-5", logPath: String? = "/tmp/browser-schedule.log") {
+    init(workBrowser: String = "Google Chrome", personalBrowser: String = "Zen", workStartHour: Int = 9, workEndHour: Int = 18, workDays: String = "1-5", logPath: String? = nil) {
         self.workBrowser = workBrowser
         self.personalBrowser = personalBrowser
         self.workStartHour = workStartHour
         self.workEndHour = workEndHour
         self.workDays = workDays
-        self.logPath = logPath
+        self.logPath = logPath ?? {
+            let homeDir = FileManager.default.homeDirectoryForCurrentUser
+            return homeDir.appendingPathComponent(".config/browser-schedule/browser-schedule.log").path
+        }()
     }
     
     static func loadFromFile() -> Config {
-        let defaults = Config()
-        
-        // Try to read from config file
         let homeDir = FileManager.default.homeDirectoryForCurrentUser
-        let configPath = homeDir.appendingPathComponent(".dotfiles/packages/browser-schedule/config.json")
+        let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.json")
         
         guard let configData = try? Data(contentsOf: configPath) else {
+            let defaults = Config()
             logMessage("Config file not found at \(configPath.path), using defaults", config: defaults)
             return defaults
         }
@@ -54,6 +55,7 @@ struct Config: Codable {
             logMessage("Loaded config from \(configPath.path)", config: config)
             return config
         } catch {
+            let defaults = Config()
             logMessage("Error parsing config file at \(configPath.path): \(error), using defaults", config: defaults)
             return defaults
         }
@@ -181,7 +183,8 @@ if CommandLine.arguments.count > 1 {
         print("  Work hours: \(config.workStartHour):00-\(config.workEndHour):00")
         print("  Work days: \(config.workDays)")
         let homeDir = FileManager.default.homeDirectoryForCurrentUser
-        print("  Config file: \(homeDir.appendingPathComponent(".dotfiles/packages/browser-schedule/config.json").path)")
+        let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.json")
+        print("  Config file: \(configPath.path)")
         if isWorkTime(config: config) {
             print("  Current: Work time - using \(config.workBrowser)")
         } else {

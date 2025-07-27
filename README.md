@@ -100,7 +100,9 @@ cd ~/.dotfiles/packages/browser-schedule
 task install
 ```
 
-**Config:** Edit `config.json`:
+This creates `~/.config/browser-schedule/config.json` with default settings.
+
+**Config:** Edit `~/.config/browser-schedule/config.json`:
 ```json
 {
   "work_browser": "Google Chrome",
@@ -108,7 +110,7 @@ task install
   "work_start_hour": 9,
   "work_end_hour": 18,
   "work_days": "1-5",
-  "log_path": "/tmp/browser-schedule.log"
+  "log_path": "~/.config/browser-schedule/browser-schedule.log"
 }
 ```
 
