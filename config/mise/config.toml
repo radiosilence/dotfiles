@@ -17,6 +17,7 @@ rust-analyzer = "latest"
 yt-dlp = "latest"
 REDACTED = "latest"
 perl = "latest"
+REDACTED = "latest"
 
 [settings]
 paranoid = false
