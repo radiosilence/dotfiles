@@ -13,21 +13,21 @@ tasks:
 
   test:
     desc: Test the application with a URL
-    deps: [build]
+    deps: [build, setup-config]
     cmds:
       - ./browser-schedule-swift http://test.com
-      - tail -5 /tmp/browser-schedule.log
+      - task: logs
 
   test-work:
     desc: Test during work hours (simulate by checking current time)
-    deps: [build]  
+    deps: [build, setup-config]  
     cmds:
       - ./browser-schedule-swift http://test-work.com
-      - tail -5 /tmp/browser-schedule.log
+      - task: logs
 
   install:
     desc: Install the app bundle as default browser
-    deps: [build]
+    deps: [build, setup-config]
     cmds:
       - task: create-app-bundle
       - /Applications/BrowserSchedule.app/Contents/MacOS/browser-schedule --set-default
@@ -37,6 +37,30 @@ tasks:
     deps: [build]
     cmds:
       - task: create-app-bundle
+
+  setup-config:
+    desc: Create config directory and default config
+    internal: true
+    silent: true
+    cmds:
+      - mkdir -p ~/.config/browser-schedule
+      - |
+        if [ ! -f ~/.config/browser-schedule/config.json ]; then
+          cat > ~/.config/browser-schedule/config.json << EOF
+        {
+          "work_browser": "Google Chrome",
+          "personal_browser": "Zen",
+          "work_start_hour": 9,
+          "work_end_hour": 18,
+          "work_days": "1-5",
+          "log_path": "$HOME/.config/browser-schedule/browser-schedule.log"
+        }
+        EOF
+        fi
+      - |
+        cat > ~/.config/browser-schedule/.gitignore << 'EOF'
+        *.log
+        EOF
 
   create-app-bundle:
     desc: Create macOS app bundle
@@ -116,7 +140,14 @@ tasks:
     desc: Show recent logs
     silent: true
     cmds:
-      - tail -20 /tmp/browser-schedule.log
+      - |
+        if [ -f ~/.config/browser-schedule/browser-schedule.log ]; then
+          tail -20 ~/.config/browser-schedule/browser-schedule.log
+        elif [ -f /tmp/browser-schedule.log ]; then
+          tail -20 /tmp/browser-schedule.log
+        else
+          echo "No log file found"
+        fi
 
   config:
     desc: Show current config
