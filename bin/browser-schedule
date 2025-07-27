@@ -1,28 +1,14 @@
 #!/bin/bash
 
-# browser-schedule - Switch default browser based on work schedule
-# Switches between work browser (Chrome) and personal browser (Zen) based on time
+# browser-schedule - Smart browser proxy that routes URLs based on time
+# Acts as default browser and delegates to work/personal browser based on schedule
 
 # Configuration - override with environment variables
-WORK_BROWSER="${WORK_BROWSER:-chrome}"
-PERSONAL_BROWSER="${PERSONAL_BROWSER:-zen}"
+WORK_BROWSER="${WORK_BROWSER:-Google Chrome}"
+PERSONAL_BROWSER="${PERSONAL_BROWSER:-Zen}"
 WORK_START_HOUR="${WORK_START_HOUR:-9}"
 WORK_END_HOUR="${WORK_END_HOUR:-18}"
 WORK_DAYS="${WORK_DAYS:-1-5}" # Monday-Friday
-
-set_default_browser() {
-  local browser="$1"
-  
-  # Set as default browser using defaultbrowser (silently)
-  if defaultbrowser "$browser" >/dev/null 2>&1; then
-    echo "✓ Set default browser to: $browser"
-  else
-    echo "✗ Failed to set default browser to: $browser" >&2
-    echo "Available browsers:" >&2
-    defaultbrowser >&2
-    exit 1
-  fi
-}
 
 is_work_time() {
   local current_hour current_dow
@@ -30,409 +16,241 @@ is_work_time() {
   current_dow=$(date +%u) # 1=Monday, 7=Sunday
 
   # Check if it's a work day
+  local is_work_day=false
   if [[ "$WORK_DAYS" == "1-5" ]]; then
     # Monday-Friday
-    [[ $current_dow -ge 1 && $current_dow -le 5 ]]
+    [[ $current_dow -ge 1 && $current_dow -le 5 ]] && is_work_day=true
   else
-    # Custom days (not implemented yet)
-    [[ $current_dow -ge 1 && $current_dow -le 5 ]]
-  fi || return 1
+    # Custom work days (comma-separated list like "1,2,3,7" for Mon,Tue,Wed,Sun)
+    echo ",$WORK_DAYS," | grep -q ",$current_dow," && is_work_day=true
+  fi
+
+  [[ $is_work_day == true ]] || return 1
 
   # Check if it's work hours
   [[ $current_hour -ge $WORK_START_HOUR && $current_hour -lt $WORK_END_HOUR ]]
 }
 
+log_message() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> ~/browser-schedule.log
+}
 
-create_launchagent() {
+open_url() {
+  local url="$1"
+  local target_browser
+
+  log_message "=== URL OPEN REQUEST ==="
+  log_message "URL: $url"
+  log_message "All args: $*"
+  log_message "Script called as: $0"
+  log_message "PWD: $(pwd)"
+
+  # Determine which browser to use based on time
+  if is_work_time; then
+    target_browser="$WORK_BROWSER"
+    log_message "Time check: WORK TIME"
+  else
+    target_browser="$PERSONAL_BROWSER"
+    log_message "Time check: PERSONAL TIME"
+  fi
+
+  log_message "Target browser: $target_browser"
+  log_message "Opening URL..."
+
+  if open -a "$target_browser" "$url"; then
+    log_message "✓ Successfully opened $url in $target_browser"
+  else
+    log_message "✗ Failed to open $url in $target_browser"
+  fi
+
+  log_message "=== END REQUEST ==="
+  log_message ""
+}
+
+create_browser_app() {
+  local app_dir="/Applications/BrowserSchedule.app"
+  local contents_dir="$app_dir/Contents"
+  local macos_dir="$contents_dir/MacOS"
   local script_path
   script_path="$(realpath "$0")"
-  local agent_dir="$HOME/Library/LaunchAgents"
-  local work_plist="$agent_dir/com.user.browser-schedule.work.plist"
-  local personal_plist="$agent_dir/com.user.browser-schedule.personal.plist"
-  local weekend_plist="$agent_dir/com.user.browser-schedule.weekend.plist"
-  
-  # Create LaunchAgents directory if it doesn't exist
-  mkdir -p "$agent_dir"
-  
-  # Work browser switch
-  cat > "$work_plist" << EOF
+
+  echo "Creating BrowserSchedule.app..."
+
+  # Create app bundle structure
+  sudo mkdir -p "$macos_dir"
+
+  # Create Info.plist
+  sudo tee "$contents_dir/Info.plist" > /dev/null << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>Label</key>
-  <string>com.user.browser-schedule.work</string>
-  <key>ProgramArguments</key>
+  <key>CFBundleExecutable</key>
+  <string>browser-schedule</string>
+  <key>CFBundleIdentifier</key>
+  <string>com.user.browser-schedule</string>
+  <key>CFBundleName</key>
+  <string>BrowserSchedule</string>
+  <key>CFBundleVersion</key>
+  <string>1.0</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleURLTypes</key>
   <array>
-    <string>$script_path</string>
-    <string>--work</string>
-  </array>
-  <key>StartCalendarInterval</key>
-  <array>
     <dict>
-      <key>Weekday</key>
-      <integer>1</integer>
-      <key>Hour</key>
-      <integer>$WORK_START_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>2</integer>
-      <key>Hour</key>
-      <integer>$WORK_START_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>3</integer>
-      <key>Hour</key>
-      <integer>$WORK_START_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>4</integer>
-      <key>Hour</key>
-      <integer>$WORK_START_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>5</integer>
-      <key>Hour</key>
-      <integer>$WORK_START_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
+      <key>CFBundleURLName</key>
+      <string>HTTP URL</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>http</string>
+        <string>https</string>
+      </array>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
     </dict>
   </array>
-  <key>RunAtLoad</key>
-  <false/>
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>PATH</key>
-    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
-  </dict>
-  <key>StandardOutPath</key>
-  <string>/tmp/browser-schedule-work.log</string>
-  <key>StandardErrorPath</key>
-  <string>/tmp/browser-schedule-work.log</string>
+  <key>LSMinimumSystemVersion</key>
+  <string>10.15</string>
 </dict>
 </plist>
 EOF
 
-  # Personal browser switch (end of work day)
-  cat > "$personal_plist" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>com.user.browser-schedule.personal</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>$script_path</string>
-    <string>--personal</string>
-  </array>
-  <key>StartCalendarInterval</key>
-  <array>
-    <dict>
-      <key>Weekday</key>
-      <integer>1</integer>
-      <key>Hour</key>
-      <integer>$WORK_END_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>2</integer>
-      <key>Hour</key>
-      <integer>$WORK_END_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>3</integer>
-      <key>Hour</key>
-      <integer>$WORK_END_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>4</integer>
-      <key>Hour</key>
-      <integer>$WORK_END_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>5</integer>
-      <key>Hour</key>
-      <integer>$WORK_END_HOUR</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-  </array>
-  <key>RunAtLoad</key>
-  <false/>
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>PATH</key>
-    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
-  </dict>
-  <key>StandardOutPath</key>
-  <string>/tmp/browser-schedule-personal.log</string>
-  <key>StandardErrorPath</key>
-  <string>/tmp/browser-schedule-personal.log</string>
-</dict>
-</plist>
+  # Create AppleScript wrapper that handles URL events
+  sudo tee "$macos_dir/browser-schedule" > /dev/null << EOF
+#!/usr/bin/osascript
+# AppleScript URL handler for BrowserSchedule app
+
+on run
+    do shell script "echo '[\\$(date '+%Y-%m-%d %H:%M:%S')] AppleScript run handler called' >> ~/browser-schedule.log"
+end run
+
+on open location this_URL
+    do shell script "echo '[\\$(date '+%Y-%m-%d %H:%M:%S')] URL received: ' & this_URL >> ~/browser-schedule.log"
+    do shell script "'$script_path' --url '" & this_URL & "'"
+end open location
 EOF
 
-  # Weekend switch
-  cat > "$weekend_plist" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>com.user.browser-schedule.weekend</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>$script_path</string>
-    <string>--personal</string>
-  </array>
-  <key>StartCalendarInterval</key>
-  <dict>
-    <key>Weekday</key>
-    <integer>6</integer>
-    <key>Hour</key>
-    <integer>9</integer>
-    <key>Minute</key>
-    <integer>0</integer>
-  </dict>
-  <key>RunAtLoad</key>
-  <false/>
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>PATH</key>
-    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
-  </dict>
-  <key>StandardOutPath</key>
-  <string>/tmp/browser-schedule-weekend.log</string>
-  <key>StandardErrorPath</key>
-  <string>/tmp/browser-schedule-weekend.log</string>
-</dict>
-</plist>
-EOF
+  sudo chmod +x "$macos_dir/browser-schedule"
+  echo "✓ Created BrowserSchedule.app"
 
-  echo "✓ Created LaunchAgent plists"
-}
+  # Register the app with the system
+  echo "Registering with system..."
+  /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$app_dir"
 
-setup_launchagent() {
-  echo "Installing browser schedule LaunchAgent..."
-  
-  # Unload existing agents if they exist
-  local labels=("com.user.browser-schedule.work" "com.user.browser-schedule.personal" "com.user.browser-schedule.weekend")
-  for label in "${labels[@]}"; do
-    launchctl unload ~/Library/LaunchAgents/${label}.plist 2>/dev/null || true
-  done
-  
-  # Create new agents
-  create_launchagent
-  
-  # Load the agents
-  local agent_dir="$HOME/Library/LaunchAgents"
-  if launchctl load "$agent_dir/com.user.browser-schedule.work.plist" && \
-     launchctl load "$agent_dir/com.user.browser-schedule.personal.plist" && \
-     launchctl load "$agent_dir/com.user.browser-schedule.weekend.plist"; then
-    echo "✓ Browser schedule LaunchAgent installed"
-    echo "Schedule:"
-    echo "  Work browser ($WORK_BROWSER): ${WORK_START_HOUR}:00 weekdays"
-    echo "  Personal browser ($PERSONAL_BROWSER): ${WORK_END_HOUR}:00 weekdays + 9:00 Saturday"
+  # Try to set as default browser
+  echo "Setting BrowserSchedule as default browser..."
+  if defaultbrowser browser-schedule; then
+    echo "✓ Set BrowserSchedule as default browser"
   else
-    echo "✗ Failed to load LaunchAgent" >&2
-    exit 1
+    echo "✗ Failed to set BrowserSchedule as default browser"
+    echo "Available browsers:"
+    defaultbrowser
   fi
-}
-
-uninstall_launchagent() {
-  echo "Uninstalling browser schedule LaunchAgent..."
-  
-  # Unload and remove agents
-  local labels=("com.user.browser-schedule.work" "com.user.browser-schedule.personal" "com.user.browser-schedule.weekend")
-  local agent_dir="$HOME/Library/LaunchAgents"
-  local removed_count=0
-  
-  for label in "${labels[@]}"; do
-    local plist_file="$agent_dir/${label}.plist"
-    if [[ -f "$plist_file" ]]; then
-      launchctl unload "$plist_file" 2>/dev/null || true
-      rm -f "$plist_file"
-      ((removed_count++))
-      echo "  ✓ Removed $label"
-    fi
-  done
-  
-  if [[ $removed_count -gt 0 ]]; then
-    echo "✓ Browser schedule LaunchAgent uninstalled ($removed_count agents removed)"
-  else
-    echo "ℹ No browser schedule LaunchAgent found"
-  fi
-}
-
-test_launchagent() {
-  echo "Testing LaunchAgent setup..."
-  
-  local labels=("com.user.browser-schedule.work" "com.user.browser-schedule.personal" "com.user.browser-schedule.weekend")
-  local agent_dir="$HOME/Library/LaunchAgents"
-  
-  for label in "${labels[@]}"; do
-    local plist_file="$agent_dir/${label}.plist"
-    if [[ -f "$plist_file" ]]; then
-      echo "  ✓ $label.plist exists"
-      if launchctl list | grep -q "$label"; then
-        echo "    ✓ Agent is loaded"
-        # Test by running the job manually
-        echo "    Testing job execution..."
-        if launchctl start "$label"; then
-          echo "    ✓ Job started successfully"
-        else
-          echo "    ✗ Failed to start job"
-        fi
-      else
-        echo "    ✗ Agent is not loaded"
-      fi
-    else
-      echo "  ✗ $label.plist not found"
-    fi
-  done
-  
-  echo ""
-  echo "To manually test a job:"
-  echo "  launchctl start com.user.browser-schedule.work"
-  echo "  launchctl start com.user.browser-schedule.personal"
 }
 
 show_status() {
-  local current_browser
-  current_browser=$(python3 -c "
-import subprocess
-import plistlib
-import sys
-
-try:
-    # Get current default browser
-    result = subprocess.run([
-        'defaults', 'read', 
-        'com.apple.LaunchServices/com.apple.launchservices.secure', 
-        'LSHandlers'
-    ], capture_output=True, text=True)
-    
-    # Parse and find HTML handler
-    for line in result.stdout.split('\n'):
-        if 'public.html' in line and 'LSHandlerRoleAll' in line:
-            if 'com.google.Chrome' in line:
-                print('Google Chrome')
-            elif 'io.zen-lang.zen' in line:
-                print('Zen Browser')
-            elif 'com.apple.Safari' in line:
-                print('Safari')
-            elif 'org.mozilla.firefox' in line:
-                print('Firefox')
-            break
-    else:
-        print('Unknown')
-except:
-    print('Unknown')
-" 2> /dev/null)
-
-  echo "Current default browser: ${current_browser:-Unknown}"
-  echo "Work browser: $WORK_BROWSER"
-  echo "Personal browser: $PERSONAL_BROWSER"
-  echo "Work hours: ${WORK_START_HOUR}:00-${WORK_END_HOUR}:00, days $WORK_DAYS"
+  echo "Browser Schedule Status:"
+  echo "  Work browser: $WORK_BROWSER"
+  echo "  Personal browser: $PERSONAL_BROWSER"
+  echo "  Work hours: ${WORK_START_HOUR}:00-${WORK_END_HOUR}:00, Monday-Friday"
 
   if is_work_time; then
-    echo "Status: Work time - should be using $WORK_BROWSER"
+    echo "  Current: Work time - using $WORK_BROWSER"
   else
-    echo "Status: Personal time - should be using $PERSONAL_BROWSER"
+    echo "  Current: Personal time - using $PERSONAL_BROWSER"
+  fi
+
+  if [[ -d "/Applications/BrowserSchedule.app" ]]; then
+    echo "  App: ✓ BrowserSchedule.app installed"
+  else
+    echo "  App: ✗ BrowserSchedule.app not found (run --setup)"
   fi
 }
 
+# Handle URL arguments (when called as browser)
+log_message "Script started with args: $*"
+log_message "Number of args: $#"
+
+for arg in "$@"; do
+  log_message "Processing arg: $arg"
+  if [[ "$arg" =~ ^https?:// ]]; then
+    log_message "Found URL argument: $arg"
+    open_url "$arg"
+    exit 0
+  fi
+done
+
+log_message "No URL arguments found in: $*"
+
 case "$1" in
-  --work)
-    set_default_browser "$WORK_BROWSER"
-    ;;
-  --personal)
-    set_default_browser "$PERSONAL_BROWSER"
-    ;;
-  --auto)
-    if is_work_time; then
-      set_default_browser "$WORK_BROWSER"
-    else
-      set_default_browser "$PERSONAL_BROWSER"
-    fi
+  --url)
+    log_message "--url flag called with: $2"
+    open_url "$2"
     ;;
   --setup)
-    setup_launchagent
+    create_browser_app
+    ;;
+  --update)
+    echo "Updating BrowserSchedule app with current settings..."
+    if [[ -d "/Applications/BrowserSchedule.app" ]]; then
+      sudo rm -rf "/Applications/BrowserSchedule.app" > /dev/null 2>&1
+    fi
+    create_browser_app
     ;;
   --uninstall)
-    uninstall_launchagent
-    ;;
-  --test)
-    test_launchagent
+    if [[ -d "/Applications/BrowserSchedule.app" ]]; then
+      sudo rm -rf "/Applications/BrowserSchedule.app"
+      echo "✓ BrowserSchedule.app removed"
+    else
+      echo "ℹ BrowserSchedule.app not found"
+    fi
     ;;
   --status)
     show_status
     ;;
   --help | -h)
     cat << EOF
-browser-schedule - Schedule-based default browser switcher
+browser-schedule - Smart browser proxy that routes URLs based on time
 
-Usage: $0 [OPTION]
+Usage: $0 [OPTION] [URL]
 
 Options:
-  --work      Switch to work browser ($WORK_BROWSER)
-  --personal  Switch to personal browser ($PERSONAL_BROWSER)
-  --auto      Switch based on current time
-  --setup     Install LaunchAgent schedule
-  --uninstall Uninstall LaunchAgent schedule
-  --test      Test LaunchAgent setup
-  --status    Show current status
-  --help      Show this help
+  --setup       Create BrowserSchedule app (set as default browser)
+  --update      Update app with current environment settings
+  --uninstall   Remove BrowserSchedule app
+  --status      Show current configuration and status
+  --help        Show this help
 
 Environment variables:
-  WORK_BROWSER      Work browser name (default: chrome)
-  PERSONAL_BROWSER  Personal browser name (default: zen)
+  WORK_BROWSER      Work browser name (default: Google Chrome)
+  PERSONAL_BROWSER  Personal browser name (default: Zen)
   WORK_START_HOUR   Work start hour (default: 9)
   WORK_END_HOUR     Work end hour (default: 18)
-  WORK_DAYS         Work days (default: 1-5 for Mon-Fri)
+
+How it works:
+1. Run --setup to create BrowserSchedule.app
+2. Set BrowserSchedule as default browser in System Settings
+3. All URLs automatically open in the right browser based on time
 
 Examples:
-  $0 --auto                    # Switch based on current time
-  $0 --setup                   # Install LaunchAgent schedule
-  $0 --test                    # Test LaunchAgent functionality
-  WORK_START_HOUR=8 $0 --auto  # Use 8am start time
+  $0 --setup                    # Create and install browser app
+  $0 --update                   # Update app with current settings
+  $0 --status                   # Check current configuration
+  $0 https://example.com        # Open URL in appropriate browser
+  WORK_START_HOUR=8 $0 --update # Update with custom work hours
 EOF
     ;;
   "")
-    # Default action - auto switch
-    if is_work_time; then
-      set_default_browser "$WORK_BROWSER"
-    else
-      set_default_browser "$PERSONAL_BROWSER"
-    fi
+    show_status
     ;;
   *)
-    echo "Unknown option: $1" >&2
-    echo "Use --help for usage information" >&2
-    exit 1
+    # Try to open as URL if it looks like one
+    if [[ "$1" =~ ^https?:// ]]; then
+      open_url "$1"
+    else
+      echo "Unknown option: $1" >&2
+      echo "Use --help for usage information" >&2
+      exit 1
+    fi
     ;;
 esac
