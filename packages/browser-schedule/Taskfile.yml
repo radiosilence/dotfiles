@@ -3,6 +3,7 @@ version: '3'
 tasks:
   build:
     desc: Build the Swift application
+    silent: true
     cmds:
       - swiftc -o browser-schedule-swift main.swift
     sources:
@@ -40,6 +41,7 @@ tasks:
   create-app-bundle:
     desc: Create macOS app bundle
     internal: true
+    silent: true
     cmds:
       - mkdir -p /Applications/BrowserSchedule.app/Contents/MacOS
       - |
@@ -106,16 +108,19 @@ tasks:
 
   clean:
     desc: Clean build artifacts
+    silent: true
     cmds:
       - rm -f browser-schedule-swift
 
   logs:
     desc: Show recent logs
+    silent: true
     cmds:
       - tail -20 /tmp/browser-schedule.log
 
   config:
     desc: Show current config
     deps: [build]
+    silent: true
     cmds:
       - ./browser-schedule-swift --config
