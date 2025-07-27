@@ -64,8 +64,8 @@
     },
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-thinking-latest"
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-thinking"
     }
   },
   "ui_font_size": 13,
@@ -192,6 +192,11 @@
         "enabledFeatures": {
           "diagnostics": false
         }
+      }
+    },
+    "steep": {
+      "initialization_options": {
+        "require_root_steepfile": false
       }
     },
     "vtsls": {
