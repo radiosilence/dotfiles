@@ -34,23 +34,25 @@ tasks:
     desc: Install the app bundle as default browser
     deps: [build]
     cmds:
-      - ~/.dotfiles/bin/browser-schedule --setup
+      - ./browser-schedule-go --install
+      - defaultbrowser browserschedule
 
   update:
     desc: Update the app bundle with current config
     deps: [build]
     cmds:
-      - ~/.dotfiles/bin/browser-schedule --update
+      - ./browser-schedule-go --update
 
   uninstall:
-    desc: Remove the app bundle
+    desc: Remove the app bundle and reset default browser
     cmds:
-      - ~/.dotfiles/bin/browser-schedule --uninstall
+      - defaultbrowser safari
+      - ./browser-schedule-go --uninstall
 
   status:
     desc: Show current status
     cmds:
-      - ~/.dotfiles/bin/browser-schedule --status
+      - ./browser-schedule-go --status
 
   clean:
     desc: Clean build artifacts
