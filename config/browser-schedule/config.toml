@@ -4,7 +4,7 @@ personal = "Zen"
 
 [urls]
 personal = ["reddit.com", "news.ycombinator.com"]
-work = ["atlassian.net", "meet.google.com", "figma.com"]
+work = ["atlassian.net", "meet.google.com", "figma.com", "mail.google.com"]
 
 [work_time]
 start = "9:00"
