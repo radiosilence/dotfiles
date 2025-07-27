@@ -1,8 +1,19 @@
 {
-  "work_browser": "Google Chrome",
-  "personal_browser": "Zen",
-  "work_start_hour": 9,
-  "work_end_hour": 18,
-  "work_days": "1-5",
-  "log_enabled": true
+  "browsers": {
+    "work": "Google Chrome",
+    "personal": "Zen"
+  },
+  "override_domains": {
+    "personal": ["reddit.com"],
+    "work": ["atlassian.net"]
+  },
+  "work_time": {
+    "start": "9:00",
+    "end": "18:00"
+  },
+  "work_days": {
+    "start": "Moasdasdn",
+    "end": "Fri"
+  },
+  "log_enabled": false
 }
