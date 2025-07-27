@@ -2,12 +2,14 @@ version: '3'
 
 tasks:
   build:
-    desc: Build the Swift application
+    desc: Build the Swift application with TOML support
     silent: true
     cmds:
-      - swiftc -o browser-schedule-swift main.swift
+      - swift build -c release
+      - cp .build/release/BrowserSchedule browser-schedule-swift
     sources:
       - main.swift
+      - Package.swift
     generates:
       - browser-schedule-swift
 
@@ -45,32 +47,32 @@ tasks:
     cmds:
       - mkdir -p ~/.config/browser-schedule
       - |
-        if [ ! -f ~/.config/browser-schedule/config.json ]; then
-          cat > ~/.config/browser-schedule/config.json << 'EOF'
-        {
-          "browsers": {
-            "work": "Google Chrome",
-            "personal": "Zen"
-          },
-          "override_domains": {
-            "personal": ["reddit.com"],
-            "work": ["mycompany.atlassian.net"]
-          },
-          "work_time": {
-            "start": "9:00",
-            "end": "18:00"
-          },
-          "work_days": {
-            "start": "Mon",
-            "end": "Fri"
-          },
-          "log_enabled": false
-        }
+        if [ ! -f ~/.config/browser-schedule/config.toml ]; then
+          cat > ~/.config/browser-schedule/config.toml << 'EOF'
+        [browsers]
+        work = "Google Chrome"
+        personal = "Zen"
+        
+        [urls]
+        personal = ["reddit.com"]
+        work = ["mycompany.atlassian.net"]
+        
+        [work_time]
+        start = "9:00"
+        end = "18:00"
+        
+        [work_days]
+        start = "Mon"
+        end = "Fri"
+        
+        # [log]
+        # enabled = false
         EOF
         fi
       - |
         cat > ~/.config/browser-schedule/.gitignore << 'EOF'
         *.log
+        config.local.toml
         EOF
 
   create-app-bundle:
@@ -142,10 +144,11 @@ tasks:
         fi
 
   clean:
-    desc: Clean build artifacts
+    desc: Clean build artifacts and dependencies
     silent: true
     cmds:
       - rm -f browser-schedule-swift
+      - swift package clean
 
   logs:
     desc: Show recent logs from unified logging

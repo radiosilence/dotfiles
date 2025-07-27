@@ -2,21 +2,22 @@ import AppKit
 import CoreServices
 import Foundation
 import os.log
+import TOMLKit
 
-// Configuration struct with native JSON parsing
+// Configuration struct with TOML parsing
 struct Config: Codable {
   let browsers: Browsers
-  let overrideDomains: OverrideDomains?
+  let urls: OverrideUrls?
   let workTime: WorkTime
   let workDays: WorkDays
-  let logEnabled: Bool
+  let log: Log?
   
   struct Browsers: Codable {
     let work: String
     let personal: String
   }
   
-  struct OverrideDomains: Codable {
+  struct OverrideUrls: Codable {
     let personal: [String]?
     let work: [String]?
   }
@@ -30,36 +31,42 @@ struct Config: Codable {
     let start: String
     let end: String
   }
+  
+  struct Log: Codable {
+    let enabled: Bool
+  }
 
   enum CodingKeys: String, CodingKey {
     case browsers
-    case overrideDomains = "override_domains"
+    case urls
     case workTime = "work_time"
     case workDays = "work_days"
-    case logEnabled = "log_enabled"
+    case log
   }
 
   init(
     browsers: Browsers = Browsers(work: "Google Chrome", personal: "Zen"),
-    overrideDomains: OverrideDomains? = nil,
+    urls: OverrideUrls? = nil,
     workTime: WorkTime = WorkTime(start: "9:00", end: "18:00"),
     workDays: WorkDays = WorkDays(start: "Mon", end: "Fri"),
-    logEnabled: Bool = false
+    log: Log? = nil
   ) {
     self.browsers = browsers
-    self.overrideDomains = overrideDomains
+    self.urls = urls
     self.workTime = workTime
     self.workDays = workDays
-    self.logEnabled = logEnabled
+    self.log = log
   }
 
   static func loadFromFile() -> Config {
     let homeDir = FileManager.default.homeDirectoryForCurrentUser
-    let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.json")
+    let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.toml")
+    let localConfigPath = homeDir.appendingPathComponent(".config/browser-schedule/config.local.toml")
 
-    guard let configData = try? Data(contentsOf: configPath) else {
+    // Load main config
+    guard let configData = try? String(contentsOf: configPath) else {
       let defaults = Config()
-      if defaults.logEnabled {
+      if isLoggingEnabled(defaults) {
         logger.info("Config file not found at \(configPath.path), using defaults")
       } else {
         print("Config file not found at \(configPath.path), using defaults")
@@ -68,17 +75,39 @@ struct Config: Codable {
     }
 
     do {
-      let config = try JSONDecoder().decode(Config.self, from: configData)
-      // Config loaded successfully
-      if config.logEnabled {
-        logger.info("Loaded config from \(configPath.path)")
+      let tomlTable = try TOMLTable(string: configData)
+      var config = try TOMLDecoder().decode(Config.self, from: tomlTable)
+      
+      // Try to load and merge local config
+      if let localConfigData = try? String(contentsOf: localConfigPath) {
+        do {
+          let localTomlTable = try TOMLTable(string: localConfigData)
+          let localConfig = try TOMLDecoder().decode(LocalConfig.self, from: localTomlTable)
+          config = mergeConfigs(base: config, local: localConfig)
+          if isLoggingEnabled(config) {
+            logger.info("Loaded config from \(configPath.path) and merged \(localConfigPath.path)")
+          } else {
+            print("Loaded config from \(configPath.path) and merged \(localConfigPath.path)")
+          }
+        } catch {
+          if isLoggingEnabled(config) {
+            logger.error("Error parsing local config file at \(localConfigPath.path): \(error.localizedDescription)")
+          } else {
+            print("Error parsing local config file at \(localConfigPath.path): \(error)")
+          }
+        }
       } else {
-        print("Loaded config from \(configPath.path)")
+        if isLoggingEnabled(config) {
+          logger.info("Loaded config from \(configPath.path)")
+        } else {
+          print("Loaded config from \(configPath.path)")
+        }
       }
+      
       return config
     } catch {
       let defaults = Config()
-      if defaults.logEnabled {
+      if isLoggingEnabled(defaults) {
         logger.error("Error parsing config file at \(configPath.path): \(error.localizedDescription)")
       } else {
         print("Error parsing config file at \(configPath.path): \(error), using defaults")
@@ -86,9 +115,52 @@ struct Config: Codable {
       return defaults
     }
   }
+  
+  static func mergeConfigs(base: Config, local: LocalConfig) -> Config {
+    // Merge override domains
+    var mergedPersonalDomains: [String] = []
+    var mergedWorkDomains: [String] = []
+    
+    // Add base config domains
+    if let baseOverrides = base.urls {
+      if let personal = baseOverrides.personal {
+        mergedPersonalDomains.append(contentsOf: personal)
+      }
+      if let work = baseOverrides.work {
+        mergedWorkDomains.append(contentsOf: work)
+      }
+    }
+    
+    // Add local config domains
+    if let localOverrides = local.urls {
+      if let personal = localOverrides.personal {
+        mergedPersonalDomains.append(contentsOf: personal)
+      }
+      if let work = localOverrides.work {
+        mergedWorkDomains.append(contentsOf: work)
+      }
+    }
+    
+    let mergedOverrides = OverrideUrls(
+      personal: mergedPersonalDomains.isEmpty ? nil : mergedPersonalDomains,
+      work: mergedWorkDomains.isEmpty ? nil : mergedWorkDomains
+    )
+    
+    return Config(
+      browsers: local.browsers ?? base.browsers, // Local takes precedence for browsers
+      urls: mergedOverrides,
+      workTime: local.workTime ?? base.workTime, // Local takes precedence for work time
+      workDays: local.workDays ?? base.workDays, // Local takes precedence for work days  
+      log: local.log ?? base.log // Local takes precedence for logging
+    )
+  }
 }
 
 let logger = Logger(subsystem: "com.radiosilence.browser-schedule", category: "main")
+
+func isLoggingEnabled(_ config: Config) -> Bool {
+  return config.log?.enabled ?? false
+}
 
 func parseTime(_ timeString: String) -> Int? {
   let components = timeString.split(separator: ":").map { String($0) }
@@ -176,7 +248,7 @@ func isWorkTime(config: Config) -> Bool {
 
   let shiftType = startHour < endHour ? "day" : "night"
   let dayCheckMsg = "\(shiftType) shift check: weekday=\(weekday), workDays=\(config.workDays.start)-\(config.workDays.end), hour=\(hour), workHours=\(config.workTime.start)-\(config.workTime.end), isWorkDay=\(isWorkDay), isWorkHour=\(isWorkHour)"
-  if config.logEnabled {
+  if isLoggingEnabled(config) {
     logger.debug("\(dayCheckMsg)")
   }
 
@@ -184,24 +256,27 @@ func isWorkTime(config: Config) -> Bool {
 }
 
 func getBrowserForURL(_ urlString: String, config: Config) -> String {
-  // Check domain overrides first
-  if let overrides = config.overrideDomains {
-    if let url = URL(string: urlString), let host = url.host {
-      // Check personal overrides
-      if let personalDomains = overrides.personal {
-        for domain in personalDomains {
-          if host.contains(domain) {
-            return config.browsers.personal
-          }
+  guard URL(string: urlString) != nil else {
+    // Fall back to time-based selection if URL parsing fails
+    return isWorkTime(config: config) ? config.browsers.work : config.browsers.personal
+  }
+  
+  // Check URL fragment overrides (already merged from config + local)
+  if let overrides = config.urls {
+    // Check personal overrides first
+    if let personalFragments = overrides.personal {
+      for fragment in personalFragments {
+        if urlString.contains(fragment) {
+          return config.browsers.personal
         }
       }
-      
-      // Check work overrides
-      if let workDomains = overrides.work {
-        for domain in workDomains {
-          if host.contains(domain) {
-            return config.browsers.work
-          }
+    }
+    
+    // Check work overrides
+    if let workFragments = overrides.work {
+      for fragment in workFragments {
+        if urlString.contains(fragment) {
+          return config.browsers.work
         }
       }
     }
@@ -217,7 +292,7 @@ func openURL(_ urlString: String, config: Config) {
   timeString.dateFormat = "HH:mm"
 
   let openMsg = "Opening \(urlString) in \(targetBrowser) (\(timeString.string(from: Date())))"
-  if config.logEnabled {
+  if isLoggingEnabled(config) {
     logger.info("\(openMsg)")
   } else {
     print(openMsg)
@@ -232,14 +307,14 @@ func openURL(_ urlString: String, config: Config) {
     task.waitUntilExit()
     if task.terminationStatus == 0 {
       let successMsg = "Successfully opened \(urlString) in \(targetBrowser)"
-      if config.logEnabled {
+      if isLoggingEnabled(config) {
         logger.info("\(successMsg)")
       } else {
         print(successMsg)
       }
     } else {
       let errorMsg = "Error opening \(urlString): exit code \(task.terminationStatus)"
-      if config.logEnabled {
+      if isLoggingEnabled(config) {
         logger.error("\(errorMsg)")
       } else {
         print(errorMsg)
@@ -247,7 +322,7 @@ func openURL(_ urlString: String, config: Config) {
     }
   } catch {
     let errorMsg = "Error opening \(urlString): \(error)"
-    if config.logEnabled {
+    if isLoggingEnabled(config) {
       logger.error("\(errorMsg)")
     } else {
       print(errorMsg)
@@ -260,13 +335,13 @@ class URLAppDelegate: NSObject, NSApplicationDelegate {
   let config = Config.loadFromFile()
 
   func applicationDidFinishLaunching(_ notification: Notification) {
-    if config.logEnabled {
+    if isLoggingEnabled(config) {
       logger.info("BrowserSchedule app finished launching and ready for URL events")
     }
 
     // Set up timeout to exit if no URLs received within 5 seconds
     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-      if self.config.logEnabled {
+      if isLoggingEnabled(self.config) {
         logger.info("Timeout reached (5s), no URLs received, exiting")
       }
       NSApplication.shared.terminate(nil)
@@ -274,19 +349,19 @@ class URLAppDelegate: NSObject, NSApplicationDelegate {
   }
 
   func application(_ application: NSApplication, open urls: [URL]) {
-    if config.logEnabled {
+    if isLoggingEnabled(config) {
       logger.info("Received \(urls.count) URLs from macOS via Swift delegate")
     }
 
     for url in urls {
       let urlString = url.absoluteString
-      if config.logEnabled {
+      if isLoggingEnabled(config) {
         logger.info("Processing URL from Swift delegate: \(urlString)")
       }
       openURL(urlString, config: config)
     }
 
-    if config.logEnabled {
+    if isLoggingEnabled(config) {
       logger.info("URLs processed via Swift delegate, exiting")
     }
     NSApplication.shared.terminate(nil)
@@ -311,7 +386,8 @@ if CommandLine.arguments.count > 1 {
     let shiftType = startHour < endHour ? "" : " (night shift)"
     print("  Work hours: \(config.workTime.start)-\(config.workTime.end)\(shiftType)")
     print("  Work days: \(config.workDays.start)-\(config.workDays.end)")
-    if let overrides = config.overrideDomains {
+    // Show merged domain overrides
+    if let overrides = config.urls {
       if let personal = overrides.personal, !personal.isEmpty {
         print("  Personal overrides: \(personal.joined(separator: ", "))")
       }
@@ -319,15 +395,21 @@ if CommandLine.arguments.count > 1 {
         print("  Work overrides: \(work.joined(separator: ", "))")
       }
     }
-    print("  Logging: \(config.logEnabled ? "enabled (unified logging)" : "disabled")")
-    if config.logEnabled {
+    
+    print("  Logging: \(isLoggingEnabled(config) ? "enabled (unified logging)" : "disabled")")
+    if isLoggingEnabled(config) {
       print(
         "  View logs: log show --predicate 'subsystem == \"com.radiosilence.browser-schedule\"' --last 1h"
       )
     }
+    
     let homeDir = FileManager.default.homeDirectoryForCurrentUser
-    let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.json")
+    let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.toml")
+    let localConfigPath = homeDir.appendingPathComponent(".config/browser-schedule/config.local.toml")
     print("  Config file: \(configPath.path)")
+    if FileManager.default.fileExists(atPath: localConfigPath.path) {
+      print("  Local config: \(localConfigPath.path) (merged)")
+    }
     
     if !validation.isValid {
       print("  ⚠️  Configuration errors:")
@@ -383,7 +465,7 @@ if CommandLine.arguments.count > 1 {
     // Check if it's a URL
     if arg.hasPrefix("http://") || arg.hasPrefix("https://") {
       let config = Config.loadFromFile()
-      if config.logEnabled {
+      if isLoggingEnabled(config) {
         logger.info("Received URL from macOS via command line: \(arg)")
       }
       openURL(arg, config: config)
@@ -394,7 +476,7 @@ if CommandLine.arguments.count > 1 {
 
 // Default behavior: run as app with URL event handling
 let config = Config.loadFromFile()
-if config.logEnabled {
+if isLoggingEnabled(config) {
   logger.info("Starting BrowserSchedule as native Swift app")
 }
 
@@ -403,3 +485,20 @@ let delegate = URLAppDelegate()
 app.delegate = delegate
 app.setActivationPolicy(.prohibited)  // Background app
 app.run()
+
+// Local config struct - all fields optional for partial overrides
+struct LocalConfig: Codable {
+  let browsers: Config.Browsers?
+  let urls: Config.OverrideUrls?
+  let workTime: Config.WorkTime?
+  let workDays: Config.WorkDays?
+  let log: Config.Log?
+  
+  enum CodingKeys: String, CodingKey {
+    case browsers
+    case urls
+    case workTime = "work_time"
+    case workDays = "work_days"
+    case log
+  }
+}

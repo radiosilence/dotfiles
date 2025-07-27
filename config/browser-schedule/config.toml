@@ -1,0 +1,19 @@
+[browsers]
+work = "Google Chrome"
+personal = "Zen"
+
+[urls]
+personal = ["reddit.com", "news.ycombinator.com"]
+work = ["atlassian.net", "meet.google.com"]
+
+[work_time]
+start = "9:00"
+end = "18:00"
+# Note: Inverse time ranges for night shifts are supported (e.g., start = "18:00", end = "9:00")
+
+[work_days]
+start = "Mon"
+end = "Fri"
+
+# [log]
+# enabled = false
