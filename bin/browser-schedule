@@ -13,8 +13,8 @@ WORK_DAYS="${WORK_DAYS:-1-5}" # Monday-Friday
 set_default_browser() {
   local browser="$1"
   
-  # Set as default browser using defaultbrowser
-  if defaultbrowser "$browser"; then
+  # Set as default browser using defaultbrowser (silently)
+  if defaultbrowser "$browser" >/dev/null 2>&1; then
     echo "✓ Set default browser to: $browser"
   else
     echo "✗ Failed to set default browser to: $browser" >&2
@@ -42,50 +42,283 @@ is_work_time() {
   [[ $current_hour -ge $WORK_START_HOUR && $current_hour -lt $WORK_END_HOUR ]]
 }
 
-generate_crontab() {
+
+create_launchagent() {
   local script_path
   script_path="$(realpath "$0")"
-
-  cat << EOF
-# Browser schedule crontab entries
-# Switch to work browser at start of work day
-0 $WORK_START_HOUR * * $WORK_DAYS $script_path --work
-
-# Switch to personal browser at end of work day
-0 $WORK_END_HOUR * * $WORK_DAYS $script_path --personal
-
-# Switch to personal browser on weekends (Saturday morning)
-0 9 * * 6 $script_path --personal
+  local agent_dir="$HOME/Library/LaunchAgents"
+  local work_plist="$agent_dir/com.user.browser-schedule.work.plist"
+  local personal_plist="$agent_dir/com.user.browser-schedule.personal.plist"
+  local weekend_plist="$agent_dir/com.user.browser-schedule.weekend.plist"
+  
+  # Create LaunchAgents directory if it doesn't exist
+  mkdir -p "$agent_dir"
+  
+  # Work browser switch
+  cat > "$work_plist" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.user.browser-schedule.work</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$script_path</string>
+    <string>--work</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Weekday</key>
+      <integer>1</integer>
+      <key>Hour</key>
+      <integer>$WORK_START_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>2</integer>
+      <key>Hour</key>
+      <integer>$WORK_START_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>3</integer>
+      <key>Hour</key>
+      <integer>$WORK_START_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>4</integer>
+      <key>Hour</key>
+      <integer>$WORK_START_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>5</integer>
+      <key>Hour</key>
+      <integer>$WORK_START_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+  </array>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/tmp/browser-schedule-work.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/browser-schedule-work.log</string>
+</dict>
+</plist>
 EOF
+
+  # Personal browser switch (end of work day)
+  cat > "$personal_plist" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.user.browser-schedule.personal</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$script_path</string>
+    <string>--personal</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Weekday</key>
+      <integer>1</integer>
+      <key>Hour</key>
+      <integer>$WORK_END_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>2</integer>
+      <key>Hour</key>
+      <integer>$WORK_END_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>3</integer>
+      <key>Hour</key>
+      <integer>$WORK_END_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>4</integer>
+      <key>Hour</key>
+      <integer>$WORK_END_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+    <dict>
+      <key>Weekday</key>
+      <integer>5</integer>
+      <key>Hour</key>
+      <integer>$WORK_END_HOUR</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+  </array>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/tmp/browser-schedule-personal.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/browser-schedule-personal.log</string>
+</dict>
+</plist>
+EOF
+
+  # Weekend switch
+  cat > "$weekend_plist" << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.user.browser-schedule.weekend</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$script_path</string>
+    <string>--personal</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key>
+    <integer>6</integer>
+    <key>Hour</key>
+    <integer>9</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/tmp/browser-schedule-weekend.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/browser-schedule-weekend.log</string>
+</dict>
+</plist>
+EOF
+
+  echo "✓ Created LaunchAgent plists"
 }
 
-setup_crontab() {
-  echo "Installing browser schedule crontab..."
+setup_launchagent() {
+  echo "Installing browser schedule LaunchAgent..."
   
-  # Get current crontab, remove existing browser-schedule entries, add new ones
-  local temp_cron
-  temp_cron=$(mktemp)
+  # Unload existing agents if they exist
+  local labels=("com.user.browser-schedule.work" "com.user.browser-schedule.personal" "com.user.browser-schedule.weekend")
+  for label in "${labels[@]}"; do
+    launchctl unload ~/Library/LaunchAgents/${label}.plist 2>/dev/null || true
+  done
   
-  # Get existing crontab, remove all browser-schedule related lines and clean up blank lines
-  crontab -l 2>/dev/null | grep -v -E "browser-schedule|Browser schedule crontab entries|Switch to work browser|Switch to personal browser" | sed '/^$/N;/^\n$/d' > "$temp_cron" || true
+  # Create new agents
+  create_launchagent
   
-  # Add our entries
-  echo "" >> "$temp_cron"
-  generate_crontab >> "$temp_cron"
-  
-  # Install the crontab
-  if crontab "$temp_cron"; then
-    echo "✓ Browser schedule crontab installed"
+  # Load the agents
+  local agent_dir="$HOME/Library/LaunchAgents"
+  if launchctl load "$agent_dir/com.user.browser-schedule.work.plist" && \
+     launchctl load "$agent_dir/com.user.browser-schedule.personal.plist" && \
+     launchctl load "$agent_dir/com.user.browser-schedule.weekend.plist"; then
+    echo "✓ Browser schedule LaunchAgent installed"
     echo "Schedule:"
-    echo "  Work browser ($WORK_BROWSER): ${WORK_START_HOUR}:00 on $WORK_DAYS"
-    echo "  Personal browser ($PERSONAL_BROWSER): ${WORK_END_HOUR}:00 on $WORK_DAYS + weekends"
+    echo "  Work browser ($WORK_BROWSER): ${WORK_START_HOUR}:00 weekdays"
+    echo "  Personal browser ($PERSONAL_BROWSER): ${WORK_END_HOUR}:00 weekdays + 9:00 Saturday"
   else
-    echo "✗ Failed to install crontab" >&2
-    rm -f "$temp_cron"
+    echo "✗ Failed to load LaunchAgent" >&2
     exit 1
   fi
+}
+
+uninstall_launchagent() {
+  echo "Uninstalling browser schedule LaunchAgent..."
   
-  rm -f "$temp_cron"
+  # Unload and remove agents
+  local labels=("com.user.browser-schedule.work" "com.user.browser-schedule.personal" "com.user.browser-schedule.weekend")
+  local agent_dir="$HOME/Library/LaunchAgents"
+  local removed_count=0
+  
+  for label in "${labels[@]}"; do
+    local plist_file="$agent_dir/${label}.plist"
+    if [[ -f "$plist_file" ]]; then
+      launchctl unload "$plist_file" 2>/dev/null || true
+      rm -f "$plist_file"
+      ((removed_count++))
+      echo "  ✓ Removed $label"
+    fi
+  done
+  
+  if [[ $removed_count -gt 0 ]]; then
+    echo "✓ Browser schedule LaunchAgent uninstalled ($removed_count agents removed)"
+  else
+    echo "ℹ No browser schedule LaunchAgent found"
+  fi
+}
+
+test_launchagent() {
+  echo "Testing LaunchAgent setup..."
+  
+  local labels=("com.user.browser-schedule.work" "com.user.browser-schedule.personal" "com.user.browser-schedule.weekend")
+  local agent_dir="$HOME/Library/LaunchAgents"
+  
+  for label in "${labels[@]}"; do
+    local plist_file="$agent_dir/${label}.plist"
+    if [[ -f "$plist_file" ]]; then
+      echo "  ✓ $label.plist exists"
+      if launchctl list | grep -q "$label"; then
+        echo "    ✓ Agent is loaded"
+        # Test by running the job manually
+        echo "    Testing job execution..."
+        if launchctl start "$label"; then
+          echo "    ✓ Job started successfully"
+        else
+          echo "    ✗ Failed to start job"
+        fi
+      else
+        echo "    ✗ Agent is not loaded"
+      fi
+    else
+      echo "  ✗ $label.plist not found"
+    fi
+  done
+  
+  echo ""
+  echo "To manually test a job:"
+  echo "  launchctl start com.user.browser-schedule.work"
+  echo "  launchctl start com.user.browser-schedule.personal"
 }
 
 show_status() {
@@ -147,11 +380,14 @@ case "$1" in
       set_default_browser "$PERSONAL_BROWSER"
     fi
     ;;
-  --crontab)
-    generate_crontab
-    ;;
   --setup)
-    setup_crontab
+    setup_launchagent
+    ;;
+  --uninstall)
+    uninstall_launchagent
+    ;;
+  --test)
+    test_launchagent
     ;;
   --status)
     show_status
@@ -166,8 +402,9 @@ Options:
   --work      Switch to work browser ($WORK_BROWSER)
   --personal  Switch to personal browser ($PERSONAL_BROWSER)
   --auto      Switch based on current time
-  --crontab   Generate crontab entries
-  --setup     Install crontab schedule
+  --setup     Install LaunchAgent schedule
+  --uninstall Uninstall LaunchAgent schedule
+  --test      Test LaunchAgent setup
   --status    Show current status
   --help      Show this help
 
@@ -180,7 +417,8 @@ Environment variables:
 
 Examples:
   $0 --auto                    # Switch based on current time
-  $0 --setup                   # Install cron schedule
+  $0 --setup                   # Install LaunchAgent schedule
+  $0 --test                    # Test LaunchAgent functionality
   WORK_START_HOUR=8 $0 --auto  # Use 8am start time
 EOF
     ;;
