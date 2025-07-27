@@ -134,12 +134,8 @@ struct ConfigValidation {
       errors.append("Work day range invalid: \(config.workDays.start) is after \(config.workDays.end)")
     }
     
-    // Validate time range makes sense
-    if let startHour = parseTime(config.workTime.start),
-       let endHour = parseTime(config.workTime.end),
-       startHour >= endHour {
-      errors.append("Work time range invalid: \(config.workTime.start) is not before \(config.workTime.end)")
-    }
+    // Note: We allow inverse time ranges for night shifts (e.g., 18:00-9:00)
+    // No validation needed for time range order
     
     return ConfigValidation(isValid: errors.isEmpty, errors: errors)
   }
@@ -167,17 +163,24 @@ func isWorkTime(config: Config) -> Bool {
   
   // Check if current day is within work days range
   let isWorkDay = weekday >= startWeekday && weekday <= endWeekday
+  
+  // Handle time ranges (including night shifts that span midnight)
+  let isWorkHour: Bool
+  if startHour < endHour {
+    // Normal day shift (e.g., 9:00-18:00)
+    isWorkHour = hour >= startHour && hour < endHour
+  } else {
+    // Night shift spanning midnight (e.g., 18:00-9:00)
+    isWorkHour = hour >= startHour || hour < endHour
+  }
 
-  let dayCheckMsg = "Day check: weekday=\(weekday), workDays=\(config.workDays.start)-\(config.workDays.end), isWorkDay=\(isWorkDay)"
+  let shiftType = startHour < endHour ? "day" : "night"
+  let dayCheckMsg = "\(shiftType) shift check: weekday=\(weekday), workDays=\(config.workDays.start)-\(config.workDays.end), hour=\(hour), workHours=\(config.workTime.start)-\(config.workTime.end), isWorkDay=\(isWorkDay), isWorkHour=\(isWorkHour)"
   if config.logEnabled {
     logger.debug("\(dayCheckMsg)")
   }
 
-  if !isWorkDay {
-    return false
-  }
-
-  return hour >= startHour && hour < endHour
+  return isWorkDay && isWorkHour
 }
 
 func getBrowserForURL(_ urlString: String, config: Config) -> String {
@@ -303,7 +306,10 @@ if CommandLine.arguments.count > 1 {
     print("Current configuration:")
     print("  Work browser: \(config.browsers.work)")
     print("  Personal browser: \(config.browsers.personal)")
-    print("  Work hours: \(config.workTime.start)-\(config.workTime.end)")
+    let startHour = parseTime(config.workTime.start) ?? 0
+    let endHour = parseTime(config.workTime.end) ?? 0
+    let shiftType = startHour < endHour ? "" : " (night shift)"
+    print("  Work hours: \(config.workTime.start)-\(config.workTime.end)\(shiftType)")
     print("  Work days: \(config.workDays.start)-\(config.workDays.end)")
     if let overrides = config.overrideDomains {
       if let personal = overrides.personal, !personal.isEmpty {

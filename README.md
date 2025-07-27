@@ -126,7 +126,8 @@ This creates `~/.config/browser-schedule/config.json` with default settings.
 ```
 
 - **Domain overrides**: Specific domains always open in the specified browser
-- **Work schedule**: Time and day ranges for automatic browser selection  
+- **Work schedule**: Time and day ranges for automatic browser selection
+- **Night shifts**: Inverse time ranges (e.g., "18:00"-"9:00") span midnight
 - **Logging**: Set `log_enabled: true` for unified logging
 
 **Commands:**
