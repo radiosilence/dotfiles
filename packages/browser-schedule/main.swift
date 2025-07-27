@@ -1,5 +1,3 @@
-#!/usr/bin/env swift
-
 import Foundation
 import AppKit
 import CoreServices
@@ -11,6 +9,7 @@ struct Config: Codable {
     let workStartHour: Int
     let workEndHour: Int
     let workDays: String
+    let logEnabled: Bool
     let logPath: String?
     
     enum CodingKeys: String, CodingKey {
@@ -19,15 +18,17 @@ struct Config: Codable {
         case workStartHour = "work_start_hour"
         case workEndHour = "work_end_hour"
         case workDays = "work_days"
+        case logEnabled = "log_enabled"
         case logPath = "log_path"
     }
     
-    init(workBrowser: String = "Google Chrome", personalBrowser: String = "Zen", workStartHour: Int = 9, workEndHour: Int = 18, workDays: String = "1-5", logPath: String? = nil) {
+    init(workBrowser: String = "Google Chrome", personalBrowser: String = "Zen", workStartHour: Int = 9, workEndHour: Int = 18, workDays: String = "1-5", logEnabled: Bool = false, logPath: String? = nil) {
         self.workBrowser = workBrowser
         self.personalBrowser = personalBrowser
         self.workStartHour = workStartHour
         self.workEndHour = workEndHour
         self.workDays = workDays
+        self.logEnabled = logEnabled
         self.logPath = logPath ?? {
             let homeDir = FileManager.default.homeDirectoryForCurrentUser
             return homeDir.appendingPathComponent(".config/browser-schedule/browser-schedule.log").path
@@ -51,7 +52,7 @@ struct Config: Codable {
                 let logPath = configPath.deletingLastPathComponent().appendingPathComponent("browser-schedule.log").path
                 config = Config(workBrowser: config.workBrowser, personalBrowser: config.personalBrowser, 
                               workStartHour: config.workStartHour, workEndHour: config.workEndHour, 
-                              workDays: config.workDays, logPath: logPath)
+                              workDays: config.workDays, logEnabled: config.logEnabled, logPath: logPath)
             }
             logMessage("Loaded config from \(configPath.path)", config: config)
             return config
@@ -68,8 +69,8 @@ func logMessage(_ message: String, config: Config? = nil) {
     timestamp.dateFormat = "yyyy/MM/dd HH:mm:ss"
     let logEntry = "[\(timestamp.string(from: Date()))] \(message)"
     
-    // Only write to log file if log_path is configured
-    if let logPath = config?.logPath {
+    // Only write to log file if logging is enabled and log_path is configured
+    if let config = config, config.logEnabled, let logPath = config.logPath {
         let logURL = URL(fileURLWithPath: logPath)
         if let data = (logEntry + "\n").data(using: .utf8) {
             if FileManager.default.fileExists(atPath: logURL.path) {
@@ -183,6 +184,10 @@ if CommandLine.arguments.count > 1 {
         print("  Personal browser: \(config.personalBrowser)")
         print("  Work hours: \(config.workStartHour):00-\(config.workEndHour):00")
         print("  Work days: \(config.workDays)")
+        print("  Logging: \(config.logEnabled ? "enabled" : "disabled")")
+        if config.logEnabled {
+            print("  Log file: \(config.logPath ?? "none")")
+        }
         let homeDir = FileManager.default.homeDirectoryForCurrentUser
         let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.json")
         print("  Config file: \(configPath.path)")
