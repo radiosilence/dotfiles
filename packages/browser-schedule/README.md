@@ -21,8 +21,8 @@ work = "Google Chrome"
 personal = "Zen"
 
 [urls]
-personal = ["reddit.com"]
-work = ["mycompany.atlassian.net"]
+personal = ["reddit.com", "news.ycombinator.com"]
+work = ["atlassian.net", "meet.google.com", "figma.com"]
 
 [work_time]
 start = "9:00"
