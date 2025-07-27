@@ -46,11 +46,12 @@ struct Config: Codable {
         
         do {
             var config = try JSONDecoder().decode(Config.self, from: configData)
-            // Handle empty log_path as nil
-            if let logPath = config.logPath, logPath.isEmpty {
+            // If no log_path specified or empty, default to next to config file
+            if config.logPath == nil || (config.logPath?.isEmpty == true) {
+                let logPath = configPath.deletingLastPathComponent().appendingPathComponent("browser-schedule.log").path
                 config = Config(workBrowser: config.workBrowser, personalBrowser: config.personalBrowser, 
                               workStartHour: config.workStartHour, workEndHour: config.workEndHour, 
-                              workDays: config.workDays, logPath: nil)
+                              workDays: config.workDays, logPath: logPath)
             }
             logMessage("Loaded config from \(configPath.path)", config: config)
             return config
