@@ -2,71 +2,74 @@ version: '3'
 
 tasks:
   build:
-    desc: Build the Go application
+    desc: Build the Swift application
     cmds:
-      - go mod tidy
-      - go build -o browser-schedule-go main.go
+      - swiftc -o browser-schedule-swift main.swift
     sources:
-      - main.go
-      - go.mod
-      - go.sum
+      - main.swift
     generates:
-      - browser-schedule-go
+      - browser-schedule-swift
 
   test:
     desc: Test the application with a URL
     deps: [build]
     cmds:
-      - ./browser-schedule-go http://test.com
-      - tail -5 ~/browser-schedule.log
+      - ./browser-schedule-swift http://test.com
+      - tail -5 /tmp/browser-schedule.log
 
   test-work:
-    desc: Test during work hours
-    deps: [build]
-    env:
-      WORK_START_HOUR: 0
-      WORK_END_HOUR: 23
+    desc: Test during work hours (simulate by checking current time)
+    deps: [build]  
     cmds:
-      - ./browser-schedule-go http://test-work.com
-      - tail -5 ~/browser-schedule.log
+      - ./browser-schedule-swift http://test-work.com
+      - tail -5 /tmp/browser-schedule.log
 
   install:
     desc: Install the app bundle as default browser
     deps: [build]
     cmds:
-      - ./browser-schedule-go --install
+      - ./browser-schedule-swift --install
       - defaultbrowser browserschedule
 
   update:
     desc: Update the app bundle with current config
     deps: [build]
     cmds:
-      - ./browser-schedule-go --update
+      - ./browser-schedule-swift --update
 
   uninstall:
     desc: Remove the app bundle and reset default browser
     cmds:
       - defaultbrowser safari
-      - ./browser-schedule-go --uninstall
+      - rm -rf /Applications/BrowserSchedule.app
 
   status:
-    desc: Show current status
+    desc: Show current status  
     cmds:
-      - ./browser-schedule-go --status
+      - |
+        if [ -d "/Applications/BrowserSchedule.app" ]; then
+          echo "Status: Installed"
+          if defaultbrowser | grep -q "browserschedule"; then
+            echo "  Default browser: ✓ Set as default"
+          else
+            echo "  Default browser: ✗ Not set as default"
+          fi
+        else
+          echo "Status: Not installed"
+        fi
 
   clean:
     desc: Clean build artifacts
     cmds:
-      - rm -f browser-schedule-go
-      - rm -f go.sum
+      - rm -f browser-schedule-swift
 
   logs:
     desc: Show recent logs
     cmds:
-      - tail -20 ~/browser-schedule.log
+      - tail -20 /tmp/browser-schedule.log
 
   config:
     desc: Show current config
     deps: [build]
     cmds:
-      - ./browser-schedule-go --config 2>/dev/null || echo "Config command not implemented yet"
+      - ./browser-schedule-swift --config
