@@ -105,16 +105,29 @@ This creates `~/.config/browser-schedule/config.json` with default settings.
 **Config:** Edit `~/.config/browser-schedule/config.json`:
 ```json
 {
-  "work_browser": "Google Chrome",
-  "personal_browser": "Zen",
-  "work_start_hour": 9,
-  "work_end_hour": 18,
-  "work_days": "1-5",
+  "browsers": {
+    "work": "Google Chrome",
+    "personal": "Zen"
+  },
+  "override_domains": {
+    "personal": ["reddit.com"],
+    "work": ["mycompany.atlassian.net"]
+  },
+  "work_time": {
+    "start": "9:00",
+    "end": "18:00"
+  },
+  "work_days": {
+    "start": "Mon",
+    "end": "Fri"
+  },
   "log_enabled": false
 }
 ```
 
-Set `"log_enabled": true` to enable logging to `browser-schedule.log`.
+- **Domain overrides**: Specific domains always open in the specified browser
+- **Work schedule**: Time and day ranges for automatic browser selection  
+- **Logging**: Set `log_enabled: true` for unified logging
 
 **Commands:**
 - `task status` - Check installation status
