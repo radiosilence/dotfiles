@@ -8,11 +8,11 @@
     "work": ["atlassian.net", "meet.google.com"]
   },
   "work_time": {
-    "start": "9:00",
+    "start": "9:30",
     "end": "18:00"
   },
   "work_days": {
-    "start": "Mon",
+    "start": "Sun",
     "end": "Fri"
   },
   "log_enabled": true
