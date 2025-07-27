@@ -15,6 +15,7 @@ This repository contains configuration files for:
 | Tool                | Description                        |
 | ------------------- | ---------------------------------- |
 | 🎧 **beets**        | Music library manager              |
+| 🌐 **browser-schedule** | Switch default browser by work hours |
 | 📧 **fastmail-cli** | Fastmail JMAP API client           |
 | 🐟 **fish**         | Friendly interactive shell         |
 | 🤖 **fish-ai**      | AI-powered shell assistant         |
@@ -88,6 +89,33 @@ fastmail-cli auth YOUR_API_TOKEN_HERE
 ```
 
 > 💡 **Note**: Get your API token from Fastmail Settings → Privacy & Security → Integrations.
+
+## 🌐 Browser Schedule
+
+Switch default browser based on work hours. Chrome during work, personal browser otherwise.
+
+**Setup:**
+```sh
+cd ~/.dotfiles/packages/browser-schedule
+task install
+```
+
+**Config:** Edit `config.json`:
+```json
+{
+  "work_browser": "Google Chrome",
+  "personal_browser": "Zen",
+  "work_start_hour": 9,
+  "work_end_hour": 18,
+  "work_days": "1-5",
+  "log_path": "/tmp/browser-schedule.log"
+}
+```
+
+**Commands:**
+- `task status` - Check installation status
+- `task config` - Show current config
+- `task logs` - View activity logs
 
 ---
 

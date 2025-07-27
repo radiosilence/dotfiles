@@ -28,19 +28,64 @@ tasks:
     desc: Install the app bundle as default browser
     deps: [build]
     cmds:
-      - ./browser-schedule-swift --install
-      - defaultbrowser browserschedule
+      - task: create-app-bundle
+      - /Applications/BrowserSchedule.app/Contents/MacOS/browser-schedule --set-default
 
   update:
     desc: Update the app bundle with current config
     deps: [build]
     cmds:
-      - ./browser-schedule-swift --update
+      - task: create-app-bundle
+
+  create-app-bundle:
+    desc: Create macOS app bundle
+    internal: true
+    cmds:
+      - mkdir -p /Applications/BrowserSchedule.app/Contents/MacOS
+      - |
+        cat > /Applications/BrowserSchedule.app/Contents/Info.plist << 'EOF'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+        	<key>CFBundleExecutable</key>
+        	<string>browser-schedule</string>
+        	<key>CFBundleIdentifier</key>
+        	<string>com.example.browserschedule</string>
+        	<key>CFBundleName</key>
+        	<string>BrowserSchedule</string>
+        	<key>CFBundleVersion</key>
+        	<string>1.0</string>
+        	<key>CFBundlePackageType</key>
+        	<string>APPL</string>
+        	<key>LSUIElement</key>
+        	<true/>
+        	<key>CFBundleURLTypes</key>
+        	<array>
+        		<dict>
+        			<key>CFBundleURLName</key>
+        			<string>Web site URL</string>
+        			<key>CFBundleURLSchemes</key>
+        			<array>
+        				<string>http</string>
+        				<string>https</string>
+        			</array>
+        			<key>LSHandlerRank</key>
+        			<string>Owner</string>
+        		</dict>
+        	</array>
+        </dict>
+        </plist>
+        EOF
+      - cp browser-schedule-swift /Applications/BrowserSchedule.app/Contents/MacOS/browser-schedule
+      - chmod +x /Applications/BrowserSchedule.app/Contents/MacOS/browser-schedule
 
   uninstall:
     desc: Remove the app bundle and reset default browser
     cmds:
-      - defaultbrowser safari
+      - |
+        osascript -e 'tell application "System Preferences" to reveal anchor "defaultbrowser" of pane "com.apple.preference.general"'
+        echo "Please manually set default browser in System Preferences (opened for you)"
       - rm -rf /Applications/BrowserSchedule.app
 
   status:
@@ -49,10 +94,11 @@ tasks:
       - |
         if [ -d "/Applications/BrowserSchedule.app" ]; then
           echo "Status: Installed"
-          if defaultbrowser | grep -q "browserschedule"; then
-            echo "  Default browser: ✓ Set as default"
+          # Check if registered as URL handler
+          if /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -dump | grep -q "com.example.browserschedule.*http"; then
+            echo "  Default browser: ✓ Registered for HTTP URLs"
           else
-            echo "  Default browser: ✗ Not set as default"
+            echo "  Default browser: ✗ Not registered as URL handler"
           fi
         else
           echo "Status: Not installed"

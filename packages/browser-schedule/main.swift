@@ -2,96 +2,86 @@
 
 import Foundation
 import AppKit
+import CoreServices
 
-// Configuration struct matching the Go version
-struct Config {
+// Configuration struct with native JSON parsing
+struct Config: Codable {
     let workBrowser: String
     let personalBrowser: String
     let workStartHour: Int
     let workEndHour: Int
     let workDays: String
+    let logPath: String?
     
-    init(workBrowser: String = "Google Chrome", personalBrowser: String = "Zen", workStartHour: Int = 9, workEndHour: Int = 18, workDays: String = "1-5") {
+    enum CodingKeys: String, CodingKey {
+        case workBrowser = "work_browser"
+        case personalBrowser = "personal_browser"
+        case workStartHour = "work_start_hour"
+        case workEndHour = "work_end_hour"
+        case workDays = "work_days"
+        case logPath = "log_path"
+    }
+    
+    init(workBrowser: String = "Google Chrome", personalBrowser: String = "Zen", workStartHour: Int = 9, workEndHour: Int = 18, workDays: String = "1-5", logPath: String? = "/tmp/browser-schedule.log") {
         self.workBrowser = workBrowser
         self.personalBrowser = personalBrowser
         self.workStartHour = workStartHour
         self.workEndHour = workEndHour
         self.workDays = workDays
+        self.logPath = logPath
     }
     
     static func loadFromFile() -> Config {
-        // Start with defaults
-        var workBrowser = "Google Chrome"
-        var personalBrowser = "Zen"
-        var workStartHour = 9
-        var workEndHour = 18
-        var workDays = "1-5"
+        let defaults = Config()
         
         // Try to read from config file
         let homeDir = FileManager.default.homeDirectoryForCurrentUser
-        let configPath = homeDir.appendingPathComponent(".dotfiles/packages/browser-schedule/config.yaml")
+        let configPath = homeDir.appendingPathComponent(".dotfiles/packages/browser-schedule/config.json")
         
-        if let configData = try? Data(contentsOf: configPath),
-           let configString = String(data: configData, encoding: .utf8) {
-            // Simple YAML parsing for our specific format
-            let lines = configString.components(separatedBy: .newlines)
-            for line in lines {
-                let parts = line.components(separatedBy: ": ")
-                if parts.count == 2 {
-                    let key = parts[0].trimmingCharacters(in: .whitespaces)
-                    let rawValue = parts[1].trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "")
-                    // Remove comments (everything after #)
-                    let value = rawValue.components(separatedBy: "#")[0].trimmingCharacters(in: .whitespacesAndNewlines)
-                    
-                    switch key {
-                    case "work_browser":
-                        workBrowser = value
-                    case "personal_browser":
-                        personalBrowser = value
-                    case "work_start_hour":
-                        if let hour = Int(value) {
-                            workStartHour = hour
-                        }
-                    case "work_end_hour":
-                        if let hour = Int(value) {
-                            workEndHour = hour
-                        }
-                    case "work_days":
-                        workDays = value
-                    default:
-                        break
-                    }
-                }
-            }
-            logMessage("Loaded config from \(configPath.path)")
-        } else {
-            logMessage("Config file not found at \(configPath.path), using defaults")
+        guard let configData = try? Data(contentsOf: configPath) else {
+            logMessage("Config file not found at \(configPath.path), using defaults", config: defaults)
+            return defaults
         }
         
-        return Config(workBrowser: workBrowser, personalBrowser: personalBrowser, workStartHour: workStartHour, workEndHour: workEndHour, workDays: workDays)
+        do {
+            var config = try JSONDecoder().decode(Config.self, from: configData)
+            // Handle empty log_path as nil
+            if let logPath = config.logPath, logPath.isEmpty {
+                config = Config(workBrowser: config.workBrowser, personalBrowser: config.personalBrowser, 
+                              workStartHour: config.workStartHour, workEndHour: config.workEndHour, 
+                              workDays: config.workDays, logPath: nil)
+            }
+            logMessage("Loaded config from \(configPath.path)", config: config)
+            return config
+        } catch {
+            logMessage("Error parsing config file at \(configPath.path): \(error), using defaults", config: defaults)
+            return defaults
+        }
     }
 }
 
-func logMessage(_ message: String) {
+func logMessage(_ message: String, config: Config? = nil) {
     let timestamp = DateFormatter()
     timestamp.dateFormat = "yyyy/MM/dd HH:mm:ss"
     let logEntry = "[\(timestamp.string(from: Date()))] \(message)"
     
-    // Write to log file
-    let logURL = URL(fileURLWithPath: "/tmp/browser-schedule.log")
-    if let data = (logEntry + "\n").data(using: .utf8) {
-        if FileManager.default.fileExists(atPath: logURL.path) {
-            if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-                fileHandle.seekToEndOfFile()
-                fileHandle.write(data)
-                fileHandle.closeFile()
+    // Only write to log file if log_path is configured
+    if let logPath = config?.logPath {
+        let logURL = URL(fileURLWithPath: logPath)
+        if let data = (logEntry + "\n").data(using: .utf8) {
+            if FileManager.default.fileExists(atPath: logURL.path) {
+                if let fileHandle = try? FileHandle(forWritingTo: logURL) {
+                    fileHandle.seekToEndOfFile()
+                    fileHandle.write(data)
+                    fileHandle.closeFile()
+                }
+            } else {
+                try? data.write(to: logURL)
             }
-        } else {
-            try? data.write(to: logURL)
         }
     }
     
-    // Also print to stdout
+    // Always print to stdout for command line usage
     print(logEntry)
 }
 
@@ -115,7 +105,7 @@ func isWorkTime(config: Config) -> Bool {
         isWorkDay = cronWeekday >= 1 && cronWeekday <= 5
     }
     
-    logMessage("Day check: weekday=\(cronWeekday), workDays=\(config.workDays), isWorkDay=\(isWorkDay)")
+    logMessage("Day check: weekday=\(cronWeekday), workDays=\(config.workDays), isWorkDay=\(isWorkDay)", config: config)
     
     if !isWorkDay {
         return false
@@ -129,7 +119,7 @@ func openURL(_ urlString: String, config: Config) {
     let timeString = DateFormatter()
     timeString.dateFormat = "HH:mm"
     
-    logMessage("Opening \(urlString) in \(targetBrowser) (\(timeString.string(from: Date())))")
+    logMessage("Opening \(urlString) in \(targetBrowser) (\(timeString.string(from: Date())))", config: config)
     
     let task = Process()
     task.launchPath = "/usr/bin/open"
@@ -139,101 +129,40 @@ func openURL(_ urlString: String, config: Config) {
         try task.run()
         task.waitUntilExit()
         if task.terminationStatus == 0 {
-            logMessage("Successfully opened \(urlString) in \(targetBrowser)")
+            logMessage("Successfully opened \(urlString) in \(targetBrowser)", config: config)
         } else {
-            logMessage("Error opening \(urlString): exit code \(task.terminationStatus)")
+            logMessage("Error opening \(urlString): exit code \(task.terminationStatus)", config: config)
         }
     } catch {
-        logMessage("Error opening \(urlString): \(error)")
+        logMessage("Error opening \(urlString): \(error)", config: config)
     }
 }
 
-func createAppBundle() throws {
-    let appDir = "/Applications/BrowserSchedule.app"
-    let contentsDir = "\(appDir)/Contents"
-    let macosDir = "\(contentsDir)/MacOS"
-    
-    // Create directories
-    try FileManager.default.createDirectory(atPath: macosDir, withIntermediateDirectories: true, attributes: nil)
-    
-    // Create Info.plist
-    let infoPlist = """
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CFBundleExecutable</key>
-	<string>browser-schedule</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.example.browserschedule</string>
-	<key>CFBundleName</key>
-	<string>BrowserSchedule</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>LSUIElement</key>
-	<true/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>Web site URL</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>http</string>
-				<string>https</string>
-			</array>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-		</dict>
-	</array>
-</dict>
-</plist>
-"""
-    
-    try infoPlist.write(toFile: "\(contentsDir)/Info.plist", atomically: true, encoding: .utf8)
-    
-    // Copy the current Swift binary to the app bundle
-    let homeDir = FileManager.default.homeDirectoryForCurrentUser.path
-    let swiftBinary = "\(homeDir)/.dotfiles/packages/browser-schedule/browser-schedule-swift"
-    let execPath = "\(macosDir)/browser-schedule"
-    
-    // Remove existing file if it exists
-    if FileManager.default.fileExists(atPath: execPath) {
-        try FileManager.default.removeItem(atPath: execPath)
-    }
-    
-    try FileManager.default.copyItem(atPath: swiftBinary, toPath: execPath)
-    
-    // Make it executable
-    try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: execPath)
-}
 
 // Custom Application Delegate
 class URLAppDelegate: NSObject, NSApplicationDelegate {
     let config = Config.loadFromFile()
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        logMessage("BrowserSchedule app finished launching and ready for URL events")
+        logMessage("BrowserSchedule app finished launching and ready for URL events", config: config)
         
         // Set up timeout to exit if no URLs received within 5 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            logMessage("Timeout reached (5s), no URLs received, exiting")
+            logMessage("Timeout reached (5s), no URLs received, exiting", config: self.config)
             NSApplication.shared.terminate(nil)
         }
     }
     
     func application(_ application: NSApplication, open urls: [URL]) {
-        logMessage("Received \(urls.count) URLs from macOS via Swift delegate")
+        logMessage("Received \(urls.count) URLs from macOS via Swift delegate", config: config)
         
         for url in urls {
             let urlString = url.absoluteString
-            logMessage("Processing URL from Swift delegate: \(urlString)")
+            logMessage("Processing URL from Swift delegate: \(urlString)", config: config)
             openURL(urlString, config: config)
         }
         
-        logMessage("URLs processed via Swift delegate, exiting")
+        logMessage("URLs processed via Swift delegate, exiting", config: config)
         NSApplication.shared.terminate(nil)
     }
 }
@@ -252,7 +181,7 @@ if CommandLine.arguments.count > 1 {
         print("  Work hours: \(config.workStartHour):00-\(config.workEndHour):00")
         print("  Work days: \(config.workDays)")
         let homeDir = FileManager.default.homeDirectoryForCurrentUser
-        print("  Config file: \(homeDir.appendingPathComponent(".dotfiles/packages/browser-schedule/config.yaml").path)")
+        print("  Config file: \(homeDir.appendingPathComponent(".dotfiles/packages/browser-schedule/config.json").path)")
         if isWorkTime(config: config) {
             print("  Current: Work time - using \(config.workBrowser)")
         } else {
@@ -260,22 +189,45 @@ if CommandLine.arguments.count > 1 {
         }
         exit(0)
         
-    case "--install", "--update":
-        print("Creating app bundle...")
+    case "--set-default":
+        let bundleId = "com.example.browserschedule"
+        
+        // Register the app bundle first
+        let registerTask = Process()
+        registerTask.launchPath = "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
+        registerTask.arguments = ["-f", "/Applications/BrowserSchedule.app"]
+        
         do {
-            try createAppBundle()
-            print("App bundle created successfully at /Applications/BrowserSchedule.app")
+            try registerTask.run()
+            registerTask.waitUntilExit()
+            print("Registered app bundle with Launch Services")
         } catch {
-            print("Error creating app bundle: \(error)")
-            exit(1)
+            print("Warning: Could not register app bundle: \(error)")
         }
+        
+        // Set as default for http and https
+        let httpStatus = LSSetDefaultHandlerForURLScheme("http" as CFString, bundleId as CFString)
+        let httpsStatus = LSSetDefaultHandlerForURLScheme("https" as CFString, bundleId as CFString)
+        
+        if httpStatus == noErr && httpsStatus == noErr {
+            print("Successfully set BrowserSchedule as default browser")
+        } else {
+            print("Setting default browser requires user consent.")
+            print("If prompted, please allow BrowserSchedule to be set as default browser.")
+            print("HTTP handler status: \(httpStatus), HTTPS handler status: \(httpsStatus)")
+        }
+        
         exit(0)
+        
+    case "--install", "--update":
+        print("Use 'task install' or 'task update' to manage app bundle")
+        exit(1)
         
     default:
         // Check if it's a URL
         if arg.hasPrefix("http://") || arg.hasPrefix("https://") {
             let config = Config.loadFromFile()
-            logMessage("Received URL from macOS via command line: \(arg)")
+            logMessage("Received URL from macOS via command line: \(arg)", config: config)
             openURL(arg, config: config)
             exit(0)
         }
@@ -283,7 +235,8 @@ if CommandLine.arguments.count > 1 {
 }
 
 // Default behavior: run as app with URL event handling
-logMessage("Starting BrowserSchedule as native Swift app")
+let config = Config.loadFromFile()
+logMessage("Starting BrowserSchedule as native Swift app", config: config)
 
 let app = NSApplication.shared
 let delegate = URLAppDelegate()
