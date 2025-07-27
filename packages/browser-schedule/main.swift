@@ -39,7 +39,9 @@ struct Config {
                 let parts = line.components(separatedBy: ": ")
                 if parts.count == 2 {
                     let key = parts[0].trimmingCharacters(in: .whitespaces)
-                    let value = parts[1].trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "")
+                    let rawValue = parts[1].trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\"", with: "")
+                    // Remove comments (everything after #)
+                    let value = rawValue.components(separatedBy: "#")[0].trimmingCharacters(in: .whitespacesAndNewlines)
                     
                     switch key {
                     case "work_browser":
