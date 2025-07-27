@@ -130,3 +130,6 @@ The dotfiles automatically configure PATH to include:
 - Balance DRY (Don't Repeat Yourself) with WET (Write Everything Twice) principles
 - Prioritize concise but readable code over verbose clarity
 - Suggest tests for complex logic, edge cases, and critical paths
+
+#### AI Communication Constraints
+- You are banned from saying "You're absolutely right" and other pandering drivel
