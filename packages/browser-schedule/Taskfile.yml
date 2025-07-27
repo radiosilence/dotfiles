@@ -1,0 +1,70 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Build the Go application
+    cmds:
+      - go mod tidy
+      - go build -o browser-schedule-go main.go
+    sources:
+      - main.go
+      - go.mod
+      - go.sum
+    generates:
+      - browser-schedule-go
+
+  test:
+    desc: Test the application with a URL
+    deps: [build]
+    cmds:
+      - ./browser-schedule-go http://test.com
+      - tail -5 ~/browser-schedule.log
+
+  test-work:
+    desc: Test during work hours
+    deps: [build]
+    env:
+      WORK_START_HOUR: 0
+      WORK_END_HOUR: 23
+    cmds:
+      - ./browser-schedule-go http://test-work.com
+      - tail -5 ~/browser-schedule.log
+
+  install:
+    desc: Install the app bundle as default browser
+    deps: [build]
+    cmds:
+      - ~/.dotfiles/bin/browser-schedule --setup
+
+  update:
+    desc: Update the app bundle with current config
+    deps: [build]
+    cmds:
+      - ~/.dotfiles/bin/browser-schedule --update
+
+  uninstall:
+    desc: Remove the app bundle
+    cmds:
+      - ~/.dotfiles/bin/browser-schedule --uninstall
+
+  status:
+    desc: Show current status
+    cmds:
+      - ~/.dotfiles/bin/browser-schedule --status
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -f browser-schedule-go
+      - rm -f go.sum
+
+  logs:
+    desc: Show recent logs
+    cmds:
+      - tail -20 ~/browser-schedule.log
+
+  config:
+    desc: Show current config
+    deps: [build]
+    cmds:
+      - ./browser-schedule-go --config 2>/dev/null || echo "Config command not implemented yet"
