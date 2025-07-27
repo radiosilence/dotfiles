@@ -77,7 +77,7 @@ tasks:
         	<key>CFBundleExecutable</key>
         	<string>browser-schedule</string>
         	<key>CFBundleIdentifier</key>
-        	<string>com.example.browserschedule</string>
+        	<string>com.radiosilence.browser-schedule</string>
         	<key>CFBundleName</key>
         	<string>BrowserSchedule</string>
         	<key>CFBundleVersion</key>
@@ -137,17 +137,10 @@ tasks:
       - rm -f browser-schedule-swift
 
   logs:
-    desc: Show recent logs
+    desc: Show recent logs from unified logging
     silent: true
     cmds:
-      - |
-        if [ -f ~/.config/browser-schedule/browser-schedule.log ]; then
-          tail -20 ~/.config/browser-schedule/browser-schedule.log
-        elif [ -f /tmp/browser-schedule.log ]; then
-          tail -20 /tmp/browser-schedule.log
-        else
-          echo "No log file found"
-        fi
+      - log show --predicate 'subsystem == "com.radiosilence.browser-schedule"' --last 30m --style compact
 
   config:
     desc: Show current config
