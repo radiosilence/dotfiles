@@ -11,34 +11,36 @@ ITEM_NAME="${OP_SUDO_ITEM:-sudo-${USERNAME}@${HOSTNAME}}"
 setup_entry() {
   echo "Setting up 1Password entry: $ITEM_NAME"
   echo -n "Enter sudo password for $USERNAME: "
-  read -s password
+  read -rs password
   echo
 
   # Check if entry exists
-  if op item get "$ITEM_NAME" >/dev/null 2>&1; then
+  if op item get "$ITEM_NAME" > /dev/null 2>&1; then
     echo "Entry exists, updating password..."
-    op item edit "$ITEM_NAME" password="$password"
-    action="Updated"
+    if op item edit "$ITEM_NAME" password="$password"; then
+      echo "✓ Updated 1Password entry: $ITEM_NAME"
+    else
+      echo "✗ Failed to update 1Password entry" >&2
+      exit 1
+    fi
   else
     echo "Creating new entry..."
-    op item create \
+    if op item create \
       --category=password \
       --title="$ITEM_NAME" \
       --vault="${OP_VAULT:-Personal}" \
       password="$password" \
       --tags="sudo,system" \
       username="$USERNAME" \
-      --url="sudo://$HOSTNAME"
-    action="Created"
+      --url="sudo://$HOSTNAME"; then
+      echo "✓ Created 1Password entry: $ITEM_NAME"
+    else
+      echo "✗ Failed to create 1Password entry" >&2
+      exit 1
+    fi
   fi
 
-  if [[ $? -eq 0 ]]; then
-    echo "✓ $action 1Password entry: $ITEM_NAME"
-    echo "Set OP_SUDO_ITEM=$ITEM_NAME to override default naming"
-  else
-    echo "✗ Failed to $action 1Password entry" >&2
-    exit 1
-  fi
+  echo "Set OP_SUDO_ITEM=$ITEM_NAME to override default naming"
 }
 
 # Handle --setup flag
@@ -48,4 +50,4 @@ if [[ "$1" == "--setup" ]]; then
 fi
 
 # Get password from 1Password
-op item get "$ITEM_NAME" --fields password --reveal 2>/dev/null
+op item get "$ITEM_NAME" --fields password --reveal 2> /dev/null
