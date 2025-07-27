@@ -110,9 +110,11 @@ This creates `~/.config/browser-schedule/config.json` with default settings.
   "work_start_hour": 9,
   "work_end_hour": 18,
   "work_days": "1-5",
-  "log_path": "~/.config/browser-schedule/browser-schedule.log"
+  "log_enabled": false
 }
 ```
+
+Set `"log_enabled": true` to enable logging to `browser-schedule.log`.
 
 **Commands:**
 - `task status` - Check installation status
