@@ -75,65 +75,13 @@ This sets up AI-powered shell assistance with:
 
 > 💡 **Note**: AI features require an Anthropic API key.
 
-**📧 Install Fastmail CLI (Optional):**
+## Package Documentation
 
-```sh
-brew tap radiosilence/dotfiles https://github.com/radiosilence/dotfiles.git
-brew install fastmail-cli
-```
+Individual packages have their own documentation:
 
-Then authenticate with your Fastmail API token:
-
-```sh
-fastmail-cli auth YOUR_API_TOKEN_HERE
-```
-
-> 💡 **Note**: Get your API token from Fastmail Settings → Privacy & Security → Integrations.
-
-## 🌐 Browser Schedule
-
-Switch default browser based on work hours. Chrome during work, personal browser otherwise.
-
-**Setup:**
-```sh
-cd ~/.dotfiles/packages/browser-schedule
-task install
-```
-
-This creates `~/.config/browser-schedule/config.toml` with default settings.
-
-**Config:** Edit `~/.config/browser-schedule/config.toml`:
-```toml
-[browsers]
-work = "Google Chrome"
-personal = "Zen"
-
-[urls]
-personal = ["reddit.com"]
-work = ["mycompany.atlassian.net"]
-
-[work_time]
-start = "9:00"
-end = "18:00"
-
-[work_days]
-start = "Mon"
-end = "Fri"
-
-# [log]
-# enabled = false
-```
-
-- **URL overrides**: Specific URL fragments always open in the specified browser
-- **Private overrides**: Create `config.local.toml` with same format (merged with main config)
-- **Work schedule**: Time and day ranges for automatic browser selection
-- **Night shifts**: Inverse time ranges (e.g., "18:00"-"9:00") span midnight
-- **Logging**: Add `[log]` section with `enabled = true` for unified logging
-
-**Commands:**
-- `task status` - Check installation status
-- `task config` - Show current config
-- `task logs` - View activity logs
+- **[📧 Fastmail CLI](packages/fastmail-cli/README.md)** - Command-line interface for Fastmail JMAP API
+- **[🌐 Browser Schedule](packages/browser-schedule/README.md)** - Switch default browser by work hours  
+- **[😴 Sleep Report](packages/sleep-report/README.md)** - macOS sleep health analyzer
 
 ---
 
