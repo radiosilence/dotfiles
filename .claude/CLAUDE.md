@@ -118,6 +118,10 @@ The dotfiles automatically configure PATH to include:
 - Avoid marketing language and feature promotion
 - Focus on technical insights not obvious from code skimming
 - Omit trivial breakdowns of obvious functionality
+- **Always update the docs and readme after doing any changes**
+  - Style should be concise and non-salesy
+  - Explain the WHY not the WHAT (unless brief)
+  - Do not go into breaking down internals or overdocumenting minor things
 
 #### Code Style Preferences
 - Avoid building unnecessary helper functions/abstractions
