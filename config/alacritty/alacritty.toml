@@ -1,0 +1,139 @@
+# Alacritty configuration that emulates WezTerm setup
+
+# Font configuration
+[font]
+size = 13.0
+
+[font.normal]
+family = "GeistMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "GeistMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "GeistMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "Geist Mono"
+style = "Bold Italic"
+
+# Window configuration
+[window]
+opacity = 0.85
+blur = true
+decorations = "full"
+startup_mode = "Windowed"
+
+[window.dimensions]
+columns = 160
+lines = 64
+
+[window.padding]
+x = 2
+y = 2
+
+# Colors (matching WezTerm theme)
+[colors]
+# Primary colors
+[colors.primary]
+background = "#2d2a2e"
+foreground = "#fcfcfa"
+
+# Cursor colors
+[colors.cursor]
+text = "#000000"
+cursor = "#c1c0c0"
+
+# Selection colors
+[colors.selection]
+text = "#fcfcfa"
+background = "#5b595c"
+
+# Normal colors
+[colors.normal]
+black = "#4d4a4e"
+red = "#ff6188"
+green = "#a9dc76"
+yellow = "#ffd866"
+blue = "#fc9867"
+magenta = "#ab9df2"
+cyan = "#78dce8"
+white = "#fcfcfa"
+
+# Bright colors
+[colors.bright]
+black = "#727072"
+red = "#ff6188"
+green = "#a9dc76"
+yellow = "#ffd866"
+blue = "#fc9867"
+magenta = "#ab9df2"
+cyan = "#78dce8"
+white = "#fcfcfa"
+
+# Scrolling
+[scrolling]
+history = 10000
+multiplier = 3
+
+# Mouse
+[mouse]
+hide_when_typing = false
+
+
+# Shell
+[terminal.shell]
+program = "/opt/homebrew/bin/fish"
+
+# Key bindings (emulating some WezTerm functionality)
+[[keyboard.bindings]]
+key = "W"
+mods = "Command"
+action = "Quit"
+
+[[keyboard.bindings]]
+key = "D"
+mods = "Command"
+action = "CreateNewWindow"
+
+[[keyboard.bindings]]
+key = "T"
+mods = "Command"
+action = "CreateNewWindow"
+
+[[keyboard.bindings]]
+key = "N"
+mods = "Command"
+action = "CreateNewWindow"
+
+# Copy/Paste
+[[keyboard.bindings]]
+key = "C"
+mods = "Command"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "V"
+mods = "Command"
+action = "Paste"
+
+# Font size adjustment
+[[keyboard.bindings]]
+key = "Plus"
+mods = "Command"
+action = "IncreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Minus"
+mods = "Command"
+action = "DecreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Key0"
+mods = "Command"
+action = "ResetFontSize"
+
+[terminal]
