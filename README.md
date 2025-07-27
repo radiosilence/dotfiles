@@ -12,21 +12,21 @@
 
 This repository contains configuration files for:
 
-| Tool                | Description                        |
-| ------------------- | ---------------------------------- |
-| 🎧 **beets**        | Music library manager              |
+| Tool                    | Description                          |
+| ----------------------- | ------------------------------------ |
+| 🎧 **beets**            | Music library manager                |
 | 🌐 **browser-schedule** | Switch default browser by work hours |
-| 📧 **fastmail-cli** | Fastmail JMAP API client           |
-| 🐟 **fish**         | Friendly interactive shell         |
-| 🤖 **fish-ai**      | AI-powered shell assistant         |
-| 👻 **ghostty**      | Minimal terminal theme             |
-| 🖌️ **helix**        | Text editor                        |
-| 🛠️ **mise**         | Modern environment manager         |
-| 💿 **rip-cd**       | CD ripper with metadata management |
-| 🚀 **starship**     | Prompt for any shell               |
-| 🔧 **git**          | Version control                    |
-| 🔐 **ssh**          | Secure shell                       |
-| 💻 **wezterm**      | Terminal emulator                  |
+| 📧 **fastmail-cli**     | Fastmail JMAP API client             |
+| 🐟 **fish**             | Friendly interactive shell           |
+| 🤖 **fish-ai**          | AI-powered shell assistant           |
+| 👻 **ghostty**          | Minimal terminal theme               |
+| 🖌️ **helix**            | Text editor                          |
+| 🛠️ **mise**             | Modern environment manager           |
+| 💿 **rip-cd**           | CD ripper with metadata management   |
+| 🚀 **starship**         | Prompt for any shell                 |
+| 🔧 **git**              | Version control                      |
+| 🔐 **ssh**              | Secure shell                         |
+| 💻 **wezterm**          | Terminal emulator                    |
 
 Additional features:
 
@@ -80,7 +80,6 @@ This sets up AI-powered shell assistance with:
 Individual packages have their own documentation:
 
 - **[📧 Fastmail CLI](packages/fastmail-cli/README.md)** - Command-line interface for Fastmail JMAP API
-- **[🌐 Browser Schedule](packages/browser-schedule/README.md)** - Switch default browser by work hours  
 - **[😴 Sleep Report](packages/sleep-report/README.md)** - macOS sleep health analyzer
 
 ---
