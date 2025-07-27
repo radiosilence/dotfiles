@@ -16,9 +16,9 @@
     "edit_debounce_ms": 0,
     "scroll_debounce_ms": 0,
     "show_background": true,
-    "show_other_hints": true,
-    "show_parameter_hints": true,
-    "show_type_hints": true,
+    "show_other_hints": false,
+    "show_parameter_hints": false,
+    "show_type_hints": false,
     "show_value_hints": true,
     "toggle_on_modifiers_press": {
       "alt": true,
@@ -57,10 +57,10 @@
     "zedokai": true
   },
   "agent": {
-    "default_profile": "ask",
+    "default_profile": "write",
     "inline_assistant_model": {
       "provider": "anthropic",
-      "model": "claude-sonnet-4-latest"
+      "model": "claude-sonnet-4-thinking-latest"
     },
     "always_allow_tool_actions": true,
     "default_model": {
@@ -72,7 +72,9 @@
   "buffer_font_size": 12.0,
   "buffer_font_family": "GeistMono Nerd Font",
   "terminal": {
-    "font_size": 11
+    // "font_size": 12,
+    "cursor_shape": "bar",
+    "minimum_contrast": 0
   },
   "theme": {
     "mode": "dark",
@@ -89,7 +91,9 @@
   "ensure_final_newline_on_save": false,
   "languages": {
     "TypeScript": {
-      // "language_servers": ["tsgo", "!vtsls", "!typescript-language-server"],
+      "language_servers": ["vtsls", "..."],
+      // "language_servers": ["tsgo"],
+      // "language_servers": ["tsgo", "vtsls"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -99,7 +103,9 @@
       }
     },
     "TSX": {
-      // "language_servers": ["tsgo", "!vtsls", "!typescript-language-server"],
+      "language_servers": ["vtsls", "..."],
+      // "language_servers": ["tsgo", "vtsls"],
+      // "language_servers": ["tsgo", "vtsls"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
