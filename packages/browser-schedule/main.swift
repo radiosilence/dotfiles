@@ -1,6 +1,7 @@
 import AppKit
 import CoreServices
 import Foundation
+import os.log
 
 // Configuration struct with native JSON parsing
 struct Config: Codable {
@@ -10,7 +11,6 @@ struct Config: Codable {
   let workEndHour: Int
   let workDays: String
   let logEnabled: Bool
-  let logPath: String?
 
   enum CodingKeys: String, CodingKey {
     case workBrowser = "work_browser"
@@ -19,13 +19,11 @@ struct Config: Codable {
     case workEndHour = "work_end_hour"
     case workDays = "work_days"
     case logEnabled = "log_enabled"
-    case logPath = "log_path"
   }
 
   init(
     workBrowser: String = "Google Chrome", personalBrowser: String = "Zen", workStartHour: Int = 9,
-    workEndHour: Int = 18, workDays: String = "1-5", logEnabled: Bool = false,
-    logPath: String? = nil
+    workEndHour: Int = 18, workDays: String = "1-5", logEnabled: Bool = false
   ) {
     self.workBrowser = workBrowser
     self.personalBrowser = personalBrowser
@@ -33,12 +31,6 @@ struct Config: Codable {
     self.workEndHour = workEndHour
     self.workDays = workDays
     self.logEnabled = logEnabled
-    self.logPath =
-      logPath
-      ?? {
-        let homeDir = FileManager.default.homeDirectoryForCurrentUser
-        return homeDir.appendingPathComponent(".config/browser-schedule/browser-schedule.log").path
-      }()
   }
 
   static func loadFromFile() -> Config {
@@ -47,58 +39,29 @@ struct Config: Codable {
 
     guard let configData = try? Data(contentsOf: configPath) else {
       let defaults = Config()
-      logMessage("Config file not found at \(configPath.path), using defaults", config: defaults)
+      print("Config file not found at \(configPath.path), using defaults")
+      if defaults.logEnabled { logger.info("Config file not found, using defaults") }
       return defaults
     }
 
     do {
-      var config = try JSONDecoder().decode(Config.self, from: configData)
-      // If no log_path specified or empty, default to next to config file
-      if config.logPath == nil || (config.logPath?.isEmpty == true) {
-        let logPath = configPath.deletingLastPathComponent().appendingPathComponent(
-          "browser-schedule.log"
-        ).path
-        config = Config(
-          workBrowser: config.workBrowser, personalBrowser: config.personalBrowser,
-          workStartHour: config.workStartHour, workEndHour: config.workEndHour,
-          workDays: config.workDays, logEnabled: config.logEnabled, logPath: logPath)
-      }
-      logMessage("Loaded config from \(configPath.path)", config: config)
+      let config = try JSONDecoder().decode(Config.self, from: configData)
+      // Config loaded successfully
+      print("Loaded config from \(configPath.path)")
+      if config.logEnabled { logger.info("Loaded config from \(configPath.path)") }
       return config
     } catch {
       let defaults = Config()
-      logMessage(
-        "Error parsing config file at \(configPath.path): \(error), using defaults",
-        config: defaults)
+      print("Error parsing config file at \(configPath.path): \(error), using defaults")
+      if defaults.logEnabled {
+        logger.error("Error parsing config file: \(error.localizedDescription)")
+      }
       return defaults
     }
   }
 }
 
-func logMessage(_ message: String, config: Config? = nil) {
-  let timestamp = DateFormatter()
-  timestamp.dateFormat = "yyyy/MM/dd HH:mm:ss"
-  let logEntry = "[\(timestamp.string(from: Date()))] \(message)"
-
-  // Only write to log file if logging is enabled and log_path is configured
-  if let config = config, config.logEnabled, let logPath = config.logPath {
-    let logURL = URL(fileURLWithPath: logPath)
-    if let data = (logEntry + "\n").data(using: .utf8) {
-      if FileManager.default.fileExists(atPath: logURL.path) {
-        if let fileHandle = try? FileHandle(forWritingTo: logURL) {
-          fileHandle.seekToEndOfFile()
-          fileHandle.write(data)
-          fileHandle.closeFile()
-        }
-      } else {
-        try? data.write(to: logURL)
-      }
-    }
-  }
-
-  // Always print to stdout for command line usage
-  print(logEntry)
-}
+let logger = Logger(subsystem: "com.radiosilence.browser-schedule", category: "main")
 
 func isWorkTime(config: Config) -> Bool {
   let now = Date()
@@ -120,9 +83,10 @@ func isWorkTime(config: Config) -> Bool {
     isWorkDay = cronWeekday >= 1 && cronWeekday <= 5
   }
 
-  logMessage(
-    "Day check: weekday=\(cronWeekday), workDays=\(config.workDays), isWorkDay=\(isWorkDay)",
-    config: config)
+  let dayCheckMsg =
+    "Day check: weekday=\(cronWeekday), workDays=\(config.workDays), isWorkDay=\(isWorkDay)"
+  print(dayCheckMsg)
+  if config.logEnabled { logger.info("\(dayCheckMsg)") }
 
   if !isWorkDay {
     return false
@@ -136,8 +100,9 @@ func openURL(_ urlString: String, config: Config) {
   let timeString = DateFormatter()
   timeString.dateFormat = "HH:mm"
 
-  logMessage(
-    "Opening \(urlString) in \(targetBrowser) (\(timeString.string(from: Date())))", config: config)
+  let openMsg = "Opening \(urlString) in \(targetBrowser) (\(timeString.string(from: Date())))"
+  print(openMsg)
+  if config.logEnabled { logger.info("\(openMsg)") }
 
   let task = Process()
   task.launchPath = "/usr/bin/open"
@@ -147,12 +112,18 @@ func openURL(_ urlString: String, config: Config) {
     try task.run()
     task.waitUntilExit()
     if task.terminationStatus == 0 {
-      logMessage("Successfully opened \(urlString) in \(targetBrowser)", config: config)
+      let successMsg = "Successfully opened \(urlString) in \(targetBrowser)"
+      print(successMsg)
+      if config.logEnabled { logger.info("\(successMsg)") }
     } else {
-      logMessage("Error opening \(urlString): exit code \(task.terminationStatus)", config: config)
+      let errorMsg = "Error opening \(urlString): exit code \(task.terminationStatus)"
+      print(errorMsg)
+      if config.logEnabled { logger.error("\(errorMsg)") }
     }
   } catch {
-    logMessage("Error opening \(urlString): \(error)", config: config)
+    let errorMsg = "Error opening \(urlString): \(error)"
+    print(errorMsg)
+    if config.logEnabled { logger.error("\(errorMsg)") }
   }
 }
 
@@ -161,25 +132,32 @@ class URLAppDelegate: NSObject, NSApplicationDelegate {
   let config = Config.loadFromFile()
 
   func applicationDidFinishLaunching(_ notification: Notification) {
-    logMessage("BrowserSchedule app finished launching and ready for URL events", config: config)
+    print("BrowserSchedule app finished launching and ready for URL events")
+    if config.logEnabled { logger.info("App finished launching and ready for URL events") }
 
     // Set up timeout to exit if no URLs received within 5 seconds
     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-      logMessage("Timeout reached (5s), no URLs received, exiting", config: self.config)
+      print("Timeout reached (5s), no URLs received, exiting")
+      if self.config.logEnabled { logger.info("Timeout reached, no URLs received, exiting") }
       NSApplication.shared.terminate(nil)
     }
   }
 
   func application(_ application: NSApplication, open urls: [URL]) {
-    logMessage("Received \(urls.count) URLs from macOS via Swift delegate", config: config)
+    print("Received \(urls.count) URLs from macOS via Swift delegate")
+    if config.logEnabled {
+      logger.info("Received \(urls.count) URLs from macOS via Swift delegate")
+    }
 
     for url in urls {
       let urlString = url.absoluteString
-      logMessage("Processing URL from Swift delegate: \(urlString)", config: config)
+      print("Processing URL from Swift delegate: \(urlString)")
+      if config.logEnabled { logger.info("Processing URL from Swift delegate: \(urlString)") }
       openURL(urlString, config: config)
     }
 
-    logMessage("URLs processed via Swift delegate, exiting", config: config)
+    print("URLs processed via Swift delegate, exiting")
+    if config.logEnabled { logger.info("URLs processed via Swift delegate, exiting") }
     NSApplication.shared.terminate(nil)
   }
 }
@@ -197,9 +175,11 @@ if CommandLine.arguments.count > 1 {
     print("  Personal browser: \(config.personalBrowser)")
     print("  Work hours: \(config.workStartHour):00-\(config.workEndHour):00")
     print("  Work days: \(config.workDays)")
-    print("  Logging: \(config.logEnabled ? "enabled" : "disabled")")
+    print("  Logging: \(config.logEnabled ? "enabled (unified logging)" : "disabled")")
     if config.logEnabled {
-      print("  Log file: \(config.logPath ?? "none")")
+      print(
+        "  View logs: log show --predicate 'subsystem == \"com.radiosilence.browser-schedule\"' --last 1h"
+      )
     }
     let homeDir = FileManager.default.homeDirectoryForCurrentUser
     let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.json")
@@ -212,7 +192,7 @@ if CommandLine.arguments.count > 1 {
     exit(0)
 
   case "--set-default":
-    let bundleId = "com.example.browserschedule"
+    let bundleId = "com.radiosilence.browser-schedule"
 
     // Register the app bundle first
     let registerTask = Process()
@@ -250,7 +230,8 @@ if CommandLine.arguments.count > 1 {
     // Check if it's a URL
     if arg.hasPrefix("http://") || arg.hasPrefix("https://") {
       let config = Config.loadFromFile()
-      logMessage("Received URL from macOS via command line: \(arg)", config: config)
+      print("Received URL from macOS via command line: \(arg)")
+      if config.logEnabled { logger.info("Received URL from macOS via command line: \(arg)") }
       openURL(arg, config: config)
       exit(0)
     }
@@ -259,7 +240,8 @@ if CommandLine.arguments.count > 1 {
 
 // Default behavior: run as app with URL event handling
 let config = Config.loadFromFile()
-logMessage("Starting BrowserSchedule as native Swift app", config: config)
+print("Starting BrowserSchedule as native Swift app")
+if config.logEnabled { logger.info("Starting BrowserSchedule as native Swift app") }
 
 let app = NSApplication.shared
 let delegate = URLAppDelegate()

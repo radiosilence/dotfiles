@@ -4,5 +4,5 @@
   "work_start_hour": 9,
   "work_end_hour": 18,
   "work_days": "1-5",
-  "log_enabled": false
+  "log_enabled": true
 }
