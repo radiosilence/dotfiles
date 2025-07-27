@@ -1,6 +1,0 @@
-# Browser Schedule Configuration
-work_browser: "Google Chrome"
-personal_browser: "Zen"
-work_start_hour: 9
-work_end_hour: 18
-work_days: "1-5" # 1=Monday, 7=Sunday (1-7 = All days)
