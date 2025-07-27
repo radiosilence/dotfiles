@@ -1,0 +1,200 @@
+#!/bin/bash
+
+# browser-schedule - Switch default browser based on work schedule
+# Switches between work browser (Chrome) and personal browser (Zen) based on time
+
+# Configuration - override with environment variables
+WORK_BROWSER="${WORK_BROWSER:-chrome}"
+PERSONAL_BROWSER="${PERSONAL_BROWSER:-zen}"
+WORK_START_HOUR="${WORK_START_HOUR:-9}"
+WORK_END_HOUR="${WORK_END_HOUR:-18}"
+WORK_DAYS="${WORK_DAYS:-1-5}" # Monday-Friday
+
+set_default_browser() {
+  local browser="$1"
+  
+  # Set as default browser using defaultbrowser
+  if defaultbrowser "$browser"; then
+    echo "✓ Set default browser to: $browser"
+  else
+    echo "✗ Failed to set default browser to: $browser" >&2
+    echo "Available browsers:" >&2
+    defaultbrowser >&2
+    exit 1
+  fi
+}
+
+is_work_time() {
+  local current_hour current_dow
+  current_hour=$(date +%H)
+  current_dow=$(date +%u) # 1=Monday, 7=Sunday
+
+  # Check if it's a work day
+  if [[ "$WORK_DAYS" == "1-5" ]]; then
+    # Monday-Friday
+    [[ $current_dow -ge 1 && $current_dow -le 5 ]]
+  else
+    # Custom days (not implemented yet)
+    [[ $current_dow -ge 1 && $current_dow -le 5 ]]
+  fi || return 1
+
+  # Check if it's work hours
+  [[ $current_hour -ge $WORK_START_HOUR && $current_hour -lt $WORK_END_HOUR ]]
+}
+
+generate_crontab() {
+  local script_path
+  script_path="$(realpath "$0")"
+
+  cat << EOF
+# Browser schedule crontab entries
+# Switch to work browser at start of work day
+0 $WORK_START_HOUR * * $WORK_DAYS $script_path --work
+
+# Switch to personal browser at end of work day
+0 $WORK_END_HOUR * * $WORK_DAYS $script_path --personal
+
+# Switch to personal browser on weekends (Saturday morning)
+0 9 * * 6 $script_path --personal
+EOF
+}
+
+setup_crontab() {
+  echo "Installing browser schedule crontab..."
+  
+  # Get current crontab, remove existing browser-schedule entries, add new ones
+  local temp_cron
+  temp_cron=$(mktemp)
+  
+  # Get existing crontab, remove all browser-schedule related lines and clean up blank lines
+  crontab -l 2>/dev/null | grep -v -E "browser-schedule|Browser schedule crontab entries|Switch to work browser|Switch to personal browser" | sed '/^$/N;/^\n$/d' > "$temp_cron" || true
+  
+  # Add our entries
+  echo "" >> "$temp_cron"
+  generate_crontab >> "$temp_cron"
+  
+  # Install the crontab
+  if crontab "$temp_cron"; then
+    echo "✓ Browser schedule crontab installed"
+    echo "Schedule:"
+    echo "  Work browser ($WORK_BROWSER): ${WORK_START_HOUR}:00 on $WORK_DAYS"
+    echo "  Personal browser ($PERSONAL_BROWSER): ${WORK_END_HOUR}:00 on $WORK_DAYS + weekends"
+  else
+    echo "✗ Failed to install crontab" >&2
+    rm -f "$temp_cron"
+    exit 1
+  fi
+  
+  rm -f "$temp_cron"
+}
+
+show_status() {
+  local current_browser
+  current_browser=$(python3 -c "
+import subprocess
+import plistlib
+import sys
+
+try:
+    # Get current default browser
+    result = subprocess.run([
+        'defaults', 'read', 
+        'com.apple.LaunchServices/com.apple.launchservices.secure', 
+        'LSHandlers'
+    ], capture_output=True, text=True)
+    
+    # Parse and find HTML handler
+    for line in result.stdout.split('\n'):
+        if 'public.html' in line and 'LSHandlerRoleAll' in line:
+            if 'com.google.Chrome' in line:
+                print('Google Chrome')
+            elif 'io.zen-lang.zen' in line:
+                print('Zen Browser')
+            elif 'com.apple.Safari' in line:
+                print('Safari')
+            elif 'org.mozilla.firefox' in line:
+                print('Firefox')
+            break
+    else:
+        print('Unknown')
+except:
+    print('Unknown')
+" 2> /dev/null)
+
+  echo "Current default browser: ${current_browser:-Unknown}"
+  echo "Work browser: $WORK_BROWSER"
+  echo "Personal browser: $PERSONAL_BROWSER"
+  echo "Work hours: ${WORK_START_HOUR}:00-${WORK_END_HOUR}:00, days $WORK_DAYS"
+
+  if is_work_time; then
+    echo "Status: Work time - should be using $WORK_BROWSER"
+  else
+    echo "Status: Personal time - should be using $PERSONAL_BROWSER"
+  fi
+}
+
+case "$1" in
+  --work)
+    set_default_browser "$WORK_BROWSER"
+    ;;
+  --personal)
+    set_default_browser "$PERSONAL_BROWSER"
+    ;;
+  --auto)
+    if is_work_time; then
+      set_default_browser "$WORK_BROWSER"
+    else
+      set_default_browser "$PERSONAL_BROWSER"
+    fi
+    ;;
+  --crontab)
+    generate_crontab
+    ;;
+  --setup)
+    setup_crontab
+    ;;
+  --status)
+    show_status
+    ;;
+  --help | -h)
+    cat << EOF
+browser-schedule - Schedule-based default browser switcher
+
+Usage: $0 [OPTION]
+
+Options:
+  --work      Switch to work browser ($WORK_BROWSER)
+  --personal  Switch to personal browser ($PERSONAL_BROWSER)
+  --auto      Switch based on current time
+  --crontab   Generate crontab entries
+  --setup     Install crontab schedule
+  --status    Show current status
+  --help      Show this help
+
+Environment variables:
+  WORK_BROWSER      Work browser name (default: chrome)
+  PERSONAL_BROWSER  Personal browser name (default: zen)
+  WORK_START_HOUR   Work start hour (default: 9)
+  WORK_END_HOUR     Work end hour (default: 18)
+  WORK_DAYS         Work days (default: 1-5 for Mon-Fri)
+
+Examples:
+  $0 --auto                    # Switch based on current time
+  $0 --setup                   # Install cron schedule
+  WORK_START_HOUR=8 $0 --auto  # Use 8am start time
+EOF
+    ;;
+  "")
+    # Default action - auto switch
+    if is_work_time; then
+      set_default_browser "$WORK_BROWSER"
+    else
+      set_default_browser "$PERSONAL_BROWSER"
+    fi
+    ;;
+  *)
+    echo "Unknown option: $1" >&2
+    echo "Use --help for usage information" >&2
+    exit 1
+    ;;
+esac
