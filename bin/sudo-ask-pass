@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# sudo-ask-pass - Use 1Password to provide sudo password
+# Auto-calculates item name based on hostname and user
+
+# Calculate item name from hostname and user
+HOSTNAME=$(hostname -s)
+USERNAME=$(whoami)
+ITEM_NAME="${OP_SUDO_ITEM:-sudo-${USERNAME}@${HOSTNAME}}"
+
+setup_entry() {
+  echo "Setting up 1Password entry: $ITEM_NAME"
+  echo -n "Enter sudo password for $USERNAME: "
+  read -s password
+  echo
+
+  # Check if entry exists
+  if op item get "$ITEM_NAME" >/dev/null 2>&1; then
+    echo "Entry exists, updating password..."
+    op item edit "$ITEM_NAME" password="$password"
+    action="Updated"
+  else
+    echo "Creating new entry..."
+    op item create \
+      --category=password \
+      --title="$ITEM_NAME" \
+      --vault="${OP_VAULT:-Personal}" \
+      password="$password" \
+      --tags="sudo,system" \
+      username="$USERNAME" \
+      --url="sudo://$HOSTNAME"
+    action="Created"
+  fi
+
+  if [[ $? -eq 0 ]]; then
+    echo "✓ $action 1Password entry: $ITEM_NAME"
+    echo "Set OP_SUDO_ITEM=$ITEM_NAME to override default naming"
+  else
+    echo "✗ Failed to $action 1Password entry" >&2
+    exit 1
+  fi
+}
+
+# Handle --setup flag
+if [[ "$1" == "--setup" ]]; then
+  setup_entry
+  exit 0
+fi
+
+# Get password from 1Password
+op item get "$ITEM_NAME" --fields password --reveal 2>/dev/null
