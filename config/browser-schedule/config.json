@@ -5,14 +5,14 @@
   },
   "override_domains": {
     "personal": ["reddit.com"],
-    "work": ["atlassian.net"]
+    "work": ["atlassian.net", "meet.google.com"]
   },
   "work_time": {
     "start": "9:00",
     "end": "18:00"
   },
   "work_days": {
-    "start": "Moasdasdn",
+    "start": "Mon",
     "end": "Fri"
   },
   "log_enabled": false

@@ -90,29 +90,80 @@ struct Config: Codable {
 
 let logger = Logger(subsystem: "com.radiosilence.browser-schedule", category: "main")
 
-func parseTime(_ timeString: String) -> Int {
+func parseTime(_ timeString: String) -> Int? {
   let components = timeString.split(separator: ":").map { String($0) }
-  return Int(components[0]) ?? 0
+  guard components.count == 2, let hour = Int(components[0]), hour >= 0, hour <= 23,
+        let minute = Int(components[1]), minute >= 0, minute <= 59 else {
+    return nil
+  }
+  return hour
 }
 
-func dayNameToWeekday(_ dayName: String) -> Int {
+func dayNameToWeekday(_ dayName: String) -> Int? {
   let days = ["Sun": 1, "Mon": 2, "Tue": 3, "Wed": 4, "Thu": 5, "Fri": 6, "Sat": 7]
-  return days[dayName] ?? 1
+  return days[dayName]
+}
+
+struct ConfigValidation {
+  let isValid: Bool
+  let errors: [String]
+  
+  static func validate(_ config: Config) -> ConfigValidation {
+    var errors: [String] = []
+    
+    // Validate work time
+    if parseTime(config.workTime.start) == nil {
+      errors.append("Invalid work start time: \(config.workTime.start) (use HH:MM format)")
+    }
+    if parseTime(config.workTime.end) == nil {
+      errors.append("Invalid work end time: \(config.workTime.end) (use HH:MM format)")
+    }
+    
+    // Validate work days
+    if dayNameToWeekday(config.workDays.start) == nil {
+      errors.append("Invalid work start day: \(config.workDays.start) (use Sun,Mon,Tue,Wed,Thu,Fri,Sat)")
+    }
+    if dayNameToWeekday(config.workDays.end) == nil {
+      errors.append("Invalid work end day: \(config.workDays.end) (use Sun,Mon,Tue,Wed,Thu,Fri,Sat)")
+    }
+    
+    // Validate day range makes sense
+    if let startDay = dayNameToWeekday(config.workDays.start),
+       let endDay = dayNameToWeekday(config.workDays.end),
+       startDay > endDay {
+      errors.append("Work day range invalid: \(config.workDays.start) is after \(config.workDays.end)")
+    }
+    
+    // Validate time range makes sense
+    if let startHour = parseTime(config.workTime.start),
+       let endHour = parseTime(config.workTime.end),
+       startHour >= endHour {
+      errors.append("Work time range invalid: \(config.workTime.start) is not before \(config.workTime.end)")
+    }
+    
+    return ConfigValidation(isValid: errors.isEmpty, errors: errors)
+  }
 }
 
 func isWorkTime(config: Config) -> Bool {
+  let validation = ConfigValidation.validate(config)
+  if !validation.isValid {
+    // Config is invalid, default to personal browser
+    return false
+  }
+  
   let now = Date()
   let calendar = Calendar.current
   let hour = calendar.component(.hour, from: now)
   let weekday = calendar.component(.weekday, from: now)  // 1=Sunday, 2=Monday, etc.
 
-  // Parse work time
-  let startHour = parseTime(config.workTime.start)
-  let endHour = parseTime(config.workTime.end)
+  // Parse work time (we know these are valid from validation)
+  let startHour = parseTime(config.workTime.start)!
+  let endHour = parseTime(config.workTime.end)!
   
-  // Parse work days
-  let startWeekday = dayNameToWeekday(config.workDays.start)
-  let endWeekday = dayNameToWeekday(config.workDays.end)
+  // Parse work days (we know these are valid from validation)
+  let startWeekday = dayNameToWeekday(config.workDays.start)!
+  let endWeekday = dayNameToWeekday(config.workDays.end)!
   
   // Check if current day is within work days range
   let isWorkDay = weekday >= startWeekday && weekday <= endWeekday
@@ -247,6 +298,8 @@ if CommandLine.arguments.count > 1 {
   switch arg {
   case "--config":
     let config = Config.loadFromFile()
+    let validation = ConfigValidation.validate(config)
+    
     print("Current configuration:")
     print("  Work browser: \(config.browsers.work)")
     print("  Personal browser: \(config.browsers.personal)")
@@ -269,10 +322,19 @@ if CommandLine.arguments.count > 1 {
     let homeDir = FileManager.default.homeDirectoryForCurrentUser
     let configPath = homeDir.appendingPathComponent(".config/browser-schedule/config.json")
     print("  Config file: \(configPath.path)")
-    if isWorkTime(config: config) {
-      print("  Current: Work time - using \(config.browsers.work)")
+    
+    if !validation.isValid {
+      print("  ⚠️  Configuration errors:")
+      for error in validation.errors {
+        print("     - \(error)")
+      }
+      print("  Current: Using personal browser (\(config.browsers.personal)) due to config errors")
     } else {
-      print("  Current: Personal time - using \(config.browsers.personal)")
+      if isWorkTime(config: config) {
+        print("  Current: Work time - using \(config.browsers.work)")
+      } else {
+        print("  Current: Personal time - using \(config.browsers.personal)")
+      }
     }
     exit(0)
 
