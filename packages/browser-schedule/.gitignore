@@ -1,2 +1,4 @@
 browser-schedule-swift
 .task
+.build/
+Package.resolved
