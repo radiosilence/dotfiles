@@ -192,6 +192,7 @@ brew 'withgraphite/tap/graphite'
 brew 'wrk'
 brew 'helix'
 brew 'golangci-lint'
+brew 'defaultbrowser'
 
 # =============================================================================
 # CASK APPLICATIONS

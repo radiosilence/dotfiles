@@ -72,7 +72,6 @@
   "buffer_font_size": 12.0,
   "buffer_font_family": "GeistMono Nerd Font",
   "terminal": {
-    // "font_size": 12,
     "cursor_shape": "bar",
     "minimum_contrast": 0
   },
