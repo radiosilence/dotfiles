@@ -121,7 +121,9 @@
       }
     },
     "SCSS": {
-      "language_servers": ["some-sass"]
+      "code_actions_on_format": {
+        "source.fixAll.stylelint": true
+      }
     },
     "JSON": {
       "formatter": { "language_server": { "name": "biome" } },
@@ -175,6 +177,13 @@
           "linters": {
             "AvoidCurses": false
           }
+        }
+      }
+    },
+    "stylelint-lsp": {
+      "settings": {
+        "stylelint": {
+          "validate": ["css", "postcss", "scss"]
         }
       }
     },
