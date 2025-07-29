@@ -197,15 +197,9 @@
     },
     "ruby-lsp": {
       "initialization_options": {
-        "require_root_steepfile": false,
         "enabledFeatures": {
           "diagnostics": false
         }
-      }
-    },
-    "steep": {
-      "initialization_options": {
-        "require_root_steepfile": false
       }
     },
     "vtsls": {
