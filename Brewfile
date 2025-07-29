@@ -272,7 +272,6 @@ cask 'claude', greedy: true
 mas '1Password for Safari', id: 1_569_813_296
 mas 'Adobe Lightroom', id: 1_451_544_217
 mas 'Infuse', id: 1_136_220_934
-mas 'Messenger', id: 1_480_068_668
 mas 'Slack', id: 803_453_959
 mas 'Telegram', id: 747_648_890
 mas 'WhatsApp', id: 310_633_997

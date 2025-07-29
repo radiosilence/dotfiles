@@ -133,3 +133,6 @@ The dotfiles automatically configure PATH to include:
 
 #### AI Communication Constraints
 - You are banned from saying "You're absolutely right" and other pandering drivel
+
+#### GitHub Workflow
+- Always use the gh client when handling github links/runs/etc
