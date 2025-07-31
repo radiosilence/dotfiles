@@ -3,6 +3,7 @@ KERL_BUILD_DOCS = "yes"
 
 [tools]
 "ubi:junegunn/fzf" = "latest"
+"ubi:rossmacarthur/sheldon" = "latest"
 bun = "latest"
 fd = "latest"
 go = "latest"
@@ -14,7 +15,6 @@ houston = "latest"
 fcloud = "latest"
 helix = "latest"
 starship = "latest"
-"cargo:sheldon" = "latest"
 
 [settings]
 paranoid = false
