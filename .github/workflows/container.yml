@@ -3,20 +3,20 @@ name: Build and Push Container Image
 on:
   push:
     branches:
-      - container
+      - main
     paths:
-      - 'Dockerfile'
-      - '.github/workflows/container.yml'
-      - 'config/**'
-      - 'bin/**'
-      - '.zshrc'
-      - '.zprofile'
+      - "Dockerfile"
+      - ".github/workflows/container.yml"
+      - "config/**"
+      - "bin/**"
+      - ".zshrc"
+      - ".zprofile"
   pull_request:
     branches:
       - container
     paths:
-      - 'Dockerfile'
-      - '.github/workflows/container.yml'
+      - "Dockerfile"
+      - ".github/workflows/container.yml"
   workflow_dispatch:
 
 env:
