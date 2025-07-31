@@ -18,6 +18,7 @@ yt-dlp = "latest"
 REDACTED = "latest"
 perl = "latest"
 REDACTED = "latest"
+helix = "latest"
 
 [settings]
 paranoid = false
