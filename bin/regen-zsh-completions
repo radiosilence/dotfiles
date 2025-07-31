@@ -41,6 +41,13 @@ if command -v helm >/dev/null; then
     helm completion zsh > ~/.config/zsh/completions/_helm 2>/dev/null || true
 fi
 
+# Task (Taskfile)
+if command -v task >/dev/null; then
+    echo "  → task"
+    mkdir -p ~/.config/zsh/completions
+    task --completion zsh > ~/.config/zsh/completions/_task 2>/dev/null || true
+fi
+
 # Add completions directory to fpath if it exists
 if [[ -d ~/.config/zsh/completions ]]; then
     echo 'fpath=(~/.config/zsh/completions $fpath)' > ~/.config/zsh/conf.d/completions.zsh

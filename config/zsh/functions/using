@@ -1,0 +1,4 @@
+# Check if command exists (equivalent to Fish's using function)
+using() {
+    command -v "$1" >/dev/null
+}
