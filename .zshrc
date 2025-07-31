@@ -10,8 +10,8 @@ source ~/.config/zsh/conf.d/02-mise.zsh
 # Load remaining configuration modules
 for config in ~/.config/zsh/conf.d/*.zsh; do
   case "$(basename "$config")" in
-    performance.zsh|00-path.zsh|01-brew.zsh|02-mise.zsh) continue ;;
-    *) [[ -r "$config" ]] && source "$config" ;;
+  performance.zsh | 00-path.zsh | 01-brew.zsh | 02-mise.zsh) continue ;;
+  *) [[ -r "$config" ]] && source "$config" ;;
   esac
 done
 
