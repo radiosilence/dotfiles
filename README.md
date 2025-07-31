@@ -17,11 +17,10 @@ This repository contains configuration files for:
 | 🎧 **beets**            | Music library manager                |
 | 🌐 **browser-schedule** | Switch default browser by work hours |
 | 📧 **fastmail-cli**     | Fastmail JMAP API client             |
-| 🐟 **zsh**             | z interactive shell           |
+| 🧘‍♀️ **zsh**             | z interactive shell           |
 | 👻 **ghostty**          | Minimal terminal theme               |
 | 🖌️ **helix**            | Text editor                          |
 | 🛠️ **mise**             | Modern environment manager           |
-| 💿 **rip-cd**           | CD ripper with metadata management   |
 | 🚀 **starship**         | Prompt for any shell                 |
 | 🔧 **git**              | Version control                      |
 | 🔐 **ssh**              | Secure shell                         |
