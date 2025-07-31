@@ -13,6 +13,8 @@ on:
       - ".github/workflows/container.yml"
       - "config/**"
       - "bin/**"
+      - "ssh.d/**"
+      - "git.d/**"
       - ".zshrc"
       - ".zprofile"
   pull_request:
