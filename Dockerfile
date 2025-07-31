@@ -65,9 +65,6 @@ RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh \
   && curl -fsSL https://github.com/radiosilence.keys > ~/.ssh/authorized_keys \
   && chmod 600 ~/.ssh/authorized_keys
 
-# Add PATH configuration to zshrc (similar to setup-macos)
-RUN echo 'export PATH="$HOME/.dotfiles/bin:$PATH"' >> ~/.zshrc
-
 # Make scripts executable and run install
 RUN chmod +x /home/$USERNAME/.dotfiles/bin/* \
   && /home/$USERNAME/.dotfiles/install
