@@ -1,8 +1,7 @@
 shell = "zsh"
 
 # Sheldon plugin configuration for Zsh
-# Equivalent to Fish plugins: sponge, abbreviation-tips, lf-icons, fish-ai
-
+#
 # ============================================================================
 # Core Zsh Enhancements (Fish has these features built-in)
 # ============================================================================
