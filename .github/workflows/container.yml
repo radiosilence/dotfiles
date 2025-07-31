@@ -1,5 +1,9 @@
 name: Build and Push Container Image
 
+# This workflow requires a GitHub Personal Access Token (PAT) to be set as a repository secret
+# named GH_PAT to avoid GitHub API rate limiting during mise tool installations.
+# The PAT should have 'public_repo' scope for public repositories.
+
 on:
   push:
     branches:
@@ -34,6 +38,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check for required secrets
+        run: |
+          if [ -z "${{ secrets.GH_PAT }}" ]; then
+            echo "❌ Error: GH_PAT secret is required for GitHub API access during mise tool installations"
+            echo "Please add a GitHub Personal Access Token as a repository secret named 'GH_PAT'"
+            echo "The PAT should have 'public_repo' scope for public repositories"
+            exit 1
+          fi
+          echo "✅ GH_PAT secret is available"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -66,6 +80,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          secrets: |
+            github_token=${{ secrets.GH_PAT }}
 
       - name: Generate summary
         run: |

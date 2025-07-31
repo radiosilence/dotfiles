@@ -23,6 +23,8 @@ ENV MISE_CACHE_DIR="/mise/cache"
 ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
 ENV PATH="/mise/shims:$PATH"
 
+# GitHub token will be provided via secret mount (not leaked into final image)
+
 # Install mise globally (from mise cookbook)
 RUN curl https://mise.run | sh
 
@@ -51,7 +53,8 @@ WORKDIR /home/$USERNAME
 ENV PATH="/home/$USERNAME/.dotfiles/bin:$PATH"
 
 # Install rustup/cargo as user so mise can use cargo backend
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable \
+  && . ~/.cargo/env
 ENV PATH="/home/$USERNAME/.cargo/bin:$PATH"
 
 # Copy dotfiles directly to final location
@@ -69,9 +72,19 @@ RUN echo 'export PATH="$HOME/.dotfiles/bin:$PATH"' >> ~/.zshrc
 RUN chmod +x /home/$USERNAME/.dotfiles/bin/* \
   && /home/$USERNAME/.dotfiles/install
 
-# Trust the home directory and install essential tools via mise
-RUN mise trust ~ \
-  && mise install
+# Switch to root to access secret, install tools, then fix ownership
+USER root
+RUN --mount=type=secret,id=github_token \
+  su - jc -c ". ~/.cargo/env && mise trust ~" \
+  && GITHUB_TOKEN=$(cat /run/secrets/github_token) GH_TOKEN=$(cat /run/secrets/github_token) \
+  && su - jc -c ". ~/.cargo/env && GITHUB_TOKEN=${GITHUB_TOKEN} GH_TOKEN=${GH_TOKEN} mise install" \
+  && chown -R jc:jc /mise \
+  && chown -R jc:jc /home/jc/.cargo
+
+# Switch back to user
+USER jc
+
+
 
 
 
