@@ -151,6 +151,13 @@ if command -v aws-vault >/dev/null; then
     aws-vault --completion-script-zsh > ~/.config/zsh/completions/_aws-vault 2>/dev/null || true
 fi
 
+# nano-web
+if command -v nano-web >/dev/null; then
+    echo "  → nano-web"
+    mkdir -p ~/.config/zsh/completions
+    nano-web completion zsh > ~/.config/zsh/completions/_nano-web 2>/dev/null || true
+fi
+
 # Force rebuild of completion cache
 echo "Rebuilding completion cache..."
 rm -f ~/.zcompdump*
