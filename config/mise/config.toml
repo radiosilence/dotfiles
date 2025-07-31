@@ -11,8 +11,6 @@ node = "lts"
 pipx = "latest"
 python = "latest"
 yt-dlp = "latest"
-REDACTED = "latest"
-REDACTED = "latest"
 helix = "latest"
 starship = "latest"
 

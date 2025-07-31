@@ -78,14 +78,11 @@ RUN --mount=type=secret,id=github_token \
 
 # Switch back to user and install tools via mise (with GitHub token)
 USER jc
+# Temporarily commenting out mise install to test zsh config
 RUN . ~/.cargo/env \
-  && GITHUB_TOKEN=$(cat /tmp/github_token) GH_TOKEN=$(cat /tmp/github_token) mise trust ~ \
-  && GITHUB_TOKEN=$(cat /tmp/github_token) GH_TOKEN=$(cat /tmp/github_token) mise install \
-  && rm /tmp/github_token
-
-
-
-
+  && mise trust ~ \
+  && GITHUB_TOKEN=$(cat /tmp/github_token) mise install
+RUN rm -f /tmp/github_token
 
 # Run zsh once to initialize plugins and first-run setup
 RUN zsh -c 'echo "Initializing zsh and plugins..."'
