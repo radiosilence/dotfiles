@@ -1,0 +1,4 @@
+# Create a temporary directory and set CWD
+taketmp() {
+    cd "$(mktemp -d)"
+}

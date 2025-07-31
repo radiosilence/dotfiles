@@ -1,0 +1,4 @@
+# Create a directory and set CWD
+take() {
+    mkdir -p "$@" && cd "${@: -1}"
+}
