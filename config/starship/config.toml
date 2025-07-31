@@ -43,7 +43,7 @@ $jobs\
 $battery\
 $status\
 $os\
-$container\
+
 $shell\
 $character
 """
@@ -78,7 +78,11 @@ format = "[$symbol$branch]($style) "
 style = "green"
 
 [docker_context]
-symbol = " "
+disabled = true
+
+[container]
+format = "🐳 "
+disabled = false
 
 [golang]
 symbol = "󰟓 "
