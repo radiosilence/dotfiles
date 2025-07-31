@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a comprehensive dotfiles repository for macOS development setup. It includes configurations for shell (Fish), terminal (Ghostty), prompt (Starship), and a comprehensive collection of development tools via Homebrew.
+This is a comprehensive dotfiles repository for macOS development setup. It includes configurations for shell (Zsh), terminal (Ghostty), prompt (Starship), and a comprehensive collection of development tools via Homebrew.
 
 ## Key Commands and Utilities
 
@@ -41,7 +41,7 @@ This is a comprehensive dotfiles repository for macOS development setup. It incl
 
 #### System Setup
 - `setup-macos` - Complete macOS development environment setup
-- `setup-fish-ai` - Configure Fish shell with AI features
+- `regen-zsh-completions` - Regenerate Zsh completions for CLI tools
 - `install-font-macos` - Install fonts on macOS
 - `install-terminfo` - Install terminal info files
 - `unfuck-xcode` - Fix Xcode development issues
@@ -60,7 +60,7 @@ The `./install` script handles all dotfile linking:
 - Links config directories to `~/.config/`
 - Sets up git configuration includes
 - Configures SSH configuration includes
-- Installs Fisher plugin manager for Fish shell
+- Installs Sheldon plugin manager for Zsh shell
 - Handles Brewfile symlink
 
 To run: `./install`
@@ -77,10 +77,10 @@ Based on Brewfile, key tools include:
 
 ### Shell Configuration
 
-- **Primary Shell**: Fish
+- **Primary Shell**: Zsh
 - **Prompt**: Starship
 - **Terminal**: Ghostty
-- **Package Manager**: Sheldon (for Fish plugins)
+- **Package Manager**: Sheldon (for Zsh plugins)
 
 ### Key Directories
 
