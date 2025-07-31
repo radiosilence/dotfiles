@@ -14,32 +14,15 @@ github = "zsh-users/zsh-syntax-highlighting"
 
 # Fish-like autosuggestions based on history and completions
 # Shows grayed-out text suggesting commands as you type, press → to accept
-[plugins.zsh-autosuggestions] 
+[plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
 
 # Additional completion definitions for 200+ commands
 # Extends zsh's built-in completions with support for more CLI tools
 [plugins.zsh-completions]
-github = "zsh-users/zsh-completions" 
+github = "zsh-users/zsh-completions"
 
 # Search through command history with up/down arrows
 # Use ↑/↓ to search history entries that match your current partial command
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
-
-# ============================================================================
-# Fish Plugin Equivalents
-# ============================================================================
-
-# Replaces Fish plugin: meaningful-ooo/sponge
-# Automatically removes failed commands from your shell history
-# Keeps history clean by removing commands that returned non-zero exit codes
-[plugins.zsh-sponge]
-github = "zthxxx/zsh-history-enquirer"
-
-# Replaces Fish plugin: gazorby/fish-abbreviation-tips  
-# Shows abbreviation expansions as you type
-# Creates expandable shortcuts like 'gl' → 'git log --oneline'
-[plugins.zsh-abbr]
-github = "olets/zsh-abbr"
-
