@@ -2,8 +2,11 @@ version: '3.8'
 
 services:
   dev-shell:
-    build: .
-    image: dotfiles-dev:latest
+    # Use pre-built image from GHCR
+    image: ghcr.io/radiosilence/dotfiles/dev-shell:container
+    # Or build locally by uncommenting below:
+    # build: .
+    # image: dotfiles-dev:latest
     container_name: dev-shell
     stdin_open: true
     tty: true
