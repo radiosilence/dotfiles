@@ -62,10 +62,16 @@ if command -v orbctl >/dev/null; then
     orbctl completion zsh > ~/.config/zsh/completions/_orbctl 2>/dev/null || true
 fi
 
-# Add completions directory to fpath if it exists
-if [[ -d ~/.config/zsh/completions ]]; then
-    echo 'fpath=(~/.config/zsh/completions $fpath)' > ~/.config/zsh/conf.d/completions.zsh
+# fcloud
+if command -v fcloud >/dev/null; then
+    echo "  → fcloud"
+    mkdir -p ~/.config/zsh/completions
+    fcloud completion zsh > ~/.config/zsh/completions/_fcloud 2>/dev/null || true
 fi
+
+# Force rebuild of completion cache
+echo "Rebuilding completion cache..."
+rm -f ~/.zcompdump*
 
 echo "Completion regeneration complete!"
 echo "Restart your shell or run 'exec zsh' to load new completions."

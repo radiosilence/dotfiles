@@ -24,12 +24,20 @@ HISTFILE=~/.zsh_history
 HISTSIZE=50000
 SAVEHIST=50000
 
+# Add custom completions to fpath before compinit
+if [[ -d ~/.config/zsh/completions ]]; then
+  fpath=(~/.config/zsh/completions $fpath)
+fi
+
 # Load completions
 autoload -Uz compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-    compinit
-else
-    compinit -C
+compinit
+
+# Force autoload of custom completions
+if [[ -d ~/.config/zsh/completions ]]; then
+  for completion in ~/.config/zsh/completions/_*; do
+    [[ -r $completion ]] && autoload -Uz "${completion:t}"
+  done
 fi
 
 # Completion styling
