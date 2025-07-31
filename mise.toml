@@ -1,4 +1,4 @@
 [tools]
 elixir = "latest"
 erlang = "latest"
-node = "lts"
+node = "24"
