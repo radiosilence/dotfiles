@@ -17,8 +17,7 @@ This repository contains configuration files for:
 | 🎧 **beets**            | Music library manager                |
 | 🌐 **browser-schedule** | Switch default browser by work hours |
 | 📧 **fastmail-cli**     | Fastmail JMAP API client             |
-| 🐟 **fish**             | Friendly interactive shell           |
-| 🤖 **fish-ai**          | AI-powered shell assistant           |
+| 🐟 **zsh**             | z interactive shell           |
 | 👻 **ghostty**          | Minimal terminal theme               |
 | 🖌️ **helix**            | Text editor                          |
 | 🛠️ **mise**             | Modern environment manager           |
