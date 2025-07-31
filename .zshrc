@@ -17,4 +17,3 @@ done
 
 # Load starship last to ensure it sees all environment changes
 [[ -r ~/.config/zsh/conf.d/starship.zsh ]] && source ~/.config/zsh/conf.d/starship.zsh
-
