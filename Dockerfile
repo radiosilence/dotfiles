@@ -4,11 +4,8 @@ FROM debian:12-slim
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  # Essential tools
-  curl git unzip zip sudo ca-certificates parallel xz \
-  # Build tools
+  curl git unzip zip sudo ca-certificates parallel \
   build-essential cmake make \
-  # CLI utilities (not managed by mise)
   ripgrep bat jq btop tree aria2 beets ffmpeg \
   # Shell
   zsh \
