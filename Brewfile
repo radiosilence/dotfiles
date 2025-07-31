@@ -88,28 +88,17 @@ brew 'syncthing'
 # -----------------------------------------------------------------------------
 
 brew 'bat'
-brew 'broot'
 brew 'coreutils'
 brew 'fastfetch'
 brew 'fcp'
 brew 'findutils'
-brew 'fzf'
 brew 'htop'
 brew 'btop'
 brew 'hyperfine'
-brew 'jq'
-brew 'lsd'
-brew 'lsix'
-brew 'macchina'
 brew 'mas'
 brew 'ripgrep'
-brew 'sheldon'
 brew 'shfmt'
-brew 'shellcheck'
-brew 'starship'
 brew 'tree'
-brew 'yq'
-brew 'zoxide'
 brew 'zsh'
 
 # -----------------------------------------------------------------------------
@@ -118,9 +107,7 @@ brew 'zsh'
 
 brew 'git'
 brew 'git-lfs'
-brew 'gh'
 brew 'tig'
-brew 'lefthook'
 
 # -----------------------------------------------------------------------------
 # Media & Audio/Video Processing
@@ -132,7 +119,6 @@ brew 'sox'
 brew 'libsndfile'
 brew 'atomicparsley'
 brew 'cmus'
-brew 'yt-dlp'
 brew 'ttfautohint'
 
 # -----------------------------------------------------------------------------
