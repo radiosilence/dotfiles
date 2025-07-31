@@ -18,6 +18,7 @@ yt-dlp = "latest"
 houston = "latest"
 perl = "latest"
 fcloud = "latest"
+helix = "latest"
 
 [settings]
 paranoid = false
