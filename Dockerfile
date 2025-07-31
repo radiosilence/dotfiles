@@ -72,17 +72,19 @@ RUN echo 'export PATH="$HOME/.dotfiles/bin:$PATH"' >> ~/.zshrc
 RUN chmod +x /home/$USERNAME/.dotfiles/bin/* \
   && /home/$USERNAME/.dotfiles/install
 
-# Switch to root to access secret, install tools, then fix ownership
+# Switch to root to access secret and copy to user-readable location
 USER root
 RUN --mount=type=secret,id=github_token \
-  su - jc -c ". ~/.cargo/env && mise trust ~" \
-  && GITHUB_TOKEN=$(cat /run/secrets/github_token) GH_TOKEN=$(cat /run/secrets/github_token) \
-  && su - jc -c ". ~/.cargo/env && GITHUB_TOKEN=${GITHUB_TOKEN} GH_TOKEN=${GH_TOKEN} mise install" \
-  && chown -R jc:jc /mise \
-  && chown -R jc:jc /home/jc/.cargo
+  cp /run/secrets/github_token /tmp/github_token \
+  && chown jc:jc /tmp/github_token \
+  && chmod 600 /tmp/github_token
 
-# Switch back to user
+# Switch back to user and install tools via mise (with GitHub token)
 USER jc
+RUN . ~/.cargo/env \
+  && GITHUB_TOKEN=$(cat /tmp/github_token) GH_TOKEN=$(cat /tmp/github_token) mise trust ~ \
+  && GITHUB_TOKEN=$(cat /tmp/github_token) GH_TOKEN=$(cat /tmp/github_token) mise install \
+  && rm /tmp/github_token
 
 
 
