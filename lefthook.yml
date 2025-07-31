@@ -24,13 +24,3 @@ pre-commit:
           exit 0
         fi
       stage_fixed: true
-
-    shfmt-check:
-      glob: "*.{sh,bash,zsh}"
-      run: |
-        if command -v shfmt >/dev/null 2>&1; then
-          shfmt -d -s -i 2 {staged_files}
-        else
-          echo "shfmt not available, skipping"
-          exit 0
-        fi
