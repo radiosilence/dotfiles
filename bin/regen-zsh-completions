@@ -69,6 +69,41 @@ if command -v fcloud >/dev/null; then
     fcloud completion zsh > ~/.config/zsh/completions/_fcloud 2>/dev/null || true
 fi
 
+# k9s
+if command -v k9s >/dev/null; then
+    echo "  → k9s"
+    mkdir -p ~/.config/zsh/completions
+    k9s completion zsh > ~/.config/zsh/completions/_k9s 2>/dev/null || true
+fi
+
+# ArgoCD
+if command -v argocd >/dev/null; then
+    echo "  → argocd"
+    mkdir -p ~/.config/zsh/completions
+    argocd completion zsh > ~/.config/zsh/completions/_argocd 2>/dev/null || true
+fi
+
+# Pulumi
+if command -v pulumi >/dev/null; then
+    echo "  → pulumi"
+    mkdir -p ~/.config/zsh/completions
+    pulumi completion zsh > ~/.config/zsh/completions/_pulumi 2>/dev/null || true
+fi
+
+# Tilt
+if command -v tilt >/dev/null; then
+    echo "  → tilt"
+    mkdir -p ~/.config/zsh/completions
+    tilt completion zsh > ~/.config/zsh/completions/_tilt 2>/dev/null || true
+fi
+
+# Turso
+if command -v turso >/dev/null; then
+    echo "  → turso"
+    mkdir -p ~/.config/zsh/completions
+    turso completion zsh > ~/.config/zsh/completions/_turso 2>/dev/null || true
+fi
+
 # Force rebuild of completion cache
 echo "Rebuilding completion cache..."
 rm -f ~/.zcompdump*
