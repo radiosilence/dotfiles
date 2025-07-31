@@ -104,6 +104,54 @@ if command -v turso >/dev/null; then
     turso completion zsh > ~/.config/zsh/completions/_turso 2>/dev/null || true
 fi
 
+# Lefthook (Git hooks manager)
+if command -v lefthook >/dev/null; then
+    echo "  → lefthook"
+    mkdir -p ~/.config/zsh/completions
+    lefthook completion zsh > ~/.config/zsh/completions/_lefthook 2>/dev/null || true
+fi
+
+# Mac App Store CLI
+if command -v mas >/dev/null; then
+    echo "  → mas"
+    mkdir -p ~/.config/zsh/completions
+    mas completion zsh > ~/.config/zsh/completions/_mas 2>/dev/null || true
+fi
+
+# yq (YAML processor)
+if command -v yq >/dev/null; then
+    echo "  → yq"
+    mkdir -p ~/.config/zsh/completions
+    yq completion zsh > ~/.config/zsh/completions/_yq 2>/dev/null || true
+fi
+
+# rclone (cloud storage sync)
+if command -v rclone >/dev/null; then
+    echo "  → rclone"
+    mkdir -p ~/.config/zsh/completions
+    rclone completion zsh > ~/.config/zsh/completions/_rclone 2>/dev/null || true
+fi
+
+# Terraform (uses bash completions via bashcompinit)
+if command -v terraform >/dev/null; then
+    echo "  → terraform (installing bash completion)"
+    terraform -install-autocomplete 2>/dev/null || true
+fi
+
+# 1Password CLI
+if command -v op >/dev/null; then
+    echo "  → op"
+    mkdir -p ~/.config/zsh/completions
+    op completion zsh > ~/.config/zsh/completions/_op 2>/dev/null || true
+fi
+
+# AWS Vault
+if command -v aws-vault >/dev/null; then
+    echo "  → aws-vault"
+    mkdir -p ~/.config/zsh/completions
+    aws-vault --completion-script-zsh > ~/.config/zsh/completions/_aws-vault 2>/dev/null || true
+fi
+
 # Force rebuild of completion cache
 echo "Rebuilding completion cache..."
 rm -f ~/.zcompdump*
