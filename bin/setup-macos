@@ -106,10 +106,9 @@ fi
 if using install-font-macos; then
   echo "Installing fonts..."
   if ! install-font-macos \
-    "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip" \
-    "https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip" \
-    "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.zip" \
-    "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/GeistMono.zip"; then
+    "https://github.com/vercel/geist-font/releases/download/1.5.0/Geist-1.5.0.zip" \
+    "https://github.com/vercel/geist-font/releases/download/1.5.0/GeistMono-1.5.0.zip" \
+    "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip"; then
     echo "Warning: Some fonts failed to install"
   fi
 else

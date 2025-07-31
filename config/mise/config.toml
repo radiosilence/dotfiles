@@ -25,6 +25,6 @@ not_found_auto_install = true
 experimental = true
 idiomatic_version_file = true
 trusted_config_paths = ['~/workspace']
-jobs = 14
 env_file = ".env"
+jobs = 14
 #disable_tools = ["ruby"]
