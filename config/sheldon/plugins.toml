@@ -1,0 +1,32 @@
+shell = "zsh"
+
+# Sheldon plugin configuration for Zsh
+# Equivalent to Fish plugins: sponge, abbreviation-tips, lf-icons, fish-ai
+
+# Core Zsh enhancements (Fish has these built-in)
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+
+[plugins.zsh-autosuggestions] 
+github = "zsh-users/zsh-autosuggestions"
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions" 
+
+[plugins.zsh-history-substring-search]
+github = "zsh-users/zsh-history-substring-search"
+
+# Replaces Fish plugin: meaningful-ooo/sponge
+# Removes failed commands from history
+[plugins.zsh-sponge]
+github = "zthxxx/zsh-history-enquirer"
+
+# Replaces Fish plugin: gazorby/fish-abbreviation-tips  
+# Shows abbreviation expansions as you type
+[plugins.zsh-abbr]
+github = "olets/zsh-abbr"
+
+# Replaces Fish plugin: joshmedeski/fish-lf-icons
+# Directory icons for lf file manager
+[plugins.lf-icons]
+local = "~/.config/zsh/plugins/lf-icons"
