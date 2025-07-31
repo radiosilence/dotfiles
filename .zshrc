@@ -15,9 +15,3 @@ for config in ~/.config/zsh/conf.d/*.zsh; do
   esac
 done
 
-# Initialize OrbStack if available
-[[ -f ~/.orbstack/shell/init.zsh ]] && source ~/.orbstack/shell/init.zsh 2>/dev/null || true
-
-autoload -U +X bashcompinit && bashcompinit
-
-complete -o nospace -C /opt/homebrew/bin/terraform terraform
