@@ -19,13 +19,15 @@ houston = "latest"
 perl = "latest"
 fcloud = "latest"
 helix = "latest"
+starship = "latest"
+"cargo:sheldon" = "latest"
 
 [settings]
 paranoid = false
 not_found_auto_install = true
 experimental = true
 idiomatic_version_file = true
-trusted_config_paths = ['~/workspace']
+trusted_config_paths = ['~/workspace', "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
 #disable_tools = ["ruby"]
