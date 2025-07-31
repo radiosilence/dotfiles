@@ -1,6 +1,6 @@
 # Multi-stage container with dotfiles setup
 # Based on Ubuntu with essential development tools
-FROM ubuntu:24.04 AS base
+FROM ubuntu:latest AS base
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
   nodejs npm python3 python3-pip \
   # CLI utilities
   ripgrep fd-find bat fzf jq \
-  htop btop tree \
+  btop tree \
   # Important CLI tools
   aria2 \
   beets \
@@ -20,8 +20,6 @@ RUN apt-get update && apt-get install -y \
   ffmpeg \
   # Network tools
   curl wget netcat-openbsd \
-  # Text processing
-  sed awk \
   # Shell
   zsh \
   # Clean up
