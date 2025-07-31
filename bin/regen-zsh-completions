@@ -132,10 +132,9 @@ if command -v rclone >/dev/null; then
     rclone completion zsh > ~/.config/zsh/completions/_rclone 2>/dev/null || true
 fi
 
-# Terraform (uses bash completions via bashcompinit)
+# Terraform (handled by terraform.zsh config file)
 if command -v terraform >/dev/null; then
-    echo "  → terraform (installing bash completion)"
-    terraform -install-autocomplete 2>/dev/null || true
+    echo "  → terraform (configured via terraform.zsh)"
 fi
 
 # 1Password CLI
