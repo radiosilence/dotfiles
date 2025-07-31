@@ -13,6 +13,11 @@ RUN apt-get update && apt-get install -y \
     # CLI utilities
     ripgrep fd-find bat fzf jq \
     htop btop tree \
+    # Important CLI tools
+    aria2 \
+    beets \
+    yt-dlp \
+    ffmpeg \
     # Network tools
     curl wget netcat-openbsd \
     # Text processing
@@ -53,6 +58,14 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/rossm
 
 # Install Starship prompt
 RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes
+
+# Install Helix editor
+RUN curl -L https://github.com/helix-editor/helix/releases/latest/download/helix-24.07-x86_64-linux.tar.xz -o helix.tar.xz \
+    && tar -xf helix.tar.xz \
+    && sudo mv helix-24.07-x86_64-linux/hx /usr/local/bin/ \
+    && sudo mkdir -p /usr/local/lib/helix \
+    && sudo mv helix-24.07-x86_64-linux/runtime /usr/local/lib/helix/ \
+    && rm -rf helix.tar.xz helix-24.07-x86_64-linux
 
 # Set up dotfiles structure
 RUN mkdir -p ~/.config/zsh/conf.d ~/.config/zsh/functions ~/.config/sheldon

@@ -13,10 +13,23 @@ A containerized development environment with Zsh, essential tools, and dotfiles 
 
 ## Quick Start
 
-### Using Docker Compose (Recommended)
+### Using Pre-built Image (Recommended)
 
 ```bash
-# Build and run
+# Pull and run the latest image
+docker run -it --rm \
+  -v $(pwd)/workspace:/home/dev/workspace \
+  ghcr.io/radiosilence/dotfiles/dev-shell:container
+
+# Or with docker-compose (update image in docker-compose.yml first)
+docker-compose up -d dev-shell
+docker-compose exec dev-shell zsh
+```
+
+### Using Docker Compose (Local Development)
+
+```bash
+# Build and run locally
 docker-compose up -d dev-shell
 
 # Attach to shell
@@ -26,10 +39,10 @@ docker-compose exec dev-shell zsh
 docker-compose run --rm dev-shell
 ```
 
-### Using Docker directly
+### Building Locally
 
 ```bash
-# Build image
+# Build image locally
 docker build -t dotfiles-dev .
 
 # Run container
@@ -69,9 +82,11 @@ spec:
 ## Available Tools
 
 - **Shell**: Zsh with Starship prompt
+- **Editor**: Helix (hx)
 - **Version Manager**: mise (Node.js, Python)
 - **Plugin Manager**: Sheldon
 - **CLI Tools**: ripgrep, fzf, bat, jq, tree, htop, btop
+- **Media/Download**: aria2, beets, yt-dlp, ffmpeg
 - **Development**: git, curl, wget, build tools
 - **Custom Scripts**: kill-port, bzf, vimv, take, taketmp
 
