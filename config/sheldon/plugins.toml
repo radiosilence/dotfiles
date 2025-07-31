@@ -3,30 +3,43 @@ shell = "zsh"
 # Sheldon plugin configuration for Zsh
 # Equivalent to Fish plugins: sponge, abbreviation-tips, lf-icons, fish-ai
 
-# Core Zsh enhancements (Fish has these built-in)
+# ============================================================================
+# Core Zsh Enhancements (Fish has these features built-in)
+# ============================================================================
+
+# Syntax highlighting for commands as you type
+# Colors commands green (valid) or red (invalid), highlights strings, etc.
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
 
+# Fish-like autosuggestions based on history and completions
+# Shows grayed-out text suggesting commands as you type, press → to accept
 [plugins.zsh-autosuggestions] 
 github = "zsh-users/zsh-autosuggestions"
 
+# Additional completion definitions for 200+ commands
+# Extends zsh's built-in completions with support for more CLI tools
 [plugins.zsh-completions]
 github = "zsh-users/zsh-completions" 
 
+# Search through command history with up/down arrows
+# Use ↑/↓ to search history entries that match your current partial command
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
 
+# ============================================================================
+# Fish Plugin Equivalents
+# ============================================================================
+
 # Replaces Fish plugin: meaningful-ooo/sponge
-# Removes failed commands from history
+# Automatically removes failed commands from your shell history
+# Keeps history clean by removing commands that returned non-zero exit codes
 [plugins.zsh-sponge]
 github = "zthxxx/zsh-history-enquirer"
 
 # Replaces Fish plugin: gazorby/fish-abbreviation-tips  
 # Shows abbreviation expansions as you type
+# Creates expandable shortcuts like 'gl' → 'git log --oneline'
 [plugins.zsh-abbr]
 github = "olets/zsh-abbr"
 
-# Replaces Fish plugin: joshmedeski/fish-lf-icons
-# Directory icons for lf file manager
-[plugins.lf-icons]
-local = "~/.config/zsh/plugins/lf-icons"
