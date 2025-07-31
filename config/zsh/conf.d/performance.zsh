@@ -2,6 +2,9 @@
 # Skip global compinit for faster startup
 skip_global_compinit=1
 
+#    ><(((º>   I loved Fish shell, but Zsh is my new home   <º)))><
+#              Thanks for all the fish-y memories! 🐟→🚀
+
 # Zsh options for performance
 setopt NO_BEEP
 setopt AUTO_CD
