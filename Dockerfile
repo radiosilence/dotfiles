@@ -42,8 +42,8 @@ RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes
 ENV PATH="/root/.local/bin:/root/.dotfiles/bin:$PATH"
 
 # Add plugins to mise
-RUN ~/.local/bin/mise plugin add helix https://github.com/helix-editor/helix.git
-RUN ~/.local/bin/mise plugin add sheldon https://github.com/rossmacarthur/sheldon.git
+RUN mise plugin add helix https://github.com/helix-editor/helix.git
+RUN mise plugin add sheldon https://github.com/rossmacarthur/sheldon.git
 
 COPY . /root/.dotfiles
 
