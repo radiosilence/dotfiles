@@ -1,0 +1,6 @@
+# Fuzzy rebase - select branch to rebase onto
+fr() {
+    local branch
+    branch=$(git --no-pager branch --all --sort=-committerdate | fzf | tr -d '[:space:]')
+    [[ -n "$branch" ]] && git rebase "$branch"
+}

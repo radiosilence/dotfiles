@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+
+# Regenerate all Zsh completions
+echo "Regenerating Zsh completions..."
+
+# Remove existing completion dump
+rm -f ~/.zcompdump*
+
+# Force rebuild of completion system
+autoload -Uz compinit
+compinit -C
+
+# Rebuild completions for common tools
+echo "Rebuilding completions for installed tools..."
+
+# Docker
+if command -v docker >/dev/null; then
+    echo "  → docker"
+    mkdir -p ~/.config/zsh/completions
+    docker completion zsh > ~/.config/zsh/completions/_docker 2>/dev/null || true
+fi
+
+# kubectl
+if command -v kubectl >/dev/null; then
+    echo "  → kubectl"
+    mkdir -p ~/.config/zsh/completions
+    kubectl completion zsh > ~/.config/zsh/completions/_kubectl 2>/dev/null || true
+fi
+
+# gh (GitHub CLI)
+if command -v gh >/dev/null; then
+    echo "  → gh"
+    mkdir -p ~/.config/zsh/completions
+    gh completion -s zsh > ~/.config/zsh/completions/_gh 2>/dev/null || true
+fi
+
+# Helm
+if command -v helm >/dev/null; then
+    echo "  → helm"
+    mkdir -p ~/.config/zsh/completions
+    helm completion zsh > ~/.config/zsh/completions/_helm 2>/dev/null || true
+fi
+
+# Add completions directory to fpath if it exists
+if [[ -d ~/.config/zsh/completions ]]; then
+    echo 'fpath=(~/.config/zsh/completions $fpath)' > ~/.config/zsh/conf.d/completions.zsh
+fi
+
+echo "Completion regeneration complete!"
+echo "Restart your shell or run 'exec zsh' to load new completions."
