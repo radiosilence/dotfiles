@@ -1,1 +1,0 @@
-bind \cc 'commandline ""'
