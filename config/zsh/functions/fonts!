@@ -1,0 +1,85 @@
+# 🎨 Elegant font installer
+fonts!() {
+    local force=false
+    
+    # Parse options
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -f|--force)
+                force=true
+                shift
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+    
+    if [[ $# -eq 0 ]]; then
+        echo "
+╭────────────────────────────╮
+│ Usage: fonts! URL1 URL2... │
+│        fonts! -f URL...    │
+╰────────────────────────────╯"
+        return 1
+    fi
+    
+    _status() {
+        printf "\r\033[2K\033[38;5;%dm%s\033[0m %s\n" "$1" "$2" "$3"
+    }
+    
+    printf "\n\033[38;5;105m%s\033[0m\n" "
+     ╭──────────────────────────╮
+     │    𝓕𝓸𝓷𝓽 𝓘𝓷𝓼𝓽𝓪𝓵𝓵𝓮𝓻 ✨    │
+     ╰──────────────────────────╯"
+    
+    local installed=0 skipped=0 failed=0
+    
+    for url in "$@"; do
+        local tmp=$(mktemp -d)
+        
+        echo -n "  ⚡️ Fetching $(basename "$url")..."
+        if command -v aria2c >/dev/null && aria2c "$url" -d "$tmp" -q --max-concurrent-downloads=16 \
+                --split=16 --min-split-size=1M --file-allocation=none; then
+            printf "\r\033[2K  %s\n" "📦 Extracting..."
+            bsdtar -xf "$tmp"/*.zip -C "$tmp" 2>/dev/null
+            
+            # Find and install fonts
+            local fonts=($(fd -t f '\.(otf|ttf)$' "$tmp" 2>/dev/null || find "$tmp" -name '*.otf' -o -name '*.ttf'))
+            local total=${#fonts[@]}
+            
+            echo "  ╭─── Found $total fonts in $(basename "$url") ───╮"
+            
+            for font in "${fonts[@]}"; do
+                local name=$(basename "$font")
+                if [[ -e ~/Library/Fonts/"$name" ]] && [[ $force == false ]]; then
+                    _status 214 "  │ ⊙" " $name"
+                    ((skipped++))
+                else
+                    if cp -f "$font" ~/Library/Fonts/; then
+                        _status 82 "  │ ✓" " $name"
+                        ((installed++))
+                    else
+                        _status 196 "  │ ⊘" " $name"
+                        ((failed++))
+                    fi
+                fi
+            done
+            echo "  ╰────────────────────────╯"
+        else
+            _status 196 "  │ ⊘" " Failed to download: $(basename "$url")"
+        fi
+        rm -rf "$tmp"
+    done
+    
+    # Final stats
+    printf "\n  📊 \033[38;5;105mResults:\033[0m\n"
+    [[ $installed -gt 0 ]] && echo "     ✓ Installed: $installed fonts"
+    [[ $skipped -gt 0 ]] && echo "     ⊙ Skipped: $skipped fonts"
+    [[ $failed -gt 0 ]] && echo "     ⊘ Failed: $failed fonts"
+    
+    # Refresh font cache in background
+    atsutil databases -remove >/dev/null 2>&1 &
+    
+    printf "\n  🎨 \033[38;5;105mAll done!\033[0m\n\n"
+}
