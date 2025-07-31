@@ -86,7 +86,7 @@ hide_when_typing = false
 
 # Shell
 [terminal.shell]
-program = "/opt/homebrew/bin/fish"
+program = "/opt/homebrew/bin/zsh"
 
 # Key bindings (emulating some WezTerm functionality)
 [[keyboard.bindings]]
