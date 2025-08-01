@@ -81,7 +81,7 @@ style = "green"
 disabled = true
 
 [container]
-format = "🐳 "
+format = " "
 disabled = false
 
 [golang]
