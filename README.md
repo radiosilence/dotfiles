@@ -80,6 +80,14 @@ Individual packages have their own documentation:
 - **[📧 Fastmail CLI](packages/fastmail-cli/README.md)** - Command-line interface for Fastmail JMAP API
 - **[😴 Sleep Report](packages/sleep-report/README.md)** - macOS sleep health analyzer
 
+## 🐳 Container Usage
+
+**Get a shell in the running container:**
+
+```sh
+docker exec -it -u jc -w /home/jc <container_name> zsh
+```
+
 ---
 
 **Disclaimer: There are some vibecoded utilities in here**
