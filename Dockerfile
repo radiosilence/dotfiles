@@ -84,9 +84,20 @@ RUN rm -f /tmp/github_token
 # Run zsh once to initialize plugins and first-run setup
 RUN zsh -c 'echo "Initializing zsh and plugins..."'
 
+# Install nano-web for healthcheck
+RUN . ~/.cargo/env \
+  && go install github.com/radiosilence/nano-web@latest
+
+# Create /srv directory for nano-web
+RUN sudo mkdir -p /srv
+
 # Container-specific configurations
 ENV SHELL=/bin/zsh
 ENV TERM=xterm-256color
 
-# Default to zsh shell
-CMD ["/bin/zsh"]
+# Add healthcheck using nano-web
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/_health || exit 1
+
+# Run nano-web server to keep container alive and provide healthcheck
+CMD ["/home/jc/go/bin/nano-web", "serve", "/srv", "--port", "3000"]
