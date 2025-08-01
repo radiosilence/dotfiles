@@ -88,8 +88,10 @@ RUN zsh -c 'echo "Initializing zsh and plugins..."'
 RUN . ~/.cargo/env \
   && go install github.com/radiosilence/nano-web@latest
 
-# Create /srv directory for nano-web
-RUN sudo mkdir -p /srv
+# Create /srv directory for nano-web as root
+USER root
+RUN mkdir -p /srv && chown jc:jc /srv
+USER jc
 
 # Container-specific configurations
 ENV SHELL=/bin/zsh
