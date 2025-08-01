@@ -4,6 +4,10 @@ name: Build and Push Multi-Platform Container Image
 # named GH_PAT to avoid GitHub API rate limiting during mise tool installations.
 # The PAT should have 'public_repo' scope for public repositories.
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
