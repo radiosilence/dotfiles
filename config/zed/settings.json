@@ -59,13 +59,13 @@
   "agent": {
     "default_profile": "write",
     "inline_assistant_model": {
-      "provider": "zed.dev",
-      "model": "claude-sonnet-4"
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-thinking-latest"
     },
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-sonnet-4-thinking"
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-thinking-latest"
     }
   },
   "ui_font_size": 13,
