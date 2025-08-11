@@ -27,6 +27,7 @@ helix = "latest"
 pipx = "latest"
 python = "latest"
 kubectl = "latest"
+rust = "latest"
 
 [settings]
 paranoid = false
