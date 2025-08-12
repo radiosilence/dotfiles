@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# sudo wrapper - always use askpass with 1Password
-# This ensures all scripts that call 'sudo' will use our askpass script
-
-export SUDO_ASKPASS=~/.dotfiles/bin/sudo-ask-pass
-exec /usr/bin/sudo --askpass "$@"
