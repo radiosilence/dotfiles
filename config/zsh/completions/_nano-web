@@ -45,10 +45,10 @@ _arguments "${_arguments_options[@]}" : \
 '--config-prefix=[Environment variable prefix for config injection]:CONFIG_PREFIX:_default' \
 '--log-level=[Log level (debug, info, warn, error)]:LOG_LEVEL:_default' \
 '--log-format=[Log format (json, console)]:LOG_FORMAT:_default' \
-'--log-requests=[Log HTTP requests]:LOG_REQUESTS:(true false)' \
 '-d[Check/reload files if modified]' \
 '--dev[Check/reload files if modified]' \
 '--spa[Enable SPA mode (serve index.html for all routes)]' \
+'--log-requests[Log HTTP requests]' \
 '-h[Print help]' \
 '--help[Print help]' \
 '::directory -- Directory to serve:_files' \
