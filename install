@@ -44,10 +44,19 @@ link_confdir() {
     printf "\033[34m📁 creating ~/.config\033[0m\n"
     mkdir "$HOME/.config"
   fi
-  if [ -e "$HOME/.config/$1" ]; then
+  
+  # Check if it's already the correct symlink
+  if [ -h "$HOME/.config/$1" ] && [ "$(readlink "$HOME/.config/$1")" = "$PWD/$1" ]; then
+    printf "\033[90m⏭️  skipping ~/.config/$1 (correct link)\033[0m\n"
+    return
+  fi
+  
+  # Remove existing file/directory/wrong symlink
+  if [ -e "$HOME/.config/$1" ] || [ -h "$HOME/.config/$1" ]; then
     printf "\033[31m🗑️  rm ~/.config/$1\033[0m\n"
     rm -rf "$HOME/.config/$1"
   fi
+  
   printf "\033[32m🔗 linking $PWD/$1 --> ~/.config/$1\033[0m\n"
   ln -s "$PWD/$1" "$HOME/.config/$1"
 }
