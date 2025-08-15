@@ -13,19 +13,19 @@ link_dotfile() {
     return
   fi
   if [ -h "$HOME/$1" ]; then
-    printf "\033[90m⏭️  skipping $1 (link)\033[0m\n"
+    printf "\033[90m✓ skipping $1 (link)\033[0m\n"
     return
   fi
   if [ -f "$HOME/$1" ]; then
-    printf "\033[90m⏭️  skipping $1 (file)\033[0m\n"
+    printf "\033[90m✓ skipping $1 (file)\033[0m\n"
     return
   fi
   if [ -d "$HOME/$1" ]; then
-    printf "\033[90m⏭️  skipping $1 (dir)\033[0m\n"
+    printf "\033[90m✓ skipping $1 (dir)\033[0m\n"
     return
   fi
   if [ ".config" = "$1" ]; then
-    printf "\033[90m⏭️  skipping $1 (.config)\033[0m\n"
+    printf "\033[90m✓ skipping $1 (.config)\033[0m\n"
     return
   fi
 
@@ -47,7 +47,7 @@ link_confdir() {
   
   # Check if it's already the correct symlink
   if [ -h "$HOME/.config/$1" ] && [ "$(readlink "$HOME/.config/$1")" = "$PWD/$1" ]; then
-    printf "\033[90m⏭️  skipping ~/.config/$1 (correct link)\033[0m\n"
+    printf "\033[90m✓ skipping ~/.config/$1 (correct link)\033[0m\n"
     return
   fi
   
@@ -123,7 +123,7 @@ install_sheldon_plugins() {
       printf "\033[33m⚠️  Warning: Sheldon plugin installation failed\033[0m\n"
     fi
   else
-    printf "\033[90m⏭️  Sheldon not found, skipping plugin installation\033[0m\n"
+    printf "\033[90m✓ Sheldon not found, skipping plugin installation\033[0m\n"
   fi
 }
 
