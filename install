@@ -4,8 +4,8 @@ DOTFILES=~/.dotfiles
 
 # Only pull if we're in a git repo and have network access
 if [ -d "$DOTFILES/.git" ]; then
-  echo "Updating dotfiles..."
-  (cd "$DOTFILES" && git pull 2>/dev/null) || echo "Warning: Could not update dotfiles repository"
+  printf "\033[36m🔄 Updating dotfiles...\033[0m\n"
+  (cd "$DOTFILES" && git pull 2>/dev/null) || printf "\033[33m⚠️  Warning: Could not update dotfiles repository\033[0m\n"
 fi
 
 link_dotfile() {
@@ -13,19 +13,19 @@ link_dotfile() {
     return
   fi
   if [ -h "$HOME/$1" ]; then
-    echo "skipping $1 (link) "
+    printf "\033[90m⏭️  skipping $1 (link)\033[0m\n"
     return
   fi
   if [ -f "$HOME/$1" ]; then
-    echo "skipping $1 (file) "
+    printf "\033[90m⏭️  skipping $1 (file)\033[0m\n"
     return
   fi
   if [ -d "$HOME/$1" ]; then
-    echo "skipping $1 (dir) "
+    printf "\033[90m⏭️  skipping $1 (dir)\033[0m\n"
     return
   fi
   if [ ".config" = "$1" ]; then
-    echo "skipping $1 (.config) "
+    printf "\033[90m⏭️  skipping $1 (.config)\033[0m\n"
     return
   fi
 
@@ -35,26 +35,26 @@ link_dotfile() {
 
   echo "$PWD/$1"
 
-  echo "linking $PWD/$1 -> $HOME/$1"
+  printf "\033[32m🔗 linking $PWD/$1 -> $HOME/$1\033[0m\n"
   ln -s "$PWD/$1" "$HOME/$1"
 }
 
 link_confdir() {
   if [ ! -e "$HOME/.config" ]; then
-    echo "creating ~/.config"
+    printf "\033[34m📁 creating ~/.config\033[0m\n"
     mkdir "$HOME/.config"
   fi
   if [ -e "$HOME/.config/$1" ]; then
-    echo "rm ~/.config/$1"
+    printf "\033[31m🗑️  rm ~/.config/$1\033[0m\n"
     rm -rf "$HOME/.config/$1"
   fi
-  echo "linking $PWD/$1 --> ~/.config/$1"
+  printf "\033[32m🔗 linking $PWD/$1 --> ~/.config/$1\033[0m\n"
   ln -s "$PWD/$1" "$HOME/.config/$1"
 }
 
 install_dotfiles() {
   [ ! -e "$DOTFILES" ] && return
-  echo "installing from $DOTFILES..."
+  printf "\n\033[1;36m🏠 Installing dotfiles from $DOTFILES...\033[0m\n"
   (
     cd "$DOTFILES" || exit
     for file in .*; do
@@ -74,7 +74,7 @@ install_confdirs() {
 
 install_brewfile() {
   if [ -e /Library ] && [ ! -e "$HOME/Brewfile" ]; then
-    echo "linking Brewfile $DOTFILES/Brewfile -> ~/Brewfile"
+    printf "\033[32m🔗 linking Brewfile $DOTFILES/Brewfile -> ~/Brewfile\033[0m\n"
     ln -s "$DOTFILES/Brewfile" "$HOME/Brewfile"
   fi
 }
@@ -86,7 +86,7 @@ install_gitconfig() {
   fi
   
   if ! grep '.dotfiles' ~/.gitconfig > /dev/null 2>&1; then
-    echo "Adding ~/.dotfiles/git.d/core.conf to ~/.gitconfig"
+    printf "\033[35m⚙️  Adding ~/.dotfiles/git.d/core.conf to ~/.gitconfig\033[0m\n"
     printf "\n[include]\npath = ~/.dotfiles/git.d/core.conf\n" >> ~/.gitconfig
   fi
 }
@@ -100,21 +100,21 @@ install_sshconfig() {
   fi
   
   if ! grep '.dotfiles' ~/.ssh/config > /dev/null 2>&1; then
-    echo "Adding ~/.dotfiles/ssh.d/*.conf to ~/.ssh/config"
+    printf "\033[35m🔐 Adding ~/.dotfiles/ssh.d/*.conf to ~/.ssh/config\033[0m\n"
     printf "\nInclude ~/.dotfiles/ssh.d/*.conf\n" >> ~/.ssh/config
   fi
 }
 
 install_sheldon_plugins() {
   if command -v sheldon > /dev/null 2>&1; then
-    echo "Installing Sheldon plugins..."
+    printf "\033[36m🔌 Installing Sheldon plugins...\033[0m\n"
     if sheldon source > /dev/null 2>&1; then
-      echo "Sheldon plugins installed successfully"
+      printf "\033[32m✅ Sheldon plugins installed successfully\033[0m\n"
     else
-      echo "Warning: Sheldon plugin installation failed"
+      printf "\033[33m⚠️  Warning: Sheldon plugin installation failed\033[0m\n"
     fi
   else
-    echo "Sheldon not found, skipping plugin installation"
+    printf "\033[90m⏭️  Sheldon not found, skipping plugin installation\033[0m\n"
   fi
 }
 
