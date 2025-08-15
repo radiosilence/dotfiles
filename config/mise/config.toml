@@ -30,6 +30,7 @@ pipx = "latest"
 python = "latest"
 kubectl = "latest"
 rust = "latest"
+protobuf = "latest"
 
 [settings]
 paranoid = false

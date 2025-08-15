@@ -38,19 +38,15 @@
     "docker-compose": true,
     "dockerfile": true,
     "elixir": true,
-    "fish": true,
     "git-firefly": true,
     "helm": true,
     "html": true,
-    "ini": true,
     "ruby": true,
     "kotlin": true,
     "lua": true,
-    "nickel": true,
     "nginx": true,
     "proto": true,
     "scss": true,
-    "ssh-config": true,
     "stylelint": true,
     "terraform": true,
     "toml": true,
@@ -86,7 +82,7 @@
   "minimap": {
     "show": "never"
   },
-  // "helix_mode": true,
+  "helix_mode": false,
   "wrap_guides": [80, 100],
   "soft_wrap": "none",
   "format_on_save": "on",
@@ -171,6 +167,24 @@
     }
   },
   "lsp": {
+    "rust-analyzer": {
+      "enable_lsp_tasks": true,
+      "binary": {
+        "ignore_system_version": true
+      },
+      "initialization_options": {
+        "inlayHints": {
+          "maxLength": null,
+          "lifetimeElisionHints": {
+            "enable": "skip_trivial",
+            "useParameterNames": true
+          },
+          "closureReturnTypeHints": {
+            "enable": "always"
+          }
+        }
+      }
+    },
     "harper-ls": {
       "settings": {
         "harper-ls": {
