@@ -1,4 +1,17 @@
 {
+  "project_panel": {
+    "dock": "left"
+  },
+  "agent_servers": {
+    "claude-code-acp": {
+      "command": "zsh",
+      "args": [
+        "-c",
+        "mise exec -- node ~/workspace/zed-industries/zed-acp/node_modules/@zed-industries/claude-code-acp/dist/index.js"
+      ],
+      "env": {}
+    }
+  },
   "outline_panel": {
     "dock": "left"
   },
@@ -53,6 +66,8 @@
     "zedokai": true
   },
   "agent": {
+    "dock": "right",
+    "play_sound_when_agent_done": true,
     "default_profile": "write",
     "inline_assistant_model": {
       "provider": "anthropic",
@@ -64,10 +79,12 @@
       "model": "claude-sonnet-4-thinking-latest"
     }
   },
+  "agent_font_size": 16,
   "ui_font_size": 13,
   "buffer_font_size": 12.0,
   "buffer_font_family": "GeistMono Nerd Font",
   "terminal": {
+    "dock": "bottom",
     "font_features": {
       "liga": false
     },
@@ -96,8 +113,7 @@
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
-        "source.organizeImports.biome": true,
-        "quickfix.biome": true
+        "source.organizeImports.biome": true
       }
     },
     "TSX": {
@@ -108,15 +124,13 @@
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.fixAll.biome": true,
-        "source.organizeImports.biome": true,
-        "quickfix.biome": true
+        "source.organizeImports.biome": true
       }
     },
     "CSS": {
       "code_actions_on_format": {
         "source.organizeImports.biome": true,
-        "source.fixAll.stylelint": true,
-        "quickfix.biome": true
+        "source.fixAll.stylelint": true
       }
     },
     "SCSS": {
@@ -124,16 +138,7 @@
         "source.fixAll.stylelint": true
       }
     },
-    "JSON": {
-      "formatter": { "language_server": { "name": "biome" } },
-      "code_actions_on_format": {
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true,
-        "quickfix.biome": true
-      }
-    },
     "Elixir": {
-      "language_servers": ["lexical", "!next-ls", "!elixir-ls", "..."],
       // "language_servers": ["next-ls", "!lexical", "!elixir-ls", "..."],
       "format_on_save": {
         "external": {
