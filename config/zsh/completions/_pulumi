@@ -5879,9 +5879,109 @@ _pulumi_state_repair()
     noun_aliases=()
 }
 
+_pulumi_state_taint()
+{
+    last_command="pulumi_state_taint"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--stack=")
+    two_word_flags+=("--stack")
+    two_word_flags+=("-s")
+    flags+=("--yes")
+    flags+=("-y")
+    local_nonpersistent_flags+=("--yes")
+    local_nonpersistent_flags+=("-y")
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--cwd=")
+    two_word_flags+=("--cwd")
+    two_word_flags+=("-C")
+    flags+=("--disable-integrity-checking")
+    flags+=("--emoji")
+    flags+=("-e")
+    flags+=("--fully-qualify-stack-names")
+    flags+=("-Q")
+    flags+=("--logflow")
+    flags+=("--logtostderr")
+    flags+=("--memprofilerate=")
+    two_word_flags+=("--memprofilerate")
+    flags+=("--non-interactive")
+    flags+=("--profiling=")
+    two_word_flags+=("--profiling")
+    flags+=("--tracing=")
+    two_word_flags+=("--tracing")
+    flags+=("--verbose=")
+    two_word_flags+=("--verbose")
+    two_word_flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
 _pulumi_state_unprotect()
 {
     last_command="pulumi_state_unprotect"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--all")
+    local_nonpersistent_flags+=("--all")
+    flags+=("--stack=")
+    two_word_flags+=("--stack")
+    two_word_flags+=("-s")
+    flags+=("--yes")
+    flags+=("-y")
+    local_nonpersistent_flags+=("--yes")
+    local_nonpersistent_flags+=("-y")
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--cwd=")
+    two_word_flags+=("--cwd")
+    two_word_flags+=("-C")
+    flags+=("--disable-integrity-checking")
+    flags+=("--emoji")
+    flags+=("-e")
+    flags+=("--fully-qualify-stack-names")
+    flags+=("-Q")
+    flags+=("--logflow")
+    flags+=("--logtostderr")
+    flags+=("--memprofilerate=")
+    two_word_flags+=("--memprofilerate")
+    flags+=("--non-interactive")
+    flags+=("--profiling=")
+    two_word_flags+=("--profiling")
+    flags+=("--tracing=")
+    two_word_flags+=("--tracing")
+    flags+=("--verbose=")
+    two_word_flags+=("--verbose")
+    two_word_flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_pulumi_state_untaint()
+{
+    last_command="pulumi_state_untaint"
 
     command_aliases=()
 
@@ -5988,7 +6088,9 @@ _pulumi_state()
     commands+=("protect")
     commands+=("rename")
     commands+=("repair")
+    commands+=("taint")
     commands+=("unprotect")
+    commands+=("untaint")
     commands+=("upgrade")
 
     flags=()
