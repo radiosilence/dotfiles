@@ -1,5 +1,10 @@
 ### Claude Code Configuration
 
+### Tooling
+
+- Always use `mise x` for language based tools.
+- Always run the configured formatter (biome/prettier/mix format) after doing any work.
+
 #### Response Style
 
 - Be extremely concise and information-dense
