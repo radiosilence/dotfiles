@@ -2,16 +2,6 @@
   "project_panel": {
     "dock": "left"
   },
-  "agent_servers": {
-    "claude-code-acp": {
-      "command": "zsh",
-      "args": [
-        "-c",
-        "mise exec -- node ~/workspace/zed-industries/zed-acp/node_modules/@zed-industries/claude-code-acp/dist/index.js"
-      ],
-      "env": {}
-    }
-  },
   "outline_panel": {
     "dock": "left"
   },
@@ -118,7 +108,7 @@
     },
     "TSX": {
       "language_servers": ["vtsls", "..."],
-      // "language_servers": ["tsgo", "vtsls"],
+      // "language_servers": ["tsgo"],
       // "language_servers": ["tsgo", "vtsls"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
@@ -139,7 +129,13 @@
       }
     },
     "Elixir": {
-      // "language_servers": ["next-ls", "!lexical", "!elixir-ls", "..."],
+      "language_servers": [
+        "expert",
+        "!elixir-ls",
+        "!next-ls",
+        "!lexical",
+        "..."
+      ],
       "format_on_save": {
         "external": {
           "command": "mix",
