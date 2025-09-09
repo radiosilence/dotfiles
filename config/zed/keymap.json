@@ -16,6 +16,14 @@
     "context": "Editor",
     "bindings": {
       // "j k": ["workspace::SendKeystrokes", "escape"]
+      "cmd-k cmd-F": [
+        "task::Spawn",
+        {
+          "task_name": "tv.text",
+          "reveal_target": "center"
+        }
+      ],
+      "cmd-i": "agent::QuoteSelection"
     }
   },
   {
