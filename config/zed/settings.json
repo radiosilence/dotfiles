@@ -89,7 +89,7 @@
   "minimap": {
     "show": "never"
   },
-  "helix_mode": false,
+  "helix_mode": true,
   "wrap_guides": [80, 100],
   "soft_wrap": "none",
   "format_on_save": "on",
