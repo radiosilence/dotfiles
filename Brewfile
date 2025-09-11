@@ -18,6 +18,24 @@ tap 'tursodatabase/tap'
 # =============================================================================
 
 # -----------------------------------------------------------------------------
+# Development & Design
+# -----------------------------------------------------------------------------
+
+cask 'zed', greedy: true
+cask 'figma', greedy: true
+cask 'fork', greedy: true
+cask 'beekeeper-studio', greedy: true
+cask 'lens', greedy: true
+
+# -----------------------------------------------------------------------------
+# Web Browsers
+# -----------------------------------------------------------------------------
+
+cask 'firefox', greedy: true
+cask 'arc', greedy: true
+cask 'zen', greedy: true
+
+# -----------------------------------------------------------------------------
 # Development Tools & Languages
 # -----------------------------------------------------------------------------
 
@@ -189,31 +207,11 @@ cask '1password', greedy: true
 cask '1password-cli', greedy: true
 
 # -----------------------------------------------------------------------------
-# Development & Design
-# -----------------------------------------------------------------------------
-
-cask 'zed', greedy: true
-cask 'zed@preview', greedy: true
-cask 'figma', greedy: true
-cask 'fork', greedy: true
-cask 'beekeeper-studio', greedy: true
-cask 'lens', greedy: true
-cask 'pgadmin4', greedy: true
-
-# -----------------------------------------------------------------------------
 # Communication
 # -----------------------------------------------------------------------------
 
 cask 'discord', greedy: true
 cask 'signal', greedy: true
-
-# -----------------------------------------------------------------------------
-# Web Browsers
-# -----------------------------------------------------------------------------
-
-cask 'firefox', greedy: true
-cask 'arc', greedy: true
-cask 'zen', greedy: true
 
 # -----------------------------------------------------------------------------
 # Media & Entertainment
