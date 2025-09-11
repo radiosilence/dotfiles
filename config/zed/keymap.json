@@ -35,7 +35,12 @@
   {
     "context": "vim_mode == helix_normal && !menu",
     "bindings": {
-      "alt-;": "vim::OtherEnd"
+      "alt-;": "vim::OtherEnd",
+      "space f": "file_finder::Toggle",
+      "shift-h": "pane::ActivatePreviousItem",
+      "shift-l": "pane::ActivateNextItem",
+      "g r": "editor::FindAllReferences",
+      "g space": "editor::OpenExcerpts"
     }
   }
 ]
