@@ -32,7 +32,6 @@ cask 'lens', greedy: true
 # -----------------------------------------------------------------------------
 
 cask 'firefox', greedy: true
-cask 'arc', greedy: true
 cask 'zen', greedy: true
 
 # -----------------------------------------------------------------------------
@@ -258,3 +257,4 @@ cask 'steam'
 brew 'mdless'
 brew 'swiftformat'
 brew 'zsh'
+cask 'adobe-creative-cloud'

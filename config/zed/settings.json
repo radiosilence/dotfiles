@@ -96,7 +96,6 @@
   "ensure_final_newline_on_save": false,
   "languages": {
     "TypeScript": {
-      "language_servers": ["vtsls", "..."],
       // "language_servers": ["tsgo"],
       // "language_servers": ["tsgo", "vtsls"],
       "formatter": { "language_server": { "name": "biome" } },
@@ -107,7 +106,6 @@
       }
     },
     "TSX": {
-      "language_servers": ["vtsls", "..."],
       // "language_servers": ["tsgo"],
       // "language_servers": ["tsgo", "vtsls"],
       "formatter": { "language_server": { "name": "biome" } },
