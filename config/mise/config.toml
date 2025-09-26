@@ -31,6 +31,7 @@ python = "latest"
 kubectl = "latest"
 rust = "latest"
 protobuf = "latest"
+deno = "latest"
 
 [settings]
 paranoid = false
