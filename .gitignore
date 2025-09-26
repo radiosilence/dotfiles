@@ -1,5 +1,4 @@
 .DS_Store
 .dotfiles-dir
 *.code-workspace
-# Keep fish_plugins file - this tracks which plugins should be installed
 .ruby-lsp
