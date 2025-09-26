@@ -34,7 +34,6 @@ fi
 
 # Load completions
 autoload -Uz compinit
-compinit
 
 # Force autoload of custom completions
 if [[ -d ~/.config/zsh/completions ]]; then
