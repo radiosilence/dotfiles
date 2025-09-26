@@ -1,0 +1,23 @@
+# Zim Framework Configuration
+# https://zimfw.sh/docs/
+
+# Use degit for faster cloning
+zstyle ':zim:zmodule' use 'degit'
+
+# Core modules
+zmodule environment       # Sets general shell options and defines environment variables
+zmodule git              # Provides handy git aliases and functions
+zmodule input            # Applies correct bindkeys for input events
+zmodule termtitle        # Sets a custom terminal title
+zmodule utility          # Utility aliases and functions
+
+# Completion system
+zmodule zsh-users/zsh-completions --fpath src
+zmodule completion       # Enables and configures smart and extensive tab completion
+
+# Fish-like experience
+zmodule zsh-users/zsh-autosuggestions
+zmodule zsh-users/zsh-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+
+# Note: Starship prompt is configured separately in starship.zsh

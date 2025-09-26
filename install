@@ -107,23 +107,26 @@ install_sshconfig() {
     touch ~/.ssh/config
     chmod 600 ~/.ssh/config
   fi
-  
+
   if ! grep '.dotfiles' ~/.ssh/config > /dev/null 2>&1; then
     printf "\033[35m🔐 Adding ~/.dotfiles/ssh.d/*.conf to ~/.ssh/config\033[0m\n"
     printf "\nInclude ~/.dotfiles/ssh.d/*.conf\n" >> ~/.ssh/config
   fi
 }
 
-install_sheldon_plugins() {
-  if command -v sheldon > /dev/null 2>&1; then
-    printf "\033[36m🔌 Installing Sheldon plugins...\033[0m\n"
-    if sheldon source > /dev/null 2>&1; then
-      printf "\033[32m✅ Sheldon plugins installed successfully\033[0m\n"
+install_zim_modules() {
+  if command -v zsh > /dev/null 2>&1; then
+    printf "\033[36m🚀 Installing Zim modules...\033[0m\n"
+    # Initialize zim if zimfw.zsh exists
+    if [ -f ~/.zim/zimfw.zsh ]; then
+      zsh -c 'source ~/.zim/zimfw.zsh init -q' \
+        && printf "\033[32m✅ Zim modules installed successfully\033[0m\n" \
+        || printf "\033[33m⚠️  Warning: Zim module installation failed\033[0m\n"
     else
-      printf "\033[33m⚠️  Warning: Sheldon plugin installation failed\033[0m\n"
+      printf "\033[90m✓ Zim not yet initialized, will be installed on first zsh startup\033[0m\n"
     fi
   else
-    printf "\033[90m✓ Sheldon not found, skipping plugin installation\033[0m\n"
+    printf "\033[90m✓ Zsh not found, skipping Zim installation\033[0m\n"
   fi
 }
 
@@ -132,6 +135,6 @@ install_confdirs
 install_brewfile
 install_sshconfig
 install_gitconfig
-install_sheldon_plugins
+install_zim_modules
 
 cd - > /dev/null || exit
