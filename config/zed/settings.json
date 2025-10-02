@@ -72,9 +72,10 @@
   "agent_font_size": 16,
   "ui_font_size": 13,
   "buffer_font_size": 12.0,
-  "buffer_font_family": "GeistMono Nerd Font",
+  "buffer_font_family": "Geist Mono",
   "terminal": {
     "dock": "bottom",
+    "font_family": "GeistMono Nerd Font",
     "font_features": {
       "liga": false
     },

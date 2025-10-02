@@ -257,4 +257,5 @@ cask 'steam'
 brew 'mdless'
 brew 'swiftformat'
 brew 'zsh'
-cask 'adobe-creative-cloud'
+cask 'adobe-creative-cloud', greedy: true
+cask 'altair-graphql-client', greedy: true
