@@ -26,8 +26,6 @@ ENV PATH="/mise/shims:$PATH"
 RUN curl https://mise.run | sh
 
 
-
-
 # Create user jc with uid/gid 1000
 ARG USERNAME=jc
 ARG USER_UID=1000
@@ -84,7 +82,6 @@ RUN rm -f /tmp/github_token
 # Run zsh once to initialize plugins and first-run setup
 RUN zsh -c 'echo "Initializing zsh and plugins..."'
 
-# Install nano-web for healthcheck
 RUN . ~/.cargo/env \
   && go install github.com/radiosilence/nano-web@latest
 
