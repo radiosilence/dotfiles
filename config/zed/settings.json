@@ -1,4 +1,5 @@
 {
+  "agent_servers": {},
   "project_panel": {
     "dock": "left"
   },
@@ -76,6 +77,7 @@
   "terminal": {
     "dock": "bottom",
     "font_family": "GeistMono Nerd Font",
+    // "font_family": "Geist Mono",
     "font_features": {
       "liga": false
     },
@@ -98,7 +100,7 @@
   "languages": {
     "TypeScript": {
       // "language_servers": ["tsgo"],
-      // "language_servers": ["tsgo", "vtsls"],
+      "language_servers": ["vtsls"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -108,7 +110,7 @@
     },
     "TSX": {
       // "language_servers": ["tsgo"],
-      // "language_servers": ["tsgo", "vtsls"],
+      "language_servers": ["vtsls"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -164,6 +166,9 @@
     },
     "YAML": {
       "formatter": "prettier"
+    },
+    "Proto": {
+      "format_on_save": "off"
     }
   },
   "lsp": {
