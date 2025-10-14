@@ -8,6 +8,7 @@ paths:
   default: $albumartist/%if{$year,($year) }$album%aunique{} [$format]/$disc$track. $artist - $title
   comp: Various Artists/$album%aunique{} [$format]/$disc$track. $artist - $title
 plugins:
+  - musicbrainz
   - ftintitle
   - fetchart
   - embedart
