@@ -7,3 +7,5 @@ statsig
 todos
 settings.json
 .claude
+*
+!CLAUDE.md
