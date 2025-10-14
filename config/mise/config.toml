@@ -31,6 +31,7 @@ deno = "latest"
 "ubi:starship/starship" = "latest"
 "ubi:radiosilence/nano-web" = "latest"
 "aqua:cli/cli" = "latest"
+python = "3.12"
 
 [settings]
 paranoid = false

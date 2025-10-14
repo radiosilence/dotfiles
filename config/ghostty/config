@@ -4,7 +4,6 @@ font-size = 11
 font-style = Regular
 keybind = global:§=toggle_quick_terminal
 quick-terminal-animation-duration = 0
-quick-terminal-size = 100%
 macos-option-as-alt = true
 keybind = alt+3=text:#
 keybind = alt+2=text:€
