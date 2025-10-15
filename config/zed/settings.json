@@ -99,9 +99,13 @@
   "ensure_final_newline_on_save": false,
   "languages": {
     "TypeScript": {
-      // "language_servers": ["tsgo", "!vtslbiome"],
-      // If you don't supply an explicit list it runs tsgo which breaks shit
-      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
+      // If you don't disable them runs all of them which breaks shit
+      "language_servers": [
+        "vtsls",
+        "!tsgo",
+        "!typescript-language-server",
+        "..."
+      ],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -109,17 +113,7 @@
         "source.organizeImports.biome": true
       }
     },
-    "TSX": {
-      // "language_servers": ["tsgo"],
-      // If you don't supply an explicit list it runs tsgo which breaks shit
-      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
-      "formatter": { "language_server": { "name": "biome" } },
-      "code_actions_on_format": {
-        "source.fixAll.eslint": true,
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
-      }
-    },
+
     "CSS": {
       "code_actions_on_format": {
         "source.organizeImports.biome": true,
