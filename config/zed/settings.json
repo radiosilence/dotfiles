@@ -1,7 +1,7 @@
 {
   "agent_servers": {},
   "project_panel": {
-    "dock": "left"
+    "dock": "right"
   },
   "outline_panel": {
     "dock": "left"
@@ -99,8 +99,9 @@
   "ensure_final_newline_on_save": false,
   "languages": {
     "TypeScript": {
-      // "language_servers": ["tsgo"],
-      "language_servers": ["vtsls"],
+      // "language_servers": ["tsgo", "biome"],
+      // If you don't supply an explicit list it runs tsgo which breaks shit
+      "language_servers": ["vtsls", "biome", "eslint"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -110,7 +111,8 @@
     },
     "TSX": {
       // "language_servers": ["tsgo"],
-      "language_servers": ["vtsls"],
+      // If you don't supply an explicit list it runs tsgo which breaks shit
+      "language_servers": ["vtsls", "biome", "eslint"],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -129,6 +131,7 @@
         "source.fixAll.stylelint": true
       }
     },
+    "GraphQL": { "formatter": { "language_server": { "name": "biome" } } },
     "Elixir": {
       "language_servers": [
         "expert",
@@ -166,9 +169,6 @@
     },
     "YAML": {
       "formatter": "prettier"
-    },
-    "Proto": {
-      "format_on_save": "off"
     }
   },
   "lsp": {
@@ -228,7 +228,7 @@
       "settings": {
         "typescript": {
           "tsserver": {
-            "maxTsServerMemory": 16384
+            "maxTsServerMemory": 26384
           }
         }
       }
