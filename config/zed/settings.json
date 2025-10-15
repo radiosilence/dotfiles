@@ -99,9 +99,9 @@
   "ensure_final_newline_on_save": false,
   "languages": {
     "TypeScript": {
-      // "language_servers": ["tsgo", "biome"],
+      // "language_servers": ["tsgo", "!vtslbiome"],
       // If you don't supply an explicit list it runs tsgo which breaks shit
-      "language_servers": ["vtsls", "!tsgo", "..."],
+      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -112,7 +112,7 @@
     "TSX": {
       // "language_servers": ["tsgo"],
       // If you don't supply an explicit list it runs tsgo which breaks shit
-      "language_servers": ["vtsls", "!tsgo", "..."],
+      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
