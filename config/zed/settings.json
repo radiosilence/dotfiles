@@ -101,7 +101,7 @@
     "TypeScript": {
       // "language_servers": ["tsgo", "biome"],
       // If you don't supply an explicit list it runs tsgo which breaks shit
-      "language_servers": ["vtsls", "biome", "eslint"],
+      "language_servers": ["vtsls", "!tsgo", "..."],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
@@ -112,7 +112,7 @@
     "TSX": {
       // "language_servers": ["tsgo"],
       // If you don't supply an explicit list it runs tsgo which breaks shit
-      "language_servers": ["vtsls", "biome", "eslint"],
+      "language_servers": ["vtsls", "!tsgo", "..."],
       "formatter": { "language_server": { "name": "biome" } },
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
