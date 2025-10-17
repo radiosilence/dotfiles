@@ -1,7 +1,7 @@
 {
   "agent_servers": {},
   "project_panel": {
-    "dock": "right"
+    "dock": "left"
   },
   "outline_panel": {
     "dock": "left"
@@ -70,7 +70,7 @@
       "model": "claude-sonnet-4-thinking-latest"
     }
   },
-  "agent_font_size": 16,
+  "agent_ui_font_size": 16,
   "ui_font_size": 13,
   "buffer_font_size": 12.0,
   "buffer_font_family": "Geist Mono",
@@ -106,18 +106,28 @@
         "!typescript-language-server",
         "..."
       ],
-      "formatter": { "language_server": { "name": "biome" } },
-      "code_actions_on_format": {
-        "source.fixAll.eslint": true,
-        "source.fixAll.biome": true,
-        "source.organizeImports.biome": true
-      }
+      "formatter": [
+        {
+          "code_action": "source.fixAll.eslint"
+        },
+        {
+          "code_action": "source.fixAll.biome"
+        },
+        {
+          "code_action": "source.organizeImports.biome"
+        },
+        {
+          "language_server": {
+            "name": "biome"
+          }
+        }
+      ]
+      // "language_servers": []
     },
-
     "CSS": {
       "code_actions_on_format": {
-        "source.organizeImports.biome": true,
-        "source.fixAll.stylelint": true
+        "source.fixAll.stylelint": true,
+        "source.organizeImports.biome": true
       }
     },
     "SCSS": {
@@ -127,6 +137,12 @@
     },
     "GraphQL": { "formatter": { "language_server": { "name": "biome" } } },
     "Elixir": {
+      "formatter": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
+        }
+      },
       "language_servers": [
         "expert",
         "!elixir-ls",
@@ -134,12 +150,7 @@
         "!lexical",
         "..."
       ],
-      "format_on_save": {
-        "external": {
-          "command": "mix",
-          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
-        }
-      }
+      "format_on_save": "on"
     },
     "Ruby": {
       "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."]
@@ -148,12 +159,8 @@
       "language_servers": ["pyright", "ruff"],
       "format_on_save": "on",
       "formatter": [
-        {
-          "code_actions": {
-            "source.organizeImports.ruff": true,
-            "source.fixAll.ruff": true
-          }
-        },
+        { "code_action": "source.organizeImports.ruff" },
+        { "code_action": "source.fixAll.ruff" },
         {
           "language_server": {
             "name": "ruff"
