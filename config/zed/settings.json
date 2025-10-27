@@ -1,4 +1,13 @@
 {
+  "use_on_type_format": false,
+  "tab_size": 2,
+  "toolbar": {
+    "code_actions": true
+  },
+  "hover_popover_delay": 200,
+  "ui_font_family": "Geist Mono",
+  "auto_update": false,
+  "vim_mode": false,
   "agent_servers": {},
   "project_panel": {
     "dock": "left"
@@ -70,8 +79,8 @@
       "model": "claude-sonnet-4-thinking-latest"
     }
   },
-  "agent_ui_font_size": 16,
-  "ui_font_size": 13,
+  "agent_ui_font_size": 13.0,
+  "ui_font_size": 13.0,
   "buffer_font_size": 12.0,
   "buffer_font_family": "Geist Mono",
   "terminal": {
@@ -90,6 +99,8 @@
     "dark": "Zedokai"
   },
   "minimap": {
+    "display_in": "active_editor",
+    "thumb": "always",
     "show": "never"
   },
   "helix_mode": false,
