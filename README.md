@@ -1,95 +1,108 @@
-# ✨ Dotfiles ✨
+# Dotfiles
 
-## ⚡ Requirements
+Modern, modular dotfiles setup for macOS with container support.
 
-| 📝 Requirement                |
-| ----------------------------- |
-| 📄 Recent version of **fish** |
+## Requirements
+
+- macOS (Darwin) or Linux (via Docker)
+- Zsh shell
+
+## What's Included
+
+**Core Tools:**
+
+- **zsh** - Shell with modular config structure
+- **mise** - Universal runtime/tool manager (replaces asdf/nvm/rbenv)
+- **starship** - Fast, customizable shell prompt
+- **git** - Modular config via includes
+- **ssh** - Security-focused config modules
+
+**Editors & Dev:**
+
+- **zed** - Primary editor with Claude integration
+- **helix** - Terminal-based editor
+- **ghostty** - Primary terminal emulator
+
+**CLI Utilities:**
+
+- 29 POSIX-compliant scripts in `bin/` (see `bin/<script> --help`)
+- Audio processing tools (FLAC/Opus conversion, CD ripping)
+- Git workflow automation (branch cleanup, squashing)
+- System utilities (port killing, batch renaming, directory pruning)
 
 ---
 
-## 📂 Includes
+## Installation
 
-This repository contains configuration files for:
+### Fresh macOS Setup
 
-| Tool                    | Description                          |
-| ----------------------- | ------------------------------------ |
-| 🎧 **beets**            | Music library manager                |
-| 🌐 **browser-schedule** | Switch default browser by work hours |
-| 📧 **fastmail-cli**     | Fastmail JMAP API client             |
-| 🧘‍♀️ **zsh**             | z interactive shell           |
-| 👻 **ghostty**          | Minimal terminal theme               |
-| 🖌️ **helix**            | Text editor                          |
-| 🛠️ **mise**             | Modern environment manager           |
-| 🚀 **starship**         | Prompt for any shell                 |
-| 🔧 **git**              | Version control                      |
-| 🔐 **ssh**              | Secure shell                         |
-| 💻 **wezterm**          | Terminal emulator                    |
-
-Additional features:
-
-- 💾 POSIX-compliant utility scripts in `./bin`
-- 🔄 Sane default packages for various applications
-
----
-
-## 🛠️ Install Dependencies (macOS)
-
-**Quick setup:**
+Installs Homebrew, clones repo, symlinks configs, and installs all tools:
 
 ```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/bin/setup-macos
 ```
 
-### Required Tools
+### Existing System
 
-| Tool                                      | Description                                                |
-| ----------------------------------------- | ---------------------------------------------------------- |
-| [🍺 homebrew](https://brew.sh/)           | A package manager for macOS                                |
-| [🛠️ mise](https://mise.jdx.dev)           | Replacement for asdf, nvm, rvm, etc. (`brew install mise`) |
-| [👀 fzf](https://github.com/junegunn/fzf) | Fuzzy matcher for everything (`brew install fzf`)          |
-
----
-
-## 💣 Installation Guide
-
-**Clone the repository and run the installer:**
+If you already have Homebrew:
 
 ```sh
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/install
+brew bundle --file=~/.dotfiles/Brewfile
+mise install
 ```
 
-**🤖 Enable AI Features (Optional):**
+### What Install Does
+
+The `install` script:
+
+- Symlinks dotfiles (`.zshrc`, `.tmux.conf`) to `$HOME`
+- Symlinks `config/` dirs to `~/.config/`
+- Backs up existing configs to `~/.dotfiles-backup-<timestamp>` before overwriting
+- Injects git/ssh config includes into existing files
+- Installs Sheldon plugins
+
+**Safe to run multiple times** - skips existing links and backs up before changes.
+
+## Brewfile Structure
+
+The Brewfile is organized into logical sections for easier maintenance:
+
+- **CORE** - Essential system tools (git, curl, zsh, gnupg)
+- **DEV TOOLS** - IDEs and dev applications (Zed, Figma, Fork)
+- **LANGUAGES** - Runtimes and language managers (node, mise, uv)
+- **BUILD TOOLS** - Compilers and build systems (cmake, llvm)
+- **LSPS** - Language servers for editor integration
+- **INFRA** - Cloud and DevOps tools (AWS, Terraform, Ansible)
+- **NETWORKING** - Network debugging tools (nmap, grpcurl)
+- **CLI UTILS** - Shell productivity tools (bat, ripgrep, btop)
+- **MEDIA** - Audio/video processing (ffmpeg, flac, sox)
+- **DATABASE** - Database clients and tools
+- And more...
+
+To install only specific sections, extract them into separate Brewfiles.
+
+## Key Scripts
+
+All scripts support `--help` flag:
+
+- **kill-port** - Kill process listening on port
+- **vimv** - Batch rename files in $EDITOR
+- **git-sync** - Clean up merged branches
+- **prune** - Find and delete small directories
+- **to-opus** - Convert audio files to Opus format
+- **setup-macos** - Bootstrap fresh macOS installation
+
+## Container Usage
+
+Full dev environment via Docker:
 
 ```sh
-~/.dotfiles/bin/setup-fish-ai
+docker build -t dotfiles .
+docker run -it dotfiles zsh
 ```
 
-This sets up AI-powered shell assistance with:
-
-- **Ctrl + P**: Transform comments to commands and vice versa
-- **Ctrl + Space**: Autocomplete commands or suggest fixes
-
-> 💡 **Note**: AI features require an Anthropic API key.
-
-## Package Documentation
-
-Individual packages have their own documentation:
-
-- **[📧 Fastmail CLI](packages/fastmail-cli/README.md)** - Command-line interface for Fastmail JMAP API
-- **[😴 Sleep Report](packages/sleep-report/README.md)** - macOS sleep health analyzer
-
-## 🐳 Container Usage
-
-**Get a shell in the running container:**
-
-```sh
-docker exec -it -u jc -w /home/jc <container_name> zsh
-```
-
----
-
-**Disclaimer: There are some vibecoded utilities in here**
-
----
+Includes all configs and mise-managed tools.
