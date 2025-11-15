@@ -1,12 +1,26 @@
 #!/bin/sh
 cd "$(dirname "$0")" || exit
 DOTFILES=~/.dotfiles
+BACKUP_DIR="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
 # Only pull if we're in a git repo and have network access
 if [ -d "$DOTFILES/.git" ]; then
   printf "\033[36m🔄 Updating dotfiles...\033[0m\n"
-  (cd "$DOTFILES" && git pull 2>/dev/null) || printf "\033[33m⚠️  Warning: Could not update dotfiles repository\033[0m\n"
+  (cd "$DOTFILES" && git pull 2> /dev/null) || printf "\033[33m⚠️  Warning: Could not update dotfiles repository\033[0m\n"
 fi
+
+backup_if_exists() {
+  target="$1"
+  if [ -e "$target" ] || [ -h "$target" ]; then
+    if [ ! -d "$BACKUP_DIR" ]; then
+      mkdir -p "$BACKUP_DIR"
+      printf "\033[33m💾 Creating backup directory: $BACKUP_DIR\033[0m\n"
+    fi
+    backup_path="$BACKUP_DIR/$(basename "$target")"
+    printf "\033[33m💾 Backing up $target -> $backup_path\033[0m\n"
+    mv "$target" "$backup_path"
+  fi
+}
 
 link_dotfile() {
   if [ "$1" = "." ] || [ "$1" = ".." ]; then
@@ -44,19 +58,18 @@ link_confdir() {
     printf "\033[34m📁 creating ~/.config\033[0m\n"
     mkdir "$HOME/.config"
   fi
-  
+
   # Check if it's already the correct symlink
   if [ -h "$HOME/.config/$1" ] && [ "$(readlink "$HOME/.config/$1")" = "$PWD/$1" ]; then
     printf "\033[90m✓ skipping ~/.config/$1 (correct link)\033[0m\n"
     return
   fi
-  
-  # Remove existing file/directory/wrong symlink
+
+  # Backup and remove existing file/directory/wrong symlink
   if [ -e "$HOME/.config/$1" ] || [ -h "$HOME/.config/$1" ]; then
-    printf "\033[31m🗑️  rm ~/.config/$1\033[0m\n"
-    rm -rf "$HOME/.config/$1"
+    backup_if_exists "$HOME/.config/$1"
   fi
-  
+
   printf "\033[32m🔗 linking $PWD/$1 --> ~/.config/$1\033[0m\n"
   ln -s "$PWD/$1" "$HOME/.config/$1"
 }
@@ -93,7 +106,7 @@ install_gitconfig() {
   if [ ! -f ~/.gitconfig ]; then
     touch ~/.gitconfig
   fi
-  
+
   if ! grep '.dotfiles' ~/.gitconfig > /dev/null 2>&1; then
     printf "\033[35m⚙️  Adding ~/.dotfiles/git.d/core.conf to ~/.gitconfig\033[0m\n"
     printf "\n[include]\npath = ~/.dotfiles/git.d/core.conf\n" >> ~/.gitconfig
@@ -107,7 +120,7 @@ install_sshconfig() {
     touch ~/.ssh/config
     chmod 600 ~/.ssh/config
   fi
-  
+
   if ! grep '.dotfiles' ~/.ssh/config > /dev/null 2>&1; then
     printf "\033[35m🔐 Adding ~/.dotfiles/ssh.d/*.conf to ~/.ssh/config\033[0m\n"
     printf "\nInclude ~/.dotfiles/ssh.d/*.conf\n" >> ~/.ssh/config

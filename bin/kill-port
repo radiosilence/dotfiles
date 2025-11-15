@@ -1,15 +1,29 @@
 #!/bin/sh
 set -eu
 
+# Help flag
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  cat << EOF
+Usage: $(basename "$0") <port> [kill-args]
+Kill process listening on specified port
+
+Examples:
+  kill-port 3000          # Kill process on port 3000
+  kill-port 8080 -9       # Force kill process on port 8080
+EOF
+  exit 0
+fi
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $(basename "$0") <port> [kill-args]"
+  exit 1
+fi
+
 PORT="$1"
 shift 1
 echo "killing port $PORT with args: $*"
 
 PID="$(lsof -ti ":$PORT")"
-if [ -z "$PORT" ]; then
-  echo "Usage: $(basename "$0") <port >"
-  exit 1
-fi
 
 if [ -z "$PID" ]; then
   echo "No process is listening on port $PORT"

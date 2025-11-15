@@ -2,35 +2,48 @@
 KERL_BUILD_DOCS = "yes"
 
 [tools]
-bun = "latest"
-fd = "latest"
-go = "latest"
-node = "24"
-helix = "latest"
-pipx = "latest"
-python = "3.12"
-kubectl = "latest"
-rust = "latest"
-protobuf = "latest"
-deno = "latest"
-"ubi:junegunn/fzf" = "latest"
-"ubi:rossmacarthur/sheldon" = "latest"
-"ubi:lsd-rs/lsd" = "latest"
-"ubi:jqlang/jq" = "latest"
-"ubi:Canop/broot" = "latest"
-"ubi:mikefarah/yq" = "latest"
-"ubi:ajeetdsouza/zoxide" = "latest"
-"ubi:koalaman/shellcheck" = "latest"
-"ubi:evilmartians/lefthook" = "latest"
-"ubi:bufbuild/buf" = "latest"
-"ubi:go-task/task" = "latest"
-"ubi:astral-sh/uv" = "latest"
-"ubi:derailed/k9s" = "latest"
-"ubi:yt-dlp/yt-dlp" = "latest"
-"ubi:kubecolor/kubecolor" = "latest"
-"ubi:starship/starship" = "latest"
-"ubi:radiosilence/nano-web" = "latest"
-"aqua:cli/cli" = "latest"
+# Language runtimes
+bun = "latest"              # Fast JS runtime & package manager
+deno = "latest"             # Secure JS/TS runtime
+go = "latest"               # Go language
+node = "24"                 # Node.js LTS
+python = "3.12"             # Python 3.12
+rust = "latest"             # Rust toolchain
+
+# CLI utilities
+fd = "latest"                                  # Fast find alternative
+"ubi:junegunn/fzf" = "latest"                  # Fuzzy finder
+"ubi:jqlang/jq" = "latest"                     # JSON processor
+"ubi:lsd-rs/lsd" = "latest"                    # Modern ls replacement
+"ubi:ajeetdsouza/zoxide" = "latest"            # Smart cd replacement
+"ubi:Canop/broot" = "latest"                   # Directory navigation
+"ubi:yt-dlp/yt-dlp" = "latest"                 # Video downloader
+
+# Shell & prompt
+"ubi:rossmacarthur/sheldon" = "latest"         # Zsh plugin manager
+"ubi:starship/starship" = "latest"             # Cross-shell prompt
+
+# Development tools
+helix = "latest"                               # Terminal text editor
+pipx = "latest"                                # Python app installer
+protobuf = "latest"                            # Protocol buffers
+"ubi:bufbuild/buf" = "latest"                  # Protobuf toolchain
+"ubi:go-task/task" = "latest"                  # Task runner
+"ubi:astral-sh/uv" = "latest"                  # Fast Python package installer
+
+# Code quality
+"ubi:koalaman/shellcheck" = "latest"           # Shell script linter
+"ubi:evilmartians/lefthook" = "latest"         # Git hooks manager
+
+# Kubernetes & cloud
+kubectl = "latest"                             # Kubernetes CLI
+"ubi:derailed/k9s" = "latest"                  # Kubernetes TUI
+"ubi:kubecolor/kubecolor" = "latest"           # Colorized kubectl
+
+# GitHub & misc
+"aqua:cli/cli" = "latest"                      # GitHub CLI
+"ubi:mikefarah/yq" = "latest"                  # YAML processor
+"ubi:radiosilence/nano-web" = "latest"         # Minimal web server
 
 [settings]
 paranoid = false

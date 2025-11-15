@@ -1,5 +1,17 @@
 #!/bin/sh
 
+# Help flag
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  cat << EOF
+Usage: $(basename "$0")
+Clean up local branches whose remotes have been deleted
+
+Interactively prompts before deleting branches.
+Useful after PR merges to keep local branches in sync.
+EOF
+  exit 0
+fi
+
 echo "======================================================"
 echo "   Git Branch Management: Fetch and Prune Script"
 echo "======================================================"
