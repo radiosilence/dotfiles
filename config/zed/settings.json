@@ -70,8 +70,8 @@
     "play_sound_when_agent_done": true,
     "default_profile": "write",
     "inline_assistant_model": {
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-latest"
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
     },
     "always_allow_tool_actions": true,
     "default_model": {
@@ -111,12 +111,7 @@
   "languages": {
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
-      "language_servers": [
-        "vtsls",
-        "!tsgo",
-        "!typescript-language-server",
-        "..."
-      ],
+      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
       "formatter": [
         {
           "code_action": "source.fixAll.eslint"
@@ -133,7 +128,6 @@
           }
         }
       ]
-      // "language_servers": []
     },
     "CSS": {
       "code_actions_on_format": {

@@ -18,6 +18,8 @@ upd() {
   fi
 
   if command -v brew >/dev/null; then
+    printf "\033[33m🍺 [upd] updating brew...\033[0m\n"
+    brew update
     printf "\033[33m🍺 [upd] updating brew bundle...\033[0m\n"
     brew bundle --upgrade --verbose
     printf "\033[33m⬆️  [upd] upgrading brew dependencies...\033[0m\n"
