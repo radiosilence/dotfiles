@@ -1,6 +1,23 @@
 #!/bin/sh
 set -u
 
+# Help flag
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  cat << EOF
+Usage: $(basename "$0") [paths...]
+Find and delete directories below MIN_SIZE (default: 3096 KB)
+
+Environment:
+  MIN_SIZE    Size threshold in KB (default: 3096)
+
+Examples:
+  prune                   # Search current directory
+  prune ~/Downloads       # Search specific directory
+  MIN_SIZE=1000 prune .   # Use custom size threshold
+EOF
+  exit 0
+fi
+
 # If no arguments provided, use "." as the default
 if [ $# -eq 0 ]; then
   set -- "."

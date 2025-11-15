@@ -1,39 +1,41 @@
 #!/bin/bash
 
 # Script to convert SVG URLs to base64 data URLs
-# Usage: 
+# Usage:
 #   echo "url1 url2" | ./url-to-base64.sh
 #   ./url-to-base64.sh url1 url2
 #   ./url-to-base64.sh < urls.txt
 
 convert_url() {
-    local url="$1"
-    echo "Processing: $url" >&2
-    
-    local svg_content=$(curl -s "$url")
-    if [ $? -eq 0 ] && [ -n "$svg_content" ]; then
-        local base64_data=$(echo -n "$svg_content" | base64 | tr -d '\n')
-        echo "data:image/svg+xml;base64,$base64_data"
-    else
-        echo "Error: Failed to download $url" >&2
-        return 1
-    fi
+  local url="$1"
+  echo "Processing: $url" >&2
+
+  local svg_content
+  local base64_data
+
+  if svg_content=$(curl -s "$url") && [ -n "$svg_content" ]; then
+    base64_data=$(echo -n "$svg_content" | base64 | tr -d '\n')
+    echo "data:image/svg+xml;base64,$base64_data"
+  else
+    echo "Error: Failed to download $url" >&2
+    return 1
+  fi
 }
 
 # Handle input from command line arguments or stdin
 if [ $# -gt 0 ]; then
-    # URLs provided as arguments
-    for url in "$@"; do
-        convert_url "$url"
-    done
+  # URLs provided as arguments
+  for url in "$@"; do
+    convert_url "$url"
+  done
 else
-    # Read URLs from stdin
-    while read -r line; do
-        # Process each word in the line as a URL
-        for url in $line; do
-            if [ -n "$url" ]; then
-                convert_url "$url"
-            fi
-        done
+  # Read URLs from stdin
+  while read -r line; do
+    # Process each word in the line as a URL
+    for url in $line; do
+      if [ -n "$url" ]; then
+        convert_url "$url"
+      fi
     done
+  done
 fi

@@ -2,3 +2,4 @@
 .dotfiles-dir
 *.code-workspace
 .ruby-lsp
+.claude

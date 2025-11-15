@@ -18,43 +18,43 @@ SCRIPT_NAME="CD Ripping Tools Setup"
 SCRIPT_VERSION="1.0.0"
 
 log() {
-    echo -e "${GREEN}[SETUP]${NC} $1"
+  echo -e "${GREEN}[SETUP]${NC} $1"
 }
 
 warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+  echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
 error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-    exit 1
+  echo -e "${RED}[ERROR]${NC} $1"
+  exit 1
 }
 
 info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+  echo -e "${BLUE}[INFO]${NC} $1"
 }
 
 success() {
-    echo -e "${PURPLE}[SUCCESS]${NC} $1"
+  echo -e "${PURPLE}[SUCCESS]${NC} $1"
 }
 
 # Show banner
 show_banner() {
-    echo -e "${PURPLE}"
-    cat <<'EOF'
+  echo -e "${PURPLE}"
+  cat << 'EOF'
 ╔═══════════════════════════════════════════════════════════════════╗
 ║                     CD Ripping Tools Setup                       ║
 ║                        for macOS                                 ║
 ╚═══════════════════════════════════════════════════════════════════╝
 EOF
-    echo -e "${NC}"
-    echo -e "${BLUE}Version: ${SCRIPT_VERSION}${NC}"
-    echo
+  echo -e "${NC}"
+  echo -e "${BLUE}Version: ${SCRIPT_VERSION}${NC}"
+  echo
 }
 
 # Show usage
 show_usage() {
-    cat <<EOF
+  cat << EOF
 ${SCRIPT_NAME} v${SCRIPT_VERSION}
 
 USAGE:
@@ -77,462 +77,462 @@ EOF
 
 # Check if running on macOS
 check_macos() {
-    if [[ "$OSTYPE" != "darwin"* ]]; then
-        error "This script is designed for macOS only"
-    fi
-    log "✓ Running on macOS"
+  if [[ "$OSTYPE" != "darwin"* ]]; then
+    error "This script is designed for macOS only"
+  fi
+  log "✓ Running on macOS"
 }
 
 # Check dependency status
 check_dependency_status() {
-    local brewfile="$HOME/Brewfile"
+  local brewfile="$HOME/Brewfile"
 
-    if [ ! -f "$brewfile" ]; then
-        warn "No Brewfile found at $brewfile"
-        info "Run without --check-deps to create one"
-        return 1
-    fi
+  if [ ! -f "$brewfile" ]; then
+    warn "No Brewfile found at $brewfile"
+    info "Run without --check-deps to create one"
+    return 1
+  fi
 
-    log "Checking dependency status..."
+  log "Checking dependency status..."
 
-    if brew bundle check --file="$brewfile" --verbose; then
-        success "✅ All dependencies satisfied!"
-    else
-        warn "❌ Some dependencies missing or outdated"
-        info "Run 'brew bundle install --file=$brewfile' to install missing dependencies"
-    fi
+  if brew bundle check --file="$brewfile" --verbose; then
+    success "✅ All dependencies satisfied!"
+  else
+    warn "❌ Some dependencies missing or outdated"
+    info "Run 'brew bundle install --file=$brewfile' to install missing dependencies"
+  fi
 }
 
 # Preview what would be added to Brewfile
 preview_brewfile_changes() {
-    local brewfile="$HOME/Brewfile"
-    local temp_brewfile="/tmp/preview_brewfile"
+  local brewfile="$HOME/Brewfile"
+  local temp_brewfile="/tmp/preview_brewfile"
 
-    # Copy existing Brewfile or create empty one
-    if [ -f "$brewfile" ]; then
-        cp "$brewfile" "$temp_brewfile"
-        info "Previewing changes to existing Brewfile..."
-    else
-        touch "$temp_brewfile"
-        info "Previewing new Brewfile creation..."
+  # Copy existing Brewfile or create empty one
+  if [ -f "$brewfile" ]; then
+    cp "$brewfile" "$temp_brewfile"
+    info "Previewing changes to existing Brewfile..."
+  else
+    touch "$temp_brewfile"
+    info "Previewing new Brewfile creation..."
+  fi
+
+  # Required dependencies
+  local required_deps=(
+    "bash" "yq" "jq" "flac" "cdparanoia" "python@3.11"
+    "ffmpeg" "beets" "musicbrainz-picard" "wget" "curl"
+    "tree" "git" "vim" "sox" "lame" "opus-tools"
+  )
+
+  local missing_deps=()
+
+  for dep in "${required_deps[@]}"; do
+    if ! grep -q "^brew [\"']${dep}[\"']" "$temp_brewfile" 2> /dev/null; then
+      missing_deps+=("$dep")
     fi
+  done
 
-    # Required dependencies
-    local required_deps=(
-        "bash" "yq" "jq" "flac" "cdparanoia" "python@3.11"
-        "ffmpeg" "beets" "musicbrainz-picard" "wget" "curl"
-        "tree" "git" "vim" "sox" "lame" "opus-tools"
-    )
-
-    local missing_deps=()
-
-    for dep in "${required_deps[@]}"; do
-        if ! grep -q "^brew [\"']$dep[\"']" "$temp_brewfile" 2>/dev/null; then
-            missing_deps+=("$dep")
-        fi
+  if [ ${#missing_deps[@]} -eq 0 ]; then
+    success "✅ All required dependencies already in Brewfile"
+  else
+    info "📦 Dependencies that would be added:"
+    for dep in "${missing_deps[@]}"; do
+      info "  + $dep"
     done
+  fi
 
-    if [ ${#missing_deps[@]} -eq 0 ]; then
-        success "✅ All required dependencies already in Brewfile"
-    else
-        info "📦 Dependencies that would be added:"
-        for dep in "${missing_deps[@]}"; do
-            info "  + $dep"
-        done
-    fi
-
-    rm -f "$temp_brewfile"
+  rm -f "$temp_brewfile"
 }
 check_macos() {
-    if [[ "$OSTYPE" != "darwin"* ]]; then
-        error "This script is designed for macOS only"
-    fi
-    log "✓ Running on macOS"
+  if [[ "$OSTYPE" != "darwin"* ]]; then
+    error "This script is designed for macOS only"
+  fi
+  log "✓ Running on macOS"
 }
 
 # Check if Homebrew is installed
 check_homebrew() {
-    if ! command -v brew &>/dev/null; then
-        log "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  if ! command -v brew &> /dev/null; then
+    log "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-        # Add Homebrew to PATH for Apple Silicon Macs
-        if [[ -f "/opt/homebrew/bin/brew" ]]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-    else
-        log "✓ Homebrew already installed"
+    # Add Homebrew to PATH for Apple Silicon Macs
+    if [[ -f "/opt/homebrew/bin/brew" ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
+  else
+    log "✓ Homebrew already installed"
+  fi
 
-    # Update Homebrew
-    log "Updating Homebrew..."
-    brew update
+  # Update Homebrew
+  log "Updating Homebrew..."
+  brew update
 }
 
 # Manage Brewfile dependencies
 manage_brewfile() {
-    local brewfile="$HOME/Brewfile"
+  local brewfile="$HOME/Brewfile"
 
-    local required_brews=(
-        "bash"       # Modern Bash (4.0+) with associative arrays
-        "yq"         # YAML processor
-        "jq"         # JSON processor
-        "flac"       # FLAC audio codec (includes metaflac)
-        "ffmpeg"     # Audio/video processing
-        "sox"        # Sound processing
-        "opus-tools" # Opus audio tools
-    )
+  local required_brews=(
+    "bash"       # Modern Bash (4.0+) with associative arrays
+    "yq"         # YAML processor
+    "jq"         # JSON processor
+    "flac"       # FLAC audio codec (includes metaflac)
+    "ffmpeg"     # Audio/video processing
+    "sox"        # Sound processing
+    "opus-tools" # Opus audio tools
+  )
 
-    local required_casks=(
-        "musicbrainz-picard" # MusicBrainz tagger (GUI)
-        "xld"                # ripper
-    )
+  local required_casks=(
+    "musicbrainz-picard" # MusicBrainz tagger (GUI)
+    "xld"                # ripper
+  )
 
-    # Check if Brewfile exists
-    if [ -f "$brewfile" ]; then
-        log "Found existing Brewfile at $brewfile"
-        log "Checking for required dependencies..."
-    else
-        log "Creating new Brewfile at $brewfile"
-        cat >"$brewfile" <<'EOF'
+  # Check if Brewfile exists
+  if [ -f "$brewfile" ]; then
+    log "Found existing Brewfile at $brewfile"
+    log "Checking for required dependencies..."
+  else
+    log "Creating new Brewfile at $brewfile"
+    cat > "$brewfile" << 'EOF'
 # Brewfile - Package dependencies managed by Homebrew Bundle
 # Generated and maintained by CD Ripping Tools Setup
 
 EOF
-    fi
+  fi
 
-    local changes_made=false
+  local changes_made=false
 
-    # Add a section header for brews if we're adding any
-    local adding_brews=false
-    for brew in "${required_brews[@]}"; do
-        local brew_name="${brew%% *}" # Get just the package name before any comments
-        if ! grep -q "^brew [\"']$brew_name[\"']" "$brewfile"; then
-            if [ "$adding_brews" = false ]; then
-                echo "" >>"$brewfile"
-                echo "# CD Ripping Tools Dependencies" >>"$brewfile"
-                adding_brews=true
-                changes_made=true
-            fi
-            log "Adding brew: $brew_name"
-            echo "brew \"$brew_name\"    # CD ripping dependency" >>"$brewfile"
-        else
-            log "✓ Brew already present: $brew_name"
-        fi
-    done
-
-    # Add a section header for casks if we're adding any
-    local adding_casks=false
-    for cask in "${required_casks[@]}"; do
-        local cask_name="${cask%% *}" # Get just the package name before any comments
-        if ! grep -q "^cask [\"']$cask_name[\"']" "$brewfile"; then
-            if [ "$adding_casks" = false ]; then
-                echo "" >>"$brewfile"
-                echo "# CD Ripping Tools GUI Applications" >>"$brewfile"
-                adding_casks=true
-                changes_made=true
-            fi
-            log "Adding cask: $cask_name"
-            echo "cask \"$cask_name\"    # CD ripping dependency" >>"$brewfile"
-        else
-            log "✓ Cask already present: $cask_name"
-        fi
-    done
-
-    if [ "$changes_made" = true ]; then
-        success "Updated Brewfile with CD ripping dependencies"
-        info "Review the changes: $brewfile"
+  # Add a section header for brews if we're adding any
+  local adding_brews=false
+  for brew in "${required_brews[@]}"; do
+    local brew_name="${brew%% *}" # Get just the package name before any comments
+    if ! grep -q "^brew [\"']${brew_name}[\"']" "$brewfile"; then
+      if [ "$adding_brews" = false ]; then
+        echo "" >> "$brewfile"
+        echo "# CD Ripping Tools Dependencies" >> "$brewfile"
+        adding_brews=true
+        changes_made=true
+      fi
+      log "Adding brew: $brew_name"
+      echo "brew \"$brew_name\"    # CD ripping dependency" >> "$brewfile"
     else
-        success "✓ All required dependencies already present in Brewfile"
+      log "✓ Brew already present: $brew_name"
     fi
+  done
+
+  # Add a section header for casks if we're adding any
+  local adding_casks=false
+  for cask in "${required_casks[@]}"; do
+    local cask_name="${cask%% *}" # Get just the package name before any comments
+    if ! grep -q "^cask [\"']${cask_name}[\"']" "$brewfile"; then
+      if [ "$adding_casks" = false ]; then
+        echo "" >> "$brewfile"
+        echo "# CD Ripping Tools GUI Applications" >> "$brewfile"
+        adding_casks=true
+        changes_made=true
+      fi
+      log "Adding cask: $cask_name"
+      echo "cask \"$cask_name\"    # CD ripping dependency" >> "$brewfile"
+    else
+      log "✓ Cask already present: $cask_name"
+    fi
+  done
+
+  if [ "$changes_made" = true ]; then
+    success "Updated Brewfile with CD ripping dependencies"
+    info "Review the changes: $brewfile"
+  else
+    success "✓ All required dependencies already present in Brewfile"
+  fi
 }
 
 # Install dependencies using brew bundle
 install_dependencies() {
-    log "Installing dependencies with brew bundle..."
+  log "Installing dependencies with brew bundle..."
 
-    # Show what would be installed/updated
-    info "Checking current status..."
-    if brew bundle check --file="$HOME/Brewfile" --verbose; then
-        success "All dependencies already satisfied!"
-        return 0
-    fi
+  # Show what would be installed/updated
+  info "Checking current status..."
+  if brew bundle check --file="$HOME/Brewfile" --verbose; then
+    success "All dependencies already satisfied!"
+    return 0
+  fi
 
-    log "Installing missing dependencies..."
-    if ! brew bundle install --file="$HOME/Brewfile"; then
-        error "Failed to install dependencies via brew bundle"
-    fi
+  log "Installing missing dependencies..."
+  if ! brew bundle install --file="$HOME/Brewfile"; then
+    error "Failed to install dependencies via brew bundle"
+  fi
 
-    success "All Homebrew dependencies installed"
+  success "All Homebrew dependencies installed"
 }
 
 # Install Python dependencies
 install_python_deps() {
-    log "Installing Python dependencies..."
+  log "Installing Python dependencies..."
 
-    # Ensure we're using the right Python
-    local python_cmd
-    if command -v python3.11 &>/dev/null; then
-        python_cmd="python3.11"
-    elif command -v python3 &>/dev/null; then
-        python_cmd="python3"
-    else
-        error "No Python 3 installation found"
+  # Ensure we're using the right Python
+  local python_cmd
+  if command -v python3.11 &> /dev/null; then
+    python_cmd="python3.11"
+  elif command -v python3 &> /dev/null; then
+    python_cmd="python3"
+  else
+    error "No Python 3 installation found"
+  fi
+
+  # Install pip if needed
+  if ! "$python_cmd" -m pip --version &> /dev/null; then
+    log "Installing pip..."
+    "$python_cmd" -m ensurepip --upgrade
+  fi
+
+  # Install required packages
+  local deps=(
+    "musicbrainzngs>=0.7.1"
+    "PyYAML>=6.0"
+    "requests>=2.28.0"
+    "jsonschema>=4.0.0"
+    "click>=8.0.0"    # For better CLI interfaces
+    "colorama>=0.4.0" # For colored output
+  )
+
+  for dep in "${deps[@]}"; do
+    log "Installing Python package: $dep"
+    if ! "$python_cmd" -m pip install "$dep"; then
+      warn "Failed to install $dep"
     fi
+  done
 
-    # Install pip if needed
-    if ! "$python_cmd" -m pip --version &>/dev/null; then
-        log "Installing pip..."
-        "$python_cmd" -m ensurepip --upgrade
-    fi
-
-    # Install required packages
-    local deps=(
-        "musicbrainzngs>=0.7.1"
-        "PyYAML>=6.0"
-        "requests>=2.28.0"
-        "jsonschema>=4.0.0"
-        "click>=8.0.0"    # For better CLI interfaces
-        "colorama>=0.4.0" # For colored output
-    )
-
-    for dep in "${deps[@]}"; do
-        log "Installing Python package: $dep"
-        if ! "$python_cmd" -m pip install "$dep"; then
-            warn "Failed to install $dep"
-        fi
-    done
-
-    success "Python dependencies installed"
+  success "Python dependencies installed"
 }
 
 # Install XLD
 install_xld() {
-    log "Setting up XLD (X Lossless Decoder)..."
+  log "Setting up XLD (X Lossless Decoder)..."
 
-    # Check if XLD is already installed
-    if [ -d "/Applications/XLD.app" ]; then
-        success "✓ XLD already installed"
-        return
-    fi
+  # Check if XLD is already installed
+  if [ -d "/Applications/XLD.app" ]; then
+    success "✓ XLD already installed"
+    return
+  fi
 
-    # XLD needs to be downloaded manually
-    echo
-    info "XLD must be downloaded manually:"
-    info "┌─────────────────────────────────────────────────────────────┐"
-    info "│  1. Visit: https://tmkk.undo.jp/xld/index_e.html          │"
-    info "│  2. Download the latest version                            │"
-    info "│  3. Extract the .dmg file                                  │"
-    info "│  4. Drag XLD.app to /Applications/                        │"
-    info "│  5. Run XLD once to complete initial setup                │"
-    info "└─────────────────────────────────────────────────────────────┘"
-    echo
+  # XLD needs to be downloaded manually
+  echo
+  info "XLD must be downloaded manually:"
+  info "┌─────────────────────────────────────────────────────────────┐"
+  info "│  1. Visit: https://tmkk.undo.jp/xld/index_e.html          │"
+  info "│  2. Download the latest version                            │"
+  info "│  3. Extract the .dmg file                                  │"
+  info "│  4. Drag XLD.app to /Applications/                        │"
+  info "│  5. Run XLD once to complete initial setup                │"
+  info "└─────────────────────────────────────────────────────────────┘"
+  echo
 
-    read -p "Press Enter when XLD is installed..."
+  read -r -p "Press Enter when XLD is installed..."
 
-    if [ ! -d "/Applications/XLD.app" ]; then
-        warn "XLD not found in /Applications/"
-        warn "The setup will continue, but you'll need to install XLD manually"
-    else
-        success "✓ XLD installation verified"
-    fi
+  if [ ! -d "/Applications/XLD.app" ]; then
+    warn "XLD not found in /Applications/"
+    warn "The setup will continue, but you'll need to install XLD manually"
+  else
+    success "✓ XLD installation verified"
+  fi
 }
 
 # Setup XLD CLI symlink
 setup_xld_cli() {
-    local xld_app="/Applications/XLD.app"
-    local xld_cli="$xld_app/Contents/MacOS/XLD"
-    local symlink_path="/usr/local/bin/xld"
+  local xld_app="/Applications/XLD.app"
+  local xld_cli="$xld_app/Contents/MacOS/XLD"
+  local symlink_path="/usr/local/bin/xld"
 
-    if [ ! -f "$xld_cli" ]; then
-        warn "XLD CLI not found. Make sure XLD is properly installed."
-        return
-    fi
+  if [ ! -f "$xld_cli" ]; then
+    warn "XLD CLI not found. Make sure XLD is properly installed."
+    return
+  fi
 
-    log "Setting up XLD command line interface..."
+  log "Setting up XLD command line interface..."
 
-    if [ -L "$symlink_path" ] || [ -f "$symlink_path" ]; then
-        log "✓ XLD CLI already available"
+  if [ -L "$symlink_path" ] || [ -f "$symlink_path" ]; then
+    log "✓ XLD CLI already available"
+  else
+    log "Creating XLD CLI symlink..."
+    if sudo ln -sf "$xld_cli" "$symlink_path"; then
+      success "✓ XLD CLI available as 'xld' command"
     else
-        log "Creating XLD CLI symlink..."
-        if sudo ln -sf "$xld_cli" "$symlink_path"; then
-            success "✓ XLD CLI available as 'xld' command"
-        else
-            warn "Failed to create XLD CLI symlink"
-            info "You can manually create it with:"
-            info "  sudo ln -sf '$xld_cli' '$symlink_path'"
-        fi
+      warn "Failed to create XLD CLI symlink"
+      info "You can manually create it with:"
+      info "  sudo ln -sf '$xld_cli' '$symlink_path'"
     fi
+  fi
 }
 
 # Create directory structure
 create_directories() {
-    log "Creating directory structure..."
+  log "Creating directory structure..."
 
-    local base_dir="$HOME/cd_ripping"
-    local dirs=(
-        "$base_dir"
-        "$base_dir/output"
-        "$base_dir/metadata"
-        "$base_dir/schemas"
-        "$base_dir/scripts"
-        "$base_dir/logs"
-    )
+  local base_dir="$HOME/cd_ripping"
+  local dirs=(
+    "$base_dir"
+    "$base_dir/output"
+    "$base_dir/metadata"
+    "$base_dir/schemas"
+    "$base_dir/scripts"
+    "$base_dir/logs"
+  )
 
-    for dir in "${dirs[@]}"; do
-        if [ ! -d "$dir" ]; then
-            mkdir -p "$dir"
-            log "Created: $dir"
-        else
-            log "✓ Already exists: $dir"
-        fi
-    done
+  for dir in "${dirs[@]}"; do
+    if [ ! -d "$dir" ]; then
+      mkdir -p "$dir"
+      log "Created: $dir"
+    else
+      log "✓ Already exists: $dir"
+    fi
+  done
 
-    success "Directory structure created in $base_dir"
+  success "Directory structure created in $base_dir"
 }
 
 # Install scripts
 install_scripts() {
-    local script_dir="$HOME/cd_ripping/scripts"
+  local script_dir="$HOME/cd_ripping/scripts"
 
-    log "Setting up scripts directory..."
+  log "Setting up scripts directory..."
 
-    info "Copy your CD ripping scripts to: $script_dir"
-    info "Required scripts:"
-    info "  - rip_cd.sh           (main ripping script)"
-    info "  - mb_helper.py        (MusicBrainz helper)"
-    info "  - setup.sh            (this setup script)"
-    echo
-    info "Make them executable with:"
-    info "  chmod +x $script_dir/*.sh $script_dir/*.py"
+  info "Copy your CD ripping scripts to: $script_dir"
+  info "Required scripts:"
+  info "  - rip_cd.sh           (main ripping script)"
+  info "  - mb_helper.py        (MusicBrainz helper)"
+  info "  - setup.sh            (this setup script)"
+  echo
+  info "Make them executable with:"
+  info "  chmod +x $script_dir/*.sh $script_dir/*.py"
 
-    # Create a simple wrapper script
-    local wrapper="$script_dir/rip"
-    cat >"$wrapper" <<EOF
+  # Create a simple wrapper script
+  local wrapper="$script_dir/rip"
+  cat > "$wrapper" << EOF
 #!/bin/bash
 # Simple wrapper for the CD ripping script
 exec "$script_dir/rip_cd.sh" "\$@"
 EOF
-    chmod +x "$wrapper"
+  chmod +x "$wrapper"
 
-    success "Script wrapper created: $wrapper"
+  success "Script wrapper created: $wrapper"
 }
 
 # Verify installation
 verify_installation() {
-    log "Verifying installation..."
+  log "Verifying installation..."
 
-    local tools=(
-        "brew:Homebrew"
-        "yq:YAML processor"
-        "jq:JSON processor"
-        "metaflac:FLAC metadata tool"
-        "beet:Beets music manager"
-        "python3:Python 3"
-    )
+  local tools=(
+    "brew:Homebrew"
+    "yq:YAML processor"
+    "jq:JSON processor"
+    "metaflac:FLAC metadata tool"
+    "beet:Beets music manager"
+    "python3:Python 3"
+  )
 
-    local missing=()
-    local installed=()
+  local missing=()
+  local installed=()
 
-    for tool_info in "${tools[@]}"; do
-        local tool="${tool_info%:*}"
-        local desc="${tool_info#*:}"
+  for tool_info in "${tools[@]}"; do
+    local tool="${tool_info%:*}"
+    local desc="${tool_info#*:}"
 
-        if command -v "$tool" &>/dev/null; then
-            installed+=("$desc")
-        else
-            missing+=("$desc")
-        fi
-    done
-
-    # Check XLD specifically
-    if [ -f "/Applications/XLD.app/Contents/MacOS/XLD" ]; then
-        installed+=("XLD application")
+    if command -v "$tool" &> /dev/null; then
+      installed+=("$desc")
     else
-        missing+=("XLD application")
+      missing+=("$desc")
     fi
+  done
 
-    # Check Python packages
-    local python_packages=("musicbrainzngs" "yaml" "jsonschema")
-    for pkg in "${python_packages[@]}"; do
-        if python3 -c "import $pkg" 2>/dev/null; then
-            installed+=("Python: $pkg")
-        else
-            missing+=("Python: $pkg")
-        fi
+  # Check XLD specifically
+  if [ -f "/Applications/XLD.app/Contents/MacOS/XLD" ]; then
+    installed+=("XLD application")
+  else
+    missing+=("XLD application")
+  fi
+
+  # Check Python packages
+  local python_packages=("musicbrainzngs" "yaml" "jsonschema")
+  for pkg in "${python_packages[@]}"; do
+    if python3 -c "import $pkg" 2> /dev/null; then
+      installed+=("Python: $pkg")
+    else
+      missing+=("Python: $pkg")
+    fi
+  done
+
+  # Report results
+  echo
+  if [ ${#installed[@]} -gt 0 ]; then
+    success "✅ Installed components:"
+    for item in "${installed[@]}"; do
+      success "  ✓ $item"
     done
+  fi
 
-    # Report results
+  if [ ${#missing[@]} -gt 0 ]; then
+    warn "⚠️  Missing components:"
+    for item in "${missing[@]}"; do
+      warn "  ✗ $item"
+    done
     echo
-    if [ ${#installed[@]} -gt 0 ]; then
-        success "✅ Installed components:"
-        for item in "${installed[@]}"; do
-            success "  ✓ $item"
-        done
-    fi
-
-    if [ ${#missing[@]} -gt 0 ]; then
-        warn "⚠️  Missing components:"
-        for item in "${missing[@]}"; do
-            warn "  ✗ $item"
-        done
-        echo
-        warn "Some components are missing. Please install them manually."
-    else
-        echo
-        success "🎉 All components installed successfully!"
-    fi
+    warn "Some components are missing. Please install them manually."
+  else
+    echo
+    success "🎉 All components installed successfully!"
+  fi
 }
 
 # Print usage instructions
 print_usage() {
-    echo
-    info "╔════════════════════════════════════════════════════════════════╗"
-    info "║                    🎵 Setup Complete! 🎵                      ║"
-    info "╚════════════════════════════════════════════════════════════════╝"
-    echo
-    info "📁 Your CD ripping workspace is ready at: ~/cd_ripping"
-    echo
-    info "🚀 Next steps:"
-    info "  1. Copy the ripping scripts to ~/cd_ripping/scripts/"
-    info "  2. Configure XLD (if not done already):"
-    info "     • Open XLD → Preferences"
-    info "     • Create a FLAC ripping profile"
-    info "     • Configure drive settings"
-    echo
-    info "🔧 Manage dependencies:"
-    info "  ./setup.sh --check-deps     # Check what's installed"
-    info "  ./setup.sh --preview        # Preview Brewfile changes"
-    info "  brew bundle check           # Check Brewfile status"
-    info "  brew bundle install        # Install missing packages"
-    echo
-    info "🎯 Quick start:"
-    info "  cd ~/cd_ripping"
-    info "  ./scripts/rip_cd.sh --generate-template"
-    info "  # Edit the generated template with your CD info"
-    info "  ./scripts/rip_cd.sh --validate metadata/template.yaml"
-    info "  ./scripts/rip_cd.sh metadata/template.yaml"
-    echo
-    info "📚 Available commands:"
-    info "  ./scripts/rip_cd.sh --help              # Show all options"
-    info "  ./scripts/rip_cd.sh --generate-schema   # Create validation schema"
-    info "  ./scripts/rip_cd.sh --list-drives       # Show CD drives"
-    info "  ./scripts/rip_cd.sh --dry-run <file>    # Test without ripping"
-    echo
-    info "🔧 Troubleshooting:"
-    info "  • Check logs in ~/cd_ripping/logs/"
-    info "  • Validate metadata with --validate"
-    info "  • Use --debug for detailed output"
-    info "  • Review Brewfile: ~/Brewfile"
-    echo
-    success "Happy ripping! 🎧✨"
+  echo
+  info "╔════════════════════════════════════════════════════════════════╗"
+  info "║                    🎵 Setup Complete! 🎵                      ║"
+  info "╚════════════════════════════════════════════════════════════════╝"
+  echo
+  info "📁 Your CD ripping workspace is ready at: ~/cd_ripping"
+  echo
+  info "🚀 Next steps:"
+  info "  1. Copy the ripping scripts to ~/cd_ripping/scripts/"
+  info "  2. Configure XLD (if not done already):"
+  info "     • Open XLD → Preferences"
+  info "     • Create a FLAC ripping profile"
+  info "     • Configure drive settings"
+  echo
+  info "🔧 Manage dependencies:"
+  info "  ./setup.sh --check-deps     # Check what's installed"
+  info "  ./setup.sh --preview        # Preview Brewfile changes"
+  info "  brew bundle check           # Check Brewfile status"
+  info "  brew bundle install        # Install missing packages"
+  echo
+  info "🎯 Quick start:"
+  info "  cd ~/cd_ripping"
+  info "  ./scripts/rip_cd.sh --generate-template"
+  info "  # Edit the generated template with your CD info"
+  info "  ./scripts/rip_cd.sh --validate metadata/template.yaml"
+  info "  ./scripts/rip_cd.sh metadata/template.yaml"
+  echo
+  info "📚 Available commands:"
+  info "  ./scripts/rip_cd.sh --help              # Show all options"
+  info "  ./scripts/rip_cd.sh --generate-schema   # Create validation schema"
+  info "  ./scripts/rip_cd.sh --list-drives       # Show CD drives"
+  info "  ./scripts/rip_cd.sh --dry-run <file>    # Test without ripping"
+  echo
+  info "🔧 Troubleshooting:"
+  info "  • Check logs in ~/cd_ripping/logs/"
+  info "  • Validate metadata with --validate"
+  info "  • Use --debug for detailed output"
+  info "  • Review Brewfile: ~/Brewfile"
+  echo
+  success "Happy ripping! 🎧✨"
 }
 
 # Cleanup function
 cleanup() {
-    if [ -f "$HOME/Brewfile.lock.json" ]; then
-        rm -f "$HOME/Brewfile.lock.json"
-    fi
+  if [ -f "$HOME/Brewfile.lock.json" ]; then
+    rm -f "$HOME/Brewfile.lock.json"
+  fi
 }
 
 # Set up trap for cleanup
@@ -540,77 +540,77 @@ trap cleanup EXIT
 
 # Main setup function
 main() {
-    local skip_xld=false
-    local skip_python=false
-    local check_only=false
-    local preview_only=false
+  local skip_xld=false
+  local skip_python=false
+  local check_only=false
+  local preview_only=false
 
-    # Parse command line arguments
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-        -h | --help)
-            show_usage
-            exit 0
-            ;;
-        --check-deps)
-            check_only=true
-            ;;
-        --preview)
-            preview_only=true
-            ;;
-        --skip-xld)
-            skip_xld=true
-            ;;
-        --skip-python)
-            skip_python=true
-            ;;
-        *)
-            error "Unknown option: $1"
-            ;;
-        esac
-        shift
-    done
-
-    show_banner
-
-    # Handle special modes
-    if [ "$check_only" = true ]; then
-        check_dependency_status
-        exit $?
-    fi
-
-    if [ "$preview_only" = true ]; then
-        preview_brewfile_changes
+  # Parse command line arguments
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -h | --help)
+        show_usage
         exit 0
-    fi
+        ;;
+      --check-deps)
+        check_only=true
+        ;;
+      --preview)
+        preview_only=true
+        ;;
+      --skip-xld)
+        skip_xld=true
+        ;;
+      --skip-python)
+        skip_python=true
+        ;;
+      *)
+        error "Unknown option: $1"
+        ;;
+    esac
+    shift
+  done
 
-    # Full setup
-    log "Starting CD ripping tools setup for macOS"
-    echo
+  show_banner
 
-    check_macos
-    check_homebrew
-    manage_brewfile
-    install_dependencies
+  # Handle special modes
+  if [ "$check_only" = true ]; then
+    check_dependency_status
+    exit $?
+  fi
 
-    if [ "$skip_python" != true ]; then
-        install_python_deps
-    fi
+  if [ "$preview_only" = true ]; then
+    preview_brewfile_changes
+    exit 0
+  fi
 
-    if [ "$skip_xld" != true ]; then
-        install_xld
-        setup_xld_cli
-    fi
+  # Full setup
+  log "Starting CD ripping tools setup for macOS"
+  echo
 
-    create_directories
-    install_scripts
-    verify_installation
-    print_usage
+  check_macos
+  check_homebrew
+  manage_brewfile
+  install_dependencies
 
-    success "Setup completed! 🎉"
+  if [ "$skip_python" != true ]; then
+    install_python_deps
+  fi
+
+  if [ "$skip_xld" != true ]; then
+    install_xld
+    setup_xld_cli
+  fi
+
+  create_directories
+  install_scripts
+  verify_installation
+  print_usage
+
+  success "Setup completed! 🎉"
 }
 
 # Run main function
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$@"
+  main "$@"
 fi

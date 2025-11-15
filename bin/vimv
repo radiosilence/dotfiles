@@ -5,6 +5,23 @@ set -eu
 # USAGE: vimv [file1 file2]
 # https://github.com/thameera/vimv
 
+# Help flag
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  cat << EOF
+Usage: $(basename "$0") [files...]
+Batch rename files using your \$EDITOR
+
+Opens list of files in editor - edit names and save to rename.
+Uses git mv for tracked files, regular mv otherwise.
+
+Examples:
+  vimv                    # Rename all files in current directory
+  vimv *.txt              # Rename only .txt files
+  vimv dir1/ dir2/        # Rename files in specific directories
+EOF
+  exit 0
+fi
+
 FILENAMES_FILE=$(mktemp "${TMPDIR:-/tmp}/vimv.XXXXXX")
 
 trap '{ rm -f "${FILENAMES_FILE}" ; }' EXIT

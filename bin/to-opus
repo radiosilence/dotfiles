@@ -1,5 +1,25 @@
 #!/bin/sh
 set -eu
+
+# Help flag
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  cat << EOF
+Usage: $(basename "$0") [paths...]
+Convert audio files (wav/aiff/flac/m4a) to Opus format
+
+Converts in parallel and deletes originals after conversion.
+
+Environment:
+  BITRATE     Output bitrate in kbps (default: 160)
+
+Examples:
+  to-opus                      # Convert files in current directory
+  to-opus ~/Music/Albums       # Convert specific directory
+  BITRATE=192 to-opus .        # Use higher bitrate
+EOF
+  exit 0
+fi
+
 BITRATE="${BITRATE:-160}"
 CORES=$(nproc)
 

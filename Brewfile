@@ -12,12 +12,24 @@ tap 'hashicorp/tap'
 tap 'tursodatabase/tap'
 
 # =============================================================================
-# BREW PACKAGES
+# CORE - Essential system tools and shell environment
 # =============================================================================
 
-# -----------------------------------------------------------------------------
-# Development & Design
-# -----------------------------------------------------------------------------
+brew 'zsh'
+brew 'git'
+brew 'git-lfs'
+brew 'curl'
+brew 'wget'
+brew 'coreutils'
+brew 'findutils'
+brew 'gnupg'
+brew 'openssl@3'
+brew 'tmux'
+brew 'tpm'
+
+# =============================================================================
+# DEV TOOLS - Editors, IDEs, and dev applications
+# =============================================================================
 
 cask 'zed', greedy: true
 cask 'figma', greedy: true
@@ -25,29 +37,34 @@ cask 'fork', greedy: true
 cask 'beekeeper-studio', greedy: true
 cask 'lens', greedy: true
 
-# -----------------------------------------------------------------------------
-# Web Browsers
-# -----------------------------------------------------------------------------
+# =============================================================================
+# BROWSERS
+# =============================================================================
 
 cask 'firefox', greedy: true
 cask 'zen', greedy: true
 
-# -----------------------------------------------------------------------------
-# Development Tools & Languages
-# -----------------------------------------------------------------------------
+# =============================================================================
+# LANGUAGES - Runtimes and language tools
+# =============================================================================
 
 brew 'node'
 brew 'mise'
 brew 'uv'
 brew 'luarocks'
+
+# =============================================================================
+# BUILD TOOLS - Compilers and build systems
+# =============================================================================
+
 brew 'cmake'
 brew 'make'
 brew 'llvm'
 brew 'clang-format'
 
-# -----------------------------------------------------------------------------
-# Language Servers & Development Support
-# -----------------------------------------------------------------------------
+# =============================================================================
+# LSPS - Language servers for editor integration
+# =============================================================================
 
 brew 'ansible-language-server'
 brew 'elixir-ls'
@@ -59,9 +76,9 @@ brew 'terraform-ls'
 brew 'vscode-langservers-extracted'
 brew 'yaml-language-server'
 
-# -----------------------------------------------------------------------------
-# Infrastructure & DevOps
-# -----------------------------------------------------------------------------
+# =============================================================================
+# INFRA - Cloud, orchestration, and DevOps
+# =============================================================================
 
 brew 'ansible'
 brew 'ansible-lint'
@@ -77,31 +94,23 @@ brew 'pulumi'
 brew 'tilt'
 brew 'watchman'
 
-# -----------------------------------------------------------------------------
-# Networking & System Tools
-# -----------------------------------------------------------------------------
+# =============================================================================
+# NETWORKING - Network tools and debugging
+# =============================================================================
 
-brew 'curl'
-brew 'wget'
 brew 'nmap'
 brew 'iperf3'
 brew 'telnet'
 brew 'unbound'
-brew 'fswatch'
-brew 'parallel'
-brew 'rsync'
-brew 'rclone'
-brew 'syncthing'
+brew 'grpcurl'
 
-# -----------------------------------------------------------------------------
-# Command Line Utilities
-# -----------------------------------------------------------------------------
+# =============================================================================
+# CLI UTILS - Shell productivity and file management
+# =============================================================================
 
 brew 'bat'
-brew 'coreutils'
 brew 'fastfetch'
 brew 'fcp'
-brew 'findutils'
 brew 'htop'
 brew 'btop'
 brew 'hyperfine'
@@ -109,19 +118,26 @@ brew 'mas'
 brew 'ripgrep'
 brew 'shfmt'
 brew 'tree'
-brew 'zsh'
-
-# -----------------------------------------------------------------------------
-# Git & Version Control
-# -----------------------------------------------------------------------------
-
-brew 'git'
-brew 'git-lfs'
 brew 'tig'
+brew 'helix'
+brew 'golangci-lint'
+brew 'swiftformat'
+brew 'mdless'
+brew 'exiftool'
 
-# -----------------------------------------------------------------------------
-# Media & Audio/Video Processing
-# -----------------------------------------------------------------------------
+# =============================================================================
+# SYNC - File sync and transfer tools
+# =============================================================================
+
+brew 'fswatch'
+brew 'parallel'
+brew 'rsync'
+brew 'rclone'
+brew 'syncthing'
+
+# =============================================================================
+# MEDIA - Audio/video processing and playback
+# =============================================================================
 
 brew 'ffmpeg'
 brew 'flac'
@@ -131,24 +147,21 @@ brew 'atomicparsley'
 brew 'cmus'
 brew 'ttfautohint'
 
-# -----------------------------------------------------------------------------
-# Database & Data Tools
-# -----------------------------------------------------------------------------
+cask 'foobar2000', greedy: true
+cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
+cask 'xld', args: { no_quarantine: true }, greedy: true
+
+# =============================================================================
+# DATABASE - Database clients and tools
+# =============================================================================
 
 brew 'postgresql'
 brew 'libpq'
 brew 'tursodatabase/tap/turso'
 
-# -----------------------------------------------------------------------------
-# Security & Cryptography
-# -----------------------------------------------------------------------------
-
-brew 'gnupg'
-brew 'openssl@3'
-
-# -----------------------------------------------------------------------------
-# System Libraries & Dependencies
-# -----------------------------------------------------------------------------
+# =============================================================================
+# LIBS - System libraries and dependencies
+# =============================================================================
 
 brew 'gmp'
 brew 'libyaml'
@@ -156,19 +169,18 @@ brew 'ossp-uuid'
 brew 'readline'
 brew 'xz'
 
-# -----------------------------------------------------------------------------
-# API & Protocol Tools
-# -----------------------------------------------------------------------------
+# =============================================================================
+# API TOOLS - API testing and protocol buffers
+# =============================================================================
 
 # brew 'bufbuild/buf/buf'
 brew 'evans'
-brew 'grpcurl'
 brew 'jsonnet'
 brew 'taplo'
 
-# -----------------------------------------------------------------------------
-# Specialized Tools
-# -----------------------------------------------------------------------------
+# =============================================================================
+# MISC - Specialized and experimental tools
+# =============================================================================
 
 brew 'aria2'
 brew 'cmatrix'
@@ -177,74 +189,58 @@ brew 'metalbear-co/mirrord/mirrord'
 brew 'nanovms/ops/ops'
 brew 'qemu'
 brew 'testdisk'
-brew 'tmux'
-brew 'tpm'
 brew 'vercel-cli'
 brew 'whalebrew'
 brew 'withgraphite/tap/graphite'
 brew 'wrk'
-brew 'helix'
-brew 'golangci-lint'
 
 # =============================================================================
-# CASK APPLICATIONS
+# PRODUCTIVITY - Office and productivity apps
 # =============================================================================
-
-cask_args require_sha: true
-
-# -----------------------------------------------------------------------------
-# Productivity & Office
-# -----------------------------------------------------------------------------
 
 cask 'notion', greedy: true
 cask 'notion-calendar', greedy: true
 cask '1password', greedy: true
 cask '1password-cli', greedy: true
+cask 'claude', greedy: true
 
-# -----------------------------------------------------------------------------
-# Communication
-# -----------------------------------------------------------------------------
+# =============================================================================
+# COMMUNICATION - Messaging and collaboration
+# =============================================================================
 
 cask 'discord', greedy: true
 cask 'signal', greedy: true
 
-# -----------------------------------------------------------------------------
-# Media & Entertainment
-# -----------------------------------------------------------------------------
-
-cask 'foobar2000', greedy: true
-cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
-cask 'xld', args: { no_quarantine: true }, greedy: true
-
-# -----------------------------------------------------------------------------
-# System & Utilities
-# -----------------------------------------------------------------------------
+# =============================================================================
+# SYSTEM - Terminal emulators and system utilities
+# =============================================================================
 
 cask 'ghostty', greedy: true
 cask 'orbstack', greedy: true
 cask 'rar', args: { no_quarantine: true }, greedy: true
 cask 'tailscale', greedy: true
 cask 'aws-vpn-client', greedy: true
+cask 'mullvad-vpn', greedy: true
+cask 'steam'
+
+# =============================================================================
+# CREATIVE - Adobe and audio production
+# =============================================================================
 
 cask 'adobe-creative-cloud', greedy: true
-cask 'altair-graphql-client', greedy: true
-cask 'mullvad-vpn', greedy: true
-
-# -----------------------------------------------------------------------------
-# Audio Production
-# -----------------------------------------------------------------------------
-
 cask 'focusrite-control', greedy: true
 
-# -----------------------------------------------------------------------------
-# AI & Productivity
-# -----------------------------------------------------------------------------
+# =============================================================================
+# DEV CLIENTS - API and GraphQL clients
+# =============================================================================
 
-cask 'claude', greedy: true
+cask 'altair-graphql-client', greedy: true
 
 # =============================================================================
-# MAC APP STORE APPLICATIONS
+# MAC APP STORE
 # =============================================================================
+
+cask_args require_sha: true
 
 mas '1Password for Safari', id: 1_569_813_296
 mas 'Adobe Lightroom', id: 1_451_544_217
@@ -252,8 +248,3 @@ mas 'Infuse', id: 1_136_220_934
 mas 'Slack', id: 803_453_959
 mas 'Telegram', id: 747_648_890
 mas 'WhatsApp', id: 310_633_997
-brew 'exiftool'
-cask 'steam'
-brew 'mdless'
-brew 'swiftformat'
-brew 'zsh'
