@@ -4,9 +4,7 @@
 
 use anyhow::Result;
 use clap::Parser;
-use colored::Colorize;
 use dotfiles_tools::banner;
-use std::path::PathBuf;
 use std::process::Command;
 use tempfile::TempDir;
 

@@ -64,21 +64,22 @@ path = "src/bin/install-font-macos.rs"
 name = "unfuck-xcode"
 path = "src/bin/unfuck-xcode.rs"
 
-[[bin]]
-name = "gen-diff"
-path = "src/bin/gen-diff.rs"
-
-[[bin]]
-name = "vimv"
-path = "src/bin/vimv.rs"
-
-[[bin]]
-name = "embed-art"
-path = "src/bin/embed-art.rs"
-
-[[bin]]
-name = "extract-exif-from-flac"
-path = "src/bin/extract-exif-from-flac.rs"
+# TODO: Implement these complex ones later
+# [[bin]]
+# name = "gen-diff"
+# path = "src/bin/gen-diff.rs"
+#
+# [[bin]]
+# name = "vimv"
+# path = "src/bin/vimv.rs"
+#
+# [[bin]]
+# name = "embed-art"
+# path = "src/bin/embed-art.rs"
+#
+# [[bin]]
+# name = "extract-exif-from-flac"
+# path = "src/bin/extract-exif-from-flac.rs"
 
 [dependencies]
 # CLI
