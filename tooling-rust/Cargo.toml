@@ -1,0 +1,131 @@
+[package]
+name = "dotfiles-tools"
+version = "1.0.0"
+edition = "2021"
+authors = ["James Cleveland"]
+license = "MIT"
+
+# Multiple binaries in one package
+[[bin]]
+name = "kill-port"
+path = "src/bin/kill-port.rs"
+
+[[bin]]
+name = "prune"
+path = "src/bin/prune.rs"
+
+
+
+[[bin]]
+name = "url2base64"
+path = "src/bin/url2base64.rs"
+
+[[bin]]
+name = "git-sync"
+path = "src/bin/git-sync.rs"
+
+[[bin]]
+name = "git-squash"
+path = "src/bin/git-squash.rs"
+
+[[bin]]
+name = "git-trigger"
+path = "src/bin/git-trigger.rs"
+
+[[bin]]
+name = "git-update"
+path = "src/bin/git-update.rs"
+
+[[bin]]
+name = "to-opus"
+path = "src/bin/to-opus.rs"
+
+[[bin]]
+name = "to-flac"
+path = "src/bin/to-flac.rs"
+
+[[bin]]
+name = "clean-exif"
+path = "src/bin/clean-exif.rs"
+
+[[bin]]
+name = "clean-dls"
+path = "src/bin/clean-dls.rs"
+
+# TODO: Implement these next
+# [[bin]]
+# name = "embed-art"
+# path = "src/bin/embed-art.rs"
+#
+# [[bin]]
+# name = "gen-diff"
+# path = "src/bin/gen-diff.rs"
+#
+# [[bin]]
+# name = "unfuck-xcode"
+# path = "src/bin/unfuck-xcode.rs"
+#
+# [[bin]]
+# name = "imp"
+# path = "src/bin/imp.rs"
+#
+# [[bin]]
+# name = "vimv"
+# path = "src/bin/vimv.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4.5", features = ["derive", "cargo", "env"] }
+dialoguer = "0.11"
+indicatif = "0.17"
+
+# Async
+tokio = { version = "1.40", features = ["full"] }
+reqwest = { version = "0.12", features = ["blocking", "stream"] }
+
+# Parallelism
+rayon = "1.10"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# File/Path utilities
+walkdir = "2.5"
+tempfile = "3.12"
+glob = "0.3"
+
+# System info
+sysinfo = "0.31"
+
+# Git
+git2 = "0.19"
+
+# Encoding
+base64 = "0.22"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Terminal colors
+colored = "2.1"
+
+# Image processing
+image = "0.25"
+
+# CPU detection
+num_cpus = "1.16"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+assert_fs = "1.1"
+predicates = "3.1"
+
+[lib]
+name = "dotfiles_tools"
+path = "src/lib.rs"

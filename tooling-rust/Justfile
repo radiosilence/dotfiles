@@ -1,0 +1,69 @@
+# Build and install Rust tools to ../bin/
+
+# Default recipe - build and install all tools
+default: build install
+
+# Build all binaries in release mode
+build:
+    @echo "→ Building Rust tools..."
+    cargo build --release
+
+# Install binaries to ../bin/
+install:
+    @echo "→ Installing to ../bin/..."
+    @mkdir -p ../bin
+    @cp target/release/kill-port ../bin/
+    @cp target/release/prune ../bin/
+    @cp target/release/vimv ../bin/
+    @cp target/release/url2base64 ../bin/
+    @cp target/release/git-sync ../bin/
+    @cp target/release/git-squash ../bin/
+    @cp target/release/git-trigger ../bin/
+    @cp target/release/git-update ../bin/
+    @cp target/release/to-opus ../bin/
+    @cp target/release/to-flac ../bin/
+    @cp target/release/clean-exif ../bin/
+    @cp target/release/clean-dls ../bin/
+    @echo "✓ Installed all tools"
+
+# Run tests
+test:
+    cargo test
+
+# Run tests with output
+test-verbose:
+    cargo test -- --nocapture
+
+# Check code without building
+check:
+    cargo check
+
+# Format code
+fmt:
+    cargo fmt
+
+# Lint with clippy
+lint:
+    cargo clippy -- -D warnings
+
+# Clean build artifacts
+clean:
+    cargo clean
+
+# Build single tool (usage: just build-one kill-port)
+build-one TOOL:
+    cargo build --release --bin {{TOOL}}
+    cp target/release/{{TOOL}} ../bin/
+    @echo "✓ Built and installed {{TOOL}}"
+
+# Run a tool in development mode
+run TOOL *ARGS:
+    cargo run --bin {{TOOL}} -- {{ARGS}}
+
+# Watch and rebuild on changes
+watch:
+    cargo watch -x 'build --release' -s 'just install'
+
+# Show all available binaries
+list:
+    @cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].targets[] | select(.kind[] | contains("bin")) | .name'
