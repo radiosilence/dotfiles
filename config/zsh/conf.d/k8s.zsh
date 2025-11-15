@@ -7,6 +7,7 @@ alias kubectl='kubecolor'
 compdef kubecolor=kubectl
 
 alias kgp='kubectl get pods | grep '
+alias kgpw='kubectl get pods -w | grep '
 alias klg='kubectl logs -f '
 
 ksh() {
