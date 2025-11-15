@@ -73,14 +73,14 @@ has_sensitive_data() {
 
   # Check for GPS data, camera serial numbers, and other PII
   if echo "$exif_json" | jq -e '.GPS? or .CameraSerialNumber? or .LensSerialNumber? or .BodySerialNumber? or .InternalSerialNumber? or .UniqueImageID? or .Artist? or .Copyright? or .Creator? or .Contact? or .Credit? or .Source? or .Comment? or .UserComment?' > /dev/null 2>&1; then
-    return 0  # has sensitive data
+    return 0 # has sensitive data
   else
-    return 1  # clean
+    return 1 # clean
   fi
 }
 
 # Get list of embedded pictures
-picture_info=$(metaflac --list --block-type=PICTURE "$flac_file" 2>/dev/null)
+picture_info=$(metaflac --list --block-type=PICTURE "$flac_file" 2> /dev/null)
 
 if [ -z "$picture_info" ]; then
   echo "📁 $(basename "$flac_file"): No embedded artwork"
@@ -99,11 +99,9 @@ while IFS= read -r line; do
     # Extract this picture to temporary file
     temp_image="$temp_dir/picture_${picture_index}.jpg"
 
-    if metaflac --export-picture-to="$temp_image" "$flac_file" 2>/dev/null; then
+    if metaflac --export-picture-to="$temp_image" "$flac_file" 2> /dev/null; then
       # Get EXIF data as JSON
-      exif_data=$(exiftool -json -q "$temp_image" 2>/dev/null)
-
-      if [ $? -eq 0 ] && [ -n "$exif_data" ]; then
+      if exif_data=$(exiftool -json -q "$temp_image" 2> /dev/null) && [ -n "$exif_data" ]; then
         if has_sensitive_data "$exif_data"; then
           echo "   ⚠️  $picture_desc - Contains sensitive EXIF data"
         else

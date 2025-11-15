@@ -1,6 +1,6 @@
 # Dotfiles
 
-Modern, modular dotfiles setup for macOS with container support.
+Personal dev environment configs for macOS.
 
 ## Requirements
 

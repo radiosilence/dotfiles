@@ -14,15 +14,16 @@ EOF
   exit 0
 fi
 
+if [ $# -eq 0 ]; then
+  echo "Usage: $(basename "$0") <port> [kill-args]"
+  exit 1
+fi
+
 PORT="$1"
 shift 1
 echo "killing port $PORT with args: $*"
 
 PID="$(lsof -ti ":$PORT")"
-if [ -z "$PORT" ]; then
-  echo "Usage: $(basename "$0") <port >"
-  exit 1
-fi
 
 if [ -z "$PID" ]; then
   echo "No process is listening on port $PORT"
