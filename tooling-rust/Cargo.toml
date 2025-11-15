@@ -64,22 +64,53 @@ path = "src/bin/install-font-macos.rs"
 name = "unfuck-xcode"
 path = "src/bin/unfuck-xcode.rs"
 
-# TODO: Implement these complex ones later
-# [[bin]]
-# name = "gen-diff"
-# path = "src/bin/gen-diff.rs"
-#
-# [[bin]]
-# name = "vimv"
-# path = "src/bin/vimv.rs"
-#
-# [[bin]]
-# name = "embed-art"
-# path = "src/bin/embed-art.rs"
-#
-# [[bin]]
-# name = "extract-exif-from-flac"
-# path = "src/bin/extract-exif-from-flac.rs"
+[[bin]]
+name = "upd"
+path = "src/bin/upd.rs"
+
+[[bin]]
+name = "vimv"
+path = "src/bin/vimv.rs"
+
+[[bin]]
+name = "embed-art"
+path = "src/bin/embed-art.rs"
+
+[[bin]]
+name = "extract-exif-from-flac"
+path = "src/bin/extract-exif-from-flac.rs"
+
+[[bin]]
+name = "gen-diff"
+path = "src/bin/gen-diff.rs"
+
+[[bin]]
+name = "install-terminfo"
+path = "src/bin/install-terminfo.rs"
+
+[[bin]]
+name = "prune-gen"
+path = "src/bin/prune-gen.rs"
+
+[[bin]]
+name = "pull-music"
+path = "src/bin/pull-music.rs"
+
+[[bin]]
+name = "push-music"
+path = "src/bin/push-music.rs"
+
+[[bin]]
+name = "regen-zsh-completions"
+path = "src/bin/regen-zsh-completions.rs"
+
+[[bin]]
+name = "echo-to-file"
+path = "src/bin/echo-to-file.rs"
+
+[[bin]]
+name = "parallel-dl-extract"
+path = "src/bin/parallel-dl-extract.rs"
 
 [dependencies]
 # CLI
