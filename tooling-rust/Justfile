@@ -8,22 +8,10 @@ build:
     @echo "→ Building Rust tools..."
     cargo build --release
 
-# Install binaries to ../bin/
+# Install binaries to ../bin/ using cargo install
 install:
-    @echo "→ Installing to ../bin/..."
-    @mkdir -p ../bin
-    @cp target/release/kill-port ../bin/
-    @cp target/release/prune ../bin/
-    @cp target/release/vimv ../bin/
-    @cp target/release/url2base64 ../bin/
-    @cp target/release/git-sync ../bin/
-    @cp target/release/git-squash ../bin/
-    @cp target/release/git-trigger ../bin/
-    @cp target/release/git-update ../bin/
-    @cp target/release/to-opus ../bin/
-    @cp target/release/to-flac ../bin/
-    @cp target/release/clean-exif ../bin/
-    @cp target/release/clean-dls ../bin/
+    @echo "→ Installing to ../bin/ via cargo install..."
+    cargo install --path . --root .. --force
     @echo "✓ Installed all tools"
 
 # Run tests

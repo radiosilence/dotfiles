@@ -3,3 +3,7 @@
 *.code-workspace
 .ruby-lsp
 .claude
+
+# Cargo install artifacts
+.crates.toml
+.crates2.json

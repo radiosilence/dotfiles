@@ -52,26 +52,33 @@ path = "src/bin/clean-exif.rs"
 name = "clean-dls"
 path = "src/bin/clean-dls.rs"
 
-# TODO: Implement these next
-# [[bin]]
-# name = "embed-art"
-# path = "src/bin/embed-art.rs"
-#
-# [[bin]]
-# name = "gen-diff"
-# path = "src/bin/gen-diff.rs"
-#
-# [[bin]]
-# name = "unfuck-xcode"
-# path = "src/bin/unfuck-xcode.rs"
-#
-# [[bin]]
-# name = "imp"
-# path = "src/bin/imp.rs"
-#
-# [[bin]]
-# name = "vimv"
-# path = "src/bin/vimv.rs"
+[[bin]]
+name = "imp"
+path = "src/bin/imp.rs"
+
+[[bin]]
+name = "install-font-macos"
+path = "src/bin/install-font-macos.rs"
+
+[[bin]]
+name = "unfuck-xcode"
+path = "src/bin/unfuck-xcode.rs"
+
+[[bin]]
+name = "gen-diff"
+path = "src/bin/gen-diff.rs"
+
+[[bin]]
+name = "vimv"
+path = "src/bin/vimv.rs"
+
+[[bin]]
+name = "embed-art"
+path = "src/bin/embed-art.rs"
+
+[[bin]]
+name = "extract-exif-from-flac"
+path = "src/bin/extract-exif-from-flac.rs"
 
 [dependencies]
 # CLI
@@ -101,6 +108,9 @@ glob = "0.3"
 
 # System info
 sysinfo = "0.31"
+
+# Directories
+dirs = "5.0"
 
 # Git
 git2 = "0.19"
