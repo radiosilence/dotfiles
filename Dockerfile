@@ -60,7 +60,7 @@ RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh \
   && curl -fsSL https://github.com/radiosilence.keys > ~/.ssh/authorized_keys \
   && chmod 600 ~/.ssh/authorized_keys
 
-# Build and install Rust tooling, then run setup
+# Build and run setup (upd does everything)
 RUN . ~/.cargo/env \
   && cd /home/$USERNAME/.dotfiles \
   && ./setup

@@ -11,10 +11,6 @@ name = "install-dotfiles"
 path = "src/bin/install-dotfiles.rs"
 
 [[bin]]
-name = "setup"
-path = "src/bin/setup.rs"
-
-[[bin]]
 name = "kill-port"
 path = "src/bin/kill-port.rs"
 

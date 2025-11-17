@@ -25,19 +25,16 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 That's it. The `setup` script will:
 
 - Install Rust (if needed)
-- Install Homebrew (macOS only)
-- Install fonts (macOS only)
-- Run brew bundle (macOS only)
-- Symlink dotfiles and configs
-- Install mise tools
-- Set up Rust toolchain
+- Build and run `upd` which intelligently:
+  - Installs Homebrew (macOS, if missing)
+  - Installs fonts (macOS, if needed)
+  - Runs brew bundle (macOS, if Brewfile exists)
+  - Symlinks dotfiles and configs (idempotent)
+  - Installs mise tools (if mise exists)
+  - Sets up Rust toolchain (if rustup exists)
+  - Updates all package managers
 
-### Manual Platform Selection
-
-```sh
-~/.dotfiles/setup --platform=macos  # Force macOS setup
-~/.dotfiles/setup --platform=linux  # Force Linux setup
-```
+Everything is idempotent - run `upd` anytime to update your system.
 
 ## WHAT'S INCLUDED
 
