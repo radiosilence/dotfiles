@@ -24,3 +24,7 @@ pre-commit:
           exit 0
         fi
       stage_fixed: true
+
+    cargo-clippy:
+      glob: "tooling-rust/**/*.rs"
+      run: cd tooling-rust && mise x -- cargo clippy --all-targets --all-features -- -D warnings
