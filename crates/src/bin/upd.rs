@@ -334,7 +334,7 @@ fn main() -> Result<()> {
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let bundle_result = if has_brewfile {
-                brew_bundle_with_progress(&pb).map(|_| ())
+                brew_bundle(&pb).map(|_| ())
             } else {
                 Ok(())
             };
@@ -485,7 +485,7 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
     Ok(())
 }
 
-fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
+fn brew_bundle(pb: &ProgressBar) -> Result<Vec<String>> {
     let home = std::env::var("HOME")?;
 
     // Set HOMEBREW_NO_AUTO_UPDATE to prevent the "Updating Homebrew..." message
