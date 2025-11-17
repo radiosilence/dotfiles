@@ -2,7 +2,6 @@ use anyhow::Result;
 use clap::Parser;
 use colored::Colorize;
 use dotfiles_tools::completions;
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -66,66 +65,62 @@ fn main() -> Result<()> {
     banner::status("□", "PHASE 1", "dotfiles install", "blue");
     run_install()?;
 
-    // Parallel phase: Update all package managers
-    banner::status("□", "PHASE 2", "parallel package updates", "magenta");
+    // Phase 2: sudo updates (sequential - need password input)
+    banner::divider("cyan");
+    banner::status("□", "PHASE 2", "system package updates", "red");
 
-    let mp = MultiProgress::new();
-    let results = Arc::new(Mutex::new(Vec::new()));
-    let mut handles = vec![];
+    let mut sudo_results = Vec::new();
 
-    // Spawn parallel updates
     if has_apt {
-        let mp = mp.clone();
-        let results = results.clone();
-        handles.push(thread::spawn(move || {
-            let pb = create_spinner(&mp, "apt-get");
-            let result = update_apt();
-            results.lock().unwrap().push(("apt-get", result.is_ok()));
-            pb.finish_with_message(format_result("apt-get", result.is_ok()));
-        }));
+        println!("   {} updating apt-get...", "→".red());
+        let result = update_apt();
+        sudo_results.push(("apt-get", result.is_ok()));
+        if result.is_ok() {
+            println!("   {} apt-get", "✓".green());
+        } else {
+            println!("   {} apt-get", "✗".red());
+        }
     }
 
     if has_dnf {
-        let mp = mp.clone();
-        let results = results.clone();
-        handles.push(thread::spawn(move || {
-            let pb = create_spinner(&mp, "dnf");
-            let result = update_dnf();
-            results.lock().unwrap().push(("dnf", result.is_ok()));
-            pb.finish_with_message(format_result("dnf", result.is_ok()));
-        }));
+        println!("   {} updating dnf...", "→".red());
+        let result = update_dnf();
+        sudo_results.push(("dnf", result.is_ok()));
+        if result.is_ok() {
+            println!("   {} dnf", "✓".green());
+        } else {
+            println!("   {} dnf", "✗".red());
+        }
     }
 
+    // Parallel phase: Update non-sudo package managers
+    banner::divider("cyan");
+    banner::status("□", "PHASE 3", "parallel updates", "magenta");
+
+    let results = Arc::new(Mutex::new(Vec::new()));
+    let mut handles = vec![];
+
     if has_brew {
-        let mp = mp.clone();
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            let pb = create_spinner(&mp, "brew");
             let result = update_brew();
             results.lock().unwrap().push(("brew", result.is_ok()));
-            pb.finish_with_message(format_result("brew", result.is_ok()));
         }));
     }
 
     if has_mise {
-        let mp = mp.clone();
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            let pb = create_spinner(&mp, "mise");
             let result = update_mise();
             results.lock().unwrap().push(("mise", result.is_ok()));
-            pb.finish_with_message(format_result("mise", result.is_ok()));
         }));
     }
 
     if has_yt_dlp {
-        let mp = mp.clone();
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            let pb = create_spinner(&mp, "yt-dlp");
             let result = update_yt_dlp();
             results.lock().unwrap().push(("yt-dlp", result.is_ok()));
-            pb.finish_with_message(format_result("yt-dlp", result.is_ok()));
         }));
     }
 
@@ -134,24 +129,34 @@ fn main() -> Result<()> {
         handle.join().unwrap();
     }
 
+    // Print results
+    for (name, success) in results.lock().unwrap().iter() {
+        if *success {
+            println!("   {} {}", "✓".green(), name);
+        } else {
+            println!("   {} {}", "✗".red(), name);
+        }
+    }
+
     banner::divider("cyan");
 
     // Sequential cleanup phase - rebuild Rust tools first so completions can be generated
     if has_rust {
-        banner::status("□", "PHASE 3", "rust tooling rebuild", "yellow");
+        banner::status("□", "PHASE 4", "rust tooling rebuild", "yellow");
         rebuild_rust()?;
     }
 
     if has_regen {
-        banner::status("□", "PHASE 4", "zsh completions", "green");
+        banner::status("□", "PHASE 5", "zsh completions", "green");
         regen_completions()?;
     }
 
     banner::divider("cyan");
     banner::success("SYSTEM UPDATE COMPLETE");
 
-    // Print summary
-    let results = results.lock().unwrap();
+    // Print summary - merge sudo and parallel results
+    let mut results = results.lock().unwrap().clone();
+    results.extend(sudo_results);
     let success_count = results.iter().filter(|(_, ok)| *ok).count();
     let total_count = results.len();
 
@@ -172,27 +177,6 @@ fn which(cmd: &str) -> bool {
         .status()
         .map(|s| s.success())
         .unwrap_or(false)
-}
-
-fn create_spinner(mp: &MultiProgress, name: &str) -> ProgressBar {
-    let pb = mp.add(ProgressBar::new_spinner());
-    pb.set_style(
-        ProgressStyle::default_spinner()
-            .template("{spinner:.cyan} {msg}")
-            .unwrap()
-            .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
-    );
-    pb.set_message(format!("updating {}", name));
-    pb.enable_steady_tick(std::time::Duration::from_millis(100));
-    pb
-}
-
-fn format_result(name: &str, success: bool) -> String {
-    if success {
-        format!("{} {}", "✓".green(), name)
-    } else {
-        format!("{} {}", "✗".red(), name)
-    }
 }
 
 fn run_install() -> Result<()> {
