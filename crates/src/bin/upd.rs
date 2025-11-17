@@ -414,10 +414,13 @@ fn install_fonts() -> Result<()> {
 
 fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
     let home = std::env::var("HOME")?;
+
+    // Set HOMEBREW_NO_AUTO_UPDATE to prevent the "Updating Homebrew..." message
     let mut child = Command::new("brew")
         .arg("bundle")
         .arg("--verbose")
         .current_dir(&home)
+        .env("HOMEBREW_NO_AUTO_UPDATE", "1")
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()?;
