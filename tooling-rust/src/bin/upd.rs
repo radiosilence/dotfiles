@@ -19,18 +19,26 @@ fn main() -> Result<()> {
 
     let _args = Args::parse();
 
-    banner::print_banner("SYSTEM UPDATE", "parallel update orchestrator", "blue");
+    banner::print_banner("SYSTEM UPDATE", "idempotent system orchestrator", "blue");
 
-    // Check what's available on the system
+    // Detect platform and what's available
+    let is_macos = cfg!(target_os = "macos");
     let has_brew = which("brew");
     let has_apt = which("apt-get");
     let has_dnf = which("dnf");
     let has_mise = which("mise");
     let has_yt_dlp = which("yt-dlp");
     let has_regen = which("regen-zsh-completions");
+    let has_rustup = which("rustup");
 
     banner::divider("cyan");
-    banner::status("□", "DETECTED SYSTEMS", "", "cyan");
+    banner::status("□", "DETECTED", "", "cyan");
+
+    if is_macos {
+        println!("   {} macOS", "✓".green());
+    } else {
+        println!("   {} Linux", "✓".green());
+    }
 
     if has_brew {
         println!("   {} brew", "✓".green());
@@ -44,6 +52,9 @@ fn main() -> Result<()> {
     if has_mise {
         println!("   {} mise", "✓".green());
     }
+    if has_rustup {
+        println!("   {} rustup", "✓".green());
+    }
     if has_yt_dlp {
         println!("   {} yt-dlp", "✓".green());
     }
@@ -53,9 +64,48 @@ fn main() -> Result<()> {
 
     banner::divider("cyan");
 
-    // Run install script first (sequential, required)
-    banner::status("□", "PHASE 1", "dotfiles install", "blue");
-    run_install()?;
+    // PHASE 1: Bootstrap missing package managers
+    let mut phase = 1;
+    if is_macos && !has_brew {
+        banner::status("□", &format!("PHASE {}", phase), "install homebrew", "blue");
+        install_homebrew()?;
+        phase += 1;
+        banner::divider("cyan");
+    }
+
+    // PHASE: Install fonts (macOS only, if not already done)
+    if is_macos && has_brew && which("install-font-macos") {
+        let home = std::env::var("HOME")?;
+        let fonts_dir = std::path::Path::new(&home).join("Library/Fonts");
+
+        // Only try fonts if the fonts directory is relatively empty
+        if fonts_dir.exists() {
+            let font_count = std::fs::read_dir(&fonts_dir)?.count();
+            if font_count < 10 {
+                banner::status("□", &format!("PHASE {}", phase), "install fonts", "magenta");
+                install_fonts()?;
+                phase += 1;
+                banner::divider("cyan");
+            }
+        }
+    }
+
+    // PHASE: Brew bundle (macOS only, if Brewfile exists)
+    if is_macos && has_brew {
+        let home = std::env::var("HOME")?;
+        let brewfile = std::path::Path::new(&home).join("Brewfile");
+        if brewfile.exists() {
+            banner::status("□", &format!("PHASE {}", phase), "brew bundle", "green");
+            brew_bundle()?;
+            phase += 1;
+            banner::divider("cyan");
+        }
+    }
+
+    // PHASE: Dotfiles install (always run, but it's idempotent)
+    banner::status("□", &format!("PHASE {}", phase), "dotfiles install", "blue");
+    dotfiles_tools::install::install_dotfiles()?;
+    phase += 1;
 
     // Phase 2: sudo updates (sequential - need password input)
     banner::divider("cyan");
@@ -85,9 +135,27 @@ fn main() -> Result<()> {
         }
     }
 
+    // PHASE: mise/rustup setup (only if missing)
+    banner::divider("cyan");
+    if has_mise || has_rustup {
+        banner::status("□", &format!("PHASE {}", phase), "runtime setup", "yellow");
+        if has_mise {
+            dotfiles_tools::system::install_mise_tools()?;
+        }
+        if has_rustup {
+            dotfiles_tools::system::setup_rustup()?;
+        }
+        phase += 1;
+    }
+
     // Parallel phase: Update non-sudo package managers
     banner::divider("cyan");
-    banner::status("□", "PHASE 3", "parallel updates", "magenta");
+    banner::status(
+        "□",
+        &format!("PHASE {}", phase),
+        "parallel updates",
+        "magenta",
+    );
 
     let results = Arc::new(Mutex::new(Vec::new()));
     let mut handles = vec![];
@@ -133,8 +201,14 @@ fn main() -> Result<()> {
     banner::divider("cyan");
 
     // Generate completions
+    banner::divider("cyan");
     if has_regen {
-        banner::status("□", "PHASE 4", "zsh completions", "green");
+        banner::status(
+            "□",
+            &format!("PHASE {}", phase + 1),
+            "zsh completions",
+            "green",
+        );
         regen_completions()?;
     }
 
@@ -156,8 +230,71 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn run_install() -> Result<()> {
-    dotfiles_tools::install::install_dotfiles()
+fn install_homebrew() -> Result<()> {
+    println!("   {} installing Homebrew...", "→".blue());
+    let status = Command::new("/bin/bash")
+        .args([
+            "-c",
+            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
+        ])
+        .stdin(Stdio::inherit())
+        .status()?;
+
+    if status.success() {
+        println!("   {} Homebrew installed", "✓".green());
+        Ok(())
+    } else {
+        anyhow::bail!("Homebrew installation failed")
+    }
+}
+
+fn install_fonts() -> Result<()> {
+    let fonts = vec![
+        (
+            "Hack Ligatured",
+            "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip",
+        ),
+        (
+            "Geist",
+            "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip",
+        ),
+        (
+            "Geist Mono",
+            "https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip",
+        ),
+    ];
+
+    for (name, url) in fonts {
+        println!("   {} installing {} font...", "→".magenta(), name);
+        let status = Command::new("install-font-macos")
+            .arg(url)
+            .stdout(Stdio::null())
+            .status();
+
+        if status.is_ok() {
+            println!("   {} {}", "✓".green(), name);
+        } else {
+            println!("   {} {} (failed)", "⚠".yellow(), name);
+        }
+    }
+    Ok(())
+}
+
+fn brew_bundle() -> Result<()> {
+    let home = std::env::var("HOME")?;
+    println!("   {} running brew bundle...", "→".green());
+    let status = Command::new("brew")
+        .arg("bundle")
+        .current_dir(&home)
+        .status()?;
+
+    if status.success() {
+        println!("   {} brew bundle complete", "✓".green());
+        Ok(())
+    } else {
+        println!("   {} brew bundle failed", "⚠".yellow());
+        Ok(()) // Don't fail entire update if brew bundle fails
+    }
 }
 
 fn update_apt() -> Result<()> {

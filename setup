@@ -1,6 +1,6 @@
 #!/bin/sh
 # Bootstrap script - run this on a fresh system
-# Usage: ./setup [--platform=macos|linux]
+# Usage: ./setup
 
 set -e
 
@@ -11,22 +11,16 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 
 # Check if we have cargo/rust already
 if command -v cargo >/dev/null 2>&1; then
-  echo "✓ Rust/Cargo found, building and running setup..."
+  echo "✓ Rust/Cargo found, building and running upd..."
   cd "$DOTFILES_DIR/tooling-rust"
-  cargo install --path . --root .. --bin setup --force
+  cargo install --path . --root .. --bin upd --force
   cd "$DOTFILES_DIR"
-  exec "$DOTFILES_DIR/bin/setup" "$@"
+  exec "$DOTFILES_DIR/bin/upd" "$@"
 fi
 
 # Bootstrap mode - install Rust first
 echo "→ Rust not found, installing rustup..."
 echo ""
-
-if [ "$(uname)" = "Darwin" ]; then
-  PLATFORM="macos"
-else
-  PLATFORM="linux"
-fi
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
 
@@ -36,17 +30,17 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --defaul
 echo ""
 echo "✓ Rust installed"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "→ Building setup tool..."
+echo "→ Building upd..."
 echo ""
 
 cd "$DOTFILES_DIR/tooling-rust"
-cargo install --path . --root .. --bin setup --force
+cargo install --path . --root .. --bin upd --force
 
 echo ""
-echo "✓ Setup tool built"
+echo "✓ upd built"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "→ Running setup..."
+echo "→ Running bootstrap..."
 echo ""
 
 cd "$DOTFILES_DIR"
-exec "$DOTFILES_DIR/bin/setup" --platform="$PLATFORM" "$@"
+exec "$DOTFILES_DIR/bin/upd" "$@"
