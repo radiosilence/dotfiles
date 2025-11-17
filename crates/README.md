@@ -9,7 +9,7 @@ Type safety, native parallelism, better error handling. Shell scripts were hitti
 ## Building
 
 ```bash
-cd tooling-rust
+cd crates
 cargo build --release
 
 # Install to ../bin/
@@ -61,7 +61,7 @@ just watch
 ## Architecture
 
 ```
-tooling-rust/
+crates/
 ├── src/
 │   ├── lib.rs          # Shared code
 │   ├── audio.rs        # Audio utils

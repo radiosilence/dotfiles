@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "tooling-rust/**"
+      - "crates/**"
       - ".github/workflows/rust-tests.yml"
   pull_request:
     paths:
-      - "tooling-rust/**"
+      - "crates/**"
       - ".github/workflows/rust-tests.yml"
 
 jobs:
@@ -44,23 +44,23 @@ jobs:
       - name: Cache target directory
         uses: actions/cache@v4
         with:
-          path: tooling-rust/target
+          path: crates/target
           key: ${{ runner.os }}-target-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-target-
 
       - name: Check formatting
         run: cargo fmt --check
-        working-directory: tooling-rust
+        working-directory: crates
 
       - name: Run clippy
         run: cargo clippy --all-targets --all-features -- -D warnings
-        working-directory: tooling-rust
+        working-directory: crates
 
       - name: Build
         run: cargo build --verbose
-        working-directory: tooling-rust
+        working-directory: crates
 
       - name: Run tests
         run: cargo test --all-targets --verbose
-        working-directory: tooling-rust
+        working-directory: crates

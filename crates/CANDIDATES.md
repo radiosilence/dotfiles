@@ -95,7 +95,7 @@
 ## Proposed Rust Tools Structure
 
 ```
-tooling-rust/
+crates/
 ├── Cargo.toml              # Workspace manifest
 ├── audio-tools/            # Audio conversion pipeline
 │   ├── Cargo.toml
