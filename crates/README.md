@@ -38,10 +38,9 @@ just install
 
 ### Audio
 
-- **to-opus** - Convert to Opus
-- **to-flac** - Convert to FLAC
+- **to-audio** - Convert to FLAC/Opus with parallel processing
 - **embed-art** - Embed album art in FLAC
-- **imp** - Import music archives
+- **imp** - Import music from URLs to beets
 
 ### Misc
 
