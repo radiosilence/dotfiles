@@ -3,10 +3,11 @@
 //! Removes corrupt CLT installation and triggers reinstall
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dotfiles_tools::banner;
-use dotfiles_tools::completions;
+use std::io;
 use std::process::Command;
 
 #[derive(Parser)]
@@ -14,17 +15,35 @@ use std::process::Command;
 #[command(about = "Fix Xcode CLI Tools", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Dry run - show what would be done
     #[arg(short = 'n', long)]
     dry_run: bool,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(
+            shell,
+            &mut Args::command(),
+            "unfuck-xcode",
+            &mut io::stdout(),
+        );
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_banner("XCODE UNFUCKER", "remove corrupt CLI tools", "red");
 
