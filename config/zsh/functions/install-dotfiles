@@ -1,9 +1,9 @@
 # Smart install-dotfiles function - rebuilds Rust tooling first, then delegates
 install-dotfiles() {
-  # If cargo and tooling-rust exist, rebuild first
-  if command -v cargo &>/dev/null && [ -d ~/.dotfiles/tooling-rust ]; then
+  # If cargo and crates exist, rebuild first
+  if command -v cargo &>/dev/null && [ -d ~/.dotfiles/crates ]; then
     printf "\033[35m🦀 [install-dotfiles] rebuilding rust tooling...\033[0m\n"
-    (cd ~/.dotfiles/tooling-rust && cargo install --path . --root .. --force --bin install-dotfiles 2>&1 | grep -v "warning:")
+    (cd ~/.dotfiles/crates && cargo install --path . --root .. --force --bin install-dotfiles 2>&1 | grep -v "warning:")
   fi
 
   # If install-dotfiles binary exists and is executable, use it
