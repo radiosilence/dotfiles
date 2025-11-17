@@ -44,10 +44,12 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("SYSTEM UPDATE", "idempotent system orchestrator", "blue");
-
-    // Create MultiProgress early so we can use it for all output
+    // Create MultiProgress FIRST - use for ALL output
     let mp = MultiProgress::new();
+
+    mp.suspend(|| {
+        banner::print_banner("SYSTEM UPDATE", "idempotent system orchestrator", "blue");
+    });
 
     // Detect platform and what's available
     let is_macos = cfg!(target_os = "macos");
@@ -100,7 +102,7 @@ fn main() -> Result<()> {
         mp.suspend(|| {
             banner::status("□", &format!("PHASE {}", phase), "install homebrew", "blue");
         });
-        install_homebrew()?;
+        install_homebrew(&mp)?;
         phase += 1;
         mp.suspend(|| {
             banner::divider("cyan");
@@ -116,10 +118,14 @@ fn main() -> Result<()> {
         if fonts_dir.exists() {
             let font_count = std::fs::read_dir(&fonts_dir)?.count();
             if font_count < 10 {
-                banner::status("□", &format!("PHASE {}", phase), "install fonts", "magenta");
-                install_fonts()?;
+                mp.suspend(|| {
+                    banner::status("□", &format!("PHASE {}", phase), "install fonts", "magenta");
+                });
+                install_fonts(&mp)?;
                 phase += 1;
-                banner::divider("cyan");
+                mp.suspend(|| {
+                    banner::divider("cyan");
+                });
             }
         }
     }
@@ -135,12 +141,14 @@ fn main() -> Result<()> {
     // PHASE 1: Get sudo authentication if needed
     let needs_sudo = has_apt || has_dnf;
     if needs_sudo {
-        banner::status(
-            "□",
-            &format!("PHASE {}", phase),
-            "sudo authentication",
-            "red",
-        );
+        mp.suspend(|| {
+            banner::status(
+                "□",
+                &format!("PHASE {}", phase),
+                "sudo authentication",
+                "red",
+            );
+        });
         let status = Command::new("sudo").arg("-v").status()?;
         if !status.success() {
             anyhow::bail!("Failed to get sudo authentication");
@@ -379,57 +387,61 @@ fn main() -> Result<()> {
         handle.join().unwrap();
     }
 
-    // Drop MultiProgress to clean up terminal state before continuing
-    drop(mp);
-    println!(); // Add spacing after spinners
-
     // Stop sudo keepalive
     if let Some((handle, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
         let _ = handle.join();
     }
 
-    banner::divider("cyan");
+    mp.suspend(|| {
+        banner::divider("cyan");
 
-    // Generate completions (after everything is updated)
+        // Generate completions (after everything is updated)
+        if has_regen {
+            banner::status(
+                "□",
+                &format!("PHASE {}", phase + 1),
+                "zsh completions",
+                "green",
+            );
+        }
+    });
+
     if has_regen {
-        banner::status(
-            "□",
-            &format!("PHASE {}", phase + 1),
-            "zsh completions",
-            "green",
-        );
         dotfiles_tools::regen_completions::regenerate_completions()?;
-        println!("   {} completions regenerated", "✓".green());
+        mp.println(format!("   {} completions regenerated", "✓".green()))
+            .unwrap();
     }
-
-    banner::divider("cyan");
 
     // Print results
     let results = results.lock().unwrap().clone();
-    for (name, ok, duration) in &results {
-        let status = if *ok { "✓".green() } else { "✗".red() };
-        println!("   {} {} ({:.1}s)", status, name, duration);
-    }
+    mp.suspend(|| {
+        banner::divider("cyan");
 
-    banner::divider("cyan");
-    banner::success("SYSTEM UPDATE COMPLETE");
+        for (name, ok, duration) in &results {
+            let status = if *ok { "✓".green() } else { "✗".red() };
+            println!("   {} {} ({:.1}s)", status, name, duration);
+        }
 
-    // Print summary
-    let success_count = results.iter().filter(|(_, ok, _)| *ok).count();
-    let total_count = results.len();
+        banner::divider("cyan");
+        banner::success("SYSTEM UPDATE COMPLETE");
 
-    println!(
-        "\n   {} UPDATED  {} FAILED\n",
-        success_count.to_string().green().bold(),
-        (total_count - success_count).to_string().red().bold()
-    );
+        // Print summary
+        let success_count = results.iter().filter(|(_, ok, _)| *ok).count();
+        let total_count = results.len();
+
+        println!(
+            "\n   {} UPDATED  {} FAILED\n",
+            success_count.to_string().green().bold(),
+            (total_count - success_count).to_string().red().bold()
+        );
+    });
 
     Ok(())
 }
 
-fn install_homebrew() -> Result<()> {
-    println!("   {} installing Homebrew...", "→".blue());
+fn install_homebrew(mp: &MultiProgress) -> Result<()> {
+    mp.println(format!("   {} installing Homebrew...", "→".blue()))?;
     let status = Command::new("/bin/bash")
         .args([
             "-c",
@@ -439,14 +451,14 @@ fn install_homebrew() -> Result<()> {
         .status()?;
 
     if status.success() {
-        println!("   {} Homebrew installed", "✓".green());
+        mp.println(format!("   {} Homebrew installed", "✓".green()))?;
         Ok(())
     } else {
         anyhow::bail!("Homebrew installation failed")
     }
 }
 
-fn install_fonts() -> Result<()> {
+fn install_fonts(mp: &MultiProgress) -> Result<()> {
     let fonts = vec![
         (
             "Hack Ligatured",
@@ -463,16 +475,16 @@ fn install_fonts() -> Result<()> {
     ];
 
     for (name, url) in fonts {
-        println!("   {} installing {} font...", "→".magenta(), name);
+        mp.println(format!("   {} installing {} font...", "→".magenta(), name))?;
         let status = Command::new("install-font-macos")
             .arg(url)
             .stdout(Stdio::null())
             .status();
 
         if status.is_ok() {
-            println!("   {} {}", "✓".green(), name);
+            mp.println(format!("   {} {}", "✓".green(), name))?;
         } else {
-            println!("   {} {} (failed)", "⚠".yellow(), name);
+            mp.println(format!("   {} {} (failed)", "⚠".yellow(), name))?;
         }
     }
     Ok(())
@@ -547,15 +559,8 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
 
     let status = child.wait()?;
 
-    // If brew bundle failed, show any captured errors
+    // If brew bundle failed, bail with error message (don't print directly - would mess up spinners)
     if !status.success() {
-        let errors = stderr_errors.lock().unwrap();
-        if !errors.is_empty() {
-            eprintln!("\nbrew bundle errors:");
-            for err in errors.iter() {
-                eprintln!("  {}", err);
-            }
-        }
         anyhow::bail!("brew bundle failed");
     }
 
