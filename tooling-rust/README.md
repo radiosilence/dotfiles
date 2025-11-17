@@ -15,13 +15,39 @@ High-performance replacements for shell scripts with cyberpunk aesthetic.
 Requires Rust 1.70+:
 
 ```bash
-# From repo root
-just build    # Build and install to bin/
-
-# From tooling-rust/
+# Build all tools
+cd tooling-rust
 cargo build --release
-cargo install --path . --root ..
+
+# Install to ../bin/
+just install
+
+# Or build+install in one go
+just
 ```
+
+## Implemented Tools
+
+### Process Management
+- **kill-port** - Kill process listening on port (native lsof integration)
+
+### File Management  
+- **prune** - Find and delete small directories (with size preview)
+
+### Git Utilities
+- **git-sync** - Clean up merged branches (native git2 library)
+- **git-squash** - Squash commits for PRs (native git2, interactive editor)
+- **git-trigger** - Amend + force push to trigger CI
+- **git-update** - Alias for git-trigger
+
+### Audio Tools
+- **to-opus** - Convert audio to Opus (parallel ffmpeg wrapper)
+- **to-flac** - Convert audio to FLAC (parallel ffmpeg wrapper)
+- **clean-exif** - Strip EXIF metadata from images (privacy protection)
+
+### Utilities
+- **url2base64** - Convert URLs to base64 data URLs (async HTTP with reqwest)
+- **clean-dls** - Remove scene release garbage files
 
 ## Architecture
 
@@ -39,18 +65,79 @@ tooling-rust/
 └── Justfile
 ```
 
+## Shared Libraries
+
+All tools share common code:
+
+- **audio.rs** - FFmpeg wrappers, file finding, parallel processing
+- **banner.rs** - Cyberpunk-styled terminal output
+- **cli.rs** - Confirmation prompts, CPU detection
+- **parallel.rs** - Rayon-based parallel file processing with progress bars
+- **process.rs** - Process management via lsof
+
 ## Development
 
 ```bash
-cargo check           # Quick compile check
-cargo test           # Run tests
-cargo clippy         # Lint
-cargo fmt            # Format
+# Check code
+cargo check
+
+# Run tests
+cargo test
+
+# Run single tool in dev mode
+just run kill-port 3000
+
+# Watch and rebuild on changes
+just watch
+
+# Lint
+just lint
+
+# Format
+just fmt
 ```
 
-## Cyberpunk Aesthetic
+## Testing
 
-All tools use retro terminal styling:
+Unit tests are inline:
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_bitrate_validation() {
+        assert!(160 >= 32 && 160 <= 512);
+    }
+}
+```
+
+Integration tests go in `tests/`:
+
+```rust
+#[test]
+fn test_kill_port_help() {
+    Command::new("kill-port")
+        .arg("--help")
+        .assert()
+        .success();
+}
+```
+
+## TODO: Not Yet Implemented
+
+- **vimv** - Batch file renaming (needs complex git integration)
+- **embed-art** - FLAC artwork embedding (needs metaflac library)
+- **gen-diff** - Image diff generation (needs image processing)
+- **unfuck-xcode** - Xcode CLI tools reset
+- **imp** - Music import utility
+
+## Style Guide
+
+### Cyberpunk Aesthetic
+
+All tools use retro cyberpunk styling:
 
 - ASCII art banners with glitch effects
 - Status: `□` info, `!` warning, `✓` success, `✗` error

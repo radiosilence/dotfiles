@@ -1,69 +1,55 @@
 # Update system and dotfiles
 upd() {
-  # Check if Rust upd binary exists
-  if [ -x ~/.dotfiles/bin/upd ]; then
-    # Use the Rust binary
-    ~/.dotfiles/bin/upd
-  else
-    # Bootstrap: build Rust tooling first if cargo exists
-    if command -v cargo >/dev/null && [ -d ~/.dotfiles/tooling-rust ]; then
-      printf "\033[35m🦀 [upd] bootstrapping rust tooling...\033[0m\n"
-      (cd ~/.dotfiles/tooling-rust && cargo install --path . --root ..)
+  printf "\n\033[1;34m🚀 [upd] System Update Starting...\033[0m\n"
+  printf "\033[36m🏠 [upd] updating ~/.dotfiles...\033[0m\n"
+  pushd ~ >/dev/null || exit
+  sh ~/.dotfiles/install
 
-      # Now run the Rust binary if it was built successfully
-      if [ -x ~/.dotfiles/bin/upd ]; then
-        ~/.dotfiles/bin/upd
-        return
-      fi
-    fi
-
-    # Fallback to bash implementation if Rust binary not available
-    printf "\n\033[1;34m🚀 [upd] System Update Starting...\033[0m\n"
-    printf "\033[36m🏠 [upd] updating ~/.dotfiles...\033[0m\n"
-    pushd ~ >/dev/null || exit
-    sh ~/.dotfiles/install
-
-    if command -v apt-get >/dev/null; then
-      printf "\033[32m📦 [upd] updating apt...\033[0m\n"
-      sudo apt-get update
-      sudo apt-get upgrade -y
-      sudo apt-get autoremove -y
-    fi
-
-    if command -v dnf >/dev/null; then
-      printf "\033[32m📦 [upd] updating dnf...\033[0m\n"
-      sudo dnf update -y
-    fi
-
-    if command -v brew >/dev/null; then
-      printf "\033[33m🍺 [upd] updating brew...\033[0m\n"
-      brew update
-      printf "\033[33m🍺 [upd] updating brew bundle...\033[0m\n"
-      brew bundle --upgrade --verbose
-      printf "\033[33m⬆️  [upd] upgrading brew dependencies...\033[0m\n"
-      brew upgrade
-      printf "\033[33m🧹 [upd] cleaning up brew...\033[0m\n"
-      brew cleanup
-    fi
-
-    if command -v mise >/dev/null; then
-      printf "\033[35m🔧 [upd] updating mise...\033[0m\n"
-      mise up
-      rm -rf ~/.local/share/mise/shims
-      mise reshim
-    fi
-
-    if command -v yt-dlp >/dev/null; then
-      printf "\033[31m📺 [upd] updating yt-dlp...\033[0m\n"
-      yt-dlp --update-to nightly
-    fi
-
-    if command -v regen-zsh-completions >/dev/null; then
-      printf "\033[36m⚡ [upd] regenerating zsh completions...\033[0m\n"
-      regen-zsh-completions
-    fi
-
-    printf "\033[1;32m✅ [upd] System update complete!\033[0m\n\n"
-    popd >/dev/null || exit
+  if command -v apt-get >/dev/null; then
+    printf "\033[32m📦 [upd] updating apt...\033[0m\n"
+    sudo apt-get update
+    sudo apt-get upgrade -y
+    sudo apt-get autoremove -y
   fi
+
+  if command -v dnf >/dev/null; then
+    printf "\033[32m📦 [upd] updating dnf...\033[0m\n"
+    sudo dnf update -y
+  fi
+
+  if command -v brew >/dev/null; then
+    printf "\033[33m🍺 [upd] updating brew...\033[0m\n"
+    brew update
+    printf "\033[33m🍺 [upd] updating brew bundle...\033[0m\n"
+    brew bundle --upgrade --verbose
+    printf "\033[33m⬆️  [upd] upgrading brew dependencies...\033[0m\n"
+    brew upgrade
+    printf "\033[33m🧹 [upd] cleaning up brew...\033[0m\n"
+    brew cleanup
+  fi
+
+  if command -v mise >/dev/null; then
+    printf "\033[35m🔧 [upd] updating mise...\033[0m\n"
+    mise up
+    rm -rf ~/.local/share/mise/shims
+    mise reshim
+  fi
+
+  if command -v yt-dlp >/dev/null; then
+    printf "\033[31m📺 [upd] updating yt-dlp...\033[0m\n"
+    yt-dlp --update-to nightly
+  fi
+
+  if command -v regen-zsh-completions >/dev/null; then
+    printf "\033[36m⚡ [upd] regenerating zsh completions...\033[0m\n"
+    regen-zsh-completions
+  fi
+
+  if [ -d ~/.dotfiles/tooling-rust ]; then
+    printf "\033[35m🦀 [upd] rebuilding rust tooling...\033[0m\n"
+    (cd ~/.dotfiles/tooling-rust && cargo install --path . --root .. --force --quiet)
+  fi
+
+  printf "\033[1;32m✅ [upd] System update complete!\033[0m\n\n"
+  popd >/dev/null || exit
 }

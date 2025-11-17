@@ -45,7 +45,7 @@ fn main() -> Result<()> {
     println!("{}", path_str);
 
     // Keep temp_dir alive so it doesn't get cleaned up
-    temp_dir.keep()?;
+    temp_dir.keep();
 
     Ok(())
 }
