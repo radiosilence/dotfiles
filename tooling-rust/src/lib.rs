@@ -9,5 +9,6 @@ pub mod logging;
 pub mod parallel;
 pub mod process;
 pub mod setup;
+pub mod system;
 
 pub use anyhow::{Context, Result};
