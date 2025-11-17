@@ -28,11 +28,6 @@ fn main() -> Result<()> {
     let has_mise = which("mise");
     let has_yt_dlp = which("yt-dlp");
     let has_regen = which("regen-zsh-completions");
-    let has_rust = std::path::Path::new(&format!(
-        "{}/.dotfiles/tooling-rust",
-        std::env::var("HOME")?
-    ))
-    .exists();
 
     banner::divider("cyan");
     banner::status("□", "DETECTED SYSTEMS", "", "cyan");
@@ -54,9 +49,6 @@ fn main() -> Result<()> {
     }
     if has_regen {
         println!("   {} zsh completions", "✓".green());
-    }
-    if has_rust {
-        println!("   {} rust tooling", "✓".green());
     }
 
     banner::divider("cyan");
@@ -140,14 +132,9 @@ fn main() -> Result<()> {
 
     banner::divider("cyan");
 
-    // Sequential cleanup phase - rebuild Rust tools first so completions can be generated
-    if has_rust {
-        banner::status("□", "PHASE 4", "rust tooling rebuild", "yellow");
-        rebuild_rust()?;
-    }
-
+    // Generate completions
     if has_regen {
-        banner::status("□", "PHASE 5", "zsh completions", "green");
+        banner::status("□", "PHASE 4", "zsh completions", "green");
         regen_completions()?;
     }
 
@@ -275,27 +262,6 @@ fn regen_completions() -> Result<()> {
     Command::new("regen-zsh-completions")
         .stdout(Stdio::null())
         .status()?;
-    Ok(())
-}
-
-fn rebuild_rust() -> Result<()> {
-    let home = std::env::var("HOME")?;
-    let rust_dir = format!("{}/.dotfiles/tooling-rust", home);
-
-    println!(
-        "   {} {}",
-        "→".yellow(),
-        "cargo install --path . --root ..".dimmed()
-    );
-
-    let status = Command::new("cargo")
-        .args(["install", "--path", ".", "--root", ".."])
-        .current_dir(&rust_dir)
-        .status()?;
-
-    if !status.success() {
-        anyhow::bail!("rust rebuild failed");
-    }
     Ok(())
 }
 
