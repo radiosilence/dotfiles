@@ -1,11 +1,25 @@
 use anyhow::Result;
+use clap::Parser;
 use colored::Colorize;
+use dotfiles_tools::completions;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+#[derive(Parser)]
+#[command(name = "upd")]
+#[command(about = "Parallel system update orchestrator", long_about = None)]
+#[command(version)]
+struct Args {}
+
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
+    let _args = Args::parse();
+
     banner::print_banner("SYSTEM UPDATE", "parallel update orchestrator", "blue");
 
     // Check what's available on the system
