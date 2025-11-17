@@ -253,10 +253,15 @@ fn main() -> Result<()> {
     // brew (bundle + update)
     if has_brew {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("brew");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let bundle_result = if has_brewfile {
-                brew_bundle().map(|_| ())
+                brew_bundle_with_progress(&pb).map(|_| ())
             } else {
                 Ok(())
             };
@@ -266,10 +271,16 @@ fn main() -> Result<()> {
                 bundle_result
             };
             let duration = start.elapsed();
+            let ok = update_result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ brew".green().to_string()
+            } else {
+                "✗ brew".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("brew", update_result.is_ok(), duration.as_secs_f32()));
+                .push(("brew", ok, duration.as_secs_f32()));
         }));
     }
 
@@ -401,7 +412,7 @@ fn install_fonts() -> Result<()> {
     Ok(())
 }
 
-fn brew_bundle() -> Result<Vec<String>> {
+fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
     let home = std::env::var("HOME")?;
     let mut child = Command::new("brew")
         .arg("bundle")
@@ -419,10 +430,12 @@ fn brew_bundle() -> Result<Vec<String>> {
             // Parse brew bundle output: "Installing foo" or "Upgrading bar"
             if line.contains("Installing") {
                 if let Some(pkg) = line.split_whitespace().nth(1) {
+                    pb.set_message(format!("⠿ brew: installing {}", pkg));
                     installed.push(format!("installed {}", pkg));
                 }
             } else if line.contains("Upgrading") {
                 if let Some(pkg) = line.split_whitespace().nth(1) {
+                    pb.set_message(format!("⠿ brew: upgrading {}", pkg));
                     installed.push(format!("upgraded {}", pkg));
                 }
             }
