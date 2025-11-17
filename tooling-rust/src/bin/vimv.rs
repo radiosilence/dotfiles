@@ -1,25 +1,38 @@
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::completions;
 use std::fs;
-use std::io::Write;
+use std::io::{self, Write};
 use std::process::Command;
 use tempfile::NamedTempFile;
 
 #[derive(Parser)]
 #[command(about = "Batch rename files using your $EDITOR")]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Files to rename (defaults to all files in current directory)
     files: Vec<String>,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "vimv", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_banner("VIMV", "batch rename with editor", "yellow");
 

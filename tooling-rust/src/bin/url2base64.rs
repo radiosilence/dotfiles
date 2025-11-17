@@ -5,9 +5,9 @@
 
 use anyhow::{Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine};
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::completions;
 use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
 use std::io::{self, BufRead};
@@ -18,6 +18,9 @@ use std::time::Duration;
 #[command(about = "Convert URLs to base64 data URLs", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// URLs to convert (reads from stdin if not provided)
     #[arg(value_name = "URLS")]
     urls: Vec<String>,
@@ -33,6 +36,15 @@ struct Args {
     /// Skip failed URLs instead of exiting
     #[arg(short, long)]
     skip_errors: bool,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
 }
 
 fn convert_url(client: &Client, url: &str, mime_type: &str) -> Result<String> {
@@ -52,11 +64,12 @@ fn convert_url(client: &Client, url: &str, mime_type: &str) -> Result<String> {
 }
 
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "url2base64", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     println!(
         "{}",
