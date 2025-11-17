@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
 use colored::Colorize;
-use dotfiles_tools::completions;
+use dotfiles_tools::{completions, system::which};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -156,28 +156,8 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn which(cmd: &str) -> bool {
-    Command::new("which")
-        .arg(cmd)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-        .map(|s| s.success())
-        .unwrap_or(false)
-}
-
 fn run_install() -> Result<()> {
-    let home = std::env::var("HOME")?;
-    let status = Command::new("sh")
-        .arg(format!("{}/.dotfiles/install", home))
-        .current_dir(&home)
-        .stdout(Stdio::null())
-        .status()?;
-
-    if !status.success() {
-        anyhow::bail!("install script failed");
-    }
-    Ok(())
+    dotfiles_tools::install::install_dotfiles()
 }
 
 fn update_apt() -> Result<()> {

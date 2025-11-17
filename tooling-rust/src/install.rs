@@ -5,6 +5,8 @@ use std::os::unix::fs as unix_fs;
 use std::path::Path;
 use std::process::Command;
 
+use crate::system::which;
+
 pub fn install_dotfiles() -> Result<()> {
     let home = std::env::var("HOME").context("HOME not set")?;
     let home_path = Path::new(&home);
@@ -209,12 +211,4 @@ pub fn install_dotfiles() -> Result<()> {
     );
 
     Ok(())
-}
-
-fn which(cmd: &str) -> bool {
-    Command::new("which")
-        .arg(cmd)
-        .output()
-        .map(|output| output.status.success())
-        .unwrap_or(false)
 }
