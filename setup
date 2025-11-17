@@ -1,0 +1,52 @@
+#!/bin/sh
+# Bootstrap script - run this on a fresh system
+# Usage: ./setup [--platform=macos|linux]
+
+set -e
+
+DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+echo "🚀 Dotfiles Bootstrap"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Check if we have cargo/rust already
+if command -v cargo >/dev/null 2>&1; then
+  echo "✓ Rust/Cargo found, building and running setup..."
+  cd "$DOTFILES_DIR/tooling-rust"
+  cargo install --path . --root .. --bin setup --force
+  cd "$DOTFILES_DIR"
+  exec "$DOTFILES_DIR/bin/setup" "$@"
+fi
+
+# Bootstrap mode - install Rust first
+echo "→ Rust not found, installing rustup..."
+echo ""
+
+if [ "$(uname)" = "Darwin" ]; then
+  PLATFORM="macos"
+else
+  PLATFORM="linux"
+fi
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+
+# Source cargo env
+. "$HOME/.cargo/env"
+
+echo ""
+echo "✓ Rust installed"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "→ Building setup tool..."
+echo ""
+
+cd "$DOTFILES_DIR/tooling-rust"
+cargo install --path . --root .. --bin setup --force
+
+echo ""
+echo "✓ Setup tool built"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "→ Running setup..."
+echo ""
+
+cd "$DOTFILES_DIR"
+exec "$DOTFILES_DIR/bin/setup" --platform="$PLATFORM" "$@"

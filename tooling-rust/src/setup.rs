@@ -1,24 +1,48 @@
 use anyhow::{Context, Result};
-use clap::Parser;
 use colored::Colorize;
-use dotfiles_tools::{banner, completions};
 use std::process::{Command, Stdio};
 
-#[derive(Parser)]
-#[command(name = "setup-macos")]
-#[command(about = "Initial macOS setup with Homebrew, fonts, and tools", long_about = None)]
-#[command(version)]
-struct Args {}
+use crate::banner;
 
-fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
-        return Ok(());
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Platform {
+    MacOS,
+    Linux,
+}
+
+impl Platform {
+    pub fn detect() -> Option<Self> {
+        if cfg!(target_os = "macos") {
+            Some(Platform::MacOS)
+        } else if cfg!(target_os = "linux") {
+            Some(Platform::Linux)
+        } else {
+            None
+        }
     }
 
-    let _args = Args::parse();
+    pub fn name(&self) -> &'static str {
+        match self {
+            Platform::MacOS => "macOS",
+            Platform::Linux => "Linux",
+        }
+    }
+}
 
-    banner::print_banner("MACOS SETUP", "homebrew + fonts + dotfiles + tools", "blue");
+pub fn setup(platform: Platform) -> Result<()> {
+    banner::print_banner(
+        "SYSTEM SETUP",
+        &format!("{} bootstrap + dotfiles", platform.name()),
+        "blue",
+    );
 
+    match platform {
+        Platform::MacOS => setup_macos(),
+        Platform::Linux => setup_linux(),
+    }
+}
+
+fn setup_macos() -> Result<()> {
     // Check if Homebrew is installed
     banner::divider("cyan");
     banner::status("□", "PHASE 1", "homebrew", "blue");
@@ -83,53 +107,68 @@ fn main() -> Result<()> {
         }
     }
 
-    // Run brew bundle
+    run_common_setup()
+}
+
+fn setup_linux() -> Result<()> {
+    // Detect package manager
     banner::divider("cyan");
-    banner::status("□", "PHASE 3", "brew bundle", "green");
+    banner::status("□", "PHASE 1", "package manager", "blue");
 
-    let home = std::env::var("HOME")?;
-    let brewfile = std::path::Path::new(&home).join("Brewfile");
-
-    if brewfile.exists() {
-        println!("   {} installing Homebrew packages...", "→".green());
-        let status = Command::new("brew")
-            .arg("bundle")
-            .current_dir(&home)
-            .status()
-            .context("Failed to run brew bundle")?;
+    if which("apt-get") {
+        println!("   {} detected apt-get", "✓".green());
+        println!("   {} updating packages...", "→".blue());
+        let status = Command::new("sudo")
+            .args(["apt-get", "update"])
+            .stdin(Stdio::inherit())
+            .status()?;
 
         if status.success() {
-            println!("   {} brew bundle complete", "✓".green());
-        } else {
-            println!("   {} brew bundle failed", "⚠".yellow());
+            println!("   {} packages updated", "✓".green());
         }
+    } else if which("dnf") {
+        println!("   {} detected dnf", "✓".green());
     } else {
-        println!("   {} Brewfile not found, skipping", "⚠".yellow());
+        println!("   {} no supported package manager found", "⚠".yellow());
     }
 
-    // Run install script
+    run_common_setup()
+}
+
+fn run_common_setup() -> Result<()> {
+    let home = std::env::var("HOME")?;
+
+    // Run brew bundle if on macOS
+    if cfg!(target_os = "macos") {
+        banner::divider("cyan");
+        banner::status("□", "PHASE 3", "brew bundle", "green");
+
+        let brewfile = std::path::Path::new(&home).join("Brewfile");
+
+        if brewfile.exists() {
+            println!("   {} installing Homebrew packages...", "→".green());
+            let status = Command::new("brew")
+                .arg("bundle")
+                .current_dir(&home)
+                .status()
+                .context("Failed to run brew bundle")?;
+
+            if status.success() {
+                println!("   {} brew bundle complete", "✓".green());
+            } else {
+                println!("   {} brew bundle failed", "⚠".yellow());
+            }
+        } else {
+            println!("   {} Brewfile not found, skipping", "⚠".yellow());
+        }
+    }
+
+    // Run install-dotfiles
     banner::divider("cyan");
     banner::status("□", "PHASE 4", "dotfiles install", "cyan");
+    println!();
 
-    let dotfiles = std::path::Path::new(&home).join(".dotfiles");
-    let install_script = dotfiles.join("install");
-
-    if install_script.exists() {
-        println!("   {} running install script...", "→".cyan());
-        let status = Command::new("sh")
-            .arg(&install_script)
-            .current_dir(&home)
-            .status()
-            .context("Failed to run install script")?;
-
-        if status.success() {
-            println!("   {} install complete", "✓".green());
-        } else {
-            anyhow::bail!("Install script failed");
-        }
-    } else {
-        println!("   {} install script not found", "⚠".yellow());
-    }
+    crate::install::install_dotfiles()?;
 
     // Install mise tools
     banner::divider("cyan");
@@ -174,7 +213,7 @@ fn main() -> Result<()> {
     }
 
     banner::divider("cyan");
-    banner::success("MACOS SETUP COMPLETE");
+    banner::success("SYSTEM SETUP COMPLETE");
     println!();
 
     Ok(())

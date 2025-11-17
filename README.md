@@ -15,25 +15,28 @@
 
 ## QUICK START
 
-### Fresh macOS Install
+### Fresh System (macOS or Linux)
 
 ```sh
-# Install Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Clone and run setup
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
-~/.dotfiles/bin/setup-macos
+~/.dotfiles/setup
 ```
 
-### Existing System
+That's it. The `setup` script will:
+
+- Install Rust (if needed)
+- Install Homebrew (macOS only)
+- Install fonts (macOS only)
+- Run brew bundle (macOS only)
+- Symlink dotfiles and configs
+- Install mise tools
+- Set up Rust toolchain
+
+### Manual Platform Selection
 
 ```sh
-git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
-~/.dotfiles/install
-brew bundle --file=~/.dotfiles/Brewfile
-mise install
-just build  # Build Rust tooling
+~/.dotfiles/setup --platform=macos  # Force macOS setup
+~/.dotfiles/setup --platform=linux  # Force Linux setup
 ```
 
 ## WHAT'S INCLUDED
