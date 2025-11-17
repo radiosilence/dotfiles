@@ -5,9 +5,9 @@
 
 use anyhow::Result;
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
 use dialoguer::Confirm;
+use dotfiles_tools::completions;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 

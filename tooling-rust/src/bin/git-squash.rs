@@ -197,13 +197,13 @@ mod tests {
 
     #[test]
     fn test_default_parent_branch() {
-        let args = Args::parse_from(&["git-squash"]);
+        let args = Args::parse_from(["git-squash"]);
         assert_eq!(args.parent, "main");
     }
 
     #[test]
     fn test_custom_parent_branch() {
-        let args = Args::parse_from(&["git-squash", "develop"]);
+        let args = Args::parse_from(["git-squash", "develop"]);
         assert_eq!(args.parent, "develop");
     }
 }

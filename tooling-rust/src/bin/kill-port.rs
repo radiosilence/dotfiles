@@ -121,11 +121,9 @@ fn main() -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn test_port_range() {
-        assert!(1024 < u16::MAX);
-        assert!(8080 < u16::MAX);
+        // Verify u16::MAX for port validation
+        assert_eq!(65535, u16::MAX);
     }
 }
