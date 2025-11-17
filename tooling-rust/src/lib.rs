@@ -3,7 +3,6 @@
 pub mod audio;
 pub mod banner;
 pub mod cli;
-pub mod completions;
 pub mod install;
 pub mod logging;
 pub mod parallel;

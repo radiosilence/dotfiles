@@ -4,28 +4,42 @@
 //! the stale local tracking branches.
 
 use anyhow::{Context, Result};
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Confirm;
-use dotfiles_tools::completions;
 use git2::{BranchType, FetchOptions, Repository};
+use std::io;
 
 #[derive(Parser)]
 #[command(name = "git-sync")]
 #[command(about = "Clean up merged branches", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Delete without confirmation
     #[arg(short = 'y', long)]
     yes: bool,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "git-sync", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     println!("{}", "═══════════════════════════════════".bright_yellow());
     println!("{}", "  GIT-SYNC // branch cleanup util  ".bright_yellow());
