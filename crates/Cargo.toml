@@ -94,14 +94,6 @@ name = "prune-gen"
 path = "src/bin/prune-gen.rs"
 
 [[bin]]
-name = "pull-music"
-path = "src/bin/pull-music.rs"
-
-[[bin]]
-name = "push-music"
-path = "src/bin/push-music.rs"
-
-[[bin]]
 name = "regen-zsh-completions"
 path = "src/bin/regen-zsh-completions.rs"
 

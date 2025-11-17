@@ -8,6 +8,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Confirm;
+use dotfiles_tools::banner;
 use std::io;
 use std::path::PathBuf;
 use walkdir::WalkDir;
@@ -77,23 +78,7 @@ fn main() -> Result<()> {
     }
 
     // ASCII art banner with 90s cracker aesthetic
-    println!(
-        "{}",
-        "╔════════════════════════════════════════════════╗".bright_cyan()
-    );
-    println!(
-        "{}",
-        "║              P R U N E   v1.0                  ║".bright_cyan()
-    );
-    println!(
-        "{}",
-        "║        [directory cleanup utility]             ║".bright_cyan()
-    );
-    println!(
-        "{}",
-        "╚════════════════════════════════════════════════╝".bright_cyan()
-    );
-    println!();
+    banner::print_banner("PRUNE", "directory cleanup utility", "cyan");
 
     let min_size_bytes = args.min_size * 1024;
 
