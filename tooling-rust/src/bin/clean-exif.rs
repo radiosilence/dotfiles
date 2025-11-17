@@ -1,6 +1,6 @@
 //! Strip EXIF metadata from images in parallel
 //!
-//! Uses native Rust img-parts crate instead of shelling out to exiftool.
+//! Removes GPS, camera serial numbers, and other PII from images.
 
 use anyhow::Result;
 use clap::Parser;

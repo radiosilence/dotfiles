@@ -1,7 +1,4 @@
 //! Kill process listening on specified port
-//!
-//! Uses native Rust netstat2 crate instead of shelling out to lsof.
-//! Cross-platform and more reliable.
 
 use anyhow::{bail, Result};
 use clap::Parser;
@@ -108,25 +105,13 @@ fn main() -> Result<()> {
                 bail!("Failed to kill process {}", pid);
             }
         } else {
-            // Use native kill for SIGTERM
-            #[cfg(unix)]
-            {
-                use std::os::unix::process::CommandExt;
-                unsafe {
-                    if libc::kill(*pid as i32, libc::SIGTERM) != 0 {
-                        bail!("Failed to kill process {}", pid);
-                    }
-                }
-            }
-            #[cfg(not(unix))]
-            {
-                let status = std::process::Command::new("kill")
-                    .arg(pid.to_string())
-                    .status()?;
+            // Use kill command for SIGTERM (default)
+            let status = std::process::Command::new("kill")
+                .arg(pid.to_string())
+                .status()?;
 
-                if !status.success() {
-                    bail!("Failed to kill process {}", pid);
-                }
+            if !status.success() {
+                bail!("Failed to kill process {}", pid);
             }
         }
 
