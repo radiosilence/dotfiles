@@ -201,56 +201,100 @@ fn main() -> Result<()> {
     // apt-get (with sudo)
     if has_apt {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("apt-get");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let result = update_apt();
             let duration = start.elapsed();
+            let ok = result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ apt-get".green().to_string()
+            } else {
+                "✗ apt-get".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("apt-get", result.is_ok(), duration.as_secs_f32()));
+                .push(("apt-get", ok, duration.as_secs_f32()));
         }));
     }
 
     // dnf (with sudo)
     if has_dnf {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("dnf");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let result = update_dnf();
             let duration = start.elapsed();
+            let ok = result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ dnf".green().to_string()
+            } else {
+                "✗ dnf".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("dnf", result.is_ok(), duration.as_secs_f32()));
+                .push(("dnf", ok, duration.as_secs_f32()));
         }));
     }
 
     // mise setup
     if has_mise {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("mise-setup");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let result = dotfiles_tools::system::install_mise_tools();
             let duration = start.elapsed();
+            let ok = result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ mise-setup".green().to_string()
+            } else {
+                "✗ mise-setup".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("mise-setup", result.is_ok(), duration.as_secs_f32()));
+                .push(("mise-setup", ok, duration.as_secs_f32()));
         }));
     }
 
     // rustup setup
     if has_rustup {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("rustup-setup");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let result = dotfiles_tools::system::setup_rustup();
             let duration = start.elapsed();
+            let ok = result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ rustup-setup".green().to_string()
+            } else {
+                "✗ rustup-setup".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("rustup-setup", result.is_ok(), duration.as_secs_f32()));
+                .push(("rustup-setup", ok, duration.as_secs_f32()));
         }));
     }
 
@@ -291,28 +335,50 @@ fn main() -> Result<()> {
     // mise upgrade
     if has_mise {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("mise");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let result = update_mise();
             let duration = start.elapsed();
+            let ok = result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ mise".green().to_string()
+            } else {
+                "✗ mise".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("mise", result.is_ok(), duration.as_secs_f32()));
+                .push(("mise", ok, duration.as_secs_f32()));
         }));
     }
 
     // yt-dlp
     if has_yt_dlp {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("yt-dlp");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let result = update_yt_dlp();
             let duration = start.elapsed();
+            let ok = result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ yt-dlp".green().to_string()
+            } else {
+                "✗ yt-dlp".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("yt-dlp", result.is_ok(), duration.as_secs_f32()));
+                .push(("yt-dlp", ok, duration.as_secs_f32()));
         }));
     }
 
@@ -425,6 +491,7 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
         .arg("--verbose")
         .current_dir(&home)
         .env("HOMEBREW_NO_AUTO_UPDATE", "1")
+        .stdin(Stdio::inherit()) // Allow interactive prompts (sudo, etc)
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()?;
