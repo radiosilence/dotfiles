@@ -60,12 +60,12 @@ RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh \
   && curl -fsSL https://github.com/radiosilence.keys > ~/.ssh/authorized_keys \
   && chmod 600 ~/.ssh/authorized_keys
 
-# Build and install Rust tooling, then run install
+# Build and install Rust tooling, then run install-dotfiles
 RUN . ~/.cargo/env \
   && cd /home/$USERNAME/.dotfiles/tooling-rust \
-  && cargo install --path . --root .. --bin install \
+  && cargo install --path . --root .. --bin install-dotfiles \
   && chmod +x /home/$USERNAME/.dotfiles/bin/* \
-  && /home/$USERNAME/.dotfiles/bin/install
+  && /home/$USERNAME/.dotfiles/bin/install-dotfiles
 
 # Switch to root to access secret and copy to user-readable location
 USER root
