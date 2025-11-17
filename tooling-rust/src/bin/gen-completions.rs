@@ -1,4 +1,4 @@
-use clap::{Command, CommandFactory};
+use clap::Command;
 use clap_complete::{generate_to, Shell};
 use std::env;
 use std::fs;

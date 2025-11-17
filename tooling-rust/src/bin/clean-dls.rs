@@ -5,6 +5,7 @@
 use anyhow::Result;
 use clap::Parser;
 use colored::Colorize;
+use dotfiles_tools::completions;
 use std::path::PathBuf;
 use std::process::Command;
 use walkdir::WalkDir;
@@ -24,6 +25,10 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     println!(

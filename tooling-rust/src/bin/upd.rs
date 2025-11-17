@@ -122,15 +122,15 @@ fn main() -> Result<()> {
 
     banner::divider("cyan");
 
-    // Sequential cleanup phase
-    if has_regen {
-        banner::status("□", "PHASE 3", "zsh completions", "green");
-        regen_completions()?;
+    // Sequential cleanup phase - rebuild Rust tools first so completions can be generated
+    if has_rust {
+        banner::status("□", "PHASE 3", "rust tooling rebuild", "yellow");
+        rebuild_rust()?;
     }
 
-    if has_rust {
-        banner::status("□", "PHASE 4", "rust tooling rebuild", "yellow");
-        rebuild_rust()?;
+    if has_regen {
+        banner::status("□", "PHASE 4", "zsh completions", "green");
+        regen_completions()?;
     }
 
     banner::divider("cyan");

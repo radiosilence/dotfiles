@@ -4,6 +4,7 @@
 
 use anyhow::Result;
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use dotfiles_tools::banner;
 use std::process::Command;
@@ -19,6 +20,10 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     banner::print_banner("XCODE UNFUCKER", "remove corrupt CLI tools", "red");

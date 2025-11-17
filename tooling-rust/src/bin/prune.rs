@@ -5,6 +5,7 @@
 
 use anyhow::Result;
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use dialoguer::Confirm;
 use std::path::PathBuf;
@@ -55,6 +56,10 @@ fn format_size(bytes: u64) -> String {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     // ASCII art banner with 90s cracker aesthetic

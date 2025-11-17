@@ -2,6 +2,7 @@
 
 use anyhow::Result;
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use dotfiles_tools::audio;
 use std::path::PathBuf;
@@ -25,6 +26,10 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     println!(

@@ -4,6 +4,7 @@
 
 use anyhow::Result;
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use dotfiles_tools::audio;
 use std::path::{Path, PathBuf};
@@ -43,6 +44,10 @@ fn clean_exif(file: &Path) -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     println!(

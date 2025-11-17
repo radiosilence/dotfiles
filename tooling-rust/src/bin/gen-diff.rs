@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
+use dotfiles_tools::completions;
 use std::process::Command;
 
 #[derive(Parser)]
@@ -14,6 +15,10 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     banner::print_banner("GEN-DIFF", "visual image diff generator", "red");
