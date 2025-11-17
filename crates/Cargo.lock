@@ -558,6 +558,7 @@ dependencies = [
  "reqwest",
  "tempfile",
  "tracing-subscriber",
+ "unicode-width",
  "walkdir",
  "which",
  "zip",

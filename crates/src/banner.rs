@@ -1,6 +1,7 @@
 //! Cyberpunk ASCII art banners and styling
 
 use colored::{ColoredString, Colorize};
+use unicode_width::UnicodeWidthStr;
 
 fn colorize_text(text: &str, color: &str) -> ColoredString {
     match color {
@@ -22,10 +23,7 @@ pub fn print_banner(title: &str, subtitle: &str, color: &str) {
     // Calculate width needed - account for "        " prefix and "[v1.0]" suffix
     let title_display = format!("        {}  [v1.0]", title.to_uppercase());
     let subtitle_display = format!("        {}", subtitle);
-    let max_width = title_display
-        .chars()
-        .count()
-        .max(subtitle_display.chars().count());
+    let max_width = title_display.width().max(subtitle_display.width());
     let border_width = max_width.max(50); // Minimum 50 chars
 
     println!();
