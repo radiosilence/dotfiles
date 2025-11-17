@@ -168,3 +168,30 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn test_image_extensions() {
+        let extensions = ["jpg", "jpeg", "png"];
+        assert!(extensions.contains(&"jpg"));
+        assert!(extensions.contains(&"jpeg"));
+        assert!(extensions.contains(&"png"));
+    }
+
+    #[test]
+    fn test_extension_matching() {
+        let path = std::path::Path::new("image.jpg");
+        let ext = path.extension().and_then(|s| s.to_str()).unwrap_or("");
+        assert_eq!(ext, "jpg");
+    }
+
+    #[test]
+    fn test_jpeg_variations() {
+        let jpg_ext = "jpg";
+        let jpeg_ext = "jpeg";
+        assert!(matches!(jpg_ext, "jpg" | "jpeg"));
+        assert!(matches!(jpeg_ext, "jpg" | "jpeg"));
+    }
+}

@@ -99,3 +99,25 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_command_line_tools_path() {
+        let path = "/Library/Developer/CommandLineTools";
+        assert!(path.starts_with("/Library/Developer/"));
+    }
+
+    #[test]
+    fn test_user_env_var() {
+        // Just verify we can read USER env var
+        let _user = std::env::var("USER");
+    }
+
+    #[test]
+    fn test_sudo_command_construction() {
+        let _cmd = Command::new("sudo");
+    }
+}

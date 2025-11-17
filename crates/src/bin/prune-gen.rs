@@ -118,3 +118,36 @@ mod banner {
         println!("   {} {}\n", "✓".green().bold(), msg.green().bold());
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_create_large_file_command() {
+        // Just verify the function is callable and returns Ok for 0 MB
+        // (dd with count=0 should be safe and fast)
+        let temp = TempDir::new().unwrap();
+        let file_path = temp.path().join("test.dat");
+        let result = create_large_file(&file_path, 0);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_path_with_spaces() {
+        let temp = TempDir::new().unwrap();
+        let dir_with_spaces = temp.path().join("dir with spaces");
+        let result = fs::create_dir_all(&dir_with_spaces);
+        assert!(result.is_ok());
+        assert!(dir_with_spaces.exists());
+    }
+
+    #[test]
+    fn test_nested_directory_creation() {
+        let temp = TempDir::new().unwrap();
+        let nested = temp.path().join("a/b/c/d");
+        let result = fs::create_dir_all(&nested);
+        assert!(result.is_ok());
+        assert!(nested.exists());
+    }
+}

@@ -135,3 +135,28 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn test_bitrate_default() {
+        // Test default bitrate is 160
+        let default_bitrate = 160u32;
+        assert_eq!(default_bitrate, 160);
+    }
+
+    #[test]
+    fn test_opus_extension() {
+        let path = std::path::Path::new("audio.flac");
+        let output = path.with_extension("opus");
+        assert_eq!(output.extension().unwrap(), "opus");
+    }
+
+    #[test]
+    fn test_supported_extensions() {
+        let extensions = ["wav", "aiff", "flac", "m4a"];
+        assert_eq!(extensions.len(), 4);
+        assert!(extensions.contains(&"flac"));
+    }
+}

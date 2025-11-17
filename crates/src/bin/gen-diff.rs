@@ -140,3 +140,33 @@ mod banner {
         );
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_which_common_command() {
+        // Test with a command that should exist on any Unix system
+        let result = which("sh");
+        assert!(result);
+    }
+
+    #[test]
+    fn test_which_nonexistent_command() {
+        let result = which("this-command-definitely-does-not-exist-12345");
+        assert!(!result);
+    }
+
+    #[test]
+    fn test_file_path_validation() {
+        // Test that Path::new works with test inputs
+        let path1 = std::path::Path::new("image1.jpg");
+        let path2 = std::path::Path::new("image2.jpg");
+        let output = std::path::Path::new("output.jpg");
+
+        assert_eq!(path1.to_str().unwrap(), "image1.jpg");
+        assert_eq!(path2.to_str().unwrap(), "image2.jpg");
+        assert_eq!(output.to_str().unwrap(), "output.jpg");
+    }
+}

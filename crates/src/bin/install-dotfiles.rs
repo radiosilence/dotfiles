@@ -36,3 +36,14 @@ fn main() -> Result<()> {
 
     dotfiles_tools::install::install_dotfiles()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_args_parsing() {
+        // Just verify Args struct is usable
+        let _args = Args::try_parse_from(["install-dotfiles"]);
+    }
+}

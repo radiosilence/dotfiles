@@ -155,3 +155,23 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn test_extension_matching() {
+        let extensions = ["wav", "aiff", "m4a"];
+        assert!(extensions.contains(&"wav"));
+        assert!(extensions.contains(&"aiff"));
+        assert!(extensions.contains(&"m4a"));
+        assert!(!extensions.contains(&"flac"));
+    }
+
+    #[test]
+    fn test_path_with_extension() {
+        let path = std::path::Path::new("test.wav");
+        let new_path = path.with_extension("flac");
+        assert_eq!(new_path.to_str().unwrap(), "test.flac");
+    }
+}

@@ -133,3 +133,22 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_branch_type_enum() {
+        // Just verify the enum is usable
+        let _local = BranchType::Local;
+        let _remote = BranchType::Remote;
+    }
+
+    #[test]
+    fn test_fetch_prune_enum() {
+        // Verify FetchPrune is available
+        let _prune_on = git2::FetchPrune::On;
+        let _prune_off = git2::FetchPrune::Off;
+    }
+}

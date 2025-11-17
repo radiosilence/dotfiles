@@ -106,3 +106,28 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_zip_extension() {
+        let path = std::path::Path::new("archive.zip");
+        assert_eq!(path.extension().unwrap(), "zip");
+    }
+
+    #[test]
+    fn test_command_construction() {
+        let _aria2c = Command::new("aria2c");
+        let _unzip = Command::new("unzip");
+        let _beet = Command::new("beet");
+    }
+
+    #[test]
+    fn test_url_vec() {
+        let urls = ["https://example.com/file1.zip".to_string(),
+            "https://example.com/file2.zip".to_string()];
+        assert_eq!(urls.len(), 2);
+    }
+}

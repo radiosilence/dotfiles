@@ -62,9 +62,7 @@ fn main() -> Result<()> {
     let mut file = fs::File::create(&urls_file)?;
 
     for url in &args.urls {
-        let mut hasher = DefaultHasher::new();
-        url.hash(&mut hasher);
-        let dir = format!("{:x}", hasher.finish());
+        let dir = hash_url(url);
         writeln!(file, "{}", url)?;
         writeln!(file, "  dir={}", dir)?;
         writeln!(file, "  out=dl.zip")?;
@@ -125,6 +123,12 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+fn hash_url(url: &str) -> String {
+    let mut hasher = DefaultHasher::new();
+    url.hash(&mut hasher);
+    format!("{:x}", hasher.finish())
+}
+
 mod banner {
     use colored::Colorize;
 
@@ -166,5 +170,44 @@ mod banner {
             "{}",
             color_fn("   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_hash_url_consistent() {
+        let url = "https://example.com/file.zip";
+        let hash1 = hash_url(url);
+        let hash2 = hash_url(url);
+        assert_eq!(hash1, hash2);
+    }
+
+    #[test]
+    fn test_hash_url_different() {
+        let url1 = "https://example.com/file1.zip";
+        let url2 = "https://example.com/file2.zip";
+        let hash1 = hash_url(url1);
+        let hash2 = hash_url(url2);
+        assert_ne!(hash1, hash2);
+    }
+
+    #[test]
+    fn test_hash_url_format() {
+        let url = "https://example.com/test.zip";
+        let hash = hash_url(url);
+        // Hash should be lowercase hex
+        assert!(hash.chars().all(|c| c.is_ascii_hexdigit()));
+        assert_eq!(hash, hash.to_lowercase());
+    }
+
+    #[test]
+    fn test_hash_url_length() {
+        let url = "https://example.com/file.zip";
+        let hash = hash_url(url);
+        // DefaultHasher produces u64, which is 16 hex chars
+        assert_eq!(hash.len(), 16);
     }
 }

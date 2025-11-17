@@ -217,3 +217,51 @@ mod banner {
         println!("   {} {} {}", color_fn(icon), label.bold(), value);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_has_sensitive_data_gps() {
+        let json = r#"{"GPS": "some data"}"#;
+        assert!(has_sensitive_data(json));
+    }
+
+    #[test]
+    fn test_has_sensitive_data_serial() {
+        let json = r#"{"CameraSerialNumber": "12345"}"#;
+        assert!(has_sensitive_data(json));
+
+        let json2 = r#"{"LensSerialNumber": "67890"}"#;
+        assert!(has_sensitive_data(json2));
+    }
+
+    #[test]
+    fn test_has_sensitive_data_artist() {
+        let json = r#"{"Artist": "John Doe"}"#;
+        assert!(has_sensitive_data(json));
+    }
+
+    #[test]
+    fn test_has_sensitive_data_clean() {
+        let json = r#"{"Width": 1920, "Height": 1080}"#;
+        assert!(!has_sensitive_data(json));
+    }
+
+    #[test]
+    fn test_get_picture_type_desc() {
+        assert_eq!(get_picture_type_desc(0), "Other");
+        assert_eq!(get_picture_type_desc(3), "Cover (front)");
+        assert_eq!(get_picture_type_desc(4), "Cover (back)");
+        assert_eq!(get_picture_type_desc(6), "Media (e.g. label side of CD)");
+        assert_eq!(get_picture_type_desc(8), "Artist/performer");
+        assert_eq!(get_picture_type_desc(255), "Unknown");
+    }
+
+    #[test]
+    fn test_which_command() {
+        // Just verify the function is callable
+        let _exists = which("ls");
+    }
+}

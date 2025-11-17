@@ -94,7 +94,7 @@ fn main() -> Result<()> {
         let entry = entry?;
         if entry.file_type().is_file() {
             if let Some(ext) = entry.path().extension().and_then(|s| s.to_str()) {
-                if matches!(ext, "otf" | "ttf" | "OTF" | "TTF") {
+                if is_font_extension(ext) {
                     let dest_path = fonts_dir.join(entry.file_name());
                     std::fs::copy(entry.path(), &dest_path)?;
                     println!(
@@ -111,4 +111,44 @@ fn main() -> Result<()> {
     banner::success(&format!("INSTALLED {} FONTS", installed));
 
     Ok(())
+}
+
+fn is_font_extension(ext: &str) -> bool {
+    matches!(ext, "otf" | "ttf" | "OTF" | "TTF")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_is_font_extension_otf() {
+        assert!(is_font_extension("otf"));
+        assert!(is_font_extension("OTF"));
+    }
+
+    #[test]
+    fn test_is_font_extension_ttf() {
+        assert!(is_font_extension("ttf"));
+        assert!(is_font_extension("TTF"));
+    }
+
+    #[test]
+    fn test_is_not_font_extension() {
+        assert!(!is_font_extension("txt"));
+        assert!(!is_font_extension("zip"));
+        assert!(!is_font_extension("pdf"));
+        assert!(!is_font_extension("woff"));
+    }
+
+    #[test]
+    fn test_font_dir_creation() {
+        // Test that we can construct the fonts directory path
+        if let Some(home) = dirs::home_dir() {
+            let fonts_dir = home.join("Library/Fonts");
+            assert!(fonts_dir.to_str().is_some());
+            assert!(fonts_dir.to_string_lossy().contains("Library"));
+            assert!(fonts_dir.to_string_lossy().contains("Fonts"));
+        }
+    }
 }

@@ -398,6 +398,29 @@ fn regen_completions() -> Result<()> {
     Ok(())
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_platform_detection() {
+        // Test that platform detection compiles and returns consistent values
+        #[cfg(target_os = "macos")]
+        assert!(cfg!(target_os = "macos"));
+
+        #[cfg(target_os = "linux")]
+        assert!(cfg!(target_os = "linux"));
+    }
+
+    #[test]
+    fn test_which_returns_bool() {
+        let result = which("sh");
+        // sh should exist on unix systems
+        #[cfg(unix)]
+        assert!(result);
+    }
+}
+
 mod banner {
     use colored::Colorize;
 
