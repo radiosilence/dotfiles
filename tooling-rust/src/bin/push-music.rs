@@ -1,7 +1,33 @@
 use anyhow::Result;
+use clap::{Parser, Subcommand};
+use dotfiles_tools::completions;
 use std::process::Command;
 
+#[derive(Parser)]
+#[command(name = "push-music")]
+#[command(about = "Sync music to remote", long_about = None)]
+struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completions {
+        #[arg(value_enum)]
+        shell: completions::CompletionShell,
+    },
+}
+
 fn main() -> Result<()> {
+    let args = Args::parse();
+
+    if let Some(Commands::Completions { shell }) = args.command {
+        completions::generate_completions::<Args>(shell);
+        return Ok(());
+    }
+
     banner::print_banner("PUSH MUSIC", "sync from local to remote", "green");
 
     let src = "/Volumes/Turtlehead/music";
