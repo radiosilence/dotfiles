@@ -1,7 +1,9 @@
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::{completions, system::which};
+use dotfiles_tools::system::which;
+use std::io;
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -21,7 +23,7 @@ enum Commands {
     Completion {
         /// Shell to generate completions for
         #[arg(value_enum)]
-        shell: completions::CompletionShell,
+        shell: Shell,
     },
 }
 
@@ -29,7 +31,7 @@ fn main() -> Result<()> {
     let args = Args::parse();
 
     if let Some(Commands::Completion { shell }) = args.command {
-        completions::generate_completions::<Args>(shell);
+        generate(shell, &mut Args::command(), "upd", &mut io::stdout());
         return Ok(());
     }
 

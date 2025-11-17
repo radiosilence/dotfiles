@@ -3,13 +3,15 @@
 //! Removes GPS, camera serial numbers, and other PII from images.
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::{audio, completions};
+use dotfiles_tools::audio;
 use img_parts::jpeg::Jpeg;
 use img_parts::png::Png;
 use img_parts::{Bytes, ImageEXIF};
 use std::fs;
+use std::io;
 use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
@@ -17,6 +19,9 @@ use std::path::{Path, PathBuf};
 #[command(about = "Strip EXIF metadata from images", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Directories to search
     #[arg(value_name = "PATHS", default_value = ".")]
     paths: Vec<PathBuf>,
@@ -24,6 +29,15 @@ struct Args {
     /// Dry run - show what would be cleaned
     #[arg(short = 'n', long)]
     dry_run: bool,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
 }
 
 fn clean_exif(file: &Path) -> Result<()> {
@@ -53,11 +67,12 @@ fn clean_exif(file: &Path) -> Result<()> {
 }
 
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "clean-exif", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     println!(
         "{}",
