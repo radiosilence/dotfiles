@@ -1,50 +1,25 @@
-# Smart update function - rebuilds Rust tooling first, then delegates
 upd() {
-  # If cargo and tooling-rust exist, rebuild first
-  if command -v cargo &>/dev/null && [ -d ~/.dotfiles/tooling-rust ]; then
-    printf "\033[35m🦀 [upd] rebuilding rust tooling...\033[0m\n"
-    (cd ~/.dotfiles/tooling-rust && cargo install --path . --root ..)
+  # Install cargo if missing
+  if ! command -v cargo &>/dev/null; then
+    printf "\033[33m⚠️  cargo not found, installing rustup...\033[0m\n"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
   fi
 
-  # If upd binary exists and is executable, use it
-  if command -v ~/.dotfiles/bin/upd &>/dev/null; then
-    ~/.dotfiles/bin/upd "$@"
-    return $?
-  fi
-
-  # Bootstrap mode - minimal update to get tooling working
-  printf "\n\033[1;33m⚠️  [upd] Rust binary not found, running bootstrap mode...\033[0m\n"
-
-  pushd ~ >/dev/null || exit
-
-  # Update dotfiles repo
+  # Pull dotfiles
   if [ -d ~/.dotfiles/.git ]; then
-    printf "\033[36m🏠 [upd] updating ~/.dotfiles...\033[0m\n"
-    (cd ~/.dotfiles && git pull 2>/dev/null) || true
+    printf "\033[36m→ pulling ~/.dotfiles...\033[0m\n"
+    (cd ~/.dotfiles && git pull)
   fi
 
-  # Run install to set up symlinks
-  if [ -f ~/.dotfiles/install ]; then
-    printf "\033[36m🔗 [upd] running install script...\033[0m\n"
-    sh ~/.dotfiles/install
-  fi
+  # Ensure bin directory exists
+  mkdir -p ~/.dotfiles/bin
 
-  # Build Rust tooling if cargo exists
-  if command -v cargo &>/dev/null && [ -d ~/.dotfiles/tooling-rust ]; then
-    printf "\033[35m🦀 [upd] building rust tooling...\033[0m\n"
-    (cd ~/.dotfiles/tooling-rust && cargo install --path . --root ..)
+  # Rebuild binaries (only if changed)
+  printf "\033[35m→ building rust binaries...\033[0m\n"
+  (cd ~/.dotfiles/crates && cargo build --release --bins &&
+    find target/release -maxdepth 1 -type f -perm +111 ! -name "*.*" ! -name ".*" -exec cp {} ~/.dotfiles/bin/ \;)
 
-    # Now run the actual upd if it was built
-    if [ -x ~/.dotfiles/bin/upd ]; then
-      printf "\033[32m✅ [upd] Bootstrap complete, running full update...\033[0m\n\n"
-      ~/.dotfiles/bin/upd "$@"
-      return $?
-    fi
-  else
-    printf "\033[33m⚠️  [upd] cargo not found, cannot build Rust tooling\033[0m\n"
-    printf "\033[36mℹ️  Install Rust: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\033[0m\n"
-  fi
-
-  printf "\033[32m✅ [upd] Bootstrap complete\033[0m\n\n"
-  popd >/dev/null || exit
+  # Run upd binary
+  ~/.dotfiles/bin/upd "$@"
 }

@@ -155,28 +155,32 @@ git-trigger
 
 ## AUDIO TOOLS
 
-### `to-opus [files...] [--bitrate 128]`
+### `to-audio opus [paths...] [--bitrate 160]`
 
 **Convert audio to Opus**
 
-Parallel conversion to Opus format using ffmpeg.
+Parallel conversion to Opus format using ffmpeg. Scans directories recursively for convertible audio files.
 
 ```sh
-to-opus *.flac
-to-opus *.wav --bitrate 192
+to-audio opus .                    # Convert all files in current dir
+to-audio opus ~/Music --bitrate 192
+to-audio opus . --keep             # Keep originals
+to-audio opus . --dry-run          # Preview what would be converted
 ```
 
 ---
 
-### `to-flac [files...] [--compression 8]`
+### `to-audio flac [paths...]`
 
 **Convert audio to FLAC**
 
-Parallel conversion to FLAC format.
+Parallel conversion to FLAC lossless format.
 
 ```sh
-to-flac *.wav
-to-flac *.mp3 --compression 5
+to-audio flac .                    # Convert all files in current dir
+to-audio flac ~/Music/Album1 ~/Music/Album2
+to-audio flac . --keep             # Keep originals
+to-audio flac . --dry-run          # Preview what would be converted
 ```
 
 ---
@@ -247,14 +251,15 @@ url2base64 https://example.com/image.png
 
 ---
 
-### `imp <url> <dest>`
+### `imp <urls...>`
 
 **Music importer**
 
-Downloads, extracts, and imports to beets in one command.
+Downloads music archives from URLs (e.g. Bandcamp), extracts them, and imports to beets library. Uses reqwest for direct downloads with progress bars and rust zip crate for extraction.
 
 ```sh
-imp https://bandcamp.com/album.zip ~/Music/incoming
+imp https://p4.bcbits.com/download/album/.../flac/...
+imp https://bandcamp.com/file1.zip https://bandcamp.com/file2.zip
 ```
 
 ---

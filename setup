@@ -13,7 +13,8 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 if command -v cargo >/dev/null 2>&1; then
   echo "✓ Rust/Cargo found, building and running upd..."
   cd "$DOTFILES_DIR/crates"
-  cargo install --path . --root .. --bin upd --force
+  cargo build --release --bin upd
+  cp target/release/upd "$DOTFILES_DIR/bin/upd"
   cd "$DOTFILES_DIR"
   exec "$DOTFILES_DIR/bin/upd" "$@"
 fi
@@ -33,8 +34,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "→ Building upd..."
 echo ""
 
-cd "$DOTFILES_DIR/tooling-rust"
-cargo install --path . --root .. --bin upd --force
+cd "$DOTFILES_DIR/crates"
+cargo build --release --bin upd
+cp target/release/upd "$DOTFILES_DIR/bin/upd"
 
 echo ""
 echo "✓ upd built"
