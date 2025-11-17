@@ -137,6 +137,9 @@ tracing-subscriber = { version = "0.3.20", features = ["env-filter"] }
 # Terminal colors
 colored = "3.0.0"
 
+# Unicode width calculation
+unicode-width = "0.2"
+
 # Image processing
 img-parts = "0.4.0"
 
