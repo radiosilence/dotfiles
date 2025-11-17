@@ -20,7 +20,6 @@ fn main() {
         ("git-sync", git_sync_cmd()),
         ("git-squash", git_squash_cmd()),
         ("git-trigger", git_trigger_cmd()),
-        ("git-update", git_update_cmd()),
         ("to-opus", to_opus_cmd()),
         ("to-flac", to_flac_cmd()),
         ("clean-exif", clean_exif_cmd()),
@@ -81,12 +80,6 @@ fn git_squash_cmd() -> Command {
 
 fn git_trigger_cmd() -> Command {
     Command::new("git-trigger").about("Trigger CI/CD pipeline")
-}
-
-fn git_update_cmd() -> Command {
-    Command::new("git-update")
-        .about("Update all git repos")
-        .arg(clap::Arg::new("path").help("Path to search"))
 }
 
 fn to_opus_cmd() -> Command {

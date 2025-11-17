@@ -32,9 +32,6 @@ path = "src/bin/git-squash.rs"
 name = "git-trigger"
 path = "src/bin/git-trigger.rs"
 
-[[bin]]
-name = "git-update"
-path = "src/bin/git-update.rs"
 
 [[bin]]
 name = "to-opus"
