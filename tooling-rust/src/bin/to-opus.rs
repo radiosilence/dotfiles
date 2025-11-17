@@ -1,10 +1,11 @@
 //! Convert audio files to Opus format in parallel
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::completions;
 use dotfiles_tools::{audio, banner};
+use std::io;
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -12,6 +13,9 @@ use std::path::PathBuf;
 #[command(about = "Convert audio to Opus format", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Directories to search
     #[arg(value_name = "PATHS", default_value = ".")]
     paths: Vec<PathBuf>,
@@ -29,12 +33,22 @@ struct Args {
     dry_run: bool,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "to-opus", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_banner("AUDIO → OPUS", "parallel transcoding system", "cyan");
 
