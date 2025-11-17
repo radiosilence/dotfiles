@@ -4,10 +4,11 @@
 //! prompts for deletion. Useful for cleaning up failed downloads, empty dirs, etc.
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Confirm;
-use dotfiles_tools::completions;
+use std::io;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 
@@ -16,6 +17,9 @@ use walkdir::WalkDir;
 #[command(about = "Find and delete small directories", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Directories to search
     #[arg(value_name = "PATHS", default_value = ".")]
     paths: Vec<PathBuf>,
@@ -27,6 +31,15 @@ struct Args {
     /// Delete without confirmation
     #[arg(short = 'y', long)]
     yes: bool,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
 }
 
 fn get_dir_size(path: &PathBuf) -> Result<u64> {
@@ -56,11 +69,12 @@ fn format_size(bytes: u64) -> String {
 }
 
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "prune", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     // ASCII art banner with 90s cracker aesthetic
     println!(

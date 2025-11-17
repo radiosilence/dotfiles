@@ -1,26 +1,44 @@
 use anyhow::Result;
-use clap::Parser;
-use dotfiles_tools::completions;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use std::collections::hash_map::DefaultHasher;
 use std::fs;
 use std::hash::{Hash, Hasher};
-use std::io::Write;
+use std::io::{self, Write};
 use std::process::Command;
 use tempfile::TempDir;
 
 #[derive(Parser)]
 #[command(about = "Parallel download and extract URLs using aria2c")]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// URLs to download
     urls: Vec<String>,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(
+            shell,
+            &mut Args::command(),
+            "parallel-dl-extract",
+            &mut io::stdout(),
+        );
         return Ok(());
     }
-
-    let args = Args::parse();
 
     if args.urls.is_empty() {
         anyhow::bail!("No URLs provided");

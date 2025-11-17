@@ -1,11 +1,15 @@
 use anyhow::Result;
-use clap::Parser;
-use dotfiles_tools::completions;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
+use std::io;
 use std::process::Command;
 
 #[derive(Parser)]
 #[command(about = "Create a visual diff of two images using ImageMagick")]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// First image
     image1: String,
     /// Second image
@@ -14,12 +18,22 @@ struct Args {
     output: String,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "gen-diff", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_banner("GEN-DIFF", "visual image diff generator", "red");
 

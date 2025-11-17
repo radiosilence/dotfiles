@@ -1,6 +1,7 @@
 use anyhow::Result;
-use clap::{Parser, Subcommand};
-use dotfiles_tools::completions;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
+use std::io;
 use std::process::Command;
 
 #[derive(Parser)]
@@ -14,17 +15,17 @@ struct Args {
 #[derive(Subcommand)]
 enum Commands {
     /// Generate shell completions
-    Completions {
+    Completion {
         #[arg(value_enum)]
-        shell: completions::CompletionShell,
+        shell: Shell,
     },
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    if let Some(Commands::Completions { shell }) = args.command {
-        completions::generate_completions::<Args>(shell);
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "pull-music", &mut io::stdout());
         return Ok(());
     }
 
