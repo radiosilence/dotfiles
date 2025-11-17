@@ -378,7 +378,7 @@ fn main() -> Result<()> {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("yt-dlp");
+        pb.set_message("yt-dlp / ワイティーディーエルピー");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
@@ -387,9 +387,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ yt-dlp".green().to_string()
+                "✓ yt-dlp / ワイティーディーエルピー".green().to_string()
             } else {
-                "✗ yt-dlp".red().to_string()
+                "✗ yt-dlp / ワイティーディーエルピー".red().to_string()
             });
             results
                 .lock()
@@ -418,12 +418,15 @@ fn main() -> Result<()> {
     if has_regen {
         banner::status(
             "□",
-            &format!("PHASE {}", phase + 1),
-            "zsh completions",
+            &format!("PHASE {} / フェーズ {}", phase + 1, phase + 1),
+            "zsh completions / 補完",
             "green",
         );
         dotfiles_tools::regen_completions::regenerate_completions()?;
-        println!("   {} completions regenerated", "✓".green());
+        println!(
+            "   {} completions regenerated / 補完再生成完了",
+            "✓".green()
+        );
     }
 
     banner::divider("cyan");
@@ -436,14 +439,14 @@ fn main() -> Result<()> {
     }
 
     banner::divider("cyan");
-    banner::success("SYSTEM UPDATE COMPLETE");
+    banner::success("SYSTEM UPDATE COMPLETE / システム更新完了");
 
     // Print summary
     let success_count = results.iter().filter(|(_, ok, _)| *ok).count();
     let total_count = results.len();
 
     println!(
-        "\n   {} UPDATED  {} FAILED\n",
+        "\n   {} UPDATED / 更新  {} FAILED / 失敗\n",
         success_count.to_string().green().bold(),
         (total_count - success_count).to_string().red().bold()
     );
