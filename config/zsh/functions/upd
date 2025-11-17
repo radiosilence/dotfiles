@@ -45,6 +45,11 @@ upd() {
     regen-zsh-completions
   fi
 
+  if [ -d ~/.dotfiles/tooling-rust ]; then
+    printf "\033[35m🦀 [upd] rebuilding rust tooling...\033[0m\n"
+    (cd ~/.dotfiles/tooling-rust && cargo install --path . --root .. --force --quiet)
+  fi
+
   printf "\033[1;32m✅ [upd] System update complete!\033[0m\n\n"
   popd >/dev/null || exit
 }
