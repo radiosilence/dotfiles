@@ -447,11 +447,7 @@ fn update_brew() -> Result<()> {
 }
 
 fn update_mise() -> Result<()> {
-    Command::new("mise")
-        .arg("up")
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()?;
+    let output = Command::new("mise").arg("up").output()?;
 
     let home = std::env::var("HOME")?;
     let shims_path = format!("{}/.local/share/mise/shims", home);
@@ -463,6 +459,10 @@ fn update_mise() -> Result<()> {
         .arg("reshim")
         .stdout(Stdio::null())
         .status()?;
+
+    if !output.status.success() {
+        anyhow::bail!("mise up failed");
+    }
 
     Ok(())
 }
