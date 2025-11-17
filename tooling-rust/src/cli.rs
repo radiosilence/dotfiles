@@ -1,7 +1,7 @@
 //! Common CLI utilities
 
-use dialoguer::Confirm;
 use anyhow::Result;
+use dialoguer::Confirm;
 
 /// Confirm action with user
 pub fn confirm(prompt: &str) -> Result<bool> {

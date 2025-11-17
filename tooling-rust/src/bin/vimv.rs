@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
+use dotfiles_tools::completions;
 use std::fs;
 use std::io::Write;
 use std::process::Command;

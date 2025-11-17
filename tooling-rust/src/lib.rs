@@ -4,8 +4,10 @@ pub mod audio;
 pub mod banner;
 pub mod cli;
 pub mod completions;
+pub mod install;
 pub mod logging;
 pub mod parallel;
 pub mod process;
+pub mod setup;
 
 pub use anyhow::{Context, Result};

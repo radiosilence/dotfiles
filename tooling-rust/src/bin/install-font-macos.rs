@@ -2,9 +2,9 @@
 
 use anyhow::Result;
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
 use dotfiles_tools::banner;
+use dotfiles_tools::completions;
 use std::process::Command;
 use tempfile::TempDir;
 

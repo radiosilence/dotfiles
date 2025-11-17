@@ -6,8 +6,8 @@
 use anyhow::{Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine};
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
+use dotfiles_tools::completions;
 use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
 use std::io::{self, BufRead};
