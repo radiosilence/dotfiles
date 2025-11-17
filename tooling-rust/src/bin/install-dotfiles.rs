@@ -8,7 +8,7 @@ use std::path::Path;
 use std::process::Command;
 
 #[derive(Parser)]
-#[command(name = "install")]
+#[command(name = "install-dotfiles")]
 #[command(about = "Install dotfiles symlinks and configurations", long_about = None)]
 #[command(version)]
 struct Args {}

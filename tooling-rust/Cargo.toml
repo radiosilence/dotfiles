@@ -7,8 +7,8 @@ license = "MIT"
 
 # Multiple binaries in one package
 [[bin]]
-name = "install"
-path = "src/bin/install.rs"
+name = "install-dotfiles"
+path = "src/bin/install-dotfiles.rs"
 
 [[bin]]
 name = "setup-macos"
