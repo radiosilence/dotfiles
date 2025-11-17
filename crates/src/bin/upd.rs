@@ -344,7 +344,7 @@ fn main() -> Result<()> {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("brew");
+        pb.set_message("brew / ブリュー");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
@@ -362,9 +362,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = update_result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ brew".green().to_string()
+                "✓ brew / ブリュー".green().to_string()
             } else {
-                "✗ brew".red().to_string()
+                "✗ brew / ブリュー".red().to_string()
             });
             results
                 .lock()
