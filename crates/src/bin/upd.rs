@@ -399,19 +399,14 @@ fn install_fonts() -> Result<()> {
 
 fn brew_bundle() -> Result<()> {
     let home = std::env::var("HOME")?;
-    println!("   {} running brew bundle...", "→".green());
-    let status = Command::new("brew")
+    let _output = Command::new("brew")
         .arg("bundle")
         .current_dir(&home)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()?;
 
-    if status.success() {
-        println!("   {} brew bundle complete", "✓".green());
-        Ok(())
-    } else {
-        println!("   {} brew bundle failed", "⚠".yellow());
-        Ok(()) // Don't fail entire update if brew bundle fails
-    }
+    Ok(())
 }
 
 fn update_apt() -> Result<()> {
