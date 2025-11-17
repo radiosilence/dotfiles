@@ -113,7 +113,7 @@ tokio = { version = "1", features = ["full"] }
 reqwest = { version = "0.12", features = ["blocking", "stream"] }
 
 # Parallelism
-rayon = "1.10"
+rayon = "1.11"
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
