@@ -449,7 +449,8 @@ fn update_brew() -> Result<()> {
 fn update_mise() -> Result<()> {
     Command::new("mise")
         .arg("up")
-        .stdout(Stdio::inherit())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()?;
 
     let home = std::env::var("HOME")?;
