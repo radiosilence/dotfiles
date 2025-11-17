@@ -8,7 +8,7 @@ upd() {
     # Bootstrap: build Rust tooling first if cargo exists
     if command -v cargo >/dev/null && [ -d ~/.dotfiles/tooling-rust ]; then
       printf "\033[35m🦀 [upd] bootstrapping rust tooling...\033[0m\n"
-      (cd ~/.dotfiles/tooling-rust && cargo install --path . --root .. --force)
+      (cd ~/.dotfiles/tooling-rust && cargo install --path . --root ..)
 
       # Now run the Rust binary if it was built successfully
       if [ -x ~/.dotfiles/bin/upd ]; then
