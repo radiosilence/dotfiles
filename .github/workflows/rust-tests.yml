@@ -62,5 +62,5 @@ jobs:
         working-directory: tooling-rust
 
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test --all-targets --verbose
         working-directory: tooling-rust
