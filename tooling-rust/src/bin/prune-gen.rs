@@ -45,7 +45,7 @@ fn main() -> Result<()> {
     println!("{}", path_str);
 
     // Keep temp_dir alive so it doesn't get cleaned up
-    temp_dir.keep();
+    let _path = temp_dir.keep();
 
     Ok(())
 }
@@ -55,7 +55,7 @@ fn create_large_file(path: &std::path::Path, mb: usize) -> Result<()> {
         .args([
             "if=/dev/zero",
             &format!("of={}", path.display()),
-            &"bs=1M".to_string(),
+            "bs=1M",
             &format!("count={}", mb),
         ])
         .stdout(std::process::Stdio::null())

@@ -6,7 +6,7 @@ use anyhow::Result;
 use clap::Parser;
 use colored::Colorize;
 use dotfiles_tools::audio;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 #[derive(Parser)]
@@ -23,7 +23,7 @@ struct Args {
     dry_run: bool,
 }
 
-fn clean_exif(file: &PathBuf) -> Result<()> {
+fn clean_exif(file: &Path) -> Result<()> {
     let status = Command::new("exiftool")
         .args([
             "-all=",               // Clear all tags

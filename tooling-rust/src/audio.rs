@@ -3,7 +3,7 @@
 use anyhow::{Context, Result};
 use indicatif::{ProgressBar, ProgressStyle};
 use rayon::prelude::*;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use walkdir::WalkDir;
 
@@ -46,8 +46,8 @@ pub fn create_progress_bar(total: u64) -> ProgressBar {
 
 /// Convert audio file using ffmpeg
 pub fn ffmpeg_convert(
-    input: &PathBuf,
-    output: &PathBuf,
+    input: &Path,
+    output: &Path,
     codec: &str,
     bitrate: Option<u32>,
 ) -> Result<()> {
