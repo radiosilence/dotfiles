@@ -97,7 +97,7 @@ fn main() -> Result<()> {
     println!("{}", dst.display());
 
     // Keep temp dir alive
-    let _ = temp_dir.into_path();
+    temp_dir.keep()?;
 
     Ok(())
 }
