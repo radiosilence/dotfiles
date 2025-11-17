@@ -1,40 +1,46 @@
 use anyhow::{Context, Result};
-use colored::Colorize;
 use std::fs;
 use std::os::unix::fs as unix_fs;
 use std::path::Path;
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 use crate::system::which;
 
-pub fn install_dotfiles() -> Result<()> {
+#[derive(Debug)]
+pub struct InstallSummary {
+    pub dotfiles_linked: usize,
+    pub configs_linked: usize,
+    pub git_configured: bool,
+    pub ssh_configured: bool,
+    pub brewfile_linked: bool,
+    pub sheldon_installed: bool,
+}
+
+pub fn install_dotfiles() -> Result<InstallSummary> {
     let home = std::env::var("HOME").context("HOME not set")?;
     let home_path = Path::new(&home);
     let dotfiles = home_path.join(".dotfiles");
 
-    println!("\n{}", "🏠 Installing dotfiles".cyan().bold());
-    println!("{}", "━".repeat(50).cyan());
+    let mut summary = InstallSummary {
+        dotfiles_linked: 0,
+        configs_linked: 0,
+        git_configured: false,
+        ssh_configured: false,
+        brewfile_linked: false,
+        sheldon_installed: false,
+    };
 
-    // Update dotfiles repo if it's a git repo
+    // Update dotfiles repo if it's a git repo (silently)
     if dotfiles.join(".git").exists() {
-        println!("   {} updating dotfiles...", "→".cyan());
-        let status = Command::new("git")
+        let _ = Command::new("git")
             .args(["pull"])
             .current_dir(&dotfiles)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
             .output();
-
-        if status.is_ok() {
-            println!("   {} dotfiles updated", "✓".green());
-        } else {
-            println!("   {} could not update dotfiles repo", "⚠".yellow());
-        }
     }
 
-    println!("{}", "━".repeat(50).cyan());
-
     // Link dotfiles
-    println!("   {} linking dotfiles...", "→".cyan());
-    let mut linked_count = 0;
     for entry in fs::read_dir(&dotfiles)? {
         let entry = entry?;
         let path = entry.path();
@@ -66,28 +72,19 @@ pub fn install_dotfiles() -> Result<()> {
             continue;
         }
 
-        println!("   {} linking {} → ~/{}", "🔗".cyan(), filename, filename);
         unix_fs::symlink(&path, &target).with_context(|| {
             format!("Failed to link {} to {}", path.display(), target.display())
         })?;
-        linked_count += 1;
-    }
-    if linked_count == 0 {
-        println!("   {} all dotfiles already linked", "✓".green());
+        summary.dotfiles_linked += 1;
     }
 
     // Link config dirs
-    println!("{}", "━".repeat(50).cyan());
-    println!("   {} linking config dirs...", "→".cyan());
-
     let config_dir = home_path.join(".config");
     if !config_dir.exists() {
         fs::create_dir(&config_dir)?;
-        println!("   {} created ~/.config", "✓".green());
     }
 
     let dotfiles_config = dotfiles.join("config");
-    let mut config_linked = 0;
     if dotfiles_config.exists() {
         for entry in fs::read_dir(&dotfiles_config)? {
             let entry = entry?;
@@ -114,25 +111,14 @@ pub fn install_dotfiles() -> Result<()> {
                 continue;
             }
 
-            println!(
-                "   {} linking {} → ~/.config/{}",
-                "🔗".cyan(),
-                dirname.to_string_lossy(),
-                dirname.to_string_lossy()
-            );
             unix_fs::symlink(&path, &target).with_context(|| {
                 format!("Failed to link {} to {}", path.display(), target.display())
             })?;
-            config_linked += 1;
+            summary.configs_linked += 1;
         }
-    }
-    if config_linked == 0 {
-        println!("   {} all config dirs already linked", "✓".green());
     }
 
     // Setup gitconfig
-    println!("{}", "━".repeat(50).cyan());
-    println!("   {} setting up git config...", "→".cyan());
     let gitconfig = home_path.join(".gitconfig");
     if !gitconfig.exists() {
         fs::write(&gitconfig, "")?;
@@ -142,14 +128,10 @@ pub fn install_dotfiles() -> Result<()> {
     if !gitconfig_content.contains(".dotfiles") {
         let include = "\n[include]\npath = ~/.dotfiles/git.d/core.conf\n";
         fs::write(&gitconfig, format!("{}{}", gitconfig_content, include))?;
-        println!("   {} added git.d/core.conf include", "✓".green());
-    } else {
-        println!("   {} git config already configured", "✓".green());
+        summary.git_configured = true;
     }
 
     // Setup SSH config
-    println!("{}", "━".repeat(50).cyan());
-    println!("   {} setting up ssh config...", "→".cyan());
     let ssh_dir = home_path.join(".ssh");
     let ssh_config = ssh_dir.join("config");
 
@@ -170,45 +152,32 @@ pub fn install_dotfiles() -> Result<()> {
     if !ssh_config_content.contains(".dotfiles") {
         let include = "\nInclude ~/.dotfiles/ssh.d/*.conf\n";
         fs::write(&ssh_config, format!("{}{}", ssh_config_content, include))?;
-        println!("   {} added ssh.d/*.conf include", "✓".green());
-    } else {
-        println!("   {} ssh config already configured", "✓".green());
+        summary.ssh_configured = true;
     }
 
     // Link Brewfile on macOS
     if cfg!(target_os = "macos") {
-        println!("{}", "━".repeat(50).cyan());
-        println!("   {} linking Brewfile...", "→".cyan());
         let brewfile = home_path.join("Brewfile");
         let dotfiles_brewfile = dotfiles.join("Brewfile");
 
         if !brewfile.exists() && dotfiles_brewfile.exists() {
             unix_fs::symlink(&dotfiles_brewfile, &brewfile)?;
-            println!("   {} linked ~/Brewfile", "✓".green());
-        } else {
-            println!("   {} Brewfile already linked", "✓".green());
+            summary.brewfile_linked = true;
         }
     }
 
     // Install sheldon plugins if available
-    println!("{}", "━".repeat(50).cyan());
     if which("sheldon") {
-        println!("   {} installing sheldon plugins...", "→".cyan());
-        let status = Command::new("sheldon").arg("source").output();
+        let result = Command::new("sheldon")
+            .arg("source")
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .output();
 
-        if status.is_ok() {
-            println!("   {} sheldon plugins installed", "✓".green());
-        } else {
-            println!("   {} sheldon plugin installation failed", "⚠".yellow());
+        if result.is_ok() {
+            summary.sheldon_installed = true;
         }
     }
 
-    println!("{}", "━".repeat(50).cyan());
-    println!(
-        "   {} {}\n",
-        "✓".green().bold(),
-        "Installation complete".green().bold()
-    );
-
-    Ok(())
+    Ok(summary)
 }
