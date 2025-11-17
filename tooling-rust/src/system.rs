@@ -36,10 +36,16 @@ pub fn install_mise_tools() -> Result<()> {
     Ok(())
 }
 
-/// Set rustup default to stable
+/// Set rustup default to stable (only if mise isn't managing Rust)
 pub fn setup_rustup() -> Result<()> {
     if !which("rustup") {
         println!("   {} rustup not found, skipping", "⚠".yellow());
+        return Ok(());
+    }
+
+    // If mise is managing Rust via RUSTUP_TOOLCHAIN, don't mess with defaults
+    if std::env::var("RUSTUP_TOOLCHAIN").is_ok() {
+        println!("   {} rustup managed by mise, skipping", "✓".green());
         return Ok(());
     }
 
