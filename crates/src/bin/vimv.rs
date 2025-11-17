@@ -1,6 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
+use colored::Colorize;
 use dotfiles_tools::banner;
 use std::fs;
 use std::io::{self, Write};

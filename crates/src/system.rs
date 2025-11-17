@@ -10,7 +10,7 @@ pub fn which(cmd: &str) -> bool {
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status()
-        .map_or(false, |s| s.success())
+        .is_ok_and(|s| s.success())
 }
 
 /// Install mise tools
