@@ -1,26 +1,35 @@
 //! Cyberpunk ASCII art banners and styling
 
-use colored::Colorize;
+use colored::{ColoredString, Colorize};
+
+fn colorize_text(text: &str, color: &str) -> ColoredString {
+    match color {
+        "cyan" => text.bright_cyan(),
+        "green" => text.bright_green(),
+        "magenta" => text.bright_magenta(),
+        "yellow" => text.bright_yellow(),
+        "red" => text.bright_red(),
+        _ => text.bright_white(),
+    }
+}
+
+fn colorize_text_bold(text: &str, color: &str) -> ColoredString {
+    colorize_text(text, color).bold()
+}
 
 /// Cyberpunk-styled banner with glitch aesthetic
 pub fn print_banner(title: &str, subtitle: &str, color: &str) {
-    let colorize = match color {
-        "cyan" => |s: &str| s.bright_cyan().bold().to_string(),
-        "green" => |s: &str| s.bright_green().bold().to_string(),
-        "magenta" => |s: &str| s.bright_magenta().bold().to_string(),
-        "yellow" => |s: &str| s.bright_yellow().bold().to_string(),
-        "red" => |s: &str| s.bright_red().bold().to_string(),
-        _ => |s: &str| s.bright_white().bold().to_string(),
-    };
-
     println!();
     println!(
         "{}",
-        colorize("   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄")
+        colorize_text_bold("   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄", color)
     );
     println!(
         "{}",
-        colorize("  ████▌▄▌▄▐▐▌█████▌▄▌▄▐▐▌▀███▄█▌▄▌▄▐▐▌██████▌▄▌▄▐▐▌█▄")
+        colorize_text_bold(
+            "  ████▌▄▌▄▐▐▌█████▌▄▌▄▐▐▌▀███▄█▌▄▌▄▐▐▌██████▌▄▌▄▐▐▌█▄",
+            color
+        )
     );
     println!("   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
     println!();
@@ -33,27 +42,18 @@ pub fn print_banner(title: &str, subtitle: &str, color: &str) {
     println!();
     println!(
         "{}",
-        colorize("   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀")
+        colorize_text_bold("   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀", color)
     );
     println!();
 }
 
 /// Simple glitch-style header
 pub fn print_glitch_header(text: &str, color: &str) {
-    let colorize = match color {
-        "cyan" => |s: &str| s.cyan().to_string(),
-        "green" => |s: &str| s.green().to_string(),
-        "magenta" => |s: &str| s.magenta().to_string(),
-        "yellow" => |s: &str| s.yellow().to_string(),
-        "red" => |s: &str| s.red().to_string(),
-        _ => |s: &str| s.white().to_string(),
-    };
-
     println!();
     println!(
         "   {}{}{}",
         ">>".bright_black(),
-        colorize(&format!(" {} ", text.to_uppercase())),
+        colorize_text(&format!(" {} ", text.to_uppercase()), color),
         "<<".bright_black()
     );
     println!();
@@ -61,29 +61,11 @@ pub fn print_glitch_header(text: &str, color: &str) {
 
 /// Status line with cyberpunk styling
 pub fn status(icon: &str, message: &str, value: &str, color: &str) {
-    let icon_colored = match color {
-        "cyan" => icon.cyan().bold(),
-        "green" => icon.green().bold(),
-        "magenta" => icon.magenta().bold(),
-        "yellow" => icon.yellow().bold(),
-        "red" => icon.red().bold(),
-        _ => icon.white().bold(),
-    };
-
-    let value_colored = match color {
-        "cyan" => value.cyan(),
-        "green" => value.green(),
-        "magenta" => value.magenta(),
-        "yellow" => value.yellow(),
-        "red" => value.red(),
-        _ => value.white(),
-    };
-
     println!(
         "   {} {} {}",
-        icon_colored,
+        colorize_text_bold(icon, color),
         message.bright_white(),
-        value_colored.bold()
+        colorize_text(value, color).bold()
     );
 }
 
@@ -117,15 +99,10 @@ pub fn warning(message: &str) {
 
 /// Divider line
 pub fn divider(color: &str) {
-    let line = match color {
-        "cyan" => "   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━".cyan(),
-        "green" => "   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━".green(),
-        "magenta" => "   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━".magenta(),
-        "yellow" => "   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━".yellow(),
-        "red" => "   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━".red(),
-        _ => "   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━".bright_black(),
-    };
-    println!("{}", line);
+    println!(
+        "{}",
+        colorize_text("   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", color)
+    );
 }
 
 /// Animated-style countdown (just prints)

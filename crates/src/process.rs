@@ -55,12 +55,3 @@ pub fn kill(pid: u32, signal: Option<&str>) -> Result<()> {
 
     Ok(())
 }
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test_port_range() {
-        // Just verify u16::MAX is what we expect for port calculations
-        assert_eq!(65535, u16::MAX);
-    }
-}

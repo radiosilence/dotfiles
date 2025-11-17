@@ -4,7 +4,7 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::audio;
+use dotfiles_tools::{audio, parallel};
 use std::io;
 use std::path::PathBuf;
 
@@ -69,7 +69,7 @@ fn main() -> Result<()> {
     println!("{} Scanning for audio files...", "→".bright_green().bold());
 
     let extensions = ["wav", "aiff", "m4a"];
-    let files = audio::find_audio_files(&args.paths, &extensions);
+    let files = parallel::find_files(&args.paths, &extensions);
 
     if files.is_empty() {
         println!("{} No audio files found", "!".yellow().bold());

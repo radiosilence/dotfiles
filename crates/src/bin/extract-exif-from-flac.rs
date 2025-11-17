@@ -2,11 +2,11 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
+use dotfiles_tools::{banner, system};
 use std::io;
 use std::path::Path;
 use std::process::Command;
 use tempfile::TempDir;
-use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(about = "Check if FLAC embedded artwork has been stripped of EXIF data")]
@@ -41,10 +41,10 @@ fn main() -> Result<()> {
     }
 
     // Check for required tools
-    if !which("metaflac") {
+    if !system::which("metaflac") {
         anyhow::bail!("metaflac not found (brew install flac)");
     }
-    if !which("exiftool") {
+    if !system::which("exiftool") {
         anyhow::bail!("exiftool not found (brew install exiftool)");
     }
 
@@ -189,16 +189,6 @@ fn get_picture_type_desc(picture_type: u8) -> &'static str {
     }
 }
 
-fn which(cmd: &str) -> bool {
-    Command::new("which")
-        .arg(cmd)
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .status()
-        .map(|s| s.success())
-        .unwrap_or(false)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -238,11 +228,5 @@ mod tests {
         assert_eq!(get_picture_type_desc(6), "Media (e.g. label side of CD)");
         assert_eq!(get_picture_type_desc(8), "Artist/performer");
         assert_eq!(get_picture_type_desc(255), "Unknown");
-    }
-
-    #[test]
-    fn test_which_command() {
-        // Just verify the function is callable
-        let _exists = which("ls");
     }
 }

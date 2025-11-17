@@ -4,7 +4,7 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::{audio, banner};
+use dotfiles_tools::{audio, banner, parallel};
 use std::io;
 use std::path::PathBuf;
 
@@ -59,7 +59,7 @@ fn main() -> Result<()> {
 
     // Find audio files (exclude opus)
     let extensions = ["wav", "aiff", "flac", "m4a"];
-    let files = audio::find_audio_files(&args.paths, &extensions);
+    let files = parallel::find_files(&args.paths, &extensions);
 
     if files.is_empty() {
         banner::warning("No compatible audio files detected");

@@ -1,53 +1,14 @@
 //! Shared audio processing utilities
 
+use crate::parallel;
 use anyhow::{Context, Result};
-use indicatif::{ProgressBar, ProgressStyle};
+use indicatif::ProgressBar;
 use rayon::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use walkdir::WalkDir;
 
 /// Supported input audio formats
 pub const AUDIO_EXTENSIONS: &[&str] = &["wav", "aiff", "flac", "m4a", "mp3", "ogg"];
-
-/// Find audio files in directories
-#[must_use]
-pub fn find_audio_files(paths: &[PathBuf], extensions: &[&str]) -> Vec<PathBuf> {
-    paths
-        .iter()
-        .flat_map(|path| {
-            WalkDir::new(path)
-                .into_iter()
-                .filter_map(Result::ok)
-                .filter(|e| e.file_type().is_file())
-                .filter(|e| {
-                    if let Some(ext) = e.path().extension() {
-                        let ext_str = ext.to_str().unwrap_or("");
-                        extensions.iter().any(|&x| x.eq_ignore_ascii_case(ext_str))
-                    } else {
-                        false
-                    }
-                })
-                .map(|e| e.path().to_path_buf())
-        })
-        .collect()
-}
-
-/// Create a progress bar with custom style
-///
-/// # Panics
-/// Panics if the progress bar template is invalid
-#[must_use]
-pub fn create_progress_bar(total: u64) -> ProgressBar {
-    let pb = ProgressBar::new(total);
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template("{spinner:.cyan} [{bar:40.cyan/blue}] {pos}/{len} {msg}")
-            .expect("Invalid progress bar template")
-            .progress_chars("█▓░"),
-    );
-    pb
-}
 
 /// Convert audio file using ffmpeg
 ///
@@ -100,7 +61,7 @@ pub fn process_files_parallel<F>(files: Vec<PathBuf>, processor: F) -> Vec<Resul
 where
     F: Fn(&PathBuf, &ProgressBar) -> Result<()> + Sync + Send,
 {
-    let pb = create_progress_bar(files.len() as u64);
+    let pb = parallel::create_progress_bar(files.len() as u64);
 
     let results: Vec<Result<PathBuf>> = files
         .par_iter()
@@ -134,21 +95,4 @@ pub fn check_command(cmd: &str) -> Result<()> {
         .status()
         .with_context(|| format!("{cmd} not found - please install it"))?;
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_audio_extensions() {
-        assert!(AUDIO_EXTENSIONS.contains(&"flac"));
-        assert!(AUDIO_EXTENSIONS.contains(&"wav"));
-    }
-
-    #[test]
-    fn test_extension_matching() {
-        let extensions = ["flac", "wav"];
-        assert!(extensions.contains(&"flac"));
-    }
 }

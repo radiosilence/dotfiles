@@ -168,6 +168,9 @@ img-parts = "0.4"
 # CPU detection
 num_cpus = "1.16"
 
+# Command detection
+which = "7"
+
 [dev-dependencies]
 assert_cmd = "2.0"
 assert_fs = "1.1"
