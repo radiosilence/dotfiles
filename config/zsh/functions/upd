@@ -21,7 +21,7 @@ upd() {
   # Rebuild binaries (only if changed)
   printf "\033[35m→ building rust binaries...\033[0m\n"
   (cd ~/.dotfiles/crates && cargo build --release --bins &&
-    find target/release -maxdepth 1 -type f -perm +111 ! -name "*.*" ! -name ".*" -exec cp {} ~/.dotfiles/bin/ \;)
+    find target/release -maxdepth 1 -type f -executable ! -name "*.*" ! -name ".*" -exec cp {} ~/.dotfiles/bin/ \;)
 
   # Run upd binary
   ~/.dotfiles/bin/upd "$@"
