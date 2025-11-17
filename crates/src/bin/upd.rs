@@ -46,6 +46,9 @@ fn main() -> Result<()> {
 
     banner::print_banner("SYSTEM UPDATE", "idempotent system orchestrator", "blue");
 
+    // Create MultiProgress early so we can use it for all output
+    let mp = MultiProgress::new();
+
     // Detect platform and what's available
     let is_macos = cfg!(target_os = "macos");
     let has_brew = which("brew");
@@ -56,46 +59,52 @@ fn main() -> Result<()> {
     let has_regen = which("regen-zsh-completions");
     let has_rustup = which("rustup");
 
-    banner::divider("cyan");
-    banner::status("□", "DETECTED", "", "cyan");
+    mp.suspend(|| {
+        banner::divider("cyan");
+        banner::status("□", "DETECTED", "", "cyan");
 
-    if is_macos {
-        println!("   {} macOS", "✓".green());
-    } else {
-        println!("   {} Linux", "✓".green());
-    }
+        if is_macos {
+            println!("   {} macOS", "✓".green());
+        } else {
+            println!("   {} Linux", "✓".green());
+        }
 
-    if has_brew {
-        println!("   {} brew", "✓".green());
-    }
-    if has_apt {
-        println!("   {} apt-get", "✓".green());
-    }
-    if has_dnf {
-        println!("   {} dnf", "✓".green());
-    }
-    if has_mise {
-        println!("   {} mise", "✓".green());
-    }
-    if has_rustup {
-        println!("   {} rustup", "✓".green());
-    }
-    if has_yt_dlp {
-        println!("   {} yt-dlp", "✓".green());
-    }
-    if has_regen {
-        println!("   {} zsh completions", "✓".green());
-    }
+        if has_brew {
+            println!("   {} brew", "✓".green());
+        }
+        if has_apt {
+            println!("   {} apt-get", "✓".green());
+        }
+        if has_dnf {
+            println!("   {} dnf", "✓".green());
+        }
+        if has_mise {
+            println!("   {} mise", "✓".green());
+        }
+        if has_rustup {
+            println!("   {} rustup", "✓".green());
+        }
+        if has_yt_dlp {
+            println!("   {} yt-dlp", "✓".green());
+        }
+        if has_regen {
+            println!("   {} zsh completions", "✓".green());
+        }
 
-    banner::divider("cyan");
+        banner::divider("cyan");
+    });
 
     // PHASE 1: Bootstrap missing package managers
     let mut phase = 1;
     if is_macos && !has_brew {
-        banner::status("□", &format!("PHASE {}", phase), "install homebrew", "blue");
+        mp.suspend(|| {
+            banner::status("□", &format!("PHASE {}", phase), "install homebrew", "blue");
+        });
         install_homebrew()?;
         phase += 1;
-        banner::divider("cyan");
+        mp.suspend(|| {
+            banner::divider("cyan");
+        });
     }
 
     // PHASE: Install fonts (macOS only, if not already done)
@@ -157,15 +166,17 @@ fn main() -> Result<()> {
     };
 
     // PHASE 2: Everything in parallel
-    banner::divider("cyan");
-    banner::status(
-        "□",
-        &format!("PHASE {}", phase),
-        "parallel updates",
-        "magenta",
-    );
+    mp.suspend(|| {
+        banner::divider("cyan");
+        banner::status(
+            "□",
+            &format!("PHASE {}", phase),
+            "parallel updates",
+            "magenta",
+        );
+    });
+    mp.println("").unwrap(); // Blank line before spinners start
 
-    let mp = MultiProgress::new();
     let spinner_style = ProgressStyle::with_template("{spinner:.cyan} {msg}")
         .unwrap()
         .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]);
@@ -248,28 +259,34 @@ fn main() -> Result<()> {
         }));
     }
 
-    // mise setup
+    // mise (install + upgrade)
     if has_mise {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("mise-setup");
+        pb.set_message("mise");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
-            let result = dotfiles_tools::system::install_mise_tools();
+            // First install missing tools, then upgrade
+            let install_result = dotfiles_tools::system::install_mise_tools();
+            let result = if install_result.is_ok() {
+                update_mise()
+            } else {
+                install_result
+            };
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ mise-setup".green().to_string()
+                "✓ mise".green().to_string()
             } else {
-                "✗ mise-setup".red().to_string()
+                "✗ mise".red().to_string()
             });
             results
                 .lock()
                 .unwrap()
-                .push(("mise-setup", ok, duration.as_secs_f32()));
+                .push(("mise", ok, duration.as_secs_f32()));
         }));
     }
 
@@ -332,31 +349,6 @@ fn main() -> Result<()> {
         }));
     }
 
-    // mise upgrade
-    if has_mise {
-        let results = results.clone();
-        let pb = mp.add(ProgressBar::new_spinner());
-        pb.set_style(spinner_style.clone());
-        pb.set_message("mise");
-        pb.enable_steady_tick(Duration::from_millis(80));
-
-        handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
-            let result = update_mise();
-            let duration = start.elapsed();
-            let ok = result.is_ok();
-            pb.finish_with_message(if ok {
-                "✓ mise".green().to_string()
-            } else {
-                "✗ mise".red().to_string()
-            });
-            results
-                .lock()
-                .unwrap()
-                .push(("mise", ok, duration.as_secs_f32()));
-        }));
-    }
-
     // yt-dlp
     if has_yt_dlp {
         let results = results.clone();
@@ -386,6 +378,10 @@ fn main() -> Result<()> {
     for handle in handles {
         handle.join().unwrap();
     }
+
+    // Drop MultiProgress to clean up terminal state before continuing
+    drop(mp);
+    println!(); // Add spacing after spinners
 
     // Stop sudo keepalive
     if let Some((handle, keepalive)) = sudo_keepalive {
@@ -530,7 +526,7 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
                 // Parse brew bundle output: "Installing foo" or "Upgrading bar"
                 if line.contains("Installing") {
                     if let Some(pkg) = line.split_whitespace().nth(1) {
-                        pb_clone.set_message(format!("⠿ brew: installing {}", pkg));
+                        pb_clone.set_message(format!("brew: installing {}", pkg));
                         installed_clone
                             .lock()
                             .unwrap()
@@ -538,7 +534,7 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
                     }
                 } else if line.contains("Upgrading") {
                     if let Some(pkg) = line.split_whitespace().nth(1) {
-                        pb_clone.set_message(format!("⠿ brew: upgrading {}", pkg));
+                        pb_clone.set_message(format!("brew: upgrading {}", pkg));
                         installed_clone
                             .lock()
                             .unwrap()
