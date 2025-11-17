@@ -218,9 +218,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ dotfiles / ドットファイル".green().to_string()
+                format!("{} dotfiles / ドットファイル", "✓".green())
             } else {
-                "✗ dotfiles / ドットファイル".red().to_string()
+                format!("{} dotfiles / ドットファイル", "✗".red())
             });
             results
                 .lock()
@@ -243,9 +243,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ apt-get / アプトゲット".green().to_string()
+                format!("{} apt-get / アプトゲット", "✓".green())
             } else {
-                "✗ apt-get / アプトゲット".red().to_string()
+                format!("{} apt-get / アプトゲット", "✗".red())
             });
             results
                 .lock()
@@ -268,9 +268,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ dnf / ディーエヌエフ".green().to_string()
+                format!("{} dnf / ディーエヌエフ", "✓".green())
             } else {
-                "✗ dnf / ディーエヌエフ".red().to_string()
+                format!("{} dnf / ディーエヌエフ", "✗".red())
             });
             results
                 .lock()
@@ -299,9 +299,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ mise / ミーズ".green().to_string()
+                format!("{} mise / ミーズ", "✓".green())
             } else {
-                "✗ mise / ミーズ".red().to_string()
+                format!("{} mise / ミーズ", "✗".red())
             });
             results
                 .lock()
@@ -324,13 +324,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ rustup-setup / ラストアップセットアップ"
-                    .green()
-                    .to_string()
+                format!("{} rustup-setup / ラストアップセットアップ", "✓".green())
             } else {
-                "✗ rustup-setup / ラストアップセットアップ"
-                    .red()
-                    .to_string()
+                format!("{} rustup-setup / ラストアップセットアップ", "✗".red())
             });
             results
                 .lock()
@@ -362,9 +358,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = update_result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ brew / ブリュー".green().to_string()
+                format!("{} brew / ブリュー", "✓".green())
             } else {
-                "✗ brew / ブリュー".red().to_string()
+                format!("{} brew / ブリュー", "✗".red())
             });
             results
                 .lock()
@@ -387,9 +383,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ yt-dlp / ワイティーディーエルピー".green().to_string()
+                format!("{} yt-dlp / ワイティーディーエルピー", "✓".green())
             } else {
-                "✗ yt-dlp / ワイティーディーエルピー".red().to_string()
+                format!("{} yt-dlp / ワイティーディーエルピー", "✗".red())
             });
             results
                 .lock()
