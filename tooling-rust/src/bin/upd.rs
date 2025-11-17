@@ -213,16 +213,19 @@ fn update_apt() -> Result<()> {
     Command::new("sudo")
         .args(["apt-get", "update"])
         .stdout(Stdio::null())
+        .stdin(Stdio::inherit())
         .status()?;
 
     Command::new("sudo")
         .args(["apt-get", "upgrade", "-y"])
         .stdout(Stdio::null())
+        .stdin(Stdio::inherit())
         .status()?;
 
     Command::new("sudo")
         .args(["apt-get", "autoremove", "-y"])
         .stdout(Stdio::null())
+        .stdin(Stdio::inherit())
         .status()?;
 
     Ok(())
@@ -232,6 +235,7 @@ fn update_dnf() -> Result<()> {
     Command::new("sudo")
         .args(["dnf", "update", "-y"])
         .stdout(Stdio::null())
+        .stdin(Stdio::inherit())
         .status()?;
     Ok(())
 }
