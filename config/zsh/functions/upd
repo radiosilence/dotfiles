@@ -1,5 +1,11 @@
-# Smart update function - uses Rust binary if available, bootstraps otherwise
+# Smart update function - rebuilds Rust tooling first, then delegates
 upd() {
+  # If cargo and tooling-rust exist, rebuild first
+  if command -v cargo &>/dev/null && [ -d ~/.dotfiles/tooling-rust ]; then
+    printf "\033[35m🦀 [upd] rebuilding rust tooling first...\033[0m\n"
+    (cd ~/.dotfiles/tooling-rust && cargo install --path . --root .. --quiet)
+  fi
+
   # If upd binary exists and is executable, use it
   if command -v ~/.dotfiles/bin/upd &>/dev/null; then
     ~/.dotfiles/bin/upd "$@"

@@ -231,11 +231,6 @@ fn update_brew() -> Result<()> {
         .status()?;
 
     Command::new("brew")
-        .args(["bundle", "--global"])
-        .stdout(Stdio::null())
-        .status()?;
-
-    Command::new("brew")
         .arg("upgrade")
         .stdout(Stdio::null())
         .status()?;
