@@ -79,7 +79,7 @@ fn main() -> Result<()> {
     let urls: Vec<String> = if args.urls.is_empty() {
         // Read from stdin
         let stdin = io::stdin();
-        stdin.lock().lines().filter_map(|l| l.ok()).collect()
+        stdin.lock().lines().map_while(Result::ok).collect()
     } else {
         args.urls
     };
