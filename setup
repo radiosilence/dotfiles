@@ -12,7 +12,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 # Check if we have cargo/rust already
 if command -v cargo >/dev/null 2>&1; then
   echo "✓ Rust/Cargo found, building and running upd..."
-  cd "$DOTFILES_DIR/tooling-rust"
+  cd "$DOTFILES_DIR/crates"
   cargo install --path . --root .. --bin upd --force
   cd "$DOTFILES_DIR"
   exec "$DOTFILES_DIR/bin/upd" "$@"

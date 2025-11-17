@@ -26,12 +26,12 @@ pre-commit:
       stage_fixed: true
 
     cargo-clippy:
-      glob: "tooling-rust/**/*.rs"
-      run: cd tooling-rust && mise x -- cargo clippy --all-targets --all-features -- -D warnings
+      glob: "crates/**/*.rs"
+      run: cd crates && mise x -- cargo clippy --all-targets --all-features -- -D warnings
 
 pre-push:
   parallel: true
   commands:
     cargo-test:
-      glob: "tooling-rust/**/*.rs"
-      run: cd tooling-rust && mise x -- cargo test --all-targets
+      glob: "crates/**/*.rs"
+      run: cd crates && mise x -- cargo test --all-targets

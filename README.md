@@ -54,7 +54,7 @@ Everything is idempotent - run `upd` anytime to update your system.
 
 ### Rust Tooling (26 binaries)
 
-All tools built from `tooling-rust/` workspace. Run `just build` to compile.
+All tools built from `crates/` workspace. Run `just build` to compile.
 
 ---
 
@@ -413,7 +413,7 @@ just test     # Run tests
 │   ├── ssh/
 │   ├── starship/
 │   └── zsh/
-├── tooling-rust/       # Rust workspace
+├── crates/             # Rust workspace
 │   ├── src/
 │   │   ├── bin/        # Binary sources (26 tools)
 │   │   ├── lib.rs      # Shared library
