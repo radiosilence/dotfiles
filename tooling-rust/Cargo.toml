@@ -146,7 +146,7 @@ glob = "0.3"
 
 # System info
 sysinfo = "0.31"
-netstat2 = "0.9"
+netstat2 = "0.11"
 nix = { version = "0.29", features = ["signal"] }
 
 # Directories
