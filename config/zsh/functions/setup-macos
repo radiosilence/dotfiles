@@ -21,7 +21,7 @@ setup-macos() {
   fi
 
   if [ -f ~/.dotfiles/install ]; then
-    printf "\033[36m→ Running install script...\033[0m\n"
+    printf "\033[36m→ Running install-dotfiles...\033[0m\n"
     sh ~/.dotfiles/install
   fi
 

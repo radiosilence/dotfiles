@@ -94,6 +94,7 @@ fn main() -> Result<()> {
     }
 
     let dotfiles_config = dotfiles.join("config");
+    let mut config_linked = 0;
     if dotfiles_config.exists() {
         for entry in fs::read_dir(&dotfiles_config)? {
             let entry = entry?;
@@ -129,7 +130,11 @@ fn main() -> Result<()> {
             unix_fs::symlink(&path, &target).with_context(|| {
                 format!("Failed to link {} to {}", path.display(), target.display())
             })?;
+            config_linked += 1;
         }
+    }
+    if config_linked == 0 {
+        println!("   {} all config dirs already linked", "✓".green());
     }
 
     // Setup gitconfig
