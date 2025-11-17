@@ -1,5 +1,4 @@
 use anyhow::Result;
-use colored::Colorize;
 use std::fs;
 use std::process::Command;
 use tempfile::TempDir;
@@ -56,7 +55,7 @@ fn create_large_file(path: &std::path::Path, mb: usize) -> Result<()> {
         .args([
             "if=/dev/zero",
             &format!("of={}", path.display()),
-            &format!("bs=1M"),
+            &"bs=1M".to_string(),
             &format!("count={}", mb),
         ])
         .stdout(std::process::Stdio::null())

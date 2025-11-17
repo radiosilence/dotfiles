@@ -1,6 +1,5 @@
 use anyhow::Result;
 use clap::Parser;
-use colored::Colorize;
 use std::io::Write;
 use std::process::Command;
 
