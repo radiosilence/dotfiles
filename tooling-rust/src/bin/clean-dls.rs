@@ -68,6 +68,9 @@ fn main() -> Result<()> {
             if file_name == ".ds_store"
                 || file_name.ends_with(".nfo")
                 || file_name.ends_with(".txt")
+                || file_name.ends_with(".png")
+                || file_name.ends_with(".jpg")
+                || file_name.ends_with(".jpeg")
                 || file_name.ends_with(".sfv")
                 || file_name.contains("sample")
                 || file_name.starts_with("._")

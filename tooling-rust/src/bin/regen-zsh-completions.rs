@@ -23,7 +23,55 @@ fn main() -> Result<()> {
     fs::create_dir_all(&completions_dir)?;
 
     banner::divider("magenta");
-    banner::status("□", "GENERATING", "completions", "magenta");
+    banner::status("□", "GENERATING", "rust tools", "magenta");
+
+    // Our Rust tools
+    let rust_tools = vec![
+        "kill-port",
+        "prune",
+        "git-sync",
+        "git-squash",
+        "git-trigger",
+        "git-update",
+        "to-opus",
+        "to-flac",
+        "clean-exif",
+        "clean-dls",
+        "url2base64",
+        "imp",
+        "install-font-macos",
+        "unfuck-xcode",
+        "vimv",
+        "embed-art",
+        "extract-exif-from-flac",
+        "gen-diff",
+        "install-terminfo",
+        "prune-gen",
+        "pull-music",
+        "push-music",
+        "echo-to-file",
+        "parallel-dl-extract",
+        "upd",
+    ];
+
+    for cmd in rust_tools {
+        if which(cmd) {
+            println!("   {} {}", "→".cyan(), cmd);
+            let _ = Command::new(cmd)
+                .arg("--completions")
+                .arg("zsh")
+                .output()
+                .and_then(|output| {
+                    if output.status.success() {
+                        fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)?;
+                    }
+                    Ok(())
+                });
+        }
+    }
+
+    banner::divider("magenta");
+    banner::status("□", "GENERATING", "system tools", "magenta");
 
     // Standard completion commands
     let standard_cmds = vec![
