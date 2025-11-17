@@ -18,6 +18,10 @@ type UpdateResult = (&'static str, bool, f32);
 #[command(about = "Parallel system update orchestrator", long_about = None)]
 #[command(version)]
 struct Args {
+    /// Show verbose output from all commands
+    #[arg(short, long)]
+    verbose: bool,
+
     #[command(subcommand)]
     command: Option<Commands>,
 }
@@ -425,7 +429,7 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
         .stderr(Stdio::piped())
         .spawn()?;
 
-    let mut installed = Vec::new();
+    let installed = Arc::new(Mutex::new(Vec::new()));
 
     // Spawn thread to consume stderr and only surface important messages
     let stderr_errors = Arc::new(Mutex::new(Vec::new()));
@@ -449,22 +453,33 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
         });
     }
 
+    // Spawn thread to parse stdout - NEVER block main thread on I/O
     if let Some(stdout) = child.stdout.take() {
-        let reader = BufReader::new(stdout);
-        for line in reader.lines().map_while(Result::ok) {
-            // Parse brew bundle output: "Installing foo" or "Upgrading bar"
-            if line.contains("Installing") {
-                if let Some(pkg) = line.split_whitespace().nth(1) {
-                    pb.set_message(format!("⠿ brew: installing {}", pkg));
-                    installed.push(format!("installed {}", pkg));
-                }
-            } else if line.contains("Upgrading") {
-                if let Some(pkg) = line.split_whitespace().nth(1) {
-                    pb.set_message(format!("⠿ brew: upgrading {}", pkg));
-                    installed.push(format!("upgraded {}", pkg));
+        let installed_clone = installed.clone();
+        let pb_clone = pb.clone();
+        thread::spawn(move || {
+            let reader = BufReader::new(stdout);
+            for line in reader.lines().map_while(Result::ok) {
+                // Parse brew bundle output: "Installing foo" or "Upgrading bar"
+                if line.contains("Installing") {
+                    if let Some(pkg) = line.split_whitespace().nth(1) {
+                        pb_clone.set_message(format!("⠿ brew: installing {}", pkg));
+                        installed_clone
+                            .lock()
+                            .unwrap()
+                            .push(format!("installed {}", pkg));
+                    }
+                } else if line.contains("Upgrading") {
+                    if let Some(pkg) = line.split_whitespace().nth(1) {
+                        pb_clone.set_message(format!("⠿ brew: upgrading {}", pkg));
+                        installed_clone
+                            .lock()
+                            .unwrap()
+                            .push(format!("upgraded {}", pkg));
+                    }
                 }
             }
-        }
+        });
     }
 
     let status = child.wait()?;
@@ -481,7 +496,8 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
         anyhow::bail!("brew bundle failed");
     }
 
-    Ok(installed)
+    let installed_vec = installed.lock().unwrap().clone();
+    Ok(installed_vec)
 }
 
 fn update_apt() -> Result<()> {
