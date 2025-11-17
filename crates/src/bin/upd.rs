@@ -48,7 +48,11 @@ fn main() -> Result<()> {
     let mp = MultiProgress::new();
 
     mp.suspend(|| {
-        banner::print_banner("SYSTEM UPDATE", "idempotent system orchestrator", "blue");
+        banner::print_banner(
+            "SYSTEM UPDATE / システム更新",
+            "idempotent system orchestrator / 冪等性システムオーケストレーター",
+            "blue",
+        );
     });
 
     // Detect platform and what's available
@@ -63,34 +67,34 @@ fn main() -> Result<()> {
 
     mp.suspend(|| {
         banner::divider("cyan");
-        banner::status("□", "DETECTED", "", "cyan");
+        banner::status("□", "DETECTED / 検出", "", "cyan");
 
         if is_macos {
-            println!("   {} macOS", "✓".green());
+            println!("   {} macOS / マック", "✓".green());
         } else {
-            println!("   {} Linux", "✓".green());
+            println!("   {} Linux / リナックス", "✓".green());
         }
 
         if has_brew {
-            println!("   {} brew", "✓".green());
+            println!("   {} brew / ブリュー", "✓".green());
         }
         if has_apt {
-            println!("   {} apt-get", "✓".green());
+            println!("   {} apt-get / アプトゲット", "✓".green());
         }
         if has_dnf {
-            println!("   {} dnf", "✓".green());
+            println!("   {} dnf / ディーエヌエフ", "✓".green());
         }
         if has_mise {
-            println!("   {} mise", "✓".green());
+            println!("   {} mise / ミーズ", "✓".green());
         }
         if has_rustup {
-            println!("   {} rustup", "✓".green());
+            println!("   {} rustup / ラストアップ", "✓".green());
         }
         if has_yt_dlp {
-            println!("   {} yt-dlp", "✓".green());
+            println!("   {} yt-dlp / ワイティーディーエルピー", "✓".green());
         }
         if has_regen {
-            println!("   {} zsh completions", "✓".green());
+            println!("   {} zsh completions / 補完", "✓".green());
         }
 
         banner::divider("cyan");
@@ -100,7 +104,12 @@ fn main() -> Result<()> {
     let mut phase = 1;
     if is_macos && !has_brew {
         mp.suspend(|| {
-            banner::status("□", &format!("PHASE {}", phase), "install homebrew", "blue");
+            banner::status(
+                "□",
+                &format!("PHASE {} / フェーズ {}", phase, phase),
+                "install homebrew / ホームブリューインストール",
+                "blue",
+            );
         });
         install_homebrew(&mp)?;
         phase += 1;
@@ -119,7 +128,12 @@ fn main() -> Result<()> {
             let font_count = std::fs::read_dir(&fonts_dir)?.count();
             if font_count < 10 {
                 mp.suspend(|| {
-                    banner::status("□", &format!("PHASE {}", phase), "install fonts", "magenta");
+                    banner::status(
+                        "□",
+                        &format!("PHASE {} / フェーズ {}", phase, phase),
+                        "install fonts / フォントインストール",
+                        "magenta",
+                    );
                 });
                 install_fonts(&mp)?;
                 phase += 1;
@@ -144,14 +158,14 @@ fn main() -> Result<()> {
         mp.suspend(|| {
             banner::status(
                 "□",
-                &format!("PHASE {}", phase),
-                "sudo authentication",
+                &format!("PHASE {} / フェーズ {}", phase, phase),
+                "sudo authentication / スード認証",
                 "red",
             );
         });
         let status = Command::new("sudo").arg("-v").status()?;
         if !status.success() {
-            anyhow::bail!("Failed to get sudo authentication");
+            anyhow::bail!("Failed to get sudo authentication / スード認証失敗");
         }
         phase += 1;
     }
@@ -178,8 +192,8 @@ fn main() -> Result<()> {
         banner::divider("cyan");
         banner::status(
             "□",
-            &format!("PHASE {}", phase),
-            "parallel updates",
+            &format!("PHASE {} / フェーズ {}", phase, phase),
+            "parallel updates / 並列更新",
             "magenta",
         );
     });
@@ -195,7 +209,7 @@ fn main() -> Result<()> {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("dotfiles");
+        pb.set_message("dotfiles / ドットファイル");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
@@ -204,9 +218,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ dotfiles".green().to_string()
+                "✓ dotfiles / ドットファイル".green().to_string()
             } else {
-                "✗ dotfiles".red().to_string()
+                "✗ dotfiles / ドットファイル".red().to_string()
             });
             results
                 .lock()
@@ -220,7 +234,7 @@ fn main() -> Result<()> {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("apt-get");
+        pb.set_message("apt-get / アプトゲット");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
@@ -229,9 +243,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ apt-get".green().to_string()
+                "✓ apt-get / アプトゲット".green().to_string()
             } else {
-                "✗ apt-get".red().to_string()
+                "✗ apt-get / アプトゲット".red().to_string()
             });
             results
                 .lock()
@@ -245,7 +259,7 @@ fn main() -> Result<()> {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("dnf");
+        pb.set_message("dnf / ディーエヌエフ");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
@@ -254,9 +268,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ dnf".green().to_string()
+                "✓ dnf / ディーエヌエフ".green().to_string()
             } else {
-                "✗ dnf".red().to_string()
+                "✗ dnf / ディーエヌエフ".red().to_string()
             });
             results
                 .lock()
@@ -270,7 +284,7 @@ fn main() -> Result<()> {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("mise");
+        pb.set_message("mise / ミーズ");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
@@ -285,9 +299,9 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ mise".green().to_string()
+                "✓ mise / ミーズ".green().to_string()
             } else {
-                "✗ mise".red().to_string()
+                "✗ mise / ミーズ".red().to_string()
             });
             results
                 .lock()
@@ -301,7 +315,7 @@ fn main() -> Result<()> {
         let results = results.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("rustup-setup");
+        pb.set_message("rustup-setup / ラストアップセットアップ");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
@@ -310,9 +324,13 @@ fn main() -> Result<()> {
             let duration = start.elapsed();
             let ok = result.is_ok();
             pb.finish_with_message(if ok {
-                "✓ rustup-setup".green().to_string()
+                "✓ rustup-setup / ラストアップセットアップ"
+                    .green()
+                    .to_string()
             } else {
-                "✗ rustup-setup".red().to_string()
+                "✗ rustup-setup / ラストアップセットアップ"
+                    .red()
+                    .to_string()
             });
             results
                 .lock()
