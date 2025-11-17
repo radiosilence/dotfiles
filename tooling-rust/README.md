@@ -35,7 +35,6 @@ just install
 - **git-sync** - Clean merged branches
 - **git-squash** - Squash commits
 - **git-trigger** - Amend + force push
-- **git-update** - Alias for git-trigger
 
 ### Audio
 

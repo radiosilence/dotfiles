@@ -2,25 +2,29 @@
 
 ## High Priority - Complex Logic & Parallelism
 
-### **kill-port** 
+### **kill-port**
+
 **Why Rust:** Process management, error handling, cross-platform port checking
 **Benefits:** Type-safe port parsing, better error messages, works on Linux too
 **Deps:** `sysinfo` crate for process enumeration
 **Complexity:** Low (good starting point)
 
 ### **prune**
+
 **Why Rust:** Directory traversal, size calculations, interactive prompts
 **Benefits:** Faster directory scanning, structured output, better size formatting
 **Deps:** `walkdir`, `byte-unit`, `dialoguer`
 **Complexity:** Medium
 
 ### **vimv**
+
 **Why Rust:** File operations, git integration, complex rename logic
 **Benefits:** Better validation, atomic operations, rollback on failure
 **Deps:** `git2`, `tempfile`, `similar` (for diff preview)
 **Complexity:** Medium
 
 ### **to-opus / to-flac / clean-exif** (Audio Pipeline)
+
 **Why Rust:** Heavy parallel processing, FFmpeg integration, error recovery
 **Benefits:** Rayon parallelism >>> GNU parallel, progress bars, resume on failure
 **Deps:** `rayon`, `indicatif`, `walkdir`
@@ -28,58 +32,65 @@
 **Note:** Could be one tool with subcommands: `audio-tools convert opus`, `audio-tools convert flac`
 
 ### **embed-art**
+
 **Why Rust:** FLAC metadata manipulation, image processing, complex workflow
 **Benefits:** Native FLAC library (no shelling out), atomic operations
 **Deps:** `metaflac`, `image`, `rayon`
 **Complexity:** High
 
 ### **url2base64**
+
 **Why Rust:** HTTP requests, base64 encoding, streaming for large files
 **Benefits:** Async HTTP, better error handling, stdin/stdout streaming
 **Deps:** `reqwest`, `base64`, `tokio`
 **Complexity:** Low-Medium
 
-
 ## Medium Priority - System Utilities
 
 ### **gen-diff**
+
 **Why Rust:** Image manipulation, could avoid ImageMagick dependency
 **Benefits:** Pure Rust image diff, faster processing
 **Deps:** `image`, `imageproc`
 **Complexity:** Medium
 
 ### **unfuck-xcode**
+
 **Why Rust:** System commands, better error reporting
 **Benefits:** Clearer what it's doing, dry-run mode, safer
 **Deps:** `std::process::Command`
 **Complexity:** Low
 
 ### **imp** (Import music)
+
 **Why Rust:** Download + extract + import pipeline
 **Benefits:** Async downloads, better error handling, progress tracking
 **Deps:** `reqwest`, `zip`, `tokio`
 **Complexity:** Medium
 
-
 ## Low Priority - Keep as Shell
 
-### **git-sync / git-squash / git-trigger / git-update**
+### **git-sync / git-squash / git-trigger**
+
 **Why Keep Shell:** Simple git command wrappers, no complex logic
 **Note:** Could bundle into one Rust tool later if desired
 
 ### **setup-macos / rip-cd-setup**
+
 **Why Keep Shell:** One-time bootstrap scripts, lots of interactive prompts
 **Note:** Too much work to rewrite, shell is fine here
 
 ### **pull-music / push-music**
+
 **Why Keep Shell:** Just rclone wrappers, no added value from Rust
 
 ### **install-terminfo / install-font-macos**
+
 **Why Keep Shell:** Simple download/extract, shell is adequate
 
 ### **regen-zsh-completions**
-**Why Keep Shell:** Zsh-specific, needs zsh anyway
 
+**Why Keep Shell:** Zsh-specific, needs zsh anyway
 
 ## Proposed Rust Tools Structure
 

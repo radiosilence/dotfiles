@@ -153,18 +153,6 @@ git-trigger
 
 ---
 
-### `git-update`
-
-**Update all git repos**
-
-Recursively finds and updates all git repositories.
-
-```sh
-git-update ~/projects
-```
-
----
-
 ## AUDIO TOOLS
 
 ### `to-opus [files...] [--bitrate 128]`

@@ -37,7 +37,6 @@ fn main() -> Result<()> {
         "git-sync",
         "git-squash",
         "git-trigger",
-        "git-update",
         "to-opus",
         "to-flac",
         "clean-exif",
