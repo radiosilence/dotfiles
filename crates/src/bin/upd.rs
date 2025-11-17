@@ -2,12 +2,12 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
+use dotfiles_tools::banner;
 use dotfiles_tools::system::which;
 use std::io;
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(name = "upd")]

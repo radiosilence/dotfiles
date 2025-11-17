@@ -1,9 +1,9 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
+use dotfiles_tools::banner;
 use std::io;
 use std::process::Command;
-use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(name = "push-music")]
