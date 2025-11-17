@@ -4,10 +4,12 @@ use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dotfiles_tools::banner;
 use dotfiles_tools::system::which;
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::io;
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
+use std::time::Duration;
 
 type UpdateResult = (&'static str, bool, f32);
 
@@ -159,20 +161,36 @@ fn main() -> Result<()> {
         "magenta",
     );
 
+    let mp = MultiProgress::new();
+    let spinner_style = ProgressStyle::with_template("{spinner:.cyan} {msg}")
+        .unwrap()
+        .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]);
+
     let results: Arc<Mutex<Vec<UpdateResult>>> = Arc::new(Mutex::new(Vec::new()));
     let mut handles = vec![];
 
     // Dotfiles install
     {
         let results = results.clone();
+        let pb = mp.add(ProgressBar::new_spinner());
+        pb.set_style(spinner_style.clone());
+        pb.set_message("dotfiles");
+        pb.enable_steady_tick(Duration::from_millis(80));
+
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
             let result = dotfiles_tools::install::install_dotfiles();
             let duration = start.elapsed();
+            let ok = result.is_ok();
+            pb.finish_with_message(if ok {
+                "✓ dotfiles".green().to_string()
+            } else {
+                "✗ dotfiles".red().to_string()
+            });
             results
                 .lock()
                 .unwrap()
-                .push(("dotfiles", result.is_ok(), duration.as_secs_f32()));
+                .push(("dotfiles", ok, duration.as_secs_f32()));
         }));
     }
 
