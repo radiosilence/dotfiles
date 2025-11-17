@@ -4,6 +4,7 @@ use rayon::prelude::*;
 use std::fs;
 use std::process::Command;
 use std::sync::Mutex;
+use dotfiles_tools::banner;
 
 fn main() -> Result<()> {
     banner::print_banner(
@@ -158,49 +159,5 @@ mod tests {
             let completions = format!("{}/.config/zsh/completions", home);
             assert!(completions.contains(".config"));
         }
-    }
-}
-
-mod banner {
-    use colored::Colorize;
-
-    pub fn print_banner(title: &str, subtitle: &str, color: &str) {
-        let color_fn = match color {
-            "magenta" => |s: &str| s.magenta().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-
-        println!(
-            "\n{}",
-            color_fn("   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄")
-        );
-        println!(
-            "   {} {}\n",
-            color_fn(&format!("▸ {}", title)).bold(),
-            subtitle.dimmed()
-        );
-    }
-
-    pub fn status(icon: &str, label: &str, value: &str, color: &str) {
-        let color_fn = match color {
-            "magenta" => |s: &str| s.magenta().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("   {} {} {}", color_fn(icon), label.bold(), value);
-    }
-
-    pub fn success(msg: &str) {
-        println!("   {} {}\n", "✓".green().bold(), msg.green().bold());
-    }
-
-    pub fn divider(color: &str) {
-        let color_fn = match color {
-            "magenta" => |s: &str| s.magenta().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!(
-            "{}",
-            color_fn("   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        );
     }
 }

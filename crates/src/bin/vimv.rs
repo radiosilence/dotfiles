@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
+use dotfiles_tools::banner;
 use std::fs;
 use std::io::{self, Write};
 use std::process::Command;
@@ -142,53 +142,5 @@ mod tests {
         let original_count = 5;
         let new_count = 4;
         assert_ne!(original_count, new_count);
-    }
-}
-
-mod banner {
-    use colored::Colorize;
-
-    pub fn print_banner(title: &str, subtitle: &str, color: &str) {
-        let color_fn = match color {
-            "yellow" => |s: &str| s.yellow().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-
-        println!(
-            "\n{}",
-            color_fn("   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄")
-        );
-        println!(
-            "   {} {}\n",
-            color_fn(&format!("▸ {}", title)).bold(),
-            subtitle.dimmed()
-        );
-    }
-
-    pub fn status(icon: &str, label: &str, value: &str, color: &str) {
-        let color_fn = match color {
-            "yellow" => |s: &str| s.yellow().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("   {} {} {}", color_fn(icon), label.bold(), value);
-    }
-
-    pub fn success(msg: &str) {
-        println!("   {} {}\n", "✓".green().bold(), msg.green().bold());
-    }
-
-    pub fn warning(msg: &str) {
-        println!("   {} {}\n", "⚠".yellow().bold(), msg.yellow().bold());
-    }
-
-    pub fn divider(color: &str) {
-        let color_fn = match color {
-            "yellow" => |s: &str| s.yellow().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!(
-            "{}",
-            color_fn("   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        );
     }
 }

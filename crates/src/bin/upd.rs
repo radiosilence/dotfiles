@@ -7,6 +7,7 @@ use std::io;
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
+use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(name = "upd")]
@@ -418,85 +419,5 @@ mod tests {
         // sh should exist on unix systems
         #[cfg(unix)]
         assert!(result);
-    }
-}
-
-mod banner {
-    use colored::Colorize;
-
-    pub fn print_banner(title: &str, subtitle: &str, color: &str) {
-        let color_fn = match color {
-            "red" => |s: &str| s.red().to_string(),
-            "green" => |s: &str| s.green().to_string(),
-            "yellow" => |s: &str| s.yellow().to_string(),
-            "blue" => |s: &str| s.blue().to_string(),
-            "magenta" => |s: &str| s.magenta().to_string(),
-            "cyan" => |s: &str| s.cyan().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-
-        println!(
-            "\n{}",
-            color_fn("   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄")
-        );
-        println!(
-            "{}",
-            color_fn("   ██░▀██████░▄▄▀█░▄▄▀█░▄▄█░██░▄▄▄░█░▄▄▀█░▄▄▀█▄░▄██")
-        );
-        println!(
-            "{}",
-            color_fn("   ██░█░██░██░▀▀░█░▀▀░█▄▄▀█░██░███░█░▀▀░█░▀▀▄██░███")
-        );
-        println!(
-            "{}",
-            color_fn("   ██▄▀▄██▄██░██░█░██░█▄▄▄█▄▄█░▀▀▀░█░██░█▄█▄▄██▄███")
-        );
-        println!(
-            "{}",
-            color_fn("   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀")
-        );
-        println!(
-            "   {} {}\n",
-            color_fn(&format!("▸ {}", title)).bold(),
-            subtitle.dimmed()
-        );
-    }
-
-    pub fn status(icon: &str, label: &str, value: &str, color: &str) {
-        let color_fn = match color {
-            "red" => |s: &str| s.red().to_string(),
-            "green" => |s: &str| s.green().to_string(),
-            "yellow" => |s: &str| s.yellow().to_string(),
-            "blue" => |s: &str| s.blue().to_string(),
-            "magenta" => |s: &str| s.magenta().to_string(),
-            "cyan" => |s: &str| s.cyan().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-
-        if value.is_empty() {
-            println!("   {} {}", color_fn(icon), label.bold());
-        } else {
-            println!("   {} {} {}", color_fn(icon), label.bold(), value);
-        }
-    }
-
-    pub fn success(msg: &str) {
-        println!("   {} {}", "✓".green().bold(), msg.green().bold());
-    }
-
-    pub fn divider(color: &str) {
-        let color_fn = match color {
-            "red" => |s: &str| s.red().to_string(),
-            "green" => |s: &str| s.green().to_string(),
-            "yellow" => |s: &str| s.yellow().to_string(),
-            "blue" => |s: &str| s.blue().to_string(),
-            "magenta" => |s: &str| s.magenta().to_string(),
-            "cyan" => |s: &str| s.cyan().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!(
-            "{}",
-            color_fn("   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        );
     }
 }

@@ -6,6 +6,7 @@ use std::io;
 use std::path::Path;
 use std::process::Command;
 use tempfile::TempDir;
+use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(about = "Check if FLAC embedded artwork has been stripped of EXIF data")]
@@ -196,26 +197,6 @@ fn which(cmd: &str) -> bool {
         .status()
         .map(|s| s.success())
         .unwrap_or(false)
-}
-
-mod banner {
-    use colored::Colorize;
-
-    pub fn print_glitch_header(title: &str, color: &str) {
-        let color_fn = match color {
-            "cyan" => |s: &str| s.cyan().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("\n{}", color_fn(&format!("   ╔═══ {} ═══╗", title)).bold());
-    }
-
-    pub fn status(icon: &str, label: &str, value: &str, color: &str) {
-        let color_fn = match color {
-            "cyan" => |s: &str| s.cyan().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("   {} {} {}", color_fn(icon), label.bold(), value);
-    }
 }
 
 #[cfg(test)]

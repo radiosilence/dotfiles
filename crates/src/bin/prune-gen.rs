@@ -5,6 +5,7 @@ use std::fs;
 use std::io;
 use std::process::Command;
 use tempfile::TempDir;
+use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(name = "prune-gen")]
@@ -89,34 +90,6 @@ fn create_large_file(path: &std::path::Path, mb: usize) -> Result<()> {
         .stderr(std::process::Stdio::null())
         .status()?;
     Ok(())
-}
-
-mod banner {
-    use colored::Colorize;
-
-    pub fn print_glitch_header(title: &str, color: &str) {
-        let color_fn = match color {
-            "yellow" => |s: &str| s.yellow().to_string(),
-            "cyan" => |s: &str| s.cyan().to_string(),
-            "magenta" => |s: &str| s.magenta().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("\n{}", color_fn(&format!("   ╔═══ {} ═══╗", title)).bold());
-    }
-
-    pub fn status(icon: &str, label: &str, value: &str, color: &str) {
-        let color_fn = match color {
-            "yellow" => |s: &str| s.yellow().to_string(),
-            "cyan" => |s: &str| s.cyan().to_string(),
-            "magenta" => |s: &str| s.magenta().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("   {} {} {}", color_fn(icon), label.bold(), value);
-    }
-
-    pub fn success(msg: &str) {
-        println!("   {} {}\n", "✓".green().bold(), msg.green().bold());
-    }
 }
 
 #[cfg(test)]
