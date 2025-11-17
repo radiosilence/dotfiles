@@ -299,6 +299,12 @@ fn rebuild_rust() -> Result<()> {
     let home = std::env::var("HOME")?;
     let rust_dir = format!("{}/.dotfiles/tooling-rust", home);
 
+    println!(
+        "   {} {}",
+        "→".yellow(),
+        "cargo install --path . --root ..".dimmed()
+    );
+
     let status = Command::new("cargo")
         .args(["install", "--path", ".", "--root", ".."])
         .current_dir(&rust_dir)
