@@ -286,11 +286,8 @@ fn rebuild_rust() -> Result<()> {
     let rust_dir = format!("{}/.dotfiles/tooling-rust", home);
 
     let status = Command::new("cargo")
-        .args([
-            "install", "--path", ".", "--root", "..", "--force", "--quiet",
-        ])
+        .args(["install", "--path", ".", "--root", "..", "--force"])
         .current_dir(&rust_dir)
-        .stdout(Stdio::null())
         .status()?;
 
     if !status.success() {
