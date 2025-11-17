@@ -1,7 +1,9 @@
 use anyhow::Result;
 use colored::Colorize;
+use rayon::prelude::*;
 use std::fs;
 use std::process::Command;
+use std::sync::Mutex;
 
 fn main() -> Result<()> {
     banner::print_banner(
@@ -23,9 +25,12 @@ fn main() -> Result<()> {
     fs::create_dir_all(&completions_dir)?;
 
     banner::divider("magenta");
-    banner::status("□", "GENERATING", "rust tools", "magenta");
+    banner::status("□", "GENERATING", "completions (parallel)", "magenta");
 
-    // Our Rust tools
+    // Collect all completion tasks
+    let mut tasks: Vec<(&str, Vec<&str>)> = vec![];
+
+    // Rust tools with --completions zsh
     let rust_tools = vec![
         "kill-port",
         "prune",
@@ -53,87 +58,47 @@ fn main() -> Result<()> {
         "parallel-dl-extract",
         "upd",
     ];
-
     for cmd in rust_tools {
         if which(cmd) {
-            println!("   {} {}", "→".cyan(), cmd);
-            let _ = Command::new(cmd)
-                .arg("--completions")
-                .arg("zsh")
-                .output()
-                .and_then(|output| {
-                    if output.status.success() {
-                        fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)?;
-                    }
-                    Ok(())
-                });
+            tasks.push((cmd, vec!["--completions", "zsh"]));
         }
     }
-
-    banner::divider("magenta");
-    banner::status("□", "GENERATING", "system tools", "magenta");
 
     // Standard completion commands
     let standard_cmds = vec![
         "docker", "kubectl", "helm", "houston", "orbctl", "fcloud", "k9s", "argocd", "pulumi",
         "tilt", "turso", "lefthook", "mas", "yq", "rclone", "op", "nano-web",
     ];
-
     for cmd in standard_cmds {
         if which(cmd) {
-            println!("   {} {}", "→".cyan(), cmd);
-            let _ = Command::new(cmd)
-                .args(["completion", "zsh"])
-                .output()
-                .and_then(|output| {
-                    if output.status.success() {
-                        fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)?;
-                    }
-                    Ok(())
-                });
+            tasks.push((cmd, vec!["completion", "zsh"]));
         }
     }
 
     // Special cases
     if which("gh") {
-        println!("   {} gh", "→".cyan());
-        let _ = Command::new("gh")
-            .args(["completion", "-s", "zsh"])
-            .output()
-            .and_then(|output| {
-                if output.status.success() {
-                    fs::write(format!("{}/_gh", completions_dir), output.stdout)?;
-                }
-                Ok(())
-            });
+        tasks.push(("gh", vec!["completion", "-s", "zsh"]));
     }
-
     if which("task") {
-        println!("   {} task", "→".cyan());
-        let _ = Command::new("task")
-            .arg("--completion")
-            .arg("zsh")
-            .output()
-            .and_then(|output| {
-                if output.status.success() {
-                    fs::write(format!("{}/_task", completions_dir), output.stdout)?;
-                }
-                Ok(())
-            });
+        tasks.push(("task", vec!["--completion", "zsh"]));
+    }
+    if which("aws-vault") {
+        tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
     }
 
-    if which("aws-vault") {
-        println!("   {} aws-vault", "→".cyan());
-        let _ = Command::new("aws-vault")
-            .arg("--completion-script-zsh")
-            .output()
-            .and_then(|output| {
-                if output.status.success() {
-                    fs::write(format!("{}/_aws-vault", completions_dir), output.stdout)?;
-                }
-                Ok(())
-            });
-    }
+    // Run all completions in parallel
+    let output_mutex = Mutex::new(());
+    let completions_dir_clone = completions_dir.clone();
+
+    tasks.par_iter().for_each(|(cmd, args)| {
+        if let Ok(output) = Command::new(cmd).args(args.as_slice()).output() {
+            if output.status.success() {
+                let _ = fs::write(format!("{}/_{}", completions_dir_clone, cmd), output.stdout);
+                let _lock = output_mutex.lock().unwrap();
+                println!("   {} {}", "→".cyan(), cmd);
+            }
+        }
+    });
 
     if which("terraform") {
         println!("   {} terraform (configured via terraform.zsh)", "→".cyan());
