@@ -2,7 +2,7 @@
 upd() {
   # If cargo and tooling-rust exist, rebuild first
   if command -v cargo &>/dev/null && [ -d ~/.dotfiles/tooling-rust ]; then
-    printf "\033[35m🦀 [upd] rebuilding rust tooling first...\033[0m\n"
+    printf "\033[35m🦀 [upd] rebuilding rust tooling...\033[0m\n"
     (cd ~/.dotfiles/tooling-rust && cargo install --path . --root ..)
   fi
 
