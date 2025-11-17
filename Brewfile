@@ -218,7 +218,7 @@ cask 'signal', greedy: true
 cask 'ghostty', greedy: true
 cask 'orbstack', greedy: true
 cask 'rar', args: { no_quarantine: true }, greedy: true
-cask 'tailscale', greedy: true
+cask 'tailscale-app', greedy: true
 cask 'aws-vpn-client', greedy: true
 cask 'mullvad-vpn', greedy: true
 cask 'steam'

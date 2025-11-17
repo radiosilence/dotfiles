@@ -107,65 +107,48 @@ fn main() -> Result<()> {
         }
     }
 
-    // PHASE: Brew bundle (macOS only, if Brewfile exists)
-    if is_macos && has_brew {
+    // Check if Brewfile exists
+    let has_brewfile = if is_macos && has_brew {
         let home = std::env::var("HOME")?;
-        let brewfile = std::path::Path::new(&home).join("Brewfile");
-        if brewfile.exists() {
-            banner::status("□", &format!("PHASE {}", phase), "brew bundle", "green");
-            brew_bundle()?;
-            phase += 1;
-            banner::divider("cyan");
-        }
-    }
+        std::path::Path::new(&home).join("Brewfile").exists()
+    } else {
+        false
+    };
 
-    // PHASE: Dotfiles install (always run, but it's idempotent)
-    banner::status("□", &format!("PHASE {}", phase), "dotfiles install", "blue");
-    dotfiles_tools::install::install_dotfiles()?;
-    phase += 1;
-
-    // Phase 2: sudo updates (sequential - need password input)
-    banner::divider("cyan");
-    banner::status("□", "PHASE 2", "system package updates", "red");
-
-    let mut sudo_results = Vec::new();
-
-    if has_apt {
-        println!("   {} updating apt-get...", "→".red());
-        let result = update_apt();
-        sudo_results.push(("apt-get", result.is_ok()));
-        if result.is_ok() {
-            println!("   {} apt-get", "✓".green());
-        } else {
-            println!("   {} apt-get", "✗".red());
-        }
-    }
-
-    if has_dnf {
-        println!("   {} updating dnf...", "→".red());
-        let result = update_dnf();
-        sudo_results.push(("dnf", result.is_ok()));
-        if result.is_ok() {
-            println!("   {} dnf", "✓".green());
-        } else {
-            println!("   {} dnf", "✗".red());
-        }
-    }
-
-    // PHASE: mise/rustup setup (only if missing)
-    banner::divider("cyan");
-    if has_mise || has_rustup {
-        banner::status("□", &format!("PHASE {}", phase), "runtime setup", "yellow");
-        if has_mise {
-            dotfiles_tools::system::install_mise_tools()?;
-        }
-        if has_rustup {
-            dotfiles_tools::system::setup_rustup()?;
+    // PHASE 1: Get sudo authentication if needed
+    let needs_sudo = has_apt || has_dnf;
+    if needs_sudo {
+        banner::status(
+            "□",
+            &format!("PHASE {}", phase),
+            "sudo authentication",
+            "red",
+        );
+        let status = Command::new("sudo").arg("-v").status()?;
+        if !status.success() {
+            anyhow::bail!("Failed to get sudo authentication");
         }
         phase += 1;
     }
 
-    // Parallel phase: Update non-sudo package managers
+    // Spawn background thread to keep sudo alive
+    let sudo_keepalive = if needs_sudo {
+        let keepalive = Arc::new(std::sync::atomic::AtomicBool::new(true));
+        let keepalive_clone = keepalive.clone();
+        Some((
+            thread::spawn(move || {
+                while keepalive_clone.load(std::sync::atomic::Ordering::Relaxed) {
+                    thread::sleep(std::time::Duration::from_secs(60));
+                    let _ = Command::new("sudo").arg("-v").status();
+                }
+            }),
+            keepalive,
+        ))
+    } else {
+        None
+    };
+
+    // PHASE 2: Everything in parallel
     banner::divider("cyan");
     banner::status(
         "□",
@@ -177,26 +160,170 @@ fn main() -> Result<()> {
     let results = Arc::new(Mutex::new(Vec::new()));
     let mut handles = vec![];
 
-    if has_brew {
+    // Dotfiles install
+    {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            let result = update_brew();
-            results.lock().unwrap().push(("brew", result.is_ok()));
+            println!("   {} dotfiles install", "→".cyan());
+            let start = std::time::Instant::now();
+            let result = dotfiles_tools::install::install_dotfiles();
+            let duration = start.elapsed();
+            let status = if result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!("   {} dotfiles ({:.1}s)", status, duration.as_secs_f32());
+            results.lock().unwrap().push(("dotfiles", result.is_ok()));
         }));
     }
 
+    // apt-get (with sudo)
+    if has_apt {
+        let results = results.clone();
+        handles.push(thread::spawn(move || {
+            println!("   {} apt-get", "→".cyan());
+            let start = std::time::Instant::now();
+            let result = update_apt();
+            let duration = start.elapsed();
+            let status = if result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!("   {} apt-get ({:.1}s)", status, duration.as_secs_f32());
+            results.lock().unwrap().push(("apt-get", result.is_ok()));
+        }));
+    }
+
+    // dnf (with sudo)
+    if has_dnf {
+        let results = results.clone();
+        handles.push(thread::spawn(move || {
+            println!("   {} dnf", "→".cyan());
+            let start = std::time::Instant::now();
+            let result = update_dnf();
+            let duration = start.elapsed();
+            let status = if result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!("   {} dnf ({:.1}s)", status, duration.as_secs_f32());
+            results.lock().unwrap().push(("dnf", result.is_ok()));
+        }));
+    }
+
+    // mise setup
     if has_mise {
         let results = results.clone();
         handles.push(thread::spawn(move || {
+            println!("   {} mise setup", "→".cyan());
+            let start = std::time::Instant::now();
+            let result = dotfiles_tools::system::install_mise_tools();
+            let duration = start.elapsed();
+            let status = if result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!("   {} mise setup ({:.1}s)", status, duration.as_secs_f32());
+            results.lock().unwrap().push(("mise-setup", result.is_ok()));
+        }));
+    }
+
+    // rustup setup
+    if has_rustup {
+        let results = results.clone();
+        handles.push(thread::spawn(move || {
+            println!("   {} rustup setup", "→".cyan());
+            let start = std::time::Instant::now();
+            let result = dotfiles_tools::system::setup_rustup();
+            let duration = start.elapsed();
+            let status = if result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!(
+                "   {} rustup setup ({:.1}s)",
+                status,
+                duration.as_secs_f32()
+            );
+            results
+                .lock()
+                .unwrap()
+                .push(("rustup-setup", result.is_ok()));
+        }));
+    }
+
+    // brew (bundle + update)
+    if has_brew {
+        let results = results.clone();
+        handles.push(thread::spawn(move || {
+            println!("   {} brew", "→".cyan());
+            let start = std::time::Instant::now();
+
+            // Run bundle first if Brewfile exists
+            let bundle_result = if has_brewfile { brew_bundle() } else { Ok(()) };
+
+            // Then run updates
+            let update_result = if bundle_result.is_ok() {
+                update_brew()
+            } else {
+                bundle_result
+            };
+
+            let duration = start.elapsed();
+            let status = if update_result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!("   {} brew ({:.1}s)", status, duration.as_secs_f32());
+            results
+                .lock()
+                .unwrap()
+                .push(("brew", update_result.is_ok()));
+        }));
+    }
+
+    // mise upgrade
+    if has_mise {
+        let results = results.clone();
+        handles.push(thread::spawn(move || {
+            println!("   {} mise upgrade", "→".cyan());
+            let start = std::time::Instant::now();
             let result = update_mise();
+            let duration = start.elapsed();
+            let status = if result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!(
+                "   {} mise upgrade ({:.1}s)",
+                status,
+                duration.as_secs_f32()
+            );
             results.lock().unwrap().push(("mise", result.is_ok()));
         }));
     }
 
+    // yt-dlp
     if has_yt_dlp {
         let results = results.clone();
         handles.push(thread::spawn(move || {
+            println!("   {} yt-dlp", "→".cyan());
+            let start = std::time::Instant::now();
             let result = update_yt_dlp();
+            let duration = start.elapsed();
+            let status = if result.is_ok() {
+                "✓".green()
+            } else {
+                "✗".red()
+            };
+            println!("   {} yt-dlp ({:.1}s)", status, duration.as_secs_f32());
             results.lock().unwrap().push(("yt-dlp", result.is_ok()));
         }));
     }
@@ -206,19 +333,15 @@ fn main() -> Result<()> {
         handle.join().unwrap();
     }
 
-    // Print results
-    for (name, success) in results.lock().unwrap().iter() {
-        if *success {
-            println!("   {} {}", "✓".green(), name);
-        } else {
-            println!("   {} {}", "✗".red(), name);
-        }
+    // Stop sudo keepalive
+    if let Some((handle, keepalive)) = sudo_keepalive {
+        keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
+        let _ = handle.join();
     }
 
     banner::divider("cyan");
 
-    // Generate completions
-    banner::divider("cyan");
+    // Generate completions (after everything is updated)
     if has_regen {
         banner::status(
             "□",
@@ -226,15 +349,15 @@ fn main() -> Result<()> {
             "zsh completions",
             "green",
         );
-        regen_completions()?;
+        dotfiles_tools::regen_completions::regenerate_completions()?;
+        println!("   {} completions regenerated", "✓".green());
     }
 
     banner::divider("cyan");
     banner::success("SYSTEM UPDATE COMPLETE");
 
-    // Print summary - merge sudo and parallel results
-    let mut results = results.lock().unwrap().clone();
-    results.extend(sudo_results);
+    // Print summary
+    let results = results.lock().unwrap().clone();
     let success_count = results.iter().filter(|(_, ok)| *ok).count();
     let total_count = results.len();
 
@@ -367,7 +490,7 @@ fn update_brew() -> Result<()> {
 fn update_mise() -> Result<()> {
     Command::new("mise")
         .arg("up")
-        .stdout(Stdio::null())
+        .stdout(Stdio::inherit())
         .status()?;
 
     let home = std::env::var("HOME")?;
@@ -387,13 +510,6 @@ fn update_mise() -> Result<()> {
 fn update_yt_dlp() -> Result<()> {
     Command::new("yt-dlp")
         .args(["--update-to", "nightly"])
-        .stdout(Stdio::null())
-        .status()?;
-    Ok(())
-}
-
-fn regen_completions() -> Result<()> {
-    Command::new("regen-zsh-completions")
         .stdout(Stdio::null())
         .status()?;
     Ok(())
