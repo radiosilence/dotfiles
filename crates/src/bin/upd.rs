@@ -9,6 +9,8 @@ use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+type UpdateResult = (&'static str, bool, f32);
+
 #[derive(Parser)]
 #[command(name = "upd")]
 #[command(about = "Parallel system update orchestrator", long_about = None)]
@@ -157,24 +159,20 @@ fn main() -> Result<()> {
         "magenta",
     );
 
-    let results = Arc::new(Mutex::new(Vec::new()));
+    let results: Arc<Mutex<Vec<UpdateResult>>> = Arc::new(Mutex::new(Vec::new()));
     let mut handles = vec![];
 
     // Dotfiles install
     {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} dotfiles install", "→".cyan());
             let start = std::time::Instant::now();
             let result = dotfiles_tools::install::install_dotfiles();
             let duration = start.elapsed();
-            let status = if result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!("   {} dotfiles ({:.1}s)", status, duration.as_secs_f32());
-            results.lock().unwrap().push(("dotfiles", result.is_ok()));
+            results
+                .lock()
+                .unwrap()
+                .push(("dotfiles", result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -182,17 +180,13 @@ fn main() -> Result<()> {
     if has_apt {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} apt-get", "→".cyan());
             let start = std::time::Instant::now();
             let result = update_apt();
             let duration = start.elapsed();
-            let status = if result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!("   {} apt-get ({:.1}s)", status, duration.as_secs_f32());
-            results.lock().unwrap().push(("apt-get", result.is_ok()));
+            results
+                .lock()
+                .unwrap()
+                .push(("apt-get", result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -200,17 +194,13 @@ fn main() -> Result<()> {
     if has_dnf {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} dnf", "→".cyan());
             let start = std::time::Instant::now();
             let result = update_dnf();
             let duration = start.elapsed();
-            let status = if result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!("   {} dnf ({:.1}s)", status, duration.as_secs_f32());
-            results.lock().unwrap().push(("dnf", result.is_ok()));
+            results
+                .lock()
+                .unwrap()
+                .push(("dnf", result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -218,17 +208,13 @@ fn main() -> Result<()> {
     if has_mise {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} mise setup", "→".cyan());
             let start = std::time::Instant::now();
             let result = dotfiles_tools::system::install_mise_tools();
             let duration = start.elapsed();
-            let status = if result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!("   {} mise setup ({:.1}s)", status, duration.as_secs_f32());
-            results.lock().unwrap().push(("mise-setup", result.is_ok()));
+            results
+                .lock()
+                .unwrap()
+                .push(("mise-setup", result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -236,24 +222,13 @@ fn main() -> Result<()> {
     if has_rustup {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} rustup setup", "→".cyan());
             let start = std::time::Instant::now();
             let result = dotfiles_tools::system::setup_rustup();
             let duration = start.elapsed();
-            let status = if result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!(
-                "   {} rustup setup ({:.1}s)",
-                status,
-                duration.as_secs_f32()
-            );
             results
                 .lock()
                 .unwrap()
-                .push(("rustup-setup", result.is_ok()));
+                .push(("rustup-setup", result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -261,30 +236,18 @@ fn main() -> Result<()> {
     if has_brew {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} brew", "→".cyan());
             let start = std::time::Instant::now();
-
-            // Run bundle first if Brewfile exists
             let bundle_result = if has_brewfile { brew_bundle() } else { Ok(()) };
-
-            // Then run updates
             let update_result = if bundle_result.is_ok() {
                 update_brew()
             } else {
                 bundle_result
             };
-
             let duration = start.elapsed();
-            let status = if update_result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!("   {} brew ({:.1}s)", status, duration.as_secs_f32());
             results
                 .lock()
                 .unwrap()
-                .push(("brew", update_result.is_ok()));
+                .push(("brew", update_result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -292,21 +255,13 @@ fn main() -> Result<()> {
     if has_mise {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} mise upgrade", "→".cyan());
             let start = std::time::Instant::now();
             let result = update_mise();
             let duration = start.elapsed();
-            let status = if result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!(
-                "   {} mise upgrade ({:.1}s)",
-                status,
-                duration.as_secs_f32()
-            );
-            results.lock().unwrap().push(("mise", result.is_ok()));
+            results
+                .lock()
+                .unwrap()
+                .push(("mise", result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -314,17 +269,13 @@ fn main() -> Result<()> {
     if has_yt_dlp {
         let results = results.clone();
         handles.push(thread::spawn(move || {
-            println!("   {} yt-dlp", "→".cyan());
             let start = std::time::Instant::now();
             let result = update_yt_dlp();
             let duration = start.elapsed();
-            let status = if result.is_ok() {
-                "✓".green()
-            } else {
-                "✗".red()
-            };
-            println!("   {} yt-dlp ({:.1}s)", status, duration.as_secs_f32());
-            results.lock().unwrap().push(("yt-dlp", result.is_ok()));
+            results
+                .lock()
+                .unwrap()
+                .push(("yt-dlp", result.is_ok(), duration.as_secs_f32()));
         }));
     }
 
@@ -354,11 +305,19 @@ fn main() -> Result<()> {
     }
 
     banner::divider("cyan");
+
+    // Print results
+    let results = results.lock().unwrap().clone();
+    for (name, ok, duration) in &results {
+        let status = if *ok { "✓".green() } else { "✗".red() };
+        println!("   {} {} ({:.1}s)", status, name, duration);
+    }
+
+    banner::divider("cyan");
     banner::success("SYSTEM UPDATE COMPLETE");
 
     // Print summary
-    let results = results.lock().unwrap().clone();
-    let success_count = results.iter().filter(|(_, ok)| *ok).count();
+    let success_count = results.iter().filter(|(_, ok, _)| *ok).count();
     let total_count = results.len();
 
     println!(
