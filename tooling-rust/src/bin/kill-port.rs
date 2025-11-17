@@ -5,6 +5,8 @@ use clap::Parser;
 use colored::Colorize;
 use dotfiles_tools::completions;
 use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSocketInfo};
+use nix::sys::signal::{kill, Signal};
+use nix::unistd::Pid;
 use std::collections::HashSet;
 
 #[derive(Parser)]
@@ -16,7 +18,7 @@ struct Args {
     #[arg(value_name = "PORT")]
     port: u16,
 
-    /// Signal to send (default: TERM)
+    /// Signal to send (default: TERM, also: KILL, INT, HUP, etc)
     #[arg(short, long, value_name = "SIGNAL")]
     signal: Option<String>,
 
@@ -36,7 +38,7 @@ fn main() -> Result<()> {
     banner::print_glitch_header("KILL-PORT", "magenta");
     banner::loading("Scanning for process on port...");
 
-    // Get all sockets (TCP and UDP, IPv4 and IPv6)
+    // Get all sockets
     let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
     let proto_flags = ProtocolFlags::TCP | ProtocolFlags::UDP;
     let sockets = get_sockets_info(af_flags, proto_flags)?;
@@ -85,35 +87,31 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
+    // Parse signal
+    let signal = match args.signal.as_deref() {
+        None | Some("TERM") | Some("15") => Signal::SIGTERM,
+        Some("KILL") | Some("9") => Signal::SIGKILL,
+        Some("INT") | Some("2") => Signal::SIGINT,
+        Some("HUP") | Some("1") => Signal::SIGHUP,
+        Some("QUIT") | Some("3") => Signal::SIGQUIT,
+        Some("USR1") | Some("10") => Signal::SIGUSR1,
+        Some("USR2") | Some("12") => Signal::SIGUSR2,
+        Some(sig) => bail!("Unsupported signal: {}", sig),
+    };
+
     // Kill the processes
     for pid in &pids {
-        if let Some(sig) = &args.signal {
+        if let Some(sig_name) = &args.signal {
             println!(
                 "{} Sending signal {} to process {}",
                 "→".blue().bold(),
-                sig.yellow(),
+                sig_name.yellow(),
                 pid.to_string().yellow()
             );
-
-            // Use kill command for custom signals
-            let status = std::process::Command::new("kill")
-                .arg(format!("-{}", sig))
-                .arg(pid.to_string())
-                .status()?;
-
-            if !status.success() {
-                bail!("Failed to kill process {}", pid);
-            }
-        } else {
-            // Use kill command for SIGTERM (default)
-            let status = std::process::Command::new("kill")
-                .arg(pid.to_string())
-                .status()?;
-
-            if !status.success() {
-                bail!("Failed to kill process {}", pid);
-            }
         }
+
+        let nix_pid = Pid::from_raw(*pid as i32);
+        kill(nix_pid, signal)?;
 
         banner::success(&format!("TERMINATED PROCESS {}", pid));
     }
@@ -126,21 +124,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_port_validation() {
-        // Valid ports
+    fn test_port_range() {
         assert!(1024 < u16::MAX);
         assert!(8080 < u16::MAX);
-
-        // Port 0 is technically valid but unusual
-        assert_eq!(0_u16, 0);
-    }
-
-    #[test]
-    fn test_signal_parsing() {
-        // Common signals
-        let signals = vec!["TERM", "KILL", "INT", "HUP", "9", "15"];
-        for sig in signals {
-            assert!(!sig.is_empty());
-        }
     }
 }
