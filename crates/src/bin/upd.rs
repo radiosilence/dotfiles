@@ -200,6 +200,12 @@ fn main() -> Result<()> {
     mp.println("").unwrap(); // Blank line before spinners start
 
     let spinner_style = ProgressStyle::default_spinner();
+    let spinner_success = ProgressStyle::with_template("{spinner:.green} {msg}")
+        .unwrap()
+        .tick_strings(&["✓"]);
+    let spinner_failure = ProgressStyle::with_template("{spinner:.red} {msg}")
+        .unwrap()
+        .tick_strings(&["✗"]);
 
     let results: Arc<Mutex<Vec<UpdateResult>>> = Arc::new(Mutex::new(Vec::new()));
     let mut handles = vec![];
@@ -207,6 +213,8 @@ fn main() -> Result<()> {
     // Dotfiles install
     {
         let results = results.clone();
+        let success_style = spinner_success.clone();
+        let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
         pb.set_message("dotfiles / ドットファイル");
@@ -217,11 +225,15 @@ fn main() -> Result<()> {
             let result = dotfiles_tools::install::install_dotfiles();
             let duration = start.elapsed();
             let ok = result.is_ok();
-            pb.finish_with_message(if ok {
-                format!("{} dotfiles / ドットファイル", "✓".green())
+
+            // Set final style based on result
+            if ok {
+                pb.set_style(success_style);
             } else {
-                format!("{} dotfiles / ドットファイル", "✗".red())
-            });
+                pb.set_style(failure_style);
+            }
+            pb.finish();
+
             results
                 .lock()
                 .unwrap()
@@ -232,6 +244,8 @@ fn main() -> Result<()> {
     // apt-get (with sudo)
     if has_apt {
         let results = results.clone();
+        let success_style = spinner_success.clone();
+        let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
         pb.set_message("apt-get / アプトゲット");
@@ -242,11 +256,14 @@ fn main() -> Result<()> {
             let result = update_apt();
             let duration = start.elapsed();
             let ok = result.is_ok();
-            pb.finish_with_message(if ok {
-                format!("{} apt-get / アプトゲット", "✓".green())
+
+            if ok {
+                pb.set_style(success_style);
             } else {
-                format!("{} apt-get / アプトゲット", "✗".red())
-            });
+                pb.set_style(failure_style);
+            }
+            pb.finish();
+
             results
                 .lock()
                 .unwrap()
@@ -257,6 +274,8 @@ fn main() -> Result<()> {
     // dnf (with sudo)
     if has_dnf {
         let results = results.clone();
+        let success_style = spinner_success.clone();
+        let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
         pb.set_message("dnf / ディーエヌエフ");
@@ -267,11 +286,14 @@ fn main() -> Result<()> {
             let result = update_dnf();
             let duration = start.elapsed();
             let ok = result.is_ok();
-            pb.finish_with_message(if ok {
-                format!("{} dnf / ディーエヌエフ", "✓".green())
+
+            if ok {
+                pb.set_style(success_style);
             } else {
-                format!("{} dnf / ディーエヌエフ", "✗".red())
-            });
+                pb.set_style(failure_style);
+            }
+            pb.finish();
+
             results
                 .lock()
                 .unwrap()
@@ -282,6 +304,8 @@ fn main() -> Result<()> {
     // mise (install + upgrade)
     if has_mise {
         let results = results.clone();
+        let success_style = spinner_success.clone();
+        let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
         pb.set_message("mise / ミーズ");
@@ -298,11 +322,14 @@ fn main() -> Result<()> {
             };
             let duration = start.elapsed();
             let ok = result.is_ok();
-            pb.finish_with_message(if ok {
-                format!("{} mise / ミーズ", "✓".green())
+
+            if ok {
+                pb.set_style(success_style);
             } else {
-                format!("{} mise / ミーズ", "✗".red())
-            });
+                pb.set_style(failure_style);
+            }
+            pb.finish();
+
             results
                 .lock()
                 .unwrap()
@@ -313,6 +340,8 @@ fn main() -> Result<()> {
     // rustup setup
     if has_rustup {
         let results = results.clone();
+        let success_style = spinner_success.clone();
+        let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
         pb.set_message("rustup-setup / ラストアップセットアップ");
@@ -323,11 +352,14 @@ fn main() -> Result<()> {
             let result = dotfiles_tools::system::setup_rustup();
             let duration = start.elapsed();
             let ok = result.is_ok();
-            pb.finish_with_message(if ok {
-                format!("{} rustup-setup / ラストアップセットアップ", "✓".green())
+
+            if ok {
+                pb.set_style(success_style);
             } else {
-                format!("{} rustup-setup / ラストアップセットアップ", "✗".red())
-            });
+                pb.set_style(failure_style);
+            }
+            pb.finish();
+
             results
                 .lock()
                 .unwrap()
@@ -338,6 +370,8 @@ fn main() -> Result<()> {
     // brew (bundle + update)
     if has_brew {
         let results = results.clone();
+        let success_style = spinner_success.clone();
+        let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
         pb.set_message("brew / ブリュー");
@@ -357,11 +391,14 @@ fn main() -> Result<()> {
             };
             let duration = start.elapsed();
             let ok = update_result.is_ok();
-            pb.finish_with_message(if ok {
-                format!("{} brew / ブリュー", "✓".green())
+
+            if ok {
+                pb.set_style(success_style);
             } else {
-                format!("{} brew / ブリュー", "✗".red())
-            });
+                pb.set_style(failure_style);
+            }
+            pb.finish();
+
             results
                 .lock()
                 .unwrap()
@@ -372,6 +409,8 @@ fn main() -> Result<()> {
     // yt-dlp
     if has_yt_dlp {
         let results = results.clone();
+        let success_style = spinner_success.clone();
+        let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
         pb.set_message("yt-dlp / ワイティーディーエルピー");
@@ -382,11 +421,14 @@ fn main() -> Result<()> {
             let result = update_yt_dlp();
             let duration = start.elapsed();
             let ok = result.is_ok();
-            pb.finish_with_message(if ok {
-                format!("{} yt-dlp / ワイティーディーエルピー", "✓".green())
+
+            if ok {
+                pb.set_style(success_style);
             } else {
-                format!("{} yt-dlp / ワイティーディーエルピー", "✗".red())
-            });
+                pb.set_style(failure_style);
+            }
+            pb.finish();
+
             results
                 .lock()
                 .unwrap()
