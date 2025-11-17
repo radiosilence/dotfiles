@@ -590,7 +590,7 @@ fn brew_bundle(pb: &ProgressBar) -> Result<Vec<String>> {
 
     // If brew bundle failed, bail with error message (don't print directly - would mess up spinners)
     if !status.success() {
-        anyhow::bail!("brew bundle failed");
+        anyhow::bail!("brew bundle failed / ブリューバンドル失敗");
     }
 
     let installed_vec = installed.lock().unwrap().clone();
