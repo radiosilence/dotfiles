@@ -3,6 +3,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use std::io;
 use std::process::Command;
+use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(name = "pull-music")]
@@ -82,52 +83,5 @@ mod tests {
         let args = ["sync", "--progress", "--size-only", "--checkers=16"];
         assert_eq!(args.len(), 4);
         assert_eq!(args[0], "sync");
-    }
-}
-
-mod banner {
-    use colored::Colorize;
-
-    pub fn print_banner(title: &str, subtitle: &str, color: &str) {
-        let color_fn = match color {
-            "cyan" => |s: &str| s.cyan().to_string(),
-            "green" => |s: &str| s.green().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-
-        println!(
-            "\n{}",
-            color_fn("   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄")
-        );
-        println!(
-            "   {} {}\n",
-            color_fn(&format!("▸ {}", title)).bold(),
-            subtitle.dimmed()
-        );
-    }
-
-    pub fn status(icon: &str, label: &str, value: &str, color: &str) {
-        let color_fn = match color {
-            "cyan" => |s: &str| s.cyan().to_string(),
-            "green" => |s: &str| s.green().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("   {} {} {}", color_fn(icon), label.bold(), value);
-    }
-
-    pub fn success(msg: &str) {
-        println!("\n   {} {}\n", "✓".green().bold(), msg.green().bold());
-    }
-
-    pub fn divider(color: &str) {
-        let color_fn = match color {
-            "cyan" => |s: &str| s.cyan().to_string(),
-            "green" => |s: &str| s.green().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!(
-            "{}",
-            color_fn("   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        );
     }
 }

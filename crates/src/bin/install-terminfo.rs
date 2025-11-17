@@ -3,6 +3,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use std::io::{self, Write};
 use std::process::Command;
+use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(about = "Install terminfo to remote host via SSH")]
@@ -63,32 +64,6 @@ fn main() -> Result<()> {
 
     banner::success("TERMINFO INSTALLED");
     Ok(())
-}
-
-mod banner {
-    use colored::Colorize;
-
-    pub fn print_glitch_header(title: &str, color: &str) {
-        let color_fn = match color {
-            "cyan" => |s: &str| s.cyan().to_string(),
-            "magenta" => |s: &str| s.magenta().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("\n{}", color_fn(&format!("   ╔═══ {} ═══╗", title)).bold());
-    }
-
-    pub fn status(icon: &str, label: &str, value: &str, color: &str) {
-        let color_fn = match color {
-            "cyan" => |s: &str| s.cyan().to_string(),
-            "magenta" => |s: &str| s.magenta().to_string(),
-            _ => |s: &str| s.to_string(),
-        };
-        println!("   {} {} {}", color_fn(icon), label.bold(), value);
-    }
-
-    pub fn success(msg: &str) {
-        println!("   {} {}\n", "✓".green().bold(), msg.green().bold());
-    }
 }
 
 #[cfg(test)]

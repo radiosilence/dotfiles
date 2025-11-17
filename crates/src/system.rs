@@ -2,18 +2,21 @@ use anyhow::{Context, Result};
 use colored::Colorize;
 use std::process::{Command, Stdio};
 
-/// Check if a command exists in PATH
+/// Check if a command exists in `PATH`
+#[must_use]
 pub fn which(cmd: &str) -> bool {
     Command::new("which")
         .arg(cmd)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status()
-        .map(|s| s.success())
-        .unwrap_or(false)
+        .map_or(false, |s| s.success())
 }
 
 /// Install mise tools
+///
+/// # Errors
+/// Returns error if mise command fails
 pub fn install_mise_tools() -> Result<()> {
     if !which("mise") {
         println!("   {} mise not found, skipping", "⚠".yellow());
@@ -37,6 +40,9 @@ pub fn install_mise_tools() -> Result<()> {
 }
 
 /// Set rustup default to stable (only if mise isn't managing Rust)
+///
+/// # Errors
+/// Returns error if rustup command fails
 pub fn setup_rustup() -> Result<()> {
     if !which("rustup") {
         println!("   {} rustup not found, skipping", "⚠".yellow());

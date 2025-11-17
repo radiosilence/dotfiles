@@ -11,13 +11,14 @@ use walkdir::WalkDir;
 pub const AUDIO_EXTENSIONS: &[&str] = &["wav", "aiff", "flac", "m4a", "mp3", "ogg"];
 
 /// Find audio files in directories
+#[must_use]
 pub fn find_audio_files(paths: &[PathBuf], extensions: &[&str]) -> Vec<PathBuf> {
     paths
         .iter()
         .flat_map(|path| {
             WalkDir::new(path)
                 .into_iter()
-                .filter_map(|e| e.ok())
+                .filter_map(Result::ok)
                 .filter(|e| e.file_type().is_file())
                 .filter(|e| {
                     if let Some(ext) = e.path().extension() {
@@ -33,18 +34,28 @@ pub fn find_audio_files(paths: &[PathBuf], extensions: &[&str]) -> Vec<PathBuf> 
 }
 
 /// Create a progress bar with custom style
+///
+/// # Panics
+/// Panics if the progress bar template is invalid
+#[must_use]
 pub fn create_progress_bar(total: u64) -> ProgressBar {
     let pb = ProgressBar::new(total);
     pb.set_style(
         ProgressStyle::default_bar()
             .template("{spinner:.cyan} [{bar:40.cyan/blue}] {pos}/{len} {msg}")
-            .unwrap()
+            .expect("Invalid progress bar template")
             .progress_chars("█▓░"),
     );
     pb
 }
 
 /// Convert audio file using ffmpeg
+///
+/// # Errors
+/// Returns error if ffmpeg command fails or file paths are invalid
+///
+/// # Panics
+/// Panics if input or output paths contain invalid UTF-8
 pub fn ffmpeg_convert(
     input: &Path,
     output: &Path,
@@ -53,7 +64,7 @@ pub fn ffmpeg_convert(
 ) -> Result<()> {
     let mut args = vec![
         "-i",
-        input.to_str().unwrap(),
+        input.to_str().expect("Invalid UTF-8 in input path"),
         "-c:a",
         codec,
         "-vn", // No video
@@ -61,11 +72,11 @@ pub fn ffmpeg_convert(
 
     let bitrate_str;
     if let Some(br) = bitrate {
-        bitrate_str = format!("{}k", br);
+        bitrate_str = format!("{br}k");
         args.extend(&["-b:a", &bitrate_str]);
     }
 
-    args.push(output.to_str().unwrap());
+    args.push(output.to_str().expect("Invalid UTF-8 in output path"));
 
     let status = Command::new("ffmpeg")
         .args(&args)
@@ -82,6 +93,9 @@ pub fn ffmpeg_convert(
 }
 
 /// Process files in parallel with progress tracking
+///
+/// # Errors
+/// Returns a vector of results, one per file. Failed files have error results.
 pub fn process_files_parallel<F>(files: Vec<PathBuf>, processor: F) -> Vec<Result<PathBuf>>
 where
     F: Fn(&PathBuf, &ProgressBar) -> Result<()> + Sync + Send,
@@ -109,13 +123,16 @@ where
 }
 
 /// Check if a command exists
+///
+/// # Errors
+/// Returns error if the command is not found or cannot be executed
 pub fn check_command(cmd: &str) -> Result<()> {
     Command::new(cmd)
         .arg("--version")
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
         .status()
-        .with_context(|| format!("{} not found - please install it", cmd))?;
+        .with_context(|| format!("{cmd} not found - please install it"))?;
     Ok(())
 }
 

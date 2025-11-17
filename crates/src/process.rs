@@ -2,8 +2,12 @@
 
 use anyhow::{Context, Result};
 
-/// Find process ID listening on a port using lsof
+/// Find process ID listening on a port using `lsof`
+///
 /// This is the most reliable method on macOS/Linux
+///
+/// # Errors
+/// Returns error if lsof command fails or PID cannot be parsed
 pub fn find_by_port(port: u16) -> Result<Option<u32>> {
     use std::process::Command;
 
@@ -29,13 +33,16 @@ pub fn find_by_port(port: u16) -> Result<Option<u32>> {
 }
 
 /// Kill a process by PID with optional signal
+///
+/// # Errors
+/// Returns error if kill command fails or process cannot be killed
 pub fn kill(pid: u32, signal: Option<&str>) -> Result<()> {
     use std::process::Command;
 
     let mut cmd = Command::new("kill");
 
     if let Some(sig) = signal {
-        cmd.arg(format!("-{}", sig));
+        cmd.arg(format!("-{sig}"));
     }
 
     cmd.arg(pid.to_string());
@@ -43,7 +50,7 @@ pub fn kill(pid: u32, signal: Option<&str>) -> Result<()> {
     let status = cmd.status().context("Failed to execute kill command")?;
 
     if !status.success() {
-        anyhow::bail!("Failed to kill process {}", pid);
+        anyhow::bail!("Failed to kill process {pid}");
     }
 
     Ok(())
