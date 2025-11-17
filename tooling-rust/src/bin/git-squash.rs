@@ -1,17 +1,21 @@
 //! Squash commits into a single commit for clean PR history
 
 use anyhow::{bail, Context, Result};
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Editor;
-use dotfiles_tools::completions;
 use git2::{BranchType, Repository};
+use std::io;
 
 #[derive(Parser)]
 #[command(name = "git-squash")]
 #[command(about = "Squash commits for clean PR history", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Parent branch to squash onto (default: main)
     #[arg(value_name = "PARENT", default_value = "main")]
     parent: String,
@@ -21,12 +25,22 @@ struct Args {
     dry_run: bool,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "git-squash", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     println!(
         "{}",

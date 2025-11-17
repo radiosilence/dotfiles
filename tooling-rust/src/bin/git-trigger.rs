@@ -1,27 +1,46 @@
 //! Amend and force push to trigger CI/CD
 
 use anyhow::{Context, Result};
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::completions;
 use git2::{PushOptions, Repository};
+use std::io;
 
 #[derive(Parser)]
 #[command(name = "git-trigger")]
 #[command(about = "Amend and force push to trigger CI", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Dry run - show what would be done
     #[arg(short = 'n', long)]
     dry_run: bool,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(
+            shell,
+            &mut Args::command(),
+            "git-trigger",
+            &mut io::stdout(),
+        );
         return Ok(());
     }
-
-    let args = Args::parse();
 
     println!("{}", "┌──[ GIT-TRIGGER ]─────────────┐".bright_magenta());
     println!("{}", "│  CI/CD re-trigger utility     │".bright_magenta());

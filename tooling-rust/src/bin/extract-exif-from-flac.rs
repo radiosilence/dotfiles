@@ -1,7 +1,8 @@
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::completions;
+use std::io;
 use std::path::Path;
 use std::process::Command;
 use tempfile::TempDir;
@@ -9,16 +10,34 @@ use tempfile::TempDir;
 #[derive(Parser)]
 #[command(about = "Check if FLAC embedded artwork has been stripped of EXIF data")]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// FLAC file to check
     flac_file: String,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(
+            shell,
+            &mut Args::command(),
+            "extract-exif-from-flac",
+            &mut io::stdout(),
+        );
         return Ok(());
     }
-
-    let args = Args::parse();
 
     // Check for required tools
     if !which("metaflac") {

@@ -1,19 +1,23 @@
 //! Kill process listening on specified port
 
 use anyhow::{bail, Result};
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::completions;
 use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSocketInfo};
 use nix::sys::signal::{kill, Signal};
 use nix::unistd::Pid;
 use std::collections::HashSet;
+use std::io;
 
 #[derive(Parser)]
 #[command(name = "kill-port")]
 #[command(about = "Kill process listening on specified port", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Port number to kill process on
     #[arg(value_name = "PORT")]
     port: u16,
@@ -27,12 +31,22 @@ struct Args {
     dry_run: bool,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "kill-port", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     use dotfiles_tools::banner;
     banner::print_glitch_header("KILL-PORT", "magenta");

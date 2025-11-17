@@ -1,8 +1,9 @@
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::completions;
 use rayon::prelude::*;
+use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use walkdir::WalkDir;
@@ -10,17 +11,30 @@ use walkdir::WalkDir;
 #[derive(Parser)]
 #[command(about = "Embed artwork into FLAC files")]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Directories to search (defaults to current directory)
     #[arg(default_value = ".")]
     paths: Vec<String>,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "embed-art", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_banner("EMBED-ART", "flac artwork embedder", "magenta");
 

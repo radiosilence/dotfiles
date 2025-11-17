@@ -1,22 +1,40 @@
 use anyhow::Result;
-use clap::Parser;
-use dotfiles_tools::completions;
-use std::io::Write;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
+use std::io::{self, Write};
 use std::process::Command;
 
 #[derive(Parser)]
 #[command(about = "Install terminfo to remote host via SSH")]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Remote host (e.g., user@hostname)
     host: String,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(
+            shell,
+            &mut Args::command(),
+            "install-terminfo",
+            &mut io::stdout(),
+        );
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_glitch_header("INSTALL-TERMINFO", "cyan");
     banner::status("□", "TARGET", &args.host, "cyan");

@@ -1,10 +1,11 @@
 //! Install fonts from URLs on macOS
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dotfiles_tools::banner;
-use dotfiles_tools::completions;
+use std::io;
 use std::process::Command;
 use tempfile::TempDir;
 
@@ -13,17 +14,35 @@ use tempfile::TempDir;
 #[command(about = "Install fonts from URLs", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Font archive URLs
     #[arg(value_name = "URLS", required = true)]
     urls: Vec<String>,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(
+            shell,
+            &mut Args::command(),
+            "install-font-macos",
+            &mut io::stdout(),
+        );
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_banner(
         "FONT INSTALLER",

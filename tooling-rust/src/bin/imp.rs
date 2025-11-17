@@ -3,9 +3,10 @@
 //! Downloads music archives, extracts them, and imports to beets library
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use dotfiles_tools::banner;
-use dotfiles_tools::completions;
+use std::io;
 use std::process::Command;
 use tempfile::TempDir;
 
@@ -14,17 +15,30 @@ use tempfile::TempDir;
 #[command(about = "Import music from URLs", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// URLs to download and import
     #[arg(value_name = "URLS", required = true)]
     urls: Vec<String>,
 }
 
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+}
+
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(shell, &mut Args::command(), "imp", &mut io::stdout());
         return Ok(());
     }
-
-    let args = Args::parse();
 
     banner::print_banner(
         "MUSIC IMPORTER",
