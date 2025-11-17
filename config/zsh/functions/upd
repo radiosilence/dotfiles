@@ -1,4 +1,7 @@
 upd() {
+  # update repo
+  (cd ~/.dotfiles && git pull)
+
   # Install cargo if missing
   if ! command -v cargo &>/dev/null; then
     printf "\033[33m⚠️  cargo not found, installing rustup...\033[0m\n"
