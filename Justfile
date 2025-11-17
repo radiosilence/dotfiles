@@ -1,21 +1,21 @@
 # Build and install Rust tooling to bin/
 build:
-    cd tooling-rust && cargo install --path . --root .. --force
+    cd crates && cargo install --path . --root .. --force
 
 # Quick build without install
 check:
-    cd tooling-rust && cargo build --release
+    cd crates && cargo build --release
 
 # Clean build artifacts
 clean:
-    cd tooling-rust && cargo clean
+    cd crates && cargo clean
     rm -rf bin/
     rm -f .crates.toml .crates2.json
 
 # Format code
 fmt:
-    cd tooling-rust && cargo fmt
+    cd crates && cargo fmt
 
 # Run tests
 test:
-    cd tooling-rust && cargo test
+    cd crates && cargo test --all-targets
