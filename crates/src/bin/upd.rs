@@ -455,7 +455,10 @@ fn main() -> Result<()> {
 }
 
 fn install_homebrew(mp: &MultiProgress) -> Result<()> {
-    mp.println(format!("   {} installing Homebrew...", "→".blue()))?;
+    mp.println(format!(
+        "   {} installing Homebrew / ホームブリューインストール中...",
+        "→".blue()
+    ))?;
     let status = Command::new("/bin/bash")
         .args([
             "-c",
@@ -465,10 +468,13 @@ fn install_homebrew(mp: &MultiProgress) -> Result<()> {
         .status()?;
 
     if status.success() {
-        mp.println(format!("   {} Homebrew installed", "✓".green()))?;
+        mp.println(format!(
+            "   {} Homebrew installed / ホームブリューインストール完了",
+            "✓".green()
+        ))?;
         Ok(())
     } else {
-        anyhow::bail!("Homebrew installation failed")
+        anyhow::bail!("Homebrew installation failed / ホームブリューインストール失敗")
     }
 }
 
@@ -489,16 +495,21 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
     ];
 
     for (name, url) in fonts {
-        mp.println(format!("   {} installing {} font...", "→".magenta(), name))?;
+        mp.println(format!(
+            "   {} installing {} font / {}フォントインストール中...",
+            "→".magenta(),
+            name,
+            name
+        ))?;
         let status = Command::new("install-font-macos")
             .arg(url)
             .stdout(Stdio::null())
             .status();
 
         if status.is_ok() {
-            mp.println(format!("   {} {}", "✓".green(), name))?;
+            mp.println(format!("   {} {} / 完了", "✓".green(), name))?;
         } else {
-            mp.println(format!("   {} {} (failed)", "⚠".yellow(), name))?;
+            mp.println(format!("   {} {} (failed / 失敗)", "⚠".yellow(), name))?;
         }
     }
     Ok(())
@@ -552,7 +563,10 @@ fn brew_bundle(pb: &ProgressBar) -> Result<Vec<String>> {
                 // Parse brew bundle output: "Installing foo" or "Upgrading bar"
                 if line.contains("Installing") {
                     if let Some(pkg) = line.split_whitespace().nth(1) {
-                        pb_clone.set_message(format!("brew: installing {}", pkg));
+                        pb_clone.set_message(format!(
+                            "brew / ブリュー: installing / インストール中 {}",
+                            pkg
+                        ));
                         installed_clone
                             .lock()
                             .unwrap()
@@ -560,7 +574,8 @@ fn brew_bundle(pb: &ProgressBar) -> Result<Vec<String>> {
                     }
                 } else if line.contains("Upgrading") {
                     if let Some(pkg) = line.split_whitespace().nth(1) {
-                        pb_clone.set_message(format!("brew: upgrading {}", pkg));
+                        pb_clone
+                            .set_message(format!("brew / ブリュー: upgrading / 更新中 {}", pkg));
                         installed_clone
                             .lock()
                             .unwrap()
