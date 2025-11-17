@@ -129,6 +129,38 @@ fn which(cmd: &str) -> bool {
         .unwrap_or(false)
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_which_function() {
+        // Test with a command that definitely exists
+        assert!(which("sh"));
+    }
+
+    #[test]
+    fn test_which_nonexistent() {
+        assert!(!which("this-command-absolutely-does-not-exist-xyz123"));
+    }
+
+    #[test]
+    fn test_completion_file_naming() {
+        let cmd = "docker";
+        let filename = format!("_{}", cmd);
+        assert_eq!(filename, "_docker");
+    }
+
+    #[test]
+    fn test_home_dir_path() {
+        if let Ok(home) = std::env::var("HOME") {
+            assert!(!home.is_empty());
+            let completions = format!("{}/.config/zsh/completions", home);
+            assert!(completions.contains(".config"));
+        }
+    }
+}
+
 mod banner {
     use colored::Colorize;
 

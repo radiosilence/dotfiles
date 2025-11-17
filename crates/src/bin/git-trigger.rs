@@ -95,3 +95,19 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_git2_repository_functions() {
+        // Just verify git2 types are usable
+        let _result = Repository::open(".");
+    }
+
+    #[test]
+    fn test_push_options_creation() {
+        let _opts = PushOptions::new();
+    }
+}

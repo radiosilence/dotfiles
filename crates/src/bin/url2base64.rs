@@ -166,3 +166,49 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_convert_url_format() {
+        let data = b"test data";
+        let encoded = STANDARD.encode(data);
+        let result = format!("data:image/svg+xml;base64,{}", encoded);
+
+        assert!(result.starts_with("data:image/svg+xml;base64,"));
+        assert!(result.contains(&encoded));
+    }
+
+    #[test]
+    fn test_base64_encoding() {
+        let input = b"hello world";
+        let encoded = STANDARD.encode(input);
+        assert_eq!(encoded, "aGVsbG8gd29ybGQ=");
+    }
+
+    #[test]
+    fn test_mime_type_formatting() {
+        let mime = "image/png";
+        let encoded = "abc123";
+        let result = format!("data:{};base64,{}", mime, encoded);
+        assert_eq!(result, "data:image/png;base64,abc123");
+    }
+
+    #[test]
+    fn test_empty_data() {
+        let data = b"";
+        let encoded = STANDARD.encode(data);
+        let result = format!("data:text/plain;base64,{}", encoded);
+        assert_eq!(result, "data:text/plain;base64,");
+    }
+
+    #[test]
+    fn test_binary_data_encoding() {
+        let data = vec![0u8, 255u8, 128u8, 64u8];
+        let encoded = STANDARD.encode(&data);
+        // Just verify it encodes without panicking
+        assert!(!encoded.is_empty());
+    }
+}

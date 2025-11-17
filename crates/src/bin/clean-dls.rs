@@ -82,18 +82,9 @@ fn main() -> Result<()> {
             .filter_map(|e| e.ok())
             .filter(|e| e.file_type().is_file())
         {
-            let file_name = entry.file_name().to_string_lossy().to_lowercase();
+            let file_name = entry.file_name().to_string_lossy();
 
-            if file_name == ".ds_store"
-                || file_name.ends_with(".nfo")
-                || file_name.ends_with(".txt")
-                || file_name.ends_with(".png")
-                || file_name.ends_with(".jpg")
-                || file_name.ends_with(".jpeg")
-                || file_name.ends_with(".sfv")
-                || file_name.contains("sample")
-                || file_name.starts_with("._")
-            {
+            if should_delete_file(&file_name) {
                 to_delete.push(entry.path().to_path_buf());
             }
         }
@@ -147,4 +138,88 @@ fn main() -> Result<()> {
     let _ = Command::new("prune").args(&args.paths).status();
 
     Ok(())
+}
+
+fn should_delete_file(filename: &str) -> bool {
+    let lower = filename.to_lowercase();
+    lower == ".ds_store"
+        || lower.ends_with(".nfo")
+        || lower.ends_with(".txt")
+        || lower.ends_with(".png")
+        || lower.ends_with(".jpg")
+        || lower.ends_with(".jpeg")
+        || lower.ends_with(".sfv")
+        || lower.contains("sample")
+        || lower.starts_with("._")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_should_delete_ds_store() {
+        assert!(should_delete_file(".DS_Store"));
+        assert!(should_delete_file(".ds_store"));
+    }
+
+    #[test]
+    fn test_should_delete_nfo() {
+        assert!(should_delete_file("readme.nfo"));
+        assert!(should_delete_file("README.NFO"));
+    }
+
+    #[test]
+    fn test_should_delete_txt() {
+        assert!(should_delete_file("readme.txt"));
+        assert!(should_delete_file("info.TXT"));
+    }
+
+    #[test]
+    fn test_should_delete_images() {
+        assert!(should_delete_file("cover.png"));
+        assert!(should_delete_file("image.jpg"));
+        assert!(should_delete_file("photo.jpeg"));
+        assert!(should_delete_file("COVER.PNG"));
+    }
+
+    #[test]
+    fn test_should_delete_sfv() {
+        assert!(should_delete_file("checksums.sfv"));
+        assert!(should_delete_file("file.SFV"));
+    }
+
+    #[test]
+    fn test_should_delete_sample() {
+        assert!(should_delete_file("sample.mp3"));
+        assert!(should_delete_file("track-sample.flac"));
+        assert!(should_delete_file("SAMPLE.WAV"));
+    }
+
+    #[test]
+    fn test_should_delete_resource_fork() {
+        assert!(should_delete_file("._file.txt"));
+        assert!(should_delete_file("._Document.pdf"));
+    }
+
+    #[test]
+    fn test_should_not_delete_music() {
+        assert!(!should_delete_file("song.mp3"));
+        assert!(!should_delete_file("track.flac"));
+        assert!(!should_delete_file("audio.wav"));
+    }
+
+    #[test]
+    fn test_should_not_delete_normal_files() {
+        assert!(!should_delete_file("document.pdf"));
+        assert!(!should_delete_file("script.sh"));
+        assert!(!should_delete_file("config.json"));
+    }
+
+    #[test]
+    fn test_case_insensitive() {
+        assert!(should_delete_file("README.NFO"));
+        assert!(should_delete_file("Info.TxT"));
+        assert!(should_delete_file("SAMPLE-track.mp3"));
+    }
 }

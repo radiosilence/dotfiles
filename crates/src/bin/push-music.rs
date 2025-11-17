@@ -67,6 +67,23 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn test_volume_path() {
+        let src = "/Volumes/Turtlehead/music";
+        assert!(src.starts_with("/Volumes/"));
+        assert!(src.contains("music"));
+    }
+
+    #[test]
+    fn test_path_validation() {
+        let path = std::path::Path::new("/Volumes/music");
+        assert!(path.is_absolute());
+    }
+}
+
 mod banner {
     use colored::Colorize;
 

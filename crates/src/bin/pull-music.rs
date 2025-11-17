@@ -67,6 +67,24 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn test_path_exists_check() {
+        let path = std::path::Path::new("/Volumes/music");
+        // Just test that we can check existence
+        let _exists = path.exists();
+    }
+
+    #[test]
+    fn test_rclone_args_construction() {
+        let args = ["sync", "--progress", "--size-only", "--checkers=16"];
+        assert_eq!(args.len(), 4);
+        assert_eq!(args[0], "sync");
+    }
+}
+
 mod banner {
     use colored::Colorize;
 

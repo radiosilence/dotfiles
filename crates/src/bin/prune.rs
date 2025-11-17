@@ -226,3 +226,77 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_format_size_bytes() {
+        assert_eq!(format_size(0), "0 B");
+        assert_eq!(format_size(512), "512 B");
+        assert_eq!(format_size(1023), "1023 B");
+    }
+
+    #[test]
+    fn test_format_size_kb() {
+        assert_eq!(format_size(1024), "1.00 KB");
+        assert_eq!(format_size(2048), "2.00 KB");
+        assert_eq!(format_size(1536), "1.50 KB");
+    }
+
+    #[test]
+    fn test_format_size_mb() {
+        assert_eq!(format_size(1024 * 1024), "1.00 MB");
+        assert_eq!(format_size(2 * 1024 * 1024), "2.00 MB");
+        assert_eq!(format_size(1536 * 1024), "1.50 MB");
+    }
+
+    #[test]
+    fn test_format_size_gb() {
+        assert_eq!(format_size(1024 * 1024 * 1024), "1.00 GB");
+        assert_eq!(format_size(2 * 1024 * 1024 * 1024), "2.00 GB");
+        assert_eq!(format_size(1536 * 1024 * 1024), "1.50 GB");
+    }
+
+    #[test]
+    fn test_get_dir_size_empty() {
+        let temp_dir = TempDir::new().unwrap();
+        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        assert_eq!(size, 0);
+    }
+
+    #[test]
+    fn test_get_dir_size_with_file() {
+        let temp_dir = TempDir::new().unwrap();
+        let file_path = temp_dir.path().join("test.txt");
+        fs::write(&file_path, "hello world").unwrap();
+
+        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        assert_eq!(size, 11); // "hello world" is 11 bytes
+    }
+
+    #[test]
+    fn test_get_dir_size_multiple_files() {
+        let temp_dir = TempDir::new().unwrap();
+        fs::write(temp_dir.path().join("file1.txt"), "12345").unwrap();
+        fs::write(temp_dir.path().join("file2.txt"), "67890").unwrap();
+
+        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        assert_eq!(size, 10); // 5 + 5 bytes
+    }
+
+    #[test]
+    fn test_get_dir_size_nested() {
+        let temp_dir = TempDir::new().unwrap();
+        let nested = temp_dir.path().join("nested");
+        fs::create_dir(&nested).unwrap();
+        fs::write(temp_dir.path().join("root.txt"), "abc").unwrap();
+        fs::write(nested.join("nested.txt"), "def").unwrap();
+
+        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        assert_eq!(size, 6); // 3 + 3 bytes
+    }
+}

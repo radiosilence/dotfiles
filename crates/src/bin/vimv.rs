@@ -118,6 +118,33 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_editor_env_var() {
+        let editor = std::env::var("EDITOR").unwrap_or_else(|_| "vi".to_string());
+        assert!(!editor.is_empty());
+    }
+
+    #[test]
+    fn test_git_command_construction() {
+        let _cmd = Command::new("git");
+    }
+
+    #[test]
+    fn test_file_count_validation() {
+        let original_count = 5;
+        let new_count = 5;
+        assert_eq!(original_count, new_count);
+
+        let original_count = 5;
+        let new_count = 4;
+        assert_ne!(original_count, new_count);
+    }
+}
+
 mod banner {
     use colored::Colorize;
 

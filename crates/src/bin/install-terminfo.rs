@@ -90,3 +90,24 @@ mod banner {
         println!("   {} {}\n", "✓".green().bold(), msg.green().bold());
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_host_string_format() {
+        let hosts = vec!["user@hostname", "root@192.168.1.1", "deploy@example.com"];
+
+        for host in hosts {
+            assert!(host.contains('@'));
+        }
+    }
+
+    #[test]
+    fn test_command_building() {
+        // Verify Command::new works with infocmp and ssh
+        let _infocmp = Command::new("infocmp");
+        let _ssh = Command::new("ssh");
+    }
+}

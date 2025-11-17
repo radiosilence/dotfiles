@@ -257,3 +257,56 @@ mod banner {
         );
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_find_image_first_match() {
+        let temp_dir = TempDir::new().unwrap();
+        let cover_path = temp_dir.path().join("cover.jpg");
+        fs::write(&cover_path, b"fake image").unwrap();
+
+        let result = find_image(temp_dir.path(), &["cover.jpg", "folder.jpg"]);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), cover_path);
+    }
+
+    #[test]
+    fn test_find_image_second_match() {
+        let temp_dir = TempDir::new().unwrap();
+        let folder_path = temp_dir.path().join("folder.jpg");
+        fs::write(&folder_path, b"fake image").unwrap();
+
+        let result = find_image(temp_dir.path(), &["cover.jpg", "folder.jpg"]);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), folder_path);
+    }
+
+    #[test]
+    fn test_find_image_none() {
+        let temp_dir = TempDir::new().unwrap();
+        let result = find_image(temp_dir.path(), &["cover.jpg", "folder.jpg"]);
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_find_image_wrong_name() {
+        let temp_dir = TempDir::new().unwrap();
+        let album_path = temp_dir.path().join("album.jpg");
+        fs::write(&album_path, b"fake image").unwrap();
+
+        // Should not match because we're looking for different names
+        let result = find_image(temp_dir.path(), &["cover.jpg", "folder.jpg"]);
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_which_command() {
+        // Test that which works with common commands
+        assert!(which("ls") || which("dir")); // Should exist on any system
+    }
+}
