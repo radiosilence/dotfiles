@@ -58,7 +58,6 @@ fn main() -> Result<()> {
             // Extract branch name (first word after optional *)
             let branch = line
                 .trim_start_matches('*')
-                .trim()
                 .split_whitespace()
                 .next()
                 .unwrap_or("")

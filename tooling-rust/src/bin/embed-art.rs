@@ -45,7 +45,7 @@ fn main() -> Result<()> {
     let flac_files: Vec<PathBuf> = args
         .paths
         .iter()
-        .flat_map(|p| WalkDir::new(p))
+        .flat_map(WalkDir::new)
         .filter_map(|e| e.ok())
         .filter(|e| {
             e.path()
