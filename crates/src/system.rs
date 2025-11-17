@@ -5,12 +5,7 @@ use std::process::{Command, Stdio};
 /// Check if a command exists in `PATH`
 #[must_use]
 pub fn which(cmd: &str) -> bool {
-    Command::new("which")
-        .arg(cmd)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-        .is_ok_and(|s| s.success())
+    which::which(cmd).is_ok()
 }
 
 /// Install mise tools

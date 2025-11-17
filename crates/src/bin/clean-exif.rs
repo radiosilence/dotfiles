@@ -6,7 +6,7 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::audio;
+use dotfiles_tools::{audio, parallel};
 use img_parts::jpeg::Jpeg;
 use img_parts::png::Png;
 use img_parts::{Bytes, ImageEXIF};
@@ -95,7 +95,7 @@ fn main() -> Result<()> {
     println!("{} Scanning for images...", "→".bright_yellow().bold());
 
     let extensions = ["jpg", "jpeg", "png"];
-    let files = audio::find_audio_files(&args.paths, &extensions);
+    let files = parallel::find_files(&args.paths, &extensions);
 
     if files.is_empty() {
         println!("{} No image files found", "!".yellow().bold());

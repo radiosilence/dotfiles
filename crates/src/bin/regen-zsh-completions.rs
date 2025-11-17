@@ -1,10 +1,10 @@
 use anyhow::Result;
 use colored::Colorize;
+use dotfiles_tools::{banner, system};
 use rayon::prelude::*;
 use std::fs;
 use std::process::Command;
 use std::sync::Mutex;
-use dotfiles_tools::banner;
 
 fn main() -> Result<()> {
     banner::print_banner(
@@ -79,19 +79,19 @@ fn main() -> Result<()> {
         "nano-web",
     ];
     for cmd in tools {
-        if which(cmd) {
+        if system::which(cmd) {
             tasks.push((cmd, vec!["completion", "zsh"]));
         }
     }
 
     // Special cases
-    if which("gh") {
+    if system::which("gh") {
         tasks.push(("gh", vec!["completion", "-s", "zsh"]));
     }
-    if which("task") {
+    if system::which("task") {
         tasks.push(("task", vec!["--completion", "zsh"]));
     }
-    if which("aws-vault") {
+    if system::which("aws-vault") {
         tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
     }
 
@@ -109,7 +109,7 @@ fn main() -> Result<()> {
         }
     });
 
-    if which("terraform") {
+    if system::which("terraform") {
         println!("   {} terraform (configured via terraform.zsh)", "→".cyan());
     }
 
@@ -118,46 +118,4 @@ fn main() -> Result<()> {
     println!("   {} Restart shell: exec zsh\n", "ℹ".blue());
 
     Ok(())
-}
-
-fn which(cmd: &str) -> bool {
-    Command::new("which")
-        .arg(cmd)
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .status()
-        .map(|s| s.success())
-        .unwrap_or(false)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_which_function() {
-        // Test with a command that definitely exists
-        assert!(which("sh"));
-    }
-
-    #[test]
-    fn test_which_nonexistent() {
-        assert!(!which("this-command-absolutely-does-not-exist-xyz123"));
-    }
-
-    #[test]
-    fn test_completion_file_naming() {
-        let cmd = "docker";
-        let filename = format!("_{}", cmd);
-        assert_eq!(filename, "_docker");
-    }
-
-    #[test]
-    fn test_home_dir_path() {
-        if let Ok(home) = std::env::var("HOME") {
-            assert!(!home.is_empty());
-            let completions = format!("{}/.config/zsh/completions", home);
-            assert!(completions.contains(".config"));
-        }
-    }
 }

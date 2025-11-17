@@ -6,23 +6,30 @@ use rayon::prelude::*;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 
-/// Find files matching patterns and process in parallel
-///
-/// # Errors
-/// Returns error if directory traversal fails. Individual file processing errors are in the result vector.
+/// Create a progress bar with custom style
 ///
 /// # Panics
 /// Panics if the progress bar template is invalid
-pub fn process_files<F>(
-    paths: &[PathBuf],
-    extensions: &[&str],
-    processor: F,
-) -> Result<Vec<Result<()>>>
-where
-    F: Fn(&PathBuf) -> Result<()> + Send + Sync,
-{
-    // Collect all matching files
-    let files: Vec<PathBuf> = paths
+#[must_use]
+pub fn create_progress_bar(total: u64) -> ProgressBar {
+    let pb = ProgressBar::new(total);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("{spinner:.cyan} [{bar:40.cyan/blue}] {pos}/{len} {msg}")
+            .expect("Invalid progress bar template")
+            .progress_chars("█▓░"),
+    );
+    pb
+}
+
+/// Find files matching extension patterns in given paths
+///
+/// # Arguments
+/// * `paths` - Directories to search
+/// * `extensions` - File extensions to match (case-insensitive)
+#[must_use]
+pub fn find_files(paths: &[PathBuf], extensions: &[&str]) -> Vec<PathBuf> {
+    paths
         .iter()
         .flat_map(|path| {
             WalkDir::new(path)
@@ -39,7 +46,25 @@ where
                 })
                 .map(|e| e.path().to_path_buf())
         })
-        .collect();
+        .collect()
+}
+
+/// Find files matching patterns and process in parallel
+///
+/// # Errors
+/// Returns error if directory traversal fails. Individual file processing errors are in the result vector.
+///
+/// # Panics
+/// Panics if the progress bar template is invalid
+pub fn process_files<F>(
+    paths: &[PathBuf],
+    extensions: &[&str],
+    processor: F,
+) -> Result<Vec<Result<()>>>
+where
+    F: Fn(&PathBuf) -> Result<()> + Send + Sync,
+{
+    let files = find_files(paths, extensions);
 
     if files.is_empty() {
         return Ok(vec![]);
