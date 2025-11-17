@@ -51,11 +51,9 @@ pub fn kill(pid: u32, signal: Option<&str>) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn test_port_range() {
-        assert!(1024 < u16::MAX);
-        assert!(65535 == u16::MAX);
+        // Just verify u16::MAX is what we expect for port calculations
+        assert_eq!(65535, u16::MAX);
     }
 }

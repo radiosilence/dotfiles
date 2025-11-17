@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
+use dotfiles_tools::completions;
 use rayon::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
