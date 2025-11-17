@@ -1,0 +1,66 @@
+name: Rust Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "tooling-rust/**"
+      - ".github/workflows/rust-tests.yml"
+  pull_request:
+    paths:
+      - "tooling-rust/**"
+      - ".github/workflows/rust-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
+
+      - name: Cache cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-index-
+
+      - name: Cache target directory
+        uses: actions/cache@v4
+        with:
+          path: tooling-rust/target
+          key: ${{ runner.os }}-target-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-target-
+
+      - name: Check formatting
+        run: cargo fmt --check
+        working-directory: tooling-rust
+
+      - name: Run clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+        working-directory: tooling-rust
+
+      - name: Build
+        run: cargo build --verbose
+        working-directory: tooling-rust
+
+      - name: Run tests
+        run: cargo test --verbose
+        working-directory: tooling-rust

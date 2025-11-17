@@ -147,4 +147,7 @@ install_sshconfig
 install_gitconfig
 install_sheldon_plugins
 
-cd - > /dev/null || exit
+# Return to original directory if OLDPWD is set
+if [ -n "$OLDPWD" ]; then
+  cd - > /dev/null || true
+fi
