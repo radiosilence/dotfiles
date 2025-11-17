@@ -236,18 +236,16 @@ cask 'focusrite-control', greedy: true
 
 cask 'altair-graphql-client', greedy: true
 
+cask_args require_sha: true
+
+cask '1password', greedy: true
+cask 'slack', greedy: true
+cask 'telegram', greedy: true
+cask 'whatsapp', greedy: true
+
 # =============================================================================
 # MAC APP STORE
 # =============================================================================
 
-cask_args require_sha: true
-
-# Replaced mas with casks (mas is buggy)
-cask '1password'
-cask 'slack'
-cask 'telegram'
-cask 'whatsapp'
-
-# No cask alternatives available
 mas 'Adobe Lightroom', id: 1_451_544_217
 mas 'Infuse', id: 1_136_220_934
