@@ -44,15 +44,8 @@ fn main() -> Result<()> {
     );
     println!();
 
-    // Patterns to delete
-    let patterns = vec![
-        ".DS_Store",
-        "*.nfo",
-        "*.txt",
-        "*.sfv",
-        "*sample*",
-        "._*", // macOS resource forks
-    ];
+    // Patterns to delete (matches original bash script behavior)
+    let patterns = ["*.nfo", "*.txt", "*.png", "*.jpg", "*.sfv"];
 
     println!("{} Scanning for garbage files...", "→".bright_red().bold());
     println!(
