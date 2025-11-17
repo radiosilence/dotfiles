@@ -1,5 +1,5 @@
 use anyhow::Result;
-use clap::Parser;
+use clap::{Parser, Subcommand};
 use colored::Colorize;
 use dotfiles_tools::{completions, system::which};
 use std::process::{Command, Stdio};
@@ -10,14 +10,28 @@ use std::thread;
 #[command(name = "upd")]
 #[command(about = "Parallel system update orchestrator", long_about = None)]
 #[command(version)]
-struct Args {}
+struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        /// Shell to generate completions for
+        #[arg(value_enum)]
+        shell: completions::CompletionShell,
+    },
+}
 
 fn main() -> Result<()> {
-    if completions::handle_completion_flag::<Args>() {
+    let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        completions::generate_completions::<Args>(shell);
         return Ok(());
     }
-
-    let _args = Args::parse();
 
     banner::print_banner("SYSTEM UPDATE", "idempotent system orchestrator", "blue");
 

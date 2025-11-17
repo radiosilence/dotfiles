@@ -1,9 +1,35 @@
 use anyhow::Result;
+use clap::{Parser, Subcommand};
+use dotfiles_tools::completions;
 use std::fs;
 use std::process::Command;
 use tempfile::TempDir;
 
+#[derive(Parser)]
+#[command(name = "prune-gen")]
+#[command(about = "Generate test directory structure", long_about = None)]
+struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completions {
+        #[arg(value_enum)]
+        shell: completions::CompletionShell,
+    },
+}
+
 fn main() -> Result<()> {
+    let args = Args::parse();
+
+    if let Some(Commands::Completions { shell }) = args.command {
+        completions::generate_completions::<Args>(shell);
+        return Ok(());
+    }
+
     banner::print_glitch_header("PRUNE-GEN", "yellow");
     banner::status("□", "ACTION", "generating test structure", "yellow");
 
