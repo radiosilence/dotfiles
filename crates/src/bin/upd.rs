@@ -393,49 +393,44 @@ fn main() -> Result<()> {
         let _ = handle.join();
     }
 
-    mp.suspend(|| {
-        banner::divider("cyan");
+    // Clear MultiProgress to remove all spinners and return to normal output
+    mp.clear()?;
 
-        // Generate completions (after everything is updated)
-        if has_regen {
-            banner::status(
-                "□",
-                &format!("PHASE {}", phase + 1),
-                "zsh completions",
-                "green",
-            );
-        }
-    });
+    banner::divider("cyan");
 
+    // Generate completions (after everything is updated)
     if has_regen {
+        banner::status(
+            "□",
+            &format!("PHASE {}", phase + 1),
+            "zsh completions",
+            "green",
+        );
         dotfiles_tools::regen_completions::regenerate_completions()?;
-        mp.println(format!("   {} completions regenerated", "✓".green()))
-            .unwrap();
+        println!("   {} completions regenerated", "✓".green());
     }
+
+    banner::divider("cyan");
 
     // Print results
     let results = results.lock().unwrap().clone();
-    mp.suspend(|| {
-        banner::divider("cyan");
+    for (name, ok, duration) in &results {
+        let status = if *ok { "✓".green() } else { "✗".red() };
+        println!("   {} {} ({:.1}s)", status, name, duration);
+    }
 
-        for (name, ok, duration) in &results {
-            let status = if *ok { "✓".green() } else { "✗".red() };
-            println!("   {} {} ({:.1}s)", status, name, duration);
-        }
+    banner::divider("cyan");
+    banner::success("SYSTEM UPDATE COMPLETE");
 
-        banner::divider("cyan");
-        banner::success("SYSTEM UPDATE COMPLETE");
+    // Print summary
+    let success_count = results.iter().filter(|(_, ok, _)| *ok).count();
+    let total_count = results.len();
 
-        // Print summary
-        let success_count = results.iter().filter(|(_, ok, _)| *ok).count();
-        let total_count = results.len();
-
-        println!(
-            "\n   {} UPDATED  {} FAILED\n",
-            success_count.to_string().green().bold(),
-            (total_count - success_count).to_string().red().bold()
-        );
-    });
+    println!(
+        "\n   {} UPDATED  {} FAILED\n",
+        success_count.to_string().green().bold(),
+        (total_count - success_count).to_string().red().bold()
+    );
 
     Ok(())
 }
@@ -603,16 +598,19 @@ fn update_brew() -> Result<()> {
     Command::new("brew")
         .arg("update")
         .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()?;
 
     Command::new("brew")
         .arg("upgrade")
         .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()?;
 
     Command::new("brew")
         .arg("cleanup")
         .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()?;
 
     Ok(())
@@ -643,6 +641,7 @@ fn update_yt_dlp() -> Result<()> {
     Command::new("yt-dlp")
         .args(["--update-to", "nightly"])
         .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()?;
     Ok(())
 }
