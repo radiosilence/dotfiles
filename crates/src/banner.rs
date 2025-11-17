@@ -17,21 +17,27 @@ fn colorize_text_bold(text: &str, color: &str) -> ColoredString {
     colorize_text(text, color).bold()
 }
 
-/// Cyberpunk-styled banner with glitch aesthetic
+/// Cyberpunk-styled banner with glitch aesthetic - dynamically sized
 pub fn print_banner(title: &str, subtitle: &str, color: &str) {
+    // Calculate width needed - account for "        " prefix and "[v1.0]" suffix
+    let title_display = format!("        {}  [v1.0]", title.to_uppercase());
+    let subtitle_display = format!("        {}", subtitle);
+    let max_width = title_display
+        .chars()
+        .count()
+        .max(subtitle_display.chars().count());
+    let border_width = max_width.max(50); // Minimum 50 chars
+
     println!();
     println!(
         "{}",
-        colorize_text_bold("   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄", color)
+        colorize_text_bold(&format!("   {}", "▄".repeat(border_width)), color)
     );
     println!(
         "{}",
-        colorize_text_bold(
-            "  ████▌▄▌▄▐▐▌█████▌▄▌▄▐▐▌▀███▄█▌▄▌▄▐▐▌██████▌▄▌▄▐▐▌█▄",
-            color
-        )
+        colorize_text_bold(&format!("  {}", "█".repeat(border_width)), color)
     );
-    println!("   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
+    println!("   {}", "▀".repeat(border_width));
     println!();
     println!(
         "        {}  {}",
@@ -42,7 +48,7 @@ pub fn print_banner(title: &str, subtitle: &str, color: &str) {
     println!();
     println!(
         "{}",
-        colorize_text_bold("   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀", color)
+        colorize_text_bold(&format!("   {}", "▀".repeat(border_width)), color)
     );
     println!();
 }
