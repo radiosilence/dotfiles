@@ -243,11 +243,6 @@ cask 'altair-graphql-client', greedy: true
 cask_args require_sha: true
 
 # Replaced mas with casks (mas is buggy)
-# If you have these installed via mas, uninstall first:
-#   mas uninstall 1569813296  # 1Password for Safari
-#   mas uninstall 803453959   # Slack
-#   mas uninstall 747648890   # Telegram
-#   mas uninstall 310633997   # WhatsApp
 cask '1password'
 cask 'slack'
 cask 'telegram'
