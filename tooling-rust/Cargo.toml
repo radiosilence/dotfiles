@@ -7,6 +7,14 @@ license = "MIT"
 
 # Multiple binaries in one package
 [[bin]]
+name = "install"
+path = "src/bin/install.rs"
+
+[[bin]]
+name = "setup-macos"
+path = "src/bin/setup-macos.rs"
+
+[[bin]]
 name = "kill-port"
 path = "src/bin/kill-port.rs"
 

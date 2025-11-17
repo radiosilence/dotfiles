@@ -127,12 +127,11 @@ mod tests {
     fn test_audio_extensions() {
         assert!(AUDIO_EXTENSIONS.contains(&"flac"));
         assert!(AUDIO_EXTENSIONS.contains(&"wav"));
-        assert!(!AUDIO_EXTENSIONS.is_empty());
     }
 
     #[test]
     fn test_extension_matching() {
-        let extensions = vec!["flac", "wav"];
-        assert!(extensions.iter().any(|&x| x == "flac"));
+        let extensions = ["flac", "wav"];
+        assert!(extensions.contains(&"flac"));
     }
 }
