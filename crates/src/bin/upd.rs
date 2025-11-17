@@ -427,6 +427,16 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
 
     let mut installed = Vec::new();
 
+    // Spawn thread to consume and discard stderr
+    if let Some(stderr) = child.stderr.take() {
+        thread::spawn(move || {
+            let reader = BufReader::new(stderr);
+            for _ in reader.lines().map_while(Result::ok) {
+                // Silently discard stderr
+            }
+        });
+    }
+
     if let Some(stdout) = child.stdout.take() {
         let reader = BufReader::new(stdout);
         for line in reader.lines().map_while(Result::ok) {
