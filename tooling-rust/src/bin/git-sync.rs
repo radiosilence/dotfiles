@@ -5,6 +5,7 @@
 
 use anyhow::{Context, Result};
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use dialoguer::Confirm;
 use std::process::Command;
@@ -20,6 +21,10 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     println!("{}", "═══════════════════════════════════".bright_yellow());

@@ -36,6 +36,7 @@
 - Balance DRY (Don't Repeat Yourself) with WET (Write Everything Twice) principles
 - Prioritize concise but readable code over verbose clarity
 - Suggest tests for complex logic, edge cases, and critical paths
+- **NEVER allow clippy warnings or compiler warnings** - always fix them immediately
 
 #### GitHub Workflow
 

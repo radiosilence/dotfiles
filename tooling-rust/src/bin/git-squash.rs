@@ -4,6 +4,7 @@
 
 use anyhow::{bail, Context, Result};
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use dialoguer::Editor;
 use git2::{BranchType, Repository};
@@ -23,6 +24,10 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     println!(

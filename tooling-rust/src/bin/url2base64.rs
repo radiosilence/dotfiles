@@ -6,6 +6,7 @@
 use anyhow::{Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine};
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
@@ -51,6 +52,10 @@ fn convert_url(client: &Client, url: &str, mime_type: &str) -> Result<String> {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     println!(

@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
+use dotfiles_tools::completions;
 use colored::Colorize;
 use rayon::prelude::*;
 use std::path::{Path, PathBuf};
@@ -15,6 +16,10 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    if completions::handle_completion_flag::<Args>() {
+        return Ok(());
+    }
+
     let args = Args::parse();
 
     banner::print_banner("EMBED-ART", "flac artwork embedder", "magenta");
