@@ -126,8 +126,10 @@ mod tests {
 
     #[test]
     fn test_url_vec() {
-        let urls = ["https://example.com/file1.zip".to_string(),
-            "https://example.com/file2.zip".to_string()];
+        let urls = [
+            "https://example.com/file1.zip".to_string(),
+            "https://example.com/file2.zip".to_string(),
+        ];
         assert_eq!(urls.len(), 2);
     }
 }

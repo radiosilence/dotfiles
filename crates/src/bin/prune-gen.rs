@@ -1,11 +1,11 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
+use dotfiles_tools::banner;
 use std::fs;
 use std::io;
 use std::process::Command;
 use tempfile::TempDir;
-use dotfiles_tools::banner;
 
 #[derive(Parser)]
 #[command(name = "prune-gen")]
