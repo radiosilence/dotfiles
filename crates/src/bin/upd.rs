@@ -5,7 +5,7 @@ use colored::Colorize;
 use dotfiles_tools::banner;
 use dotfiles_tools::system::which;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use std::io;
+use std::io::{self, BufRead, BufReader};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -255,7 +255,11 @@ fn main() -> Result<()> {
         let results = results.clone();
         handles.push(thread::spawn(move || {
             let start = std::time::Instant::now();
-            let bundle_result = if has_brewfile { brew_bundle() } else { Ok(()) };
+            let bundle_result = if has_brewfile {
+                brew_bundle().map(|_| ())
+            } else {
+                Ok(())
+            };
             let update_result = if bundle_result.is_ok() {
                 update_brew()
             } else {
@@ -397,16 +401,40 @@ fn install_fonts() -> Result<()> {
     Ok(())
 }
 
-fn brew_bundle() -> Result<()> {
+fn brew_bundle() -> Result<Vec<String>> {
     let home = std::env::var("HOME")?;
-    let _output = Command::new("brew")
+    let mut child = Command::new("brew")
         .arg("bundle")
+        .arg("--verbose")
         .current_dir(&home)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()?;
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()?;
 
-    Ok(())
+    let mut installed = Vec::new();
+
+    if let Some(stdout) = child.stdout.take() {
+        let reader = BufReader::new(stdout);
+        for line in reader.lines().map_while(Result::ok) {
+            // Parse brew bundle output: "Installing foo" or "Upgrading bar"
+            if line.contains("Installing") {
+                if let Some(pkg) = line.split_whitespace().nth(1) {
+                    installed.push(format!("installed {}", pkg));
+                }
+            } else if line.contains("Upgrading") {
+                if let Some(pkg) = line.split_whitespace().nth(1) {
+                    installed.push(format!("upgraded {}", pkg));
+                }
+            }
+        }
+    }
+
+    let status = child.wait()?;
+    if !status.success() {
+        anyhow::bail!("brew bundle failed");
+    }
+
+    Ok(installed)
 }
 
 fn update_apt() -> Result<()> {
