@@ -6,43 +6,24 @@ set -e
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "🚀 Dotfiles Bootstrap"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+printf "\033[34m🚀 Dotfiles Bootstrap\033[0m\n"
 
 # Check if we have cargo/rust already
-if command -v cargo >/dev/null 2>&1; then
-  echo "✓ Rust/Cargo found, building and running upd..."
-  cd "$DOTFILES_DIR/crates"
-  cargo build --release --bin upd
-  cp target/release/upd "$DOTFILES_DIR/bin/upd"
-  cd "$DOTFILES_DIR"
-  exec "$DOTFILES_DIR/bin/upd" "$@"
+if ! command -v cargo >/dev/null 2>&1; then
+  printf "\033[33m→ Rust not found, installing rustup...\033[0m\n"
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+  . "$HOME/.cargo/env"
+  printf "\033[32m✓ Rust installed\033[0m\n"
 fi
 
-# Bootstrap mode - install Rust first
-echo "→ Rust not found, installing rustup..."
-echo ""
-
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
-
-# Source cargo env
-. "$HOME/.cargo/env"
-
-echo ""
-echo "✓ Rust installed"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "→ Building upd..."
-echo ""
-
+# Build all binaries
+printf "\033[35m→ Building Rust binaries...\033[0m\n"
 cd "$DOTFILES_DIR/crates"
-cargo build --release --bin upd
-cp target/release/upd "$DOTFILES_DIR/bin/upd"
+cargo build --release --bins
 
-echo ""
-echo "✓ upd built"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "→ Running bootstrap..."
-echo ""
+# Copy binaries to bin/
+mkdir -p "$DOTFILES_DIR/bin"
+find target/release -maxdepth 1 -type f -executable ! -name "*.*" ! -name ".*" -exec cp {} "$DOTFILES_DIR/bin/" \;
 
-cd "$DOTFILES_DIR"
-exec "$DOTFILES_DIR/bin/upd" "$@"
+printf "\033[32m✓ Binaries built and installed to ~/.dotfiles/bin\033[0m\n"
+printf "\033[36m\n→ Run 'upd' to complete setup\033[0m\n"
