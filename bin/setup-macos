@@ -31,7 +31,7 @@ if ! using brew; then
     echo "Error: Homebrew installation failed"
     exit 1
   fi
-  
+
   # Add Homebrew to PATH for this session
   if [ -f /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -79,7 +79,7 @@ if using zsh; then
   else
     zsh_path="$(which zsh)"
   fi
-  
+
   # Ensure zsh is in shells and set as default shell if not already
   if ! grep -q "$zsh_path" /etc/shells; then
     echo "Adding zsh ($zsh_path) to /etc/shells..."
@@ -120,6 +120,18 @@ if using install-font-macos; then
   fi
 else
   echo "Warning: install-font-macos not found, skipping font installation"
+fi
+
+# Build Rust tooling if cargo is available
+if using cargo; then
+  if [ -d "$DIRNAME/../tooling-rust" ]; then
+    echo "Building Rust tooling..."
+    if ! (cd "$DIRNAME/../tooling-rust" && cargo install --path . --root .. --force --quiet); then
+      echo "Warning: Rust tooling build failed"
+    fi
+  fi
+else
+  echo "Info: cargo not found, Rust tooling will be built on first upd run"
 fi
 
 echo ""
