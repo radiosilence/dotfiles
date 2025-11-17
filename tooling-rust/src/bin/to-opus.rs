@@ -1,11 +1,9 @@
 //! Convert audio files to Opus format in parallel
-//!
-//! Wraps ffmpeg with Rust's rayon for proper parallel processing and progress tracking.
 
 use anyhow::Result;
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
+use dotfiles_tools::completions;
 use dotfiles_tools::{audio, banner};
 use std::path::PathBuf;
 

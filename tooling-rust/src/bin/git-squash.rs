@@ -1,12 +1,10 @@
 //! Squash commits into a single commit for clean PR history
-//!
-//! Uses git2 library natively instead of shelling out to git commands.
 
 use anyhow::{bail, Context, Result};
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
 use dialoguer::Editor;
+use dotfiles_tools::completions;
 use git2::{BranchType, Repository};
 
 #[derive(Parser)]

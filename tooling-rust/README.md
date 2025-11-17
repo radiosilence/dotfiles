@@ -1,160 +1,74 @@
 # Rust Tooling
 
-High-performance replacements for shell scripts with cyberpunk aesthetic.
+Rewrites of bash scripts with cyberpunk aesthetic. Faster, handles errors better.
 
 ## Why Rust?
 
-- **Type safety** - No unbound variable errors
-- **Performance** - Native parallelism, compiled speed
-- **Error handling** - Proper error types with context
-- **Cross-platform** - Works on Linux/macOS
-- **Testing** - Unit and integration tests built in
+Type safety, native parallelism, better error handling. Shell scripts were hitting limits.
 
 ## Building
 
-Requires Rust 1.70+:
-
 ```bash
-# Build all tools
 cd tooling-rust
 cargo build --release
 
 # Install to ../bin/
 just install
-
-# Or build+install in one go
-just
 ```
 
-## Implemented Tools
+## Tools
 
-### Process Management
-- **kill-port** - Kill process listening on port (native lsof integration)
+### Process
 
-### File Management  
-- **prune** - Find and delete small directories (with size preview)
+- **kill-port** - Kill process on port
+- **upd** - System update orchestrator
 
-### Git Utilities
-- **git-sync** - Clean up merged branches (native git2 library)
-- **git-squash** - Squash commits for PRs (native git2, interactive editor)
-- **git-trigger** - Amend + force push to trigger CI
+### Files
+
+- **prune** - Delete small directories
+- **clean-dls** - Remove scene release garbage
+- **clean-exif** - Strip EXIF from images
+- **vimv** - Batch rename with editor
+
+### Git
+
+- **git-sync** - Clean merged branches
+- **git-squash** - Squash commits
+- **git-trigger** - Amend + force push
 - **git-update** - Alias for git-trigger
 
-### Audio Tools
-- **to-opus** - Convert audio to Opus (parallel ffmpeg wrapper)
-- **to-flac** - Convert audio to FLAC (parallel ffmpeg wrapper)
-- **clean-exif** - Strip EXIF metadata from images (privacy protection)
+### Audio
 
-### Utilities
-- **url2base64** - Convert URLs to base64 data URLs (async HTTP with reqwest)
-- **clean-dls** - Remove scene release garbage files
+- **to-opus** - Convert to Opus
+- **to-flac** - Convert to FLAC
+- **embed-art** - Embed album art in FLAC
+- **imp** - Import music archives
+
+### Misc
+
+- **url2base64** - URLs to base64
+- **install-font-macos** - Install fonts from URLs
+- **unfuck-xcode** - Reset Xcode CLI tools
+
+## Dev
+
+```bash
+cargo check
+cargo test
+just run kill-port 3000
+just watch
+```
 
 ## Architecture
 
 ```
 tooling-rust/
 ├── src/
-│   ├── lib.rs          # Shared library
-│   ├── audio.rs        # Audio processing
-│   ├── banner.rs       # Cyberpunk UI
-│   ├── cli.rs          # CLI helpers
-│   ├── parallel.rs     # Parallel processing
-│   ├── process.rs      # Process management
-│   └── bin/            # 26 binary implementations
-├── Cargo.toml          # Single package, multiple binaries
-└── Justfile
+│   ├── lib.rs          # Shared code
+│   ├── audio.rs        # Audio utils
+│   ├── banner.rs       # Terminal UI
+│   └── bin/            # 26 binaries
+└── Cargo.toml
 ```
 
-## Shared Libraries
-
-All tools share common code:
-
-- **audio.rs** - FFmpeg wrappers, file finding, parallel processing
-- **banner.rs** - Cyberpunk-styled terminal output
-- **cli.rs** - Confirmation prompts, CPU detection
-- **parallel.rs** - Rayon-based parallel file processing with progress bars
-- **process.rs** - Process management via lsof
-
-## Development
-
-```bash
-# Check code
-cargo check
-
-# Run tests
-cargo test
-
-# Run single tool in dev mode
-just run kill-port 3000
-
-# Watch and rebuild on changes
-just watch
-
-# Lint
-just lint
-
-# Format
-just fmt
-```
-
-## Testing
-
-Unit tests are inline:
-
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_bitrate_validation() {
-        assert!(160 >= 32 && 160 <= 512);
-    }
-}
-```
-
-Integration tests go in `tests/`:
-
-```rust
-#[test]
-fn test_kill_port_help() {
-    Command::new("kill-port")
-        .arg("--help")
-        .assert()
-        .success();
-}
-```
-
-## TODO: Not Yet Implemented
-
-- **vimv** - Batch file renaming (needs complex git integration)
-- **embed-art** - FLAC artwork embedding (needs metaflac library)
-- **gen-diff** - Image diff generation (needs image processing)
-- **unfuck-xcode** - Xcode CLI tools reset
-- **imp** - Music import utility
-
-## Style Guide
-
-### Cyberpunk Aesthetic
-
-All tools use retro cyberpunk styling:
-
-- ASCII art banners with glitch effects
-- Status: `□` info, `!` warning, `✓` success, `✗` error
-- Progress bars: `█▓▒░`
-- Colors: cyan, magenta, green, yellow, red
-- No emojis - pure 80s/90s aesthetic
-
-## Performance
-
-Rust tools are significantly faster than shell equivalents due to:
-
-- Parallel by default (rayon)
-- No process spawning overhead
-- Compiled binaries
-- Zero-cost abstractions
-
-Example: `to-opus` converting 100 FLAC files:
-
-- Shell + GNU parallel: ~180s
-- Rust + rayon: ~90s
+Shared modules: audio, banner, cli, parallel processing.
