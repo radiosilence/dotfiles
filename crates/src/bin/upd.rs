@@ -70,31 +70,31 @@ fn main() -> Result<()> {
         banner::status("□", "DETECTED / 検出", "", "cyan");
 
         if is_macos {
-            println!("   {} macOS / マック", "✓".green());
+            println!("{} macOS / マック", "✓".green());
         } else {
-            println!("   {} Linux / リナックス", "✓".green());
+            println!("{} Linux / リナックス", "✓".green());
         }
 
         if has_brew {
-            println!("   {} brew / ブリュー", "✓".green());
+            println!("{} brew / ブリュー", "✓".green());
         }
         if has_apt {
-            println!("   {} apt-get / アプトゲット", "✓".green());
+            println!("{} apt-get / アプトゲット", "✓".green());
         }
         if has_dnf {
-            println!("   {} dnf / ディーエヌエフ", "✓".green());
+            println!("{} dnf / ディーエヌエフ", "✓".green());
         }
         if has_mise {
-            println!("   {} mise / ミーズ", "✓".green());
+            println!("{} mise / ミーズ", "✓".green());
         }
         if has_rustup {
-            println!("   {} rustup / ラストアップ", "✓".green());
+            println!("{} rustup / ラストアップ", "✓".green());
         }
         if has_yt_dlp {
-            println!("   {} yt-dlp / ワイティーディーエルピー", "✓".green());
+            println!("{} yt-dlp / ワイティーディーエルピー", "✓".green());
         }
         if has_regen {
-            println!("   {} zsh completions / 補完", "✓".green());
+            println!("{} zsh completions / 補完", "✓".green());
         }
 
         banner::divider("cyan");
@@ -461,10 +461,7 @@ fn main() -> Result<()> {
             "green",
         );
         dotfiles_tools::regen_completions::regenerate_completions()?;
-        println!(
-            "   {} completions regenerated / 補完再生成完了",
-            "✓".green()
-        );
+        println!("{} completions regenerated / 補完再生成完了", "✓".green());
     }
 
     banner::divider("cyan");
@@ -473,7 +470,7 @@ fn main() -> Result<()> {
     let results = results.lock().unwrap().clone();
     for (name, ok, duration) in &results {
         let status = if *ok { "✓".green() } else { "✗".red() };
-        println!("   {} {} ({:.1}s)", status, name, duration);
+        println!("{} {} ({:.1}s)", status, name, duration);
     }
 
     banner::divider("cyan");
@@ -494,7 +491,7 @@ fn main() -> Result<()> {
 
 fn install_homebrew(mp: &MultiProgress) -> Result<()> {
     mp.println(format!(
-        "   {} installing Homebrew / ホームブリューインストール中...",
+        "{} installing Homebrew / ホームブリューインストール中...",
         "→".blue()
     ))?;
     let status = Command::new("/bin/bash")
@@ -507,7 +504,7 @@ fn install_homebrew(mp: &MultiProgress) -> Result<()> {
 
     if status.success() {
         mp.println(format!(
-            "   {} Homebrew installed / ホームブリューインストール完了",
+            "{} Homebrew installed / ホームブリューインストール完了",
             "✓".green()
         ))?;
         Ok(())
@@ -534,7 +531,7 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
 
     for (name, url) in fonts {
         mp.println(format!(
-            "   {} installing {} font / {}フォントインストール中...",
+            "{} installing {} font / {}フォントインストール中...",
             "→".magenta(),
             name,
             name
@@ -545,9 +542,9 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
             .status();
 
         if status.is_ok() {
-            mp.println(format!("   {} {} / 完了", "✓".green(), name))?;
+            mp.println(format!("{} {} / 完了", "✓".green(), name))?;
         } else {
-            mp.println(format!("   {} {} (failed / 失敗)", "⚠".yellow(), name))?;
+            mp.println(format!("{} {} (failed / 失敗)", "⚠".yellow(), name))?;
         }
     }
     Ok(())
