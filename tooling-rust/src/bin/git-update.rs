@@ -1,14 +1,14 @@
-//! Alias for git-trigger (same functionality)
+//! Amend and force push to trigger CI/CD
 
 use anyhow::{Context, Result};
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
-use std::process::Command;
+use dotfiles_tools::completions;
+use git2::{PushOptions, Repository};
 
 #[derive(Parser)]
 #[command(name = "git-update")]
-#[command(about = "Amend and force push (alias for git-trigger)", long_about = None)]
+#[command(about = "Alias for git-trigger", long_about = None)]
 #[command(version)]
 struct Args {
     /// Dry run - show what would be done
@@ -23,10 +23,12 @@ fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    println!("{}", "┌──[ GIT-UPDATE ]──────────────┐".bright_magenta());
-    println!("{}", "│  force push utility           │".bright_magenta());
+    println!("{}", "┌──[ GIT-TRIGGER ]─────────────┐".bright_magenta());
+    println!("{}", "│  CI/CD re-trigger utility     │".bright_magenta());
     println!("{}", "└───────────────────────────────┘".bright_magenta());
     println!();
+
+    let repo = Repository::open(".").context("Not a git repository")?;
 
     if args.dry_run {
         println!("{} Would run:", "i".blue().bold());
@@ -36,27 +38,41 @@ fn main() -> Result<()> {
     }
 
     println!("{} Amending last commit...", "→".bright_magenta().bold());
-    let status = Command::new("git")
-        .args(["commit", "--amend", "--no-edit"])
-        .status()
-        .context("Failed to amend commit")?;
 
-    if !status.success() {
-        anyhow::bail!("Failed to amend commit");
-    }
+    // Get HEAD commit
+    let head = repo.head()?;
+    let commit = head.peel_to_commit()?;
+    let tree = commit.tree()?;
+
+    // Amend with same message and tree
+    let signature = repo.signature()?;
+    let parents = commit.parents().collect::<Vec<_>>();
+    let parent_refs: Vec<&git2::Commit> = parents.iter().collect();
+
+    repo.commit(
+        Some("HEAD"),
+        &signature,
+        &signature,
+        commit.message().unwrap_or(""),
+        &tree,
+        &parent_refs,
+    )?;
 
     println!("{} Force pushing...", "→".bright_magenta().bold());
-    let status = Command::new("git")
-        .args(["push", "--force"])
-        .status()
-        .context("Failed to push")?;
 
-    if !status.success() {
-        anyhow::bail!("Failed to push");
-    }
+    // Get current branch
+    let head = repo.head()?;
+    let branch_name = head.shorthand().context("No branch name")?;
+
+    // Push with force
+    let mut remote = repo.find_remote("origin")?;
+    let refspec = format!("+refs/heads/{0}:refs/heads/{0}", branch_name);
+
+    let mut push_opts = PushOptions::new();
+    remote.push(&[refspec.as_str()], Some(&mut push_opts))?;
 
     println!();
-    println!("{} Force pushed", "✓".green().bold());
+    println!("{} CI/CD triggered", "✓".green().bold());
 
     Ok(())
 }

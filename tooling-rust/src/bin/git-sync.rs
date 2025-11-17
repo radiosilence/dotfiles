@@ -5,10 +5,10 @@
 
 use anyhow::{Context, Result};
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
 use dialoguer::Confirm;
-use std::process::Command;
+use dotfiles_tools::completions;
+use git2::{BranchType, FetchOptions, Repository};
 
 #[derive(Parser)]
 #[command(name = "git-sync")]
@@ -32,44 +32,39 @@ fn main() -> Result<()> {
     println!("{}", "═══════════════════════════════════".bright_yellow());
     println!();
 
-    // Prune remote tracking branches
+    let repo = Repository::open(".").context("Not a git repository")?;
+
+    // Prune and fetch
     println!(
-        "{} Pruning remote tracking branches...",
+        "{} Pruning and fetching from origin...",
         "→".bright_yellow().bold()
     );
-    Command::new("git")
-        .args(["remote", "prune", "origin"])
-        .status()
-        .context("Failed to prune remote")?;
 
-    // Fetch updates
-    println!("{} Fetching updates...", "→".bright_yellow().bold());
-    Command::new("git")
-        .args(["fetch", "--all"])
-        .status()
-        .context("Failed to fetch")?;
+    let mut remote = repo.find_remote("origin")?;
+    let mut fetch_opts = FetchOptions::new();
+    fetch_opts.prune(git2::FetchPrune::On);
+
+    remote.fetch(
+        &["refs/heads/*:refs/remotes/origin/*"],
+        Some(&mut fetch_opts),
+        None,
+    )?;
 
     // Find branches with deleted remotes
-    let output = Command::new("git")
-        .args(["branch", "-vv"])
-        .output()
-        .context("Failed to list branches")?;
-
-    let branches_output = String::from_utf8_lossy(&output.stdout);
     let mut gone_branches = Vec::new();
 
-    for line in branches_output.lines() {
-        if line.contains(": gone]") {
-            // Extract branch name (first word after optional *)
-            let branch = line
-                .trim_start_matches('*')
-                .split_whitespace()
-                .next()
-                .unwrap_or("")
-                .to_string();
+    for branch in repo.branches(Some(BranchType::Local))? {
+        let (branch, _) = branch?;
+        let name = branch.name()?.context("Invalid branch name")?;
 
-            if !branch.is_empty() {
-                gone_branches.push(branch);
+        // Check if upstream is gone
+        if let Ok(upstream) = branch.upstream() {
+            // Check if upstream ref exists
+            if repo
+                .find_reference(upstream.get().name().context("No upstream name")?)
+                .is_err()
+            {
+                gone_branches.push(name.to_string());
             }
         }
     }
@@ -109,15 +104,10 @@ fn main() -> Result<()> {
     println!();
     println!("{} Deleting branches...", "→".bright_yellow().bold());
 
-    for branch in &gone_branches {
-        let status = Command::new("git")
-            .args(["branch", "-D", branch])
-            .status()
-            .with_context(|| format!("Failed to delete branch {}", branch))?;
-
-        if status.success() {
-            println!("  {} {}", "✓".green().bold(), branch.bright_black());
-        }
+    for branch_name in &gone_branches {
+        let mut branch = repo.find_branch(branch_name, BranchType::Local)?;
+        branch.delete()?;
+        println!("  {} {}", "✓".green().bold(), branch_name.bright_black());
     }
 
     println!();
