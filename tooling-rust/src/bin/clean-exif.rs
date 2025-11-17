@@ -1,14 +1,16 @@
 //! Strip EXIF metadata from images in parallel
 //!
-//! Removes GPS, camera serial numbers, and other PII from images.
+//! Uses native Rust img-parts crate instead of shelling out to exiftool.
 
 use anyhow::Result;
 use clap::Parser;
-use dotfiles_tools::completions;
 use colored::Colorize;
-use dotfiles_tools::audio;
+use dotfiles_tools::{audio, completions};
+use img_parts::jpeg::Jpeg;
+use img_parts::png::Png;
+use img_parts::{Bytes, ImageEXIF};
+use std::fs;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 #[derive(Parser)]
 #[command(name = "clean-exif")]
@@ -25,21 +27,28 @@ struct Args {
 }
 
 fn clean_exif(file: &Path) -> Result<()> {
-    let status = Command::new("exiftool")
-        .args([
-            "-all=",               // Clear all tags
-            "-overwrite_original", // Don't keep backup
-            "-P",                  // Preserve file modification time
-            file.to_str().unwrap(),
-        ])
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .status()?;
+    let data = fs::read(file)?;
+    let extension = file
+        .extension()
+        .and_then(|s| s.to_str())
+        .unwrap_or("")
+        .to_lowercase();
 
-    if !status.success() {
-        anyhow::bail!("exiftool failed for {}", file.display());
-    }
+    let cleaned_data = match extension.as_str() {
+        "jpg" | "jpeg" => {
+            let mut jpeg = Jpeg::from_bytes(Bytes::from(data))?;
+            jpeg.set_exif(None);
+            jpeg.encoder().bytes()
+        }
+        "png" => {
+            let mut png = Png::from_bytes(Bytes::from(data))?;
+            png.set_exif(None);
+            png.encoder().bytes()
+        }
+        _ => anyhow::bail!("Unsupported format: {}", extension),
+    };
 
+    fs::write(file, &cleaned_data)?;
     Ok(())
 }
 
@@ -56,11 +65,11 @@ fn main() -> Result<()> {
     );
     println!(
         "{}",
-        "║    EXIF METADATA STRIPPER v1.0                ║".bright_yellow()
+        "║    EXIF METADATA STRIPPER                     ║".bright_yellow()
     );
     println!(
         "{}",
-        "║  [privacy protection utility]                 ║".bright_yellow()
+        "║  [strip metadata from images]                 ║".bright_yellow()
     );
     println!(
         "{}",
@@ -68,12 +77,9 @@ fn main() -> Result<()> {
     );
     println!();
 
-    // Check dependencies
-    audio::check_command("exiftool")?;
-
     println!("{} Scanning for images...", "→".bright_yellow().bold());
 
-    let extensions = ["jpg", "jpeg", "png", "tiff", "webp"];
+    let extensions = ["jpg", "jpeg", "png"];
     let files = audio::find_audio_files(&args.paths, &extensions);
 
     if files.is_empty() {
@@ -94,7 +100,7 @@ fn main() -> Result<()> {
         cores.to_string().green()
     );
     println!(
-        "{} Stripping: GPS, camera serial, copyright, XMP, IPTC",
+        "{} Stripping: all EXIF metadata",
         "→".bright_yellow().bold()
     );
     println!();

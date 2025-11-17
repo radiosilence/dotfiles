@@ -1,13 +1,14 @@
 //! Kill process listening on specified port
 //!
-//! Finds the process using lsof and kills it with optional signal.
-//! Rust provides better error handling and cross-platform port validation.
+//! Uses native Rust netstat2 crate instead of shelling out to lsof.
+//! Cross-platform and more reliable.
 
-use anyhow::{bail, Context, Result};
+use anyhow::{bail, Result};
 use clap::Parser;
 use colored::Colorize;
 use dotfiles_tools::completions;
-use std::process::Command;
+use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSocketInfo};
+use std::collections::HashSet;
 
 #[derive(Parser)]
 #[command(name = "kill-port")]
@@ -38,64 +39,99 @@ fn main() -> Result<()> {
     banner::print_glitch_header("KILL-PORT", "magenta");
     banner::loading("Scanning for process on port...");
 
-    // Find PID using lsof (more reliable than parsing /proc or using sysinfo)
-    let output = Command::new("lsof")
-        .args(["-ti", &format!(":{}", args.port)])
-        .output()
-        .context("Failed to run lsof - is it installed?")?;
+    // Get all sockets (TCP and UDP, IPv4 and IPv6)
+    let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
+    let proto_flags = ProtocolFlags::TCP | ProtocolFlags::UDP;
+    let sockets = get_sockets_info(af_flags, proto_flags)?;
 
-    if !output.status.success() {
+    let mut pids = HashSet::new();
+
+    // Find processes listening on the target port
+    for socket in sockets {
+        let matches = match socket.protocol_socket_info {
+            ProtocolSocketInfo::Tcp(tcp_info) => tcp_info.local_port == args.port,
+            ProtocolSocketInfo::Udp(udp_info) => udp_info.local_port == args.port,
+        };
+
+        if matches {
+            if let Some(pid) = socket.associated_pids.first() {
+                pids.insert(*pid);
+            }
+        }
+    }
+
+    if pids.is_empty() {
         bail!("No process found listening on port {}", args.port);
     }
 
-    let pid_str = String::from_utf8_lossy(&output.stdout);
-    let pid = pid_str.trim();
-
-    if pid.is_empty() {
-        bail!("No process listening on port {}", args.port);
+    // Display found processes
+    for pid in &pids {
+        println!(
+            "{} Found process {} on port {}",
+            "→".blue().bold(),
+            pid.to_string().yellow(),
+            args.port.to_string().cyan()
+        );
     }
 
-    println!(
-        "{} Found process {} on port {}",
-        "→".blue().bold(),
-        pid.yellow(),
-        args.port.to_string().cyan()
-    );
-
     if args.dry_run {
-        println!(
-            "{} Dry run - would kill process {}",
-            "i".blue().bold(),
-            pid.yellow()
-        );
-        if let Some(sig) = args.signal {
-            println!("  With signal: {}", sig.yellow());
+        for pid in &pids {
+            println!(
+                "{} Dry run - would kill process {}",
+                "i".blue().bold(),
+                pid.to_string().yellow()
+            );
+            if let Some(sig) = &args.signal {
+                println!("  With signal: {}", sig.yellow());
+            }
         }
         return Ok(());
     }
 
-    // Build kill command
-    let mut cmd = Command::new("kill");
+    // Kill the processes
+    for pid in &pids {
+        if let Some(sig) = &args.signal {
+            println!(
+                "{} Sending signal {} to process {}",
+                "→".blue().bold(),
+                sig.yellow(),
+                pid.to_string().yellow()
+            );
 
-    if let Some(sig) = &args.signal {
-        cmd.arg(format!("-{}", sig));
-        println!(
-            "{} Sending signal {} to process {}",
-            "→".blue().bold(),
-            sig.yellow(),
-            pid.yellow()
-        );
+            // Use kill command for custom signals
+            let status = std::process::Command::new("kill")
+                .arg(format!("-{}", sig))
+                .arg(pid.to_string())
+                .status()?;
+
+            if !status.success() {
+                bail!("Failed to kill process {}", pid);
+            }
+        } else {
+            // Use native kill for SIGTERM
+            #[cfg(unix)]
+            {
+                use std::os::unix::process::CommandExt;
+                unsafe {
+                    if libc::kill(*pid as i32, libc::SIGTERM) != 0 {
+                        bail!("Failed to kill process {}", pid);
+                    }
+                }
+            }
+            #[cfg(not(unix))]
+            {
+                let status = std::process::Command::new("kill")
+                    .arg(pid.to_string())
+                    .status()?;
+
+                if !status.success() {
+                    bail!("Failed to kill process {}", pid);
+                }
+            }
+        }
+
+        banner::success(&format!("TERMINATED PROCESS {}", pid));
     }
-
-    cmd.arg(pid);
-
-    let status = cmd.status().context("Failed to execute kill command")?;
-
-    if !status.success() {
-        bail!("Failed to kill process {}", pid);
-    }
-
-    banner::success(&format!("TERMINATED PROCESS {}", pid));
 
     Ok(())
 }
@@ -123,14 +159,3 @@ mod tests {
         }
     }
 }
-
-// Integration tests are in tests/ directory
-// Example: tests/kill_port.rs
-// #[test]
-// fn test_kill_port_help() {
-//     let output = Command::new("cargo")
-//         .args(["run", "--bin", "kill-port", "--", "--help"])
-//         .output()
-//         .unwrap();
-//     assert!(output.status.success());
-// }
