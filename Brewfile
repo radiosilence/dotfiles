@@ -242,9 +242,12 @@ cask 'altair-graphql-client', greedy: true
 
 cask_args require_sha: true
 
-mas '1Password for Safari', id: 1_569_813_296
+# Replaced mas with casks (mas is buggy)
+cask '1password'
+cask 'slack'
+cask 'telegram'
+cask 'whatsapp'
+
+# No cask alternatives available
 mas 'Adobe Lightroom', id: 1_451_544_217
 mas 'Infuse', id: 1_136_220_934
-mas 'Slack', id: 803_453_959
-mas 'Telegram', id: 747_648_890
-mas 'WhatsApp', id: 310_633_997
