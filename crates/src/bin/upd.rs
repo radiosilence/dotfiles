@@ -185,9 +185,7 @@ fn main() -> Result<()> {
     });
     mp.println("").unwrap(); // Blank line before spinners start
 
-    let spinner_style = ProgressStyle::with_template("{spinner:.cyan} {msg}")
-        .unwrap()
-        .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]);
+    let spinner_style = ProgressStyle::default_spinner();
 
     let results: Arc<Mutex<Vec<UpdateResult>>> = Arc::new(Mutex::new(Vec::new()));
     let mut handles = vec![];
