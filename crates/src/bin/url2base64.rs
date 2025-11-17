@@ -8,6 +8,7 @@ use base64::{engine::general_purpose::STANDARD, Engine};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
+use dotfiles_tools::banner;
 use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
 use std::io::{self, BufRead};
@@ -71,22 +72,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!(
-        "{}",
-        "╔═══════════════════════════════════════╗".bright_green()
-    );
-    println!(
-        "{}",
-        "║     URL → BASE64 CONVERTER v1.0       ║".bright_green()
-    );
-    println!(
-        "{}",
-        "║  [data uri encoding utility]          ║".bright_green()
-    );
-    println!(
-        "{}",
-        "╚═══════════════════════════════════════╝".bright_green()
-    );
+    banner::print_banner("URL2BASE64", "data uri encoding utility", "green");
     println!();
 
     let client = Client::builder()

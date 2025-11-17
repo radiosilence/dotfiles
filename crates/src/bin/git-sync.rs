@@ -8,6 +8,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Confirm;
+use dotfiles_tools::banner;
 use git2::{BranchType, FetchOptions, Repository};
 use std::io;
 
@@ -41,10 +42,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("{}", "═══════════════════════════════════".bright_yellow());
-    println!("{}", "  GIT-SYNC // branch cleanup util  ".bright_yellow());
-    println!("{}", "═══════════════════════════════════".bright_yellow());
-    println!();
+    banner::print_banner("GIT-SYNC", "branch cleanup util", "yellow");
 
     let repo = Repository::open(".").context("Not a git repository")?;
 

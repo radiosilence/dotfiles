@@ -6,7 +6,7 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::{audio, parallel};
+use dotfiles_tools::{audio, banner, parallel};
 use img_parts::jpeg::Jpeg;
 use img_parts::png::Png;
 use img_parts::{Bytes, ImageEXIF};
@@ -74,23 +74,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!(
-        "{}",
-        "╔═══════════════════════════════════════════════╗".bright_yellow()
-    );
-    println!(
-        "{}",
-        "║    EXIF METADATA STRIPPER                     ║".bright_yellow()
-    );
-    println!(
-        "{}",
-        "║  [strip metadata from images]                 ║".bright_yellow()
-    );
-    println!(
-        "{}",
-        "╚═══════════════════════════════════════════════╝".bright_yellow()
-    );
-    println!();
+    banner::print_banner("CLEAN-EXIF", "strip metadata from images", "yellow");
 
     println!("{} Scanning for images...", "→".bright_yellow().bold());
 

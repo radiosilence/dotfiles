@@ -4,6 +4,7 @@ use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
+use dotfiles_tools::banner;
 use git2::{PushOptions, Repository};
 use std::io;
 
@@ -42,10 +43,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("{}", "┌──[ GIT-TRIGGER ]─────────────┐".bright_magenta());
-    println!("{}", "│  CI/CD re-trigger utility     │".bright_magenta());
-    println!("{}", "└───────────────────────────────┘".bright_magenta());
-    println!();
+    banner::print_banner("GIT-TRIGGER", "CI/CD re-trigger utility", "magenta");
 
     let repo = Repository::open(".").context("Not a git repository")?;
 

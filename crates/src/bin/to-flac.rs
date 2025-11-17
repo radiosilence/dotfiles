@@ -4,7 +4,7 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::{audio, parallel};
+use dotfiles_tools::{audio, banner, parallel};
 use std::io;
 use std::path::PathBuf;
 
@@ -46,23 +46,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!(
-        "{}",
-        "╔═══════════════════════════════════════════════╗".bright_green()
-    );
-    println!(
-        "{}",
-        "║    AUDIO → FLAC CONVERTER v1.0                ║".bright_green()
-    );
-    println!(
-        "{}",
-        "║  [lossless audio archival utility]            ║".bright_green()
-    );
-    println!(
-        "{}",
-        "╚═══════════════════════════════════════════════╝".bright_green()
-    );
-    println!();
+    banner::print_banner("TO-FLAC", "lossless audio archival utility", "green");
 
     audio::check_command("ffmpeg")?;
 

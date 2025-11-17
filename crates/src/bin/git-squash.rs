@@ -5,6 +5,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Editor;
+use dotfiles_tools::banner;
 use git2::{BranchType, Repository};
 use std::io;
 
@@ -42,19 +43,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!(
-        "{}",
-        "╔════════════════════════════════════════╗".bright_red()
-    );
-    println!(
-        "{}",
-        "║  GIT-SQUASH // commit consolidator    ║".bright_red()
-    );
-    println!(
-        "{}",
-        "╚════════════════════════════════════════╝".bright_red()
-    );
-    println!();
+    banner::print_banner("GIT-SQUASH", "commit consolidator", "red");
 
     let repo = Repository::open(".").context("Not a git repository")?;
 

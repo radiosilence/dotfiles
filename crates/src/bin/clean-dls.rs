@@ -6,6 +6,7 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
+use dotfiles_tools::banner;
 use std::io;
 use std::path::PathBuf;
 use std::process::Command;
@@ -45,32 +46,12 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!(
-        "{}",
-        "╔═══════════════════════════════════════════════╗".bright_red()
-    );
-    println!(
-        "{}",
-        "║    DOWNLOAD CLEANER v1.0                      ║".bright_red()
-    );
-    println!(
-        "{}",
-        "║  [scene release garbage removal]              ║".bright_red()
-    );
-    println!(
-        "{}",
-        "╚═══════════════════════════════════════════════╝".bright_red()
-    );
-    println!();
-
-    // Patterns to delete (matches original bash script behavior)
-    let patterns = ["*.nfo", "*.txt", "*.png", "*.jpg", "*.sfv"];
+    banner::print_banner("CLEAN-DLS", "scene release garbage removal", "red");
 
     println!("{} Scanning for garbage files...", "→".bright_red().bold());
     println!(
-        "{} Patterns: {}",
-        "→".bright_red().bold(),
-        patterns.join(", ").yellow()
+        "{} Patterns: .ds_store, *.nfo, *.txt, *.png, *.jpg, *.jpeg, *.sfv, *sample*, ._*",
+        "→".bright_red().bold()
     );
     println!();
 
