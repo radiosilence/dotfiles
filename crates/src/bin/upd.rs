@@ -427,12 +427,24 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
 
     let mut installed = Vec::new();
 
-    // Spawn thread to consume and discard stderr
+    // Spawn thread to consume stderr and only surface important messages
+    let stderr_errors = Arc::new(Mutex::new(Vec::new()));
     if let Some(stderr) = child.stderr.take() {
+        let errors = stderr_errors.clone();
         thread::spawn(move || {
             let reader = BufReader::new(stderr);
-            for _ in reader.lines().map_while(Result::ok) {
-                // Silently discard stderr
+            for line in reader.lines().map_while(Result::ok) {
+                // Surface errors, warnings, and sudo prompts - ignore noise like "Updating Homebrew..."
+                if line.contains("Error")
+                    || line.contains("error")
+                    || line.contains("Warning")
+                    || line.contains("warning")
+                    || line.contains("Password")
+                    || line.contains("password")
+                    || line.contains("sudo")
+                {
+                    errors.lock().unwrap().push(line);
+                }
             }
         });
     }
@@ -456,7 +468,16 @@ fn brew_bundle_with_progress(pb: &ProgressBar) -> Result<Vec<String>> {
     }
 
     let status = child.wait()?;
+
+    // If brew bundle failed, show any captured errors
     if !status.success() {
+        let errors = stderr_errors.lock().unwrap();
+        if !errors.is_empty() {
+            eprintln!("\nbrew bundle errors:");
+            for err in errors.iter() {
+                eprintln!("  {}", err);
+            }
+        }
         anyhow::bail!("brew bundle failed");
     }
 
