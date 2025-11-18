@@ -29,7 +29,7 @@ pub fn print_banner(title: &str, subtitle: &str, color: &str) {
     println!();
     println!(
         "{}",
-        colorize_text_bold(&format!("{}", "▄".repeat(border_width)), color)
+        colorize_text_bold(&"▄".repeat(border_width).to_string(), color)
     );
     println!(
         "{}",
@@ -46,7 +46,7 @@ pub fn print_banner(title: &str, subtitle: &str, color: &str) {
     println!();
     println!(
         "{}",
-        colorize_text_bold(&format!("{}", "▀".repeat(border_width)), color)
+        colorize_text_bold(&"▀".repeat(border_width).to_string(), color)
     );
     println!();
 }
