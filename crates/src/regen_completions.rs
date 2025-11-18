@@ -79,6 +79,9 @@ pub fn regenerate_completions() -> Result<()> {
     if system::which("task") {
         tasks.push(("task", vec!["--completion", "zsh"]));
     }
+    if system::which("just") {
+        tasks.push(("just", vec!["--completions", "zsh"]));
+    }
     if system::which("aws-vault") {
         tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
     }
