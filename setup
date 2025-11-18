@@ -19,11 +19,7 @@ fi
 # Build all binaries
 printf "\033[35m→ Building Rust binaries...\033[0m\n"
 cd "$DOTFILES_DIR/crates"
-cargo build --release --bins
-
-# Copy binaries to bin/
-mkdir -p "$DOTFILES_DIR/bin"
-find target/release -maxdepth 1 -type f -executable ! -name "*.*" ! -name ".*" -exec cp {} "$DOTFILES_DIR/bin/" \;
+cargo install --path . --bins --root "$DOTFILES_DIR" --force
 
 printf "\033[32m✓ Binaries built and installed to ~/.dotfiles/bin\033[0m\n"
 printf "\033[36m\n→ Run 'upd' to complete setup\033[0m\n"
