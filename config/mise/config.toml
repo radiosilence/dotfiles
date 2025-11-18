@@ -28,6 +28,7 @@ helix = "latest"                               # Terminal text editor
 pipx = "latest"                                # Python app installer
 protobuf = "latest"                            # Protocol buffers
 "ubi:bufbuild/buf" = "latest"                  # Protobuf toolchain
+"ubi:casey/just" = "latest"                    # Task runner (crabs
 "ubi:go-task/task" = "latest"                  # Task runner
 "ubi:astral-sh/uv" = "latest"                  # Fast Python package installer
 
