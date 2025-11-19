@@ -4,7 +4,6 @@ use colored::Colorize;
 use rayon::prelude::*;
 use std::fs;
 use std::process::Command;
-use std::sync::Mutex;
 
 pub fn regenerate_completions() -> Result<()> {
     let home = std::env::var("HOME")?;
@@ -60,6 +59,7 @@ pub fn regenerate_completions() -> Result<()> {
         "op",
         "nano-web",
     ];
+
     for cmd in tools {
         if system::which(cmd) {
             tasks.push((cmd, vec!["completion", "zsh"]));
@@ -80,18 +80,21 @@ pub fn regenerate_completions() -> Result<()> {
         tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
     }
 
-    // Run all completions in parallel
-    let output_mutex = Mutex::new(());
     let completions_dir_clone = completions_dir.clone();
+    let pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(tasks.len())
+        .build()
+        .unwrap();
 
-    tasks.par_iter().for_each(|(cmd, args)| {
-        if let Ok(output) = Command::new(cmd).args(args.as_slice()).output() {
-            if output.status.success() && !output.stdout.is_empty() {
-                let _ = fs::write(format!("{}/_{}", completions_dir_clone, cmd), output.stdout);
-                let _lock = output_mutex.lock().unwrap();
-                println!("  {} {}", "→".cyan(), cmd);
+    pool.install(|| {
+        tasks.par_iter().for_each(|(cmd, args)| {
+            if let Ok(output) = Command::new(cmd).args(args.as_slice()).output() {
+                if output.status.success() && !output.stdout.is_empty() {
+                    let _ = fs::write(format!("{}/_{}", completions_dir_clone, cmd), output.stdout);
+                    println!("  {} {}", "→".cyan(), cmd);
+                }
             }
-        }
+        });
     });
 
     Ok(())
