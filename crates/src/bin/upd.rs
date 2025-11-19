@@ -101,22 +101,72 @@ fn main() -> Result<()> {
     let mut handles = vec![];
 
     if has_apt {
-        handles.push(create_task("apt-get", &mp, update_apt));
+        handles.push(create_task("apt-get", &mp, |pb| {
+            run_cmd_quiet(
+                "sudo apt-get update",
+                pb,
+                Command::new("sudo").args(["apt-get", "update"]),
+            )?;
+            run_cmd_quiet(
+                "sudo apt-get upgrade -y",
+                pb,
+                Command::new("sudo").args(["apt-get", "upgrade", "-y"]),
+            )?;
+            run_cmd_quiet(
+                "sudo apt-get autoremove -y",
+                pb,
+                Command::new("sudo").args(["apt-get", "autoremove", "-y"]),
+            )?;
+            Ok(())
+        }));
     }
 
     if has_dnf {
-        handles.push(create_task("dnf", &mp, update_dnf));
+        handles.push(create_task("dnf", &mp, |pb| {
+            run_cmd_quiet(
+                "sudo dnf update -y",
+                pb,
+                Command::new("sudo").args(["dnf", "update", "-y"]),
+            )?;
+            Ok(())
+        }));
     }
     if has_mise {
-        handles.push(create_task("mise", &mp, update_mise));
+        handles.push(create_task("mise", &mp, |pb| {
+            run_cmd("mise up", pb, Command::new("mise").arg("up"))?;
+            run_cmd("mise reshim", pb, Command::new("mise").arg("reshim"))?;
+            Ok(())
+        }));
     }
 
     if has_yt_dlp {
-        handles.push(create_task("yt-dlp", &mp, update_yt_dlp));
+        handles.push(create_task("yt-dlp", &mp, |pb| {
+            run_cmd(
+                "yt-dlp update",
+                pb,
+                Command::new("yt-dlp").arg("--update-to").arg("nightly"),
+            )?;
+            Ok(())
+        }));
     }
 
     if has_brew {
-        handles.push(create_task("brew", &mp, update_brew));
+        handles.push(create_task("brew", &mp, |pb| {
+            run_cmd("brew update", pb, Command::new("brew").arg("update"))?;
+            let home = std::env::var("HOME")?;
+            run_cmd(
+                "brew bundle",
+                pb,
+                Command::new("brew")
+                    .arg("bundle")
+                    .current_dir(&home)
+                    .env("HOMEBREW_NO_AUTO_UPDATE", "1"),
+            )?;
+            run_cmd("brew upgrade", pb, Command::new("brew").arg("upgrade"))?;
+            run_cmd("brew cleanup", pb, Command::new("brew").arg("cleanup"))?;
+
+            Ok(())
+        }));
     }
 
     for handle in handles {
@@ -125,7 +175,7 @@ fn main() -> Result<()> {
 
     if let Some((handle, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
-        let _ = handle.join();
+        handle.join();
     }
 
     mp.clear()?;
@@ -201,66 +251,6 @@ where
         });
         pb.finish();
     })
-}
-
-fn update_apt(pb: &ProgressBar) -> Result<()> {
-    run_cmd_quiet(
-        "sudo apt-get update",
-        pb,
-        Command::new("sudo").args(["apt-get", "update"]),
-    )?;
-    run_cmd_quiet(
-        "sudo apt-get upgrade -y",
-        pb,
-        Command::new("sudo").args(["apt-get", "upgrade", "-y"]),
-    )?;
-    run_cmd_quiet(
-        "sudo apt-get autoremove -y",
-        pb,
-        Command::new("sudo").args(["apt-get", "autoremove", "-y"]),
-    )?;
-    Ok(())
-}
-
-fn update_dnf(pb: &ProgressBar) -> Result<()> {
-    run_cmd_quiet(
-        "sudo dnf update -y",
-        pb,
-        Command::new("sudo").args(["dnf", "update", "-y"]),
-    )?;
-    Ok(())
-}
-
-fn update_brew(pb: &ProgressBar) -> Result<()> {
-    run_cmd("brew update", pb, Command::new("brew").arg("update"))?;
-    let home = std::env::var("HOME")?;
-    run_cmd(
-        "brew bundle",
-        pb,
-        Command::new("brew")
-            .arg("bundle")
-            .current_dir(&home)
-            .env("HOMEBREW_NO_AUTO_UPDATE", "1"),
-    )?;
-    run_cmd("brew upgrade", pb, Command::new("brew").arg("upgrade"))?;
-    run_cmd("brew cleanup", pb, Command::new("brew").arg("cleanup"))?;
-
-    Ok(())
-}
-
-fn update_mise(pb: &ProgressBar) -> Result<()> {
-    run_cmd("mise up", pb, Command::new("mise").arg("up"))?;
-    run_cmd("mise reshim", pb, Command::new("mise").arg("reshim"))?;
-    Ok(())
-}
-
-fn update_yt_dlp(pb: &ProgressBar) -> Result<()> {
-    run_cmd(
-        "yt-dlp update",
-        pb,
-        Command::new("yt-dlp").arg("--update-to").arg("nightly"),
-    )?;
-    Ok(())
 }
 
 // TODO(JC): Refactor
