@@ -190,7 +190,6 @@ fn main() -> Result<()> {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
     }
 
-    mp.clear()?;
     mp.println("")?;
     mp.println(format!("{}", "/// .REGENERATING ZSH COMPLETIONS".bold()))?;
     mp.println("")?;

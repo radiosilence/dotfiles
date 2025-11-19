@@ -1,9 +1,12 @@
 use crate::system;
 use anyhow::Result;
 use colored::Colorize;
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use rayon::prelude::*;
 use std::fs;
 use std::process::Command;
+use std::thread::{self, JoinHandle};
+use std::time::Duration;
 
 pub fn regenerate_completions() -> Result<()> {
     let home = std::env::var("HOME")?;
@@ -13,7 +16,6 @@ pub fn regenerate_completions() -> Result<()> {
 
     let _ = fs::remove_dir_all(&completions_dir);
     fs::create_dir_all(&completions_dir)?;
-
     let mut tasks: Vec<(&str, Vec<&str>)> = vec![];
 
     let tools = vec![
@@ -80,22 +82,38 @@ pub fn regenerate_completions() -> Result<()> {
         tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
     }
 
-    let completions_dir_clone = completions_dir.clone();
-    let pool = rayon::ThreadPoolBuilder::new()
-        .num_threads(tasks.len())
-        .build()
-        .unwrap();
+    let mp = MultiProgress::new();
 
-    pool.install(|| {
-        tasks.par_iter().for_each(|(cmd, args)| {
-            if let Ok(output) = Command::new(cmd).args(args.as_slice()).output() {
-                if output.status.success() && !output.stdout.is_empty() {
-                    let _ = fs::write(format!("{}/_{}", completions_dir_clone, cmd), output.stdout);
-                    println!("  {} {}", "→".cyan(), cmd);
-                }
-            }
-        });
-    });
+    let completions_dir_clone = completions_dir.clone();
+
+    let handles = tasks
+        .iter()
+        .map(|(cmd, args)| {
+            let pb = mp.add(ProgressBar::new_spinner());
+            pb.set_style(ProgressStyle::default_spinner());
+            pb.enable_steady_tick(Duration::from_millis(80));
+            pb.set_message(*cmd);
+            thread::spawn(move || {
+                pb.set_style(match Command::new(cmd).args(args.as_slice()).output() {
+                    Ok(output) => {
+                        fs::write(format!("{}/_{}", completions_dir_clone, cmd), output.stdout)
+                            .unwrap();
+                        ProgressStyle::with_template("{spinner:.green} {msg}")
+                            .unwrap()
+                            .tick_strings(&["✓"])
+                    }
+                    Err(_) => ProgressStyle::with_template("{spinner:.red} {msg}")
+                        .unwrap()
+                        .tick_strings(&["✗"]),
+                });
+                pb.finish();
+            })
+        })
+        .collect();
+
+    for handle in handles {
+        let _ = handle.join();
+    }
 
     Ok(())
 }
