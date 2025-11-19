@@ -152,30 +152,43 @@ fn main() -> Result<()> {
 
     if has_brew {
         handles.push(create_task("brew", &mp, |pb| {
-            run_cmd("brew update", pb, Command::new("brew").arg("update"))?;
+            run_cmd(
+                "brew update",
+                pb,
+                Command::new("brew").arg("update").arg("--quiet"),
+            )?;
             let home = std::env::var("HOME")?;
             run_cmd(
                 "brew bundle",
                 pb,
                 Command::new("brew")
                     .arg("bundle")
+                    .arg("--quiet")
                     .current_dir(&home)
                     .env("HOMEBREW_NO_AUTO_UPDATE", "1"),
             )?;
-            run_cmd("brew upgrade", pb, Command::new("brew").arg("upgrade"))?;
-            run_cmd("brew cleanup", pb, Command::new("brew").arg("cleanup"))?;
+            run_cmd(
+                "brew upgrade",
+                pb,
+                Command::new("brew").arg("upgrade").arg("--quiet"),
+            )?;
+            run_cmd(
+                "brew cleanup",
+                pb,
+                Command::new("brew").arg("cleanup").arg("--quiet"),
+            )?;
 
             Ok(())
         }));
     }
 
     for handle in handles {
-        handle.join().unwrap();
+        let _ = handle.join();
     }
 
     if let Some((handle, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
-        handle.join();
+        let _ = handle.join();
     }
 
     mp.clear()?;
@@ -200,12 +213,6 @@ fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()
                     line.unwrap()
                 ));
             }
-        } else {
-            pb.println(format!(
-                "  {} {}",
-                format!("[{}]", name).bright_red(),
-                "unknown error".red()
-            ));
         }
         bail!("{} failed", name);
     }
@@ -224,7 +231,7 @@ fn run_cmd(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
     for line in BufReader::new(child.stdout.take().unwrap()).lines() {
         pb.println(format!(
             "  {} {}",
-            format!("[{}]", name).bright_magenta(),
+            format!("[{}]", name).green(),
             line.unwrap()
         ));
     }
