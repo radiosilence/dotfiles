@@ -1,11 +1,9 @@
 use crate::system;
 use anyhow::Result;
-use colored::Colorize;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use rayon::prelude::*;
 use std::fs;
 use std::process::Command;
-use std::thread::{self, JoinHandle};
+use std::thread;
 use std::time::Duration;
 
 pub fn regenerate_completions() -> Result<()> {
@@ -86,18 +84,20 @@ pub fn regenerate_completions() -> Result<()> {
 
     let completions_dir_clone = completions_dir.clone();
 
-    let handles = tasks
+    let handles: Vec<_> = tasks
         .iter()
         .map(|(cmd, args)| {
             let pb = mp.add(ProgressBar::new_spinner());
             pb.set_style(ProgressStyle::default_spinner());
             pb.enable_steady_tick(Duration::from_millis(80));
             pb.set_message(*cmd);
+            let cmd = cmd.to_string();
+            let args = args.clone();
+            let completions_dir = completions_dir_clone.clone();
             thread::spawn(move || {
-                pb.set_style(match Command::new(cmd).args(args.as_slice()).output() {
+                pb.set_style(match Command::new(&cmd).args(args.as_slice()).output() {
                     Ok(output) => {
-                        fs::write(format!("{}/_{}", completions_dir_clone, cmd), output.stdout)
-                            .unwrap();
+                        fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout).unwrap();
                         ProgressStyle::with_template("{spinner:.green} {msg}")
                             .unwrap()
                             .tick_strings(&["✓"])
