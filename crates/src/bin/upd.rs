@@ -102,17 +102,17 @@ fn main() -> Result<()> {
 
     if has_apt {
         handles.push(create_task("apt", &mp, |pb| {
-            run_cmd_quiet(
+            run_cmd(
                 "apt:update",
                 pb,
                 Command::new("sudo").args(["apt-get", "update"]),
             )?;
-            run_cmd_quiet(
+            run_cmd(
                 "apt:upgrade -y",
                 pb,
                 Command::new("sudo").args(["apt-get", "upgrade", "-y"]),
             )?;
-            run_cmd_quiet(
+            run_cmd(
                 "apt:autoremove -y",
                 pb,
                 Command::new("sudo").args(["apt-get", "autoremove", "-y"]),
@@ -123,7 +123,7 @@ fn main() -> Result<()> {
 
     if has_dnf {
         handles.push(create_task("dnf", &mp, |pb| {
-            run_cmd_quiet(
+            run_cmd(
                 "dnf:update",
                 pb,
                 Command::new("sudo").args(["dnf", "update", "-y"]),
