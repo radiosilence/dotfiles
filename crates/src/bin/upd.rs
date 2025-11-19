@@ -210,7 +210,7 @@ fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()
             for line in BufReader::new(stderr).lines() {
                 pb.println(format!(
                     "  {} {}",
-                    format!("[{}]", name).bright_red(),
+                    format!("{} \\\\  ", name).bright_red(),
                     line.unwrap()
                 ));
             }
@@ -232,7 +232,7 @@ fn run_cmd(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
     for line in BufReader::new(child.stdout.take().unwrap()).lines() {
         pb.println(format!(
             "  {} {}",
-            format!("[{}]", name).green(),
+            format!("{} //  ", name).green(),
             line.unwrap()
         ));
     }
