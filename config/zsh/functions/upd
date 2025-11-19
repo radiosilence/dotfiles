@@ -1,27 +1,22 @@
 upd() {
-  # update repo
-  (cd ~/.dotfiles && git pull)
+  setopt LOCAL_OPTIONS ERR_RETURN
 
-  # Install cargo if missing
-  if ! command -v cargo &>/dev/null; then
-    printf "\033[33m⚠️  cargo not found, installing rustup...\033[0m\n"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    source "$HOME/.cargo/env"
-  fi
+  # update repo
+  (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
 
   # Pull dotfiles
   if [ -d ~/.dotfiles/.git ]; then
     printf "\033[36m→ pulling ~/.dotfiles...\033[0m\n"
-    (cd ~/.dotfiles && git pull)
+    (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
   fi
 
   # Ensure bin directory exists
-  mkdir -p ~/.dotfiles/bin
+  mkdir -p ~/.dotfiles/bin || { printf "\033[31m✗ failed to create bin directory\033[0m\n"; return 1; }
 
   # Rebuild binaries (only if changed)
   printf "\033[35m→ building rust binaries...\033[0m\n"
-  (cd ~/.dotfiles/crates && cargo install --path . --bins --root ~/.dotfiles --force)
+  (cd ~/.dotfiles/crates && cargo install --path . --bins --root ~/.dotfiles --force) || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
 
   # Run upd binary
-  ~/.dotfiles/bin/upd "$@"
+  ~/.dotfiles/bin/upd "$@" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
 }

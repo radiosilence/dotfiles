@@ -1,14 +1,13 @@
-use anyhow::Result;
+use anyhow::{bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::banner;
 use dotfiles_tools::system::which;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::io::{self, BufRead, BufReader};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
-use std::thread;
+use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
 type UpdateResult = (&'static str, bool, f32);
@@ -47,13 +46,7 @@ fn main() -> Result<()> {
     // Create MultiProgress FIRST - use for ALL output
     let mp = MultiProgress::new();
 
-    mp.suspend(|| {
-        banner::print_banner(
-            "SYSTEM UPDATE / システム更新",
-            "idempotent system orchestrator / 冪等性システムオーケストレーター",
-            "blue",
-        );
-    });
+    mp.println("[SYSTEM UPDATE]")?;
 
     // Detect platform and what's available
     let is_macos = cfg!(target_os = "macos");
@@ -65,57 +58,9 @@ fn main() -> Result<()> {
     let has_regen = which("regen-zsh-completions");
     let has_rustup = which("rustup");
 
-    mp.suspend(|| {
-        banner::divider("cyan");
-        banner::status("□", "DETECTED / 検出", "", "cyan");
-
-        if is_macos {
-            println!("{} macOS / マック", "✓".green());
-        } else {
-            println!("{} Linux / リナックス", "✓".green());
-        }
-
-        if has_brew {
-            println!("{} brew / ブリュー", "✓".green());
-        }
-        if has_apt {
-            println!("{} apt-get / アプトゲット", "✓".green());
-        }
-        if has_dnf {
-            println!("{} dnf / ディーエヌエフ", "✓".green());
-        }
-        if has_mise {
-            println!("{} mise / ミーズ", "✓".green());
-        }
-        if has_rustup {
-            println!("{} rustup / ラストアップ", "✓".green());
-        }
-        if has_yt_dlp {
-            println!("{} yt-dlp / ワイティーディーエルピー", "✓".green());
-        }
-        if has_regen {
-            println!("{} zsh completions / 補完", "✓".green());
-        }
-
-        banner::divider("cyan");
-    });
-
     // PHASE 1: Bootstrap missing package managers
-    let mut phase = 1;
     if is_macos && !has_brew {
-        mp.suspend(|| {
-            banner::status(
-                "□",
-                &format!("PHASE {} / フェーズ {}", phase, phase),
-                "install homebrew / ホームブリューインストール",
-                "blue",
-            );
-        });
         install_homebrew(&mp)?;
-        phase += 1;
-        mp.suspend(|| {
-            banner::divider("cyan");
-        });
     }
 
     // PHASE: Install fonts (macOS only, if not already done)
@@ -127,47 +72,24 @@ fn main() -> Result<()> {
         if fonts_dir.exists() {
             let font_count = std::fs::read_dir(&fonts_dir)?.count();
             if font_count < 10 {
-                mp.suspend(|| {
-                    banner::status(
-                        "□",
-                        &format!("PHASE {} / フェーズ {}", phase, phase),
-                        "install fonts / フォントインストール",
-                        "magenta",
-                    );
-                });
+                mp.println("installing fonts...")?;
                 install_fonts(&mp)?;
-                phase += 1;
-                mp.suspend(|| {
-                    banner::divider("cyan");
-                });
             }
         }
     }
 
     // Check if Brewfile exists
-    let has_brewfile = if is_macos && has_brew {
+    let has_brewfile = is_macos && has_brew && {
         let home = std::env::var("HOME")?;
         std::path::Path::new(&home).join("Brewfile").exists()
-    } else {
-        false
     };
 
-    // PHASE 1: Get sudo authentication if needed
     let needs_sudo = has_apt || has_dnf;
     if needs_sudo {
-        mp.suspend(|| {
-            banner::status(
-                "□",
-                &format!("PHASE {} / フェーズ {}", phase, phase),
-                "sudo authentication / スード認証",
-                "red",
-            );
-        });
         let status = Command::new("sudo").arg("-v").status()?;
         if !status.success() {
-            anyhow::bail!("Failed to get sudo authentication / スード認証失敗");
+            bail!("Failed to get sudo authentication");
         }
-        phase += 1;
     }
 
     // Spawn background thread to keep sudo alive
@@ -187,18 +109,6 @@ fn main() -> Result<()> {
         None
     };
 
-    // PHASE 2: Everything in parallel
-    mp.suspend(|| {
-        banner::divider("cyan");
-        banner::status(
-            "□",
-            &format!("PHASE {} / フェーズ {}", phase, phase),
-            "parallel updates / 並列更新",
-            "magenta",
-        );
-    });
-    mp.println("").unwrap(); // Blank line before spinners start
-
     let spinner_style = ProgressStyle::default_spinner();
     let spinner_success = ProgressStyle::with_template("{spinner:.green} {msg}")
         .unwrap()
@@ -207,54 +117,31 @@ fn main() -> Result<()> {
         .unwrap()
         .tick_strings(&["✗"]);
 
-    let results: Arc<Mutex<Vec<UpdateResult>>> = Arc::new(Mutex::new(Vec::new()));
     let mut handles = vec![];
 
     // Dotfiles install
     {
-        let results = results.clone();
         let success_style = spinner_success.clone();
         let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("dotfiles / ドットファイル");
+        pb.set_message("dotfiles");
         pb.enable_steady_tick(Duration::from_millis(80));
 
-        handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
-            let result = dotfiles_tools::install::install_dotfiles();
-            let duration = start.elapsed();
-            let ok = result.is_ok();
-
-            // Set final style based on result
-            if ok {
-                pb.set_style(success_style);
-            } else {
-                pb.set_style(failure_style);
-            }
-            pb.finish();
-
-            results
-                .lock()
-                .unwrap()
-                .push(("dotfiles", ok, duration.as_secs_f32()));
-        }));
+        handles.push(create_task("install_dotfiles", &mp, install_dotfiles));
     }
 
     // apt-get (with sudo)
     if has_apt {
-        let results = results.clone();
         let success_style = spinner_success.clone();
         let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("apt-get / アプトゲット");
+        pb.set_message("apt-get");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
             let result = update_apt();
-            let duration = start.elapsed();
             let ok = result.is_ok();
 
             if ok {
@@ -263,28 +150,20 @@ fn main() -> Result<()> {
                 pb.set_style(failure_style);
             }
             pb.finish();
-
-            results
-                .lock()
-                .unwrap()
-                .push(("apt-get", ok, duration.as_secs_f32()));
         }));
     }
 
     // dnf (with sudo)
     if has_dnf {
-        let results = results.clone();
         let success_style = spinner_success.clone();
         let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("dnf / ディーエヌエフ");
+        pb.set_message("dnf");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
             let result = update_dnf();
-            let duration = start.elapsed();
             let ok = result.is_ok();
 
             if ok {
@@ -293,92 +172,24 @@ fn main() -> Result<()> {
                 pb.set_style(failure_style);
             }
             pb.finish();
-
-            results
-                .lock()
-                .unwrap()
-                .push(("dnf", ok, duration.as_secs_f32()));
         }));
     }
 
     // mise (install + upgrade)
     if has_mise {
-        let results = results.clone();
-        let success_style = spinner_success.clone();
-        let failure_style = spinner_failure.clone();
-        let pb = mp.add(ProgressBar::new_spinner());
-        pb.set_style(spinner_style.clone());
-        pb.set_message("mise / ミーズ");
-        pb.enable_steady_tick(Duration::from_millis(80));
-
-        handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
-            // First install missing tools, then upgrade
-            let install_result = dotfiles_tools::system::install_mise_tools();
-            let result = if install_result.is_ok() {
-                update_mise()
-            } else {
-                install_result
-            };
-            let duration = start.elapsed();
-            let ok = result.is_ok();
-
-            if ok {
-                pb.set_style(success_style);
-            } else {
-                pb.set_style(failure_style);
-            }
-            pb.finish();
-
-            results
-                .lock()
-                .unwrap()
-                .push(("mise", ok, duration.as_secs_f32()));
-        }));
-    }
-
-    // rustup setup
-    if has_rustup {
-        let results = results.clone();
-        let success_style = spinner_success.clone();
-        let failure_style = spinner_failure.clone();
-        let pb = mp.add(ProgressBar::new_spinner());
-        pb.set_style(spinner_style.clone());
-        pb.set_message("rustup-setup / ラストアップセットアップ");
-        pb.enable_steady_tick(Duration::from_millis(80));
-
-        handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
-            let result = dotfiles_tools::system::setup_rustup();
-            let duration = start.elapsed();
-            let ok = result.is_ok();
-
-            if ok {
-                pb.set_style(success_style);
-            } else {
-                pb.set_style(failure_style);
-            }
-            pb.finish();
-
-            results
-                .lock()
-                .unwrap()
-                .push(("rustup-setup", ok, duration.as_secs_f32()));
-        }));
+        handles.push(create_task("mise", &mp, &update_mise));
     }
 
     // brew (bundle + update)
     if has_brew {
-        let results = results.clone();
         let success_style = spinner_success.clone();
         let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("brew / ブリュー");
+        pb.set_message("brew");
         pb.enable_steady_tick(Duration::from_millis(80));
 
         handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
             let bundle_result = if has_brewfile {
                 brew_bundle(&pb).map(|_| ())
             } else {
@@ -389,7 +200,6 @@ fn main() -> Result<()> {
             } else {
                 bundle_result
             };
-            let duration = start.elapsed();
             let ok = update_result.is_ok();
 
             if ok {
@@ -398,42 +208,19 @@ fn main() -> Result<()> {
                 pb.set_style(failure_style);
             }
             pb.finish();
-
-            results
-                .lock()
-                .unwrap()
-                .push(("brew", ok, duration.as_secs_f32()));
         }));
     }
 
     // yt-dlp
     if has_yt_dlp {
-        let results = results.clone();
         let success_style = spinner_success.clone();
         let failure_style = spinner_failure.clone();
         let pb = mp.add(ProgressBar::new_spinner());
         pb.set_style(spinner_style.clone());
-        pb.set_message("yt-dlp / ワイティーディーエルピー");
+        pb.set_message("yt-dlp");
         pb.enable_steady_tick(Duration::from_millis(80));
 
-        handles.push(thread::spawn(move || {
-            let start = std::time::Instant::now();
-            let result = update_yt_dlp();
-            let duration = start.elapsed();
-            let ok = result.is_ok();
-
-            if ok {
-                pb.set_style(success_style);
-            } else {
-                pb.set_style(failure_style);
-            }
-            pb.finish();
-
-            results
-                .lock()
-                .unwrap()
-                .push(("yt-dlp", ok, duration.as_secs_f32()));
-        }));
+        handles.push(create_task("yt-dlp", &mp, &update_yt_dlp));
     }
 
     // Wait for all parallel updates
@@ -450,67 +237,28 @@ fn main() -> Result<()> {
     // Clear MultiProgress to remove all spinners and return to normal output
     mp.clear()?;
 
-    banner::divider("cyan");
-
     // Generate completions (after everything is updated)
     if has_regen {
-        banner::status(
-            "□",
-            &format!("PHASE {} / フェーズ {}", phase + 1, phase + 1),
-            "zsh completions / 補完",
-            "green",
-        );
         dotfiles_tools::regen_completions::regenerate_completions()?;
-        println!("{} completions regenerated / 補完再生成完了", "✓".green());
+        println!("{} completions regenerated", "✓".green());
     }
 
-    banner::divider("cyan");
-
-    // Print results
-    let results = results.lock().unwrap().clone();
-    for (name, ok, duration) in &results {
-        let status = if *ok { "✓".green() } else { "✗".red() };
-        println!("{} {} ({:.1}s)", status, name, duration);
-    }
-
-    banner::divider("cyan");
-    banner::success("SYSTEM UPDATE COMPLETE / システム更新完了");
-
-    // Print summary
-    let success_count = results.iter().filter(|(_, ok, _)| *ok).count();
-    let total_count = results.len();
-
-    println!(
-        "\n   {} UPDATED / 更新  {} FAILED / 失敗\n",
-        success_count.to_string().green().bold(),
-        (total_count - success_count).to_string().red().bold()
-    );
+    mp.println("SYSTEM UPDATE COMPLETE / システム更新完了")?;
 
     Ok(())
 }
 
 fn install_homebrew(mp: &MultiProgress) -> Result<()> {
-    mp.println(format!(
-        "{} installing Homebrew / ホームブリューインストール中...",
-        "→".blue()
-    ))?;
-    let status = Command::new("/bin/bash")
+    mp.println(format!("{} installing Homebrew...", "→".blue()))?;
+    Command::new("/bin/bash")
         .args([
             "-c",
             "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
         ])
         .stdin(Stdio::inherit())
-        .status()?;
-
-    if status.success() {
-        mp.println(format!(
-            "{} Homebrew installed / ホームブリューインストール完了",
-            "✓".green()
-        ))?;
-        Ok(())
-    } else {
-        anyhow::bail!("Homebrew installation failed / ホームブリューインストール失敗")
-    }
+        .status()
+        .expect("Homebrew installation failed!");
+    Ok(())
 }
 
 fn install_fonts(mp: &MultiProgress) -> Result<()> {
@@ -530,12 +278,7 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
     ];
 
     for (name, url) in fonts {
-        mp.println(format!(
-            "{} installing {} font / {}フォントインストール中...",
-            "→".magenta(),
-            name,
-            name
-        ))?;
+        mp.println(format!("{} installing {} font...", "→".magenta(), name,))?;
         let status = Command::new("install-font-macos")
             .arg(url)
             .stdout(Stdio::null())
@@ -550,13 +293,20 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
     Ok(())
 }
 
-fn brew_bundle(pb: &ProgressBar) -> Result<Vec<String>> {
+fn install_dotfiles(_pb: &ProgressBar) -> Result<()> {
+    if !dotfiles_tools::install::install_dotfiles().is_ok() {
+        bail!("installing dotfiles failed");
+    }
+    Ok(())
+}
+
+fn brew_bundle(pb: &ProgressBar) -> Result<()> {
     let home = std::env::var("HOME")?;
 
     // Set HOMEBREW_NO_AUTO_UPDATE to prevent the "Updating Homebrew..." message
     let mut child = Command::new("brew")
         .arg("bundle")
-        .arg("--verbose")
+        .arg("--quiet")
         .current_dir(&home)
         .env("HOMEBREW_NO_AUTO_UPDATE", "1")
         .stdin(Stdio::inherit()) // Allow interactive prompts (sudo, etc)
@@ -564,72 +314,35 @@ fn brew_bundle(pb: &ProgressBar) -> Result<Vec<String>> {
         .stderr(Stdio::piped())
         .spawn()?;
 
-    let installed = Arc::new(Mutex::new(Vec::new()));
+    let stdout = child.stdout.take().unwrap();
+    let reader = BufReader::new(stdout);
+    for line in reader.lines() {
+        pb.println(line.unwrap());
+    }
+    child.wait()?;
 
-    // Spawn thread to consume stderr and only surface important messages
-    let stderr_errors = Arc::new(Mutex::new(Vec::new()));
-    if let Some(stderr) = child.stderr.take() {
-        let errors = stderr_errors.clone();
-        thread::spawn(move || {
-            let reader = BufReader::new(stderr);
-            for line in reader.lines().map_while(Result::ok) {
-                // Surface errors, warnings, and sudo prompts - ignore noise like "Updating Homebrew..."
-                if line.contains("Error")
-                    || line.contains("error")
-                    || line.contains("Warning")
-                    || line.contains("warning")
-                    || line.contains("Password")
-                    || line.contains("password")
-                    || line.contains("sudo")
-                {
-                    errors.lock().unwrap().push(line);
-                }
-            }
+    Ok(())
+}
+
+fn create_task<F>(name: &str, mp: &MultiProgress, cb: F) -> JoinHandle<()>
+where
+    F: Fn(&ProgressBar) -> Result<(), anyhow::Error> + Send + 'static,
+{
+    let pb = mp.add(ProgressBar::new_spinner());
+    pb.set_style(ProgressStyle::default_spinner());
+    pb.enable_steady_tick(Duration::from_millis(80));
+    pb.set_message(String::from(name));
+    thread::spawn(move || {
+        pb.set_style(match cb(&pb) {
+            Ok(_) => ProgressStyle::with_template("{spinner:.green} {msg}")
+                .unwrap()
+                .tick_strings(&["✓"]),
+            Err(_) => ProgressStyle::with_template("{spinner:.red} {msg}")
+                .unwrap()
+                .tick_strings(&["✗"]),
         });
-    }
-
-    // Spawn thread to parse stdout - NEVER block main thread on I/O
-    if let Some(stdout) = child.stdout.take() {
-        let installed_clone = installed.clone();
-        let pb_clone = pb.clone();
-        thread::spawn(move || {
-            let reader = BufReader::new(stdout);
-            for line in reader.lines().map_while(Result::ok) {
-                // Parse brew bundle output: "Installing foo" or "Upgrading bar"
-                if line.contains("Installing") {
-                    if let Some(pkg) = line.split_whitespace().nth(1) {
-                        pb_clone.set_message(format!(
-                            "brew / ブリュー: installing / インストール中 {}",
-                            pkg
-                        ));
-                        installed_clone
-                            .lock()
-                            .unwrap()
-                            .push(format!("installed {}", pkg));
-                    }
-                } else if line.contains("Upgrading") {
-                    if let Some(pkg) = line.split_whitespace().nth(1) {
-                        pb_clone
-                            .set_message(format!("brew / ブリュー: upgrading / 更新中 {}", pkg));
-                        installed_clone
-                            .lock()
-                            .unwrap()
-                            .push(format!("upgraded {}", pkg));
-                    }
-                }
-            }
-        });
-    }
-
-    let status = child.wait()?;
-
-    // If brew bundle failed, bail with error message (don't print directly - would mess up spinners)
-    if !status.success() {
-        anyhow::bail!("brew bundle failed / ブリューバンドル失敗");
-    }
-
-    let installed_vec = installed.lock().unwrap().clone();
-    Ok(installed_vec)
+        pb.finish();
+    })
 }
 
 fn update_apt() -> Result<()> {
@@ -685,33 +398,38 @@ fn update_brew() -> Result<()> {
     Ok(())
 }
 
-fn update_mise() -> Result<()> {
-    let output = Command::new("mise").arg("up").output()?;
+fn update_mise(pb: &ProgressBar) -> Result<()> {
+    let mut child = Command::new("mise")
+        .arg("up")
+        .stdout(Stdio::null())
+        .stderr(Stdio::piped())
+        .spawn()?;
 
-    let home = std::env::var("HOME")?;
-    let shims_path = format!("{}/.local/share/mise/shims", home);
-    if std::path::Path::new(&shims_path).exists() {
-        std::fs::remove_dir_all(&shims_path)?;
+    if !child.wait()?.success() {
+        for line in BufReader::new(child.stderr.take().unwrap()).lines() {
+            pb.println(line.unwrap());
+        }
+        bail!("mise up failed");
     }
 
-    Command::new("mise")
-        .arg("reshim")
-        .stdout(Stdio::null())
-        .status()?;
-
-    if !output.status.success() {
-        anyhow::bail!("mise up failed");
+    if !Command::new("mise").arg("reshim").status()?.success() {
+        bail!("mise reshim failed");
     }
 
     Ok(())
 }
 
-fn update_yt_dlp() -> Result<()> {
-    Command::new("yt-dlp")
+fn update_yt_dlp(_pb: &ProgressBar) -> Result<()> {
+    if !Command::new("yt-dlp")
         .args(["--update-to", "nightly"])
         .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()?;
+        .stderr(Stdio::inherit())
+        .status()?
+        .success()
+    {
+        bail!("yt-dlp update failed");
+    }
+
     Ok(())
 }
 
