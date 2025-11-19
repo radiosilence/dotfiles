@@ -31,6 +31,7 @@ protobuf = "latest"                            # Protocol buffers
 "ubi:casey/just" = "latest"                    # Task runner (crabs
 "ubi:go-task/task" = "latest"                  # Task runner
 "ubi:astral-sh/uv" = "latest"                  # Fast Python package installer
+"ubi:alire-project/alire" = { version = "latest", exe = "alr" }  # ADA tooling
 
 # Code quality
 "ubi:koalaman/shellcheck" = "latest"           # Shell script linter

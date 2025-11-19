@@ -7,29 +7,6 @@ pub fn which(cmd: &str) -> bool {
     which::which(cmd).is_ok()
 }
 
-/// Install mise tools
-///
-/// # Errors
-/// Returns error if mise command fails
-pub fn install_mise_tools() -> Result<()> {
-    if !which("mise") {
-        return Ok(());
-    }
-
-    let status = Command::new("mise")
-        .args(["install", "-y"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-        .context("Failed to run mise install")?;
-
-    if !status.success() {
-        anyhow::bail!("mise install failed");
-    }
-
-    Ok(())
-}
-
 /// Set rustup default to stable (only if mise isn't managing Rust)
 ///
 /// # Errors
