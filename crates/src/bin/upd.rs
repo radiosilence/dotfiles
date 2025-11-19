@@ -184,14 +184,11 @@ fn main() -> Result<()> {
 
     for handle in handles {
         let _ = handle.join();
-        mp.println("done!")?;
     }
+    mp.println("done!")?;
 
-    if let Some((handle, keepalive)) = sudo_keepalive {
+    if let Some((_, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
-        mp.println("removing sudo keepalive...")?;
-        let _ = handle.join();
-        mp.println("removed!")?;
     }
 
     mp.clear()?;
