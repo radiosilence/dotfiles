@@ -15,7 +15,6 @@ use which::which;
 #[command(about = "Parallel system update orchestrator", long_about = None)]
 #[command(version)]
 struct Args {
-    /// Show verbose output from all commands
     #[arg(short, long)]
     verbose: bool,
 
@@ -25,9 +24,7 @@ struct Args {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Generate shell completions
     Completion {
-        /// Shell to generate completions for
         #[arg(value_enum)]
         shell: Shell,
     },
@@ -41,12 +38,10 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Create MultiProgress FIRST - use for ALL output
     let mp = MultiProgress::new();
 
     mp.println(format!("{}", "/// .SYSTEM UPDATE".bold()))?;
 
-    // Detect platform and what's available
     let is_macos = cfg!(target_os = "macos");
     let has_brew = which("brew").is_ok();
     let has_apt = which("apt-get").is_ok();
@@ -54,17 +49,20 @@ fn main() -> Result<()> {
     let has_mise = which("mise").is_ok();
     let has_yt_dlp = which("yt-dlp").is_ok();
 
-    // PHASE 1: Bootstrap missing package managers
     if is_macos && !has_brew {
-        install_homebrew(&mp)?;
+        mp.println(format!("{}", "/// .INSTALLING HOMEBREW".blue()))?;
+        if create_task("install homebrew", &mp, install_homebrew)
+            .join()
+            .is_err()
+        {
+            bail!("could not install brew");
+        }
     }
 
-    // PHASE: Install fonts (macOS only, if not already done)
     if is_macos && has_brew && which("install-font-macos").is_ok() {
         let home = std::env::var("HOME")?;
         let fonts_dir = std::path::Path::new(&home).join("Library/Fonts");
 
-        // Only try fonts if the fonts directory is relatively empty
         if fonts_dir.exists() {
             let font_count = std::fs::read_dir(&fonts_dir)?.count();
             if font_count < 10 {
@@ -78,7 +76,9 @@ fn main() -> Result<()> {
     if needs_sudo && Command::new("sudo").arg("-v").status().is_err() {
         bail!("Failed to get sudo authentication");
     }
-
+    if dotfiles_tools::install::install_dotfiles().is_err() {
+        bail!("installing dotfiles failed");
+    }
     // Spawn background thread to keep sudo alive
     let sudo_keepalive = if needs_sudo {
         let keepalive = Arc::new(std::sync::atomic::AtomicBool::new(true));
@@ -97,9 +97,6 @@ fn main() -> Result<()> {
     };
 
     let mut handles = vec![];
-
-    // Dotfiles install
-    handles.push(create_task("install_dotfiles", &mp, install_dotfiles));
 
     if has_apt {
         handles.push(create_task("apt-get", &mp, update_apt));
@@ -128,7 +125,7 @@ fn main() -> Result<()> {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
         let _ = handle.join();
     }
-    // Clear MultiProgress to remove all spinners and return to normal output
+
     mp.clear()?;
 
     mp.println(format!("{}", "/// .REGENERATING COMPLETIONS".bold()))?;
@@ -142,12 +139,17 @@ fn main() -> Result<()> {
 
 fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()> {
     if !child.wait()?.success() {
-        for line in BufReader::new(child.stderr.take().unwrap()).lines() {
-            pb.println(format!(
-                "  {} {}",
-                format!("[{}]", name).bright_red(),
-                line.unwrap()
-            ));
+        match child.stderr.take() {
+            Some(stderr) => {
+                for line in BufReader::new(stderr).lines() {
+                    pb.println(format!(
+                        "  {} {}",
+                        format!("[{}]", name).bright_red(),
+                        line.unwrap()
+                    ));
+                }
+            }
+            None => {}
         }
         bail!("{} failed", name);
     }
@@ -195,13 +197,6 @@ where
     })
 }
 
-fn install_dotfiles(_pb: &ProgressBar) -> Result<()> {
-    if dotfiles_tools::install::install_dotfiles().is_err() {
-        bail!("installing dotfiles failed");
-    }
-    Ok(())
-}
-
 fn update_apt(pb: &ProgressBar) -> Result<()> {
     run_cmd_quiet(
         "sudo apt-get update",
@@ -241,20 +236,20 @@ fn update_brew(pb: &ProgressBar) -> Result<()> {
             .current_dir(&home)
             .env("HOMEBREW_NO_AUTO_UPDATE", "1"),
     )?;
-    run_cmd_quiet("brew upgrade", pb, Command::new("brew").arg("upgrade"))?;
-    run_cmd_quiet("brew cleanup", pb, Command::new("brew").arg("cleanup"))?;
+    run_cmd("brew upgrade", pb, Command::new("brew").arg("upgrade"))?;
+    run_cmd("brew cleanup", pb, Command::new("brew").arg("cleanup"))?;
 
     Ok(())
 }
 
 fn update_mise(pb: &ProgressBar) -> Result<()> {
-    run_cmd_quiet("mise up", pb, Command::new("mise").arg("up"))?;
-    run_cmd_quiet("mise reshim", pb, Command::new("mise").arg("reshim"))?;
+    run_cmd("mise up", pb, Command::new("mise").arg("up"))?;
+    run_cmd("mise reshim", pb, Command::new("mise").arg("reshim"))?;
     Ok(())
 }
 
 fn update_yt_dlp(pb: &ProgressBar) -> Result<()> {
-    run_cmd_quiet(
+    run_cmd(
         "yt-dlp update",
         pb,
         Command::new("yt-dlp").arg("--update-to").arg("nightly"),
@@ -263,16 +258,16 @@ fn update_yt_dlp(pb: &ProgressBar) -> Result<()> {
 }
 
 // TODO(JC): Refactor
-fn install_homebrew(mp: &MultiProgress) -> Result<()> {
-    mp.println(format!("{} installing Homebrew...", "→".blue()))?;
-    Command::new("/bin/bash")
-        .args([
+fn install_homebrew(pb: &ProgressBar) -> Result<()> {
+    run_cmd_quiet(
+        "install homebrew",
+        pb,
+        Command::new("/bin/bash").args([
             "-c",
             "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
-        ])
-        .stdin(Stdio::inherit())
-        .status()
-        .expect("Homebrew installation failed!");
+        ]),
+    )?;
+
     Ok(())
 }
 
