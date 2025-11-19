@@ -25,13 +25,13 @@ pre-commit:
         fi
       stage_fixed: true
 
+pre-push:
+  parallel: true
+  commands:
     cargo-clippy:
       glob: "crates/**/*.rs"
       run: cd crates && mise x -- cargo clippy --all-targets --all-features -- -D warnings
 
-pre-push:
-  parallel: true
-  commands:
     cargo-test:
       glob: "crates/**/*.rs"
       run: cd crates && mise x -- cargo test --all-targets
