@@ -97,7 +97,10 @@ pub fn regenerate_completions() -> Result<()> {
             thread::spawn(move || {
                 pb.set_style(match Command::new(&cmd).args(args.as_slice()).output() {
                     Ok(output) => {
-                        fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout).unwrap();
+                        if output.status.success() && !output.stdout.is_empty() {
+                            fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)
+                                .unwrap();
+                        }
                         ProgressStyle::with_template("{spinner:.green} {msg}")
                             .unwrap()
                             .tick_strings(&["✓"])
