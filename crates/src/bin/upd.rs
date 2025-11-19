@@ -133,8 +133,17 @@ fn main() -> Result<()> {
     }
     if has_mise {
         handles.push(create_task("mise", &mp, |pb| {
-            run_cmd("mise:up", pb, Command::new("mise").arg("up"))?;
-            run_cmd("mise:reshim", pb, Command::new("mise").arg("reshim"))?;
+            let home = std::env::var("HOME")?;
+            run_cmd(
+                "mise:up",
+                pb,
+                Command::new("mise").arg("up").current_dir(&home),
+            )?;
+            run_cmd(
+                "mise:reshim",
+                pb,
+                Command::new("mise").arg("reshim").current_dir(&home),
+            )?;
             Ok(())
         }));
     }
