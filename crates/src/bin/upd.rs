@@ -193,8 +193,9 @@ fn main() -> Result<()> {
     mp.clear()?;
     mp.println("")?;
     mp.println(format!("{}", "/// .REGENERATING ZSH COMPLETIONS".bold()))?;
+    mp.println("")?;
     mp.suspend(|| dotfiles_tools::regen_completions::regenerate_completions().unwrap());
-    println!("{} completions regenerated", "✓".green());
+
     mp.println("")?;
     mp.println("")?;
     mp.println(format!("{}", "/// .SYSTEM UPDATE COMPLETE".bold()))?;
