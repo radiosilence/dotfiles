@@ -108,12 +108,12 @@ fn main() -> Result<()> {
                 Command::new("sudo").args(["apt-get", "update"]),
             )?;
             run_cmd(
-                "apt:upgrade -y",
+                "apt:upgrade",
                 pb,
                 Command::new("sudo").args(["apt-get", "upgrade", "-y"]),
             )?;
             run_cmd(
-                "apt:autoremove -y",
+                "apt:autoremove",
                 pb,
                 Command::new("sudo").args(["apt-get", "autoremove", "-y"]),
             )?;
