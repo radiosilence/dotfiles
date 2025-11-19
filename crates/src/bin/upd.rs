@@ -4,7 +4,7 @@ use clap_complete::{generate, Shell};
 use colored::Colorize;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::io::{self, BufRead, BufReader};
-use std::process::{Command, Stdio};
+use std::process::{Child, Command, Stdio};
 use std::sync::Arc;
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
@@ -81,10 +81,9 @@ fn main() -> Result<()> {
     // };
 
     let needs_sudo = has_apt || has_dnf;
-    if needs_sudo
-        && Command::new("sudo").arg("-v").status().is_err() {
-            bail!("Failed to get sudo authentication");
-        }
+    if needs_sudo && Command::new("sudo").arg("-v").status().is_err() {
+        bail!("Failed to get sudo authentication");
+    }
 
     // Spawn background thread to keep sudo alive
     let sudo_keepalive = if needs_sudo {
@@ -126,6 +125,10 @@ fn main() -> Result<()> {
         handles.push(create_task("yt-dlp", &mp, update_yt_dlp));
     }
 
+    if has_brew {
+        handles.push(create_task("brew", &mp, update_brew));
+    }
+
     for handle in handles {
         handle.join().unwrap();
     }
@@ -134,47 +137,52 @@ fn main() -> Result<()> {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
         let _ = handle.join();
     }
-
-    // // brew (bundle + update)
-    // if has_brew {
-    //     let success_style = spinner_success.clone();
-    //     let failure_style = spinner_failure.clone();
-    //     let pb = mp.add(ProgressBar::new_spinner());
-    //     pb.set_style(spinner_style.clone());
-    //     pb.set_message("brew");
-    //     pb.enable_steady_tick(Duration::from_millis(80));
-
-    //     handles.push(thread::spawn(move || {
-    //         let bundle_result = if has_brewfile {
-    //             brew_bundle(&pb).map(|_| ())
-    //         } else {
-    //             Ok(())
-    //         };
-    //         let update_result = if bundle_result.is_ok() {
-    //             update_brew()
-    //         } else {
-    //             bundle_result
-    //         };
-    //         let ok = update_result.is_ok();
-
-    //         if ok {
-    //             pb.set_style(success_style);
-    //         } else {
-    //             pb.set_style(failure_style);
-    //         }
-    //         pb.finish();
-    //     }));
-    // }
-
     // Clear MultiProgress to remove all spinners and return to normal output
     mp.clear()?;
 
-    println!("UPDATING COMPLETIONS");
-    dotfiles_tools::regen_completions::regenerate_completions()?;
+    mp.println(format!("{}", "REGENERATING COMPLETIONS".bold()))?;
+    mp.suspend(|| dotfiles_tools::regen_completions::regenerate_completions().unwrap());
     println!("{} completions regenerated", "✓".green());
 
-    mp.println("SYSTEM UPDATE COMPLETE / システム更新完了")?;
+    mp.println(format!(
+        "{}",
+        "SYSTEM UPDATE COMPLETE / システム更新完了".bold()
+    ))?;
 
+    Ok(())
+}
+
+fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()> {
+    if !child.wait()?.success() {
+        for line in BufReader::new(child.stderr.take().unwrap()).lines() {
+            pb.println(format!(
+                "{} {}",
+                format!("[{}]", name).bright_red(),
+                line.unwrap()
+            ));
+        }
+        bail!("{} failed", name);
+    }
+    Ok(())
+}
+
+fn run_cmd_quiet(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
+    let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::null()).spawn()?;
+    handle_cmd_errs(name, pb, &mut child)?;
+
+    Ok(())
+}
+
+fn run_cmd(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
+    let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
+    for line in BufReader::new(child.stderr.take().unwrap()).lines() {
+        pb.println(format!(
+            "{} {}",
+            format!("[{}]", name).bright_magenta(),
+            line.unwrap()
+        ));
+    }
+    handle_cmd_errs(name, pb, &mut child)?;
     Ok(())
 }
 
@@ -199,6 +207,74 @@ where
     })
 }
 
+fn install_dotfiles(_pb: &ProgressBar) -> Result<()> {
+    if dotfiles_tools::install::install_dotfiles().is_err() {
+        bail!("installing dotfiles failed");
+    }
+    Ok(())
+}
+
+fn update_apt(pb: &ProgressBar) -> Result<()> {
+    run_cmd_quiet(
+        "sudo apt-get update",
+        pb,
+        Command::new("sudo").args(["apt-get", "update"]),
+    )?;
+    run_cmd_quiet(
+        "sudo apt-get upgrade -y",
+        pb,
+        Command::new("sudo").args(["apt-get", "upgrade", "-y"]),
+    )?;
+    run_cmd_quiet(
+        "sudo apt-get autoremove -y",
+        pb,
+        Command::new("sudo").args(["apt-get", "autoremove", "-y"]),
+    )?;
+    Ok(())
+}
+
+fn update_dnf(pb: &ProgressBar) -> Result<()> {
+    run_cmd_quiet(
+        "sudo dnf update -y",
+        pb,
+        Command::new("sudo").args(["dnf", "update", "-y"]),
+    )?;
+    Ok(())
+}
+
+fn update_brew(pb: &ProgressBar) -> Result<()> {
+    run_cmd("brew update", pb, Command::new("brew").arg("update"))?;
+    let home = std::env::var("HOME")?;
+    run_cmd(
+        "brew bundle",
+        pb,
+        Command::new("brew")
+            .arg("bundle")
+            .current_dir(&home)
+            .env("HOMEBREW_NO_AUTO_UPDATE", "1"),
+    )?;
+    run_cmd_quiet("brew upgrade", pb, Command::new("brew").arg("upgrade"))?;
+    run_cmd_quiet("brew cleanup", pb, Command::new("brew").arg("cleanup"))?;
+
+    Ok(())
+}
+
+fn update_mise(pb: &ProgressBar) -> Result<()> {
+    run_cmd_quiet("mise up", pb, Command::new("mise").arg("up"))?;
+    run_cmd_quiet("mise reshim", pb, Command::new("mise").arg("reshim"))?;
+    Ok(())
+}
+
+fn update_yt_dlp(pb: &ProgressBar) -> Result<()> {
+    run_cmd_quiet(
+        "yt-dlp update",
+        pb,
+        Command::new("yt-dlp").arg("--update-to").arg("nightly"),
+    )?;
+    Ok(())
+}
+
+// TODO(JC): Refactor
 fn install_homebrew(mp: &MultiProgress) -> Result<()> {
     mp.println(format!("{} installing Homebrew...", "→".blue()))?;
     Command::new("/bin/bash")
@@ -213,6 +289,7 @@ fn install_homebrew(mp: &MultiProgress) -> Result<()> {
 }
 
 fn install_fonts(mp: &MultiProgress) -> Result<()> {
+    // TODO: Rewrite somewhat natively
     let fonts = vec![
         (
             "Hack Ligatured",
@@ -241,125 +318,6 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
             mp.println(format!("{} {} (failed / 失敗)", "⚠".yellow(), name))?;
         }
     }
-    Ok(())
-}
-
-fn install_dotfiles(_pb: &ProgressBar) -> Result<()> {
-    if dotfiles_tools::install::install_dotfiles().is_err() {
-        bail!("installing dotfiles failed");
-    }
-    Ok(())
-}
-
-fn update_apt(_pb: &ProgressBar) -> Result<()> {
-    Command::new("sudo")
-        .args(["apt-get", "update"])
-        .stdout(Stdio::null())
-        .stdin(Stdio::inherit())
-        .status()?;
-
-    Command::new("sudo")
-        .args(["apt-get", "upgrade", "-y"])
-        .stdout(Stdio::null())
-        .stdin(Stdio::inherit())
-        .status()?;
-
-    Command::new("sudo")
-        .args(["apt-get", "autoremove", "-y"])
-        .stdout(Stdio::null())
-        .stdin(Stdio::inherit())
-        .status()?;
-
-    Ok(())
-}
-
-fn update_dnf(_pb: &ProgressBar) -> Result<()> {
-    Command::new("sudo")
-        .args(["dnf", "update", "-y"])
-        .stdout(Stdio::null())
-        .stdin(Stdio::inherit())
-        .status()?;
-    Ok(())
-}
-
-// fn brew_bundle(pb: &ProgressBar) -> Result<()> {
-//     let home = std::env::var("HOME")?;
-
-//     // Set HOMEBREW_NO_AUTO_UPDATE to prevent the "Updating Homebrew..." message
-//     let mut child = Command::new("brew")
-//         .arg("bundle")
-//         .arg("--quiet")
-//         .current_dir(&home)
-//         .env("HOMEBREW_NO_AUTO_UPDATE", "1")
-//         .stdin(Stdio::inherit()) // Allow interactive prompts (sudo, etc)
-//         .stdout(Stdio::piped())
-//         .stderr(Stdio::piped())
-//         .spawn()?;
-
-//     let stdout = child.stdout.take().unwrap();
-//     let reader = BufReader::new(stdout);
-//     for line in reader.lines() {
-//         pb.println(line.unwrap());
-//     }
-//     child.wait()?;
-
-//     Ok(())
-// }
-
-// fn update_brew() -> Result<()> {
-//     Command::new("brew")
-//         .arg("update")
-//         .stdout(Stdio::null())
-//         .stderr(Stdio::null())
-//         .status()?;
-
-//     Command::new("brew")
-//         .arg("upgrade")
-//         .stdout(Stdio::null())
-//         .stderr(Stdio::null())
-//         .status()?;
-
-//     Command::new("brew")
-//         .arg("cleanup")
-//         .stdout(Stdio::null())
-//         .stderr(Stdio::null())
-//         .status()?;
-
-//     Ok(())
-// }
-
-fn update_mise(pb: &ProgressBar) -> Result<()> {
-    let mut child = Command::new("mise")
-        .arg("up")
-        .stdout(Stdio::null())
-        .stderr(Stdio::piped())
-        .spawn()?;
-
-    if !child.wait()?.success() {
-        for line in BufReader::new(child.stderr.take().unwrap()).lines() {
-            pb.println(line.unwrap());
-        }
-        bail!("mise up failed");
-    }
-
-    if !Command::new("mise").arg("reshim").status()?.success() {
-        bail!("mise reshim failed");
-    }
-
-    Ok(())
-}
-
-fn update_yt_dlp(_pb: &ProgressBar) -> Result<()> {
-    if !Command::new("yt-dlp")
-        .args(["--update-to", "nightly"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::inherit())
-        .status()?
-        .success()
-    {
-        bail!("yt-dlp update failed");
-    }
-
     Ok(())
 }
 
