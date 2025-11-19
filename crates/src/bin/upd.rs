@@ -81,11 +81,10 @@ fn main() -> Result<()> {
     // };
 
     let needs_sudo = has_apt || has_dnf;
-    if needs_sudo {
-        if Command::new("sudo").arg("-v").status().is_err() {
+    if needs_sudo
+        && Command::new("sudo").arg("-v").status().is_err() {
             bail!("Failed to get sudo authentication");
         }
-    }
 
     // Spawn background thread to keep sudo alive
     let sudo_keepalive = if needs_sudo {
@@ -111,12 +110,12 @@ fn main() -> Result<()> {
 
     // apt-get (with sudo)
     if has_apt {
-        handles.push(create_task("apt-get", &mp, &update_apt));
+        handles.push(create_task("apt-get", &mp, update_apt));
     }
 
     // dnf (with sudo)
     if has_dnf {
-        handles.push(create_task("dnf", &mp, &update_dnf));
+        handles.push(create_task("dnf", &mp, update_dnf));
     }
     // mise (install + upgrade)
     if has_mise {
