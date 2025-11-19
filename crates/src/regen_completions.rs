@@ -9,7 +9,7 @@ use std::time::Duration;
 pub fn regenerate_completions() -> Result<()> {
     let home = std::env::var("HOME")?;
     let completions_dir = format!("{}/.config/zsh/completions", home);
-
+    println!("Generating completions for zsh... to {}", completions_dir);
     let _ = fs::remove_file(format!("{}/.zcompdump", home));
 
     let _ = fs::remove_dir_all(&completions_dir);
@@ -100,10 +100,14 @@ pub fn regenerate_completions() -> Result<()> {
                         if output.status.success() && !output.stdout.is_empty() {
                             fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)
                                 .unwrap();
+                            ProgressStyle::with_template("{spinner:.green} {msg}")
+                                .unwrap()
+                                .tick_strings(&["✓"])
+                        } else {
+                            ProgressStyle::with_template("{spinner:.red} {msg}")
+                                .unwrap()
+                                .tick_strings(&["✗"])
                         }
-                        ProgressStyle::with_template("{spinner:.green} {msg}")
-                            .unwrap()
-                            .tick_strings(&["✓"])
                     }
                     Err(_) => ProgressStyle::with_template("{spinner:.red} {msg}")
                         .unwrap()
