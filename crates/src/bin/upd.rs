@@ -150,6 +150,12 @@ fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()
                     line.unwrap()
                 ));
             }
+        } else {
+            pb.println(format!(
+                "  {} {}",
+                format!("[{}]", name).bright_red(),
+                "unknown error".red()
+            ));
         }
         bail!("{} failed", name);
     }
@@ -165,7 +171,7 @@ fn run_cmd_quiet(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> 
 
 fn run_cmd(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
     let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
-    for line in BufReader::new(child.stderr.take().unwrap()).lines() {
+    for line in BufReader::new(child.stdout.take().unwrap()).lines() {
         pb.println(format!(
             "  {} {}",
             format!("[{}]", name).bright_magenta(),
