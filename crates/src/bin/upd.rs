@@ -101,19 +101,19 @@ fn main() -> Result<()> {
     let mut handles = vec![];
 
     if has_apt {
-        handles.push(create_task("apt-get", &mp, |pb| {
+        handles.push(create_task("apt", &mp, |pb| {
             run_cmd_quiet(
-                "sudo apt-get update",
+                "apt:update",
                 pb,
                 Command::new("sudo").args(["apt-get", "update"]),
             )?;
             run_cmd_quiet(
-                "sudo apt-get upgrade -y",
+                "apt:upgrade -y",
                 pb,
                 Command::new("sudo").args(["apt-get", "upgrade", "-y"]),
             )?;
             run_cmd_quiet(
-                "sudo apt-get autoremove -y",
+                "apt:autoremove -y",
                 pb,
                 Command::new("sudo").args(["apt-get", "autoremove", "-y"]),
             )?;
@@ -124,7 +124,7 @@ fn main() -> Result<()> {
     if has_dnf {
         handles.push(create_task("dnf", &mp, |pb| {
             run_cmd_quiet(
-                "sudo dnf update -y",
+                "dnf:update",
                 pb,
                 Command::new("sudo").args(["dnf", "update", "-y"]),
             )?;
@@ -133,8 +133,8 @@ fn main() -> Result<()> {
     }
     if has_mise {
         handles.push(create_task("mise", &mp, |pb| {
-            run_cmd("mise up", pb, Command::new("mise").arg("up"))?;
-            run_cmd("mise reshim", pb, Command::new("mise").arg("reshim"))?;
+            run_cmd("mise:up", pb, Command::new("mise").arg("up"))?;
+            run_cmd("mise:reshim", pb, Command::new("mise").arg("reshim"))?;
             Ok(())
         }));
     }
@@ -142,7 +142,7 @@ fn main() -> Result<()> {
     if has_yt_dlp {
         handles.push(create_task("yt-dlp", &mp, |pb| {
             run_cmd(
-                "yt-dlp update",
+                "yt-dlp",
                 pb,
                 Command::new("yt-dlp").arg("--update-to").arg("nightly"),
             )?;
@@ -153,13 +153,13 @@ fn main() -> Result<()> {
     if has_brew {
         handles.push(create_task("brew", &mp, |pb| {
             run_cmd(
-                "brew update",
+                "brew:update",
                 pb,
                 Command::new("brew").arg("update").arg("--quiet"),
             )?;
             let home = std::env::var("HOME")?;
             run_cmd(
-                "brew bundle",
+                "brew:bundle",
                 pb,
                 Command::new("brew")
                     .arg("bundle")
@@ -168,7 +168,7 @@ fn main() -> Result<()> {
                     .env("HOMEBREW_NO_AUTO_UPDATE", "1"),
             )?;
             run_cmd(
-                "brew upgrade",
+                "brew:upgrade",
                 pb,
                 Command::new("brew").arg("upgrade").arg("--quiet"),
             )?;
