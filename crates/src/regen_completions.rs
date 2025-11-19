@@ -52,7 +52,6 @@ pub fn regenerate_completions() -> Result<()> {
         "turso",
         "lefthook",
         "yq",
-        "rclone",
         "op",
         "nano-web",
     ];
