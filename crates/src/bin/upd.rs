@@ -44,7 +44,7 @@ fn main() -> Result<()> {
     // Create MultiProgress FIRST - use for ALL output
     let mp = MultiProgress::new();
 
-    mp.println("[SYSTEM UPDATE]")?;
+    mp.println(format!("{}", "/// .SYSTEM UPDATE".bold()))?;
 
     // Detect platform and what's available
     let is_macos = cfg!(target_os = "macos");
@@ -74,12 +74,6 @@ fn main() -> Result<()> {
         }
     }
 
-    // Check if Brewfile exists
-    // let has_brewfile = is_macos && has_brew && {
-    //     let home = std::env::var("HOME")?;
-    //     std::path::Path::new(&home).join("Brewfile").exists()
-    // };
-
     let needs_sudo = has_apt || has_dnf;
     if needs_sudo && Command::new("sudo").arg("-v").status().is_err() {
         bail!("Failed to get sudo authentication");
@@ -107,16 +101,13 @@ fn main() -> Result<()> {
     // Dotfiles install
     handles.push(create_task("install_dotfiles", &mp, install_dotfiles));
 
-    // apt-get (with sudo)
     if has_apt {
         handles.push(create_task("apt-get", &mp, update_apt));
     }
 
-    // dnf (with sudo)
     if has_dnf {
         handles.push(create_task("dnf", &mp, update_dnf));
     }
-    // mise (install + upgrade)
     if has_mise {
         handles.push(create_task("mise", &mp, update_mise));
     }
@@ -140,14 +131,11 @@ fn main() -> Result<()> {
     // Clear MultiProgress to remove all spinners and return to normal output
     mp.clear()?;
 
-    mp.println(format!("{}", "REGENERATING COMPLETIONS".bold()))?;
+    mp.println(format!("{}", "/// .REGENERATING COMPLETIONS".bold()))?;
     mp.suspend(|| dotfiles_tools::regen_completions::regenerate_completions().unwrap());
     println!("{} completions regenerated", "✓".green());
 
-    mp.println(format!(
-        "{}",
-        "SYSTEM UPDATE COMPLETE / システム更新完了".bold()
-    ))?;
+    mp.println(format!("{}", "/// .SYSTEM UPDATE COMPLETE".bold()))?;
 
     Ok(())
 }
@@ -156,7 +144,7 @@ fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()
     if !child.wait()?.success() {
         for line in BufReader::new(child.stderr.take().unwrap()).lines() {
             pb.println(format!(
-                "{} {}",
+                "  {} {}",
                 format!("[{}]", name).bright_red(),
                 line.unwrap()
             ));
@@ -177,7 +165,7 @@ fn run_cmd(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
     let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
     for line in BufReader::new(child.stderr.take().unwrap()).lines() {
         pb.println(format!(
-            "{} {}",
+            "  {} {}",
             format!("[{}]", name).bright_magenta(),
             line.unwrap()
         ));

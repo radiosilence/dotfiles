@@ -89,14 +89,10 @@ pub fn regenerate_completions() -> Result<()> {
             if output.status.success() && !output.stdout.is_empty() {
                 let _ = fs::write(format!("{}/_{}", completions_dir_clone, cmd), output.stdout);
                 let _lock = output_mutex.lock().unwrap();
-                println!("{} {}", "→".cyan(), cmd);
+                println!("  {} {}", "→".cyan(), cmd);
             }
         }
     });
-
-    if system::which("terraform") {
-        println!("{} terraform (configured via terraform.zsh)", "→".cyan());
-    }
 
     Ok(())
 }
