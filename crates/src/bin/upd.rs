@@ -139,17 +139,14 @@ fn main() -> Result<()> {
 
 fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()> {
     if !child.wait()?.success() {
-        match child.stderr.take() {
-            Some(stderr) => {
-                for line in BufReader::new(stderr).lines() {
-                    pb.println(format!(
-                        "  {} {}",
-                        format!("[{}]", name).bright_red(),
-                        line.unwrap()
-                    ));
-                }
+        if let Some(stderr) = child.stderr.take() {
+            for line in BufReader::new(stderr).lines() {
+                pb.println(format!(
+                    "  {} {}",
+                    format!("[{}]", name).bright_red(),
+                    line.unwrap()
+                ));
             }
-            None => {}
         }
         bail!("{} failed", name);
     }
