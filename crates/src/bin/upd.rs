@@ -40,7 +40,9 @@ fn main() -> Result<()> {
 
     let mp = MultiProgress::new();
 
+    mp.println("")?;
     mp.println(format!("{}", "/// .SYSTEM UPDATE".bold()))?;
+    mp.println("")?;
 
     let is_macos = cfg!(target_os = "macos");
     let has_brew = which("brew").is_ok();
@@ -127,11 +129,12 @@ fn main() -> Result<()> {
     }
 
     mp.clear()?;
-
+    mp.println("")?;
     mp.println(format!("{}", "/// .REGENERATING COMPLETIONS".bold()))?;
     mp.suspend(|| dotfiles_tools::regen_completions::regenerate_completions().unwrap());
     println!("{} completions regenerated", "✓".green());
-
+    mp.println("")?;
+    mp.println("")?;
     mp.println(format!("{}", "/// .SYSTEM UPDATE COMPLETE".bold()))?;
 
     Ok(())
