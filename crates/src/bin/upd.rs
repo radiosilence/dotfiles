@@ -161,32 +161,47 @@ fn main() -> Result<()> {
 
     if has_brew {
         handles.push(create_task("brew", &mp, |pb| {
-            run_cmd(
-                "brew:update",
-                pb,
-                Command::new("brew").arg("update").arg("--quiet"),
-            )?;
             let home = std::env::var("HOME")?;
-            run_cmd(
+            let bundle_ok = run_cmd(
                 "brew:bundle",
                 pb,
                 Command::new("brew")
                     .arg("bundle")
                     .arg("--quiet")
-                    .current_dir(&home)
-                    .env("HOMEBREW_NO_AUTO_UPDATE", "1"),
-            )?;
-            run_cmd(
+                    .current_dir(&home),
+            )
+            .is_ok();
+            let update_ok = run_cmd(
+                "brew:update",
+                pb,
+                Command::new("brew").arg("update").arg("--quiet"),
+            )
+            .is_ok();
+            let upgrade_ok = run_cmd(
                 "brew:upgrade",
                 pb,
                 Command::new("brew").arg("upgrade").arg("--quiet"),
-            )?;
-            run_cmd(
+            )
+            .is_ok();
+            let cleanup_ok = run_cmd(
                 "brew cleanup",
                 pb,
                 Command::new("brew").arg("cleanup").arg("--quiet"),
-            )?;
+            )
+            .is_ok();
 
+            if !bundle_ok {
+                bail!("Failed to bundle brew")
+            }
+            if !update_ok {
+                bail!("Failed to update brew")
+            }
+            if !upgrade_ok {
+                bail!("Failed to upgrade brew")
+            }
+            if !cleanup_ok {
+                bail!("Failed to cleanup brew")
+            }
             Ok(())
         }));
     }
