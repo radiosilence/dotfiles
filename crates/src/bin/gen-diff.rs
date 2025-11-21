@@ -7,16 +7,17 @@ use std::process::Command;
 
 #[derive(Parser)]
 #[command(about = "Create a visual diff of two images using ImageMagick")]
+#[command(args_conflicts_with_subcommands = true)]
 struct Args {
     #[command(subcommand)]
     command: Option<Commands>,
 
     /// First image
-    image1: String,
+    image1: Option<String>,
     /// Second image
-    image2: String,
+    image2: Option<String>,
     /// Output file
-    output: String,
+    output: Option<String>,
 }
 
 #[derive(Subcommand)]
@@ -43,23 +44,36 @@ fn main() -> Result<()> {
         anyhow::bail!("ImageMagick not installed (brew install imagemagick)");
     }
 
+    let image1 = args.image1.unwrap_or_else(|| {
+        Args::command().print_help().ok();
+        std::process::exit(1);
+    });
+    let image2 = args.image2.unwrap_or_else(|| {
+        Args::command().print_help().ok();
+        std::process::exit(1);
+    });
+    let output = args.output.unwrap_or_else(|| {
+        Args::command().print_help().ok();
+        std::process::exit(1);
+    });
+
     // Check if input files exist
-    if !std::path::Path::new(&args.image1).exists() {
-        anyhow::bail!("Image 1 not found: {}", args.image1);
+    if !std::path::Path::new(&image1).exists() {
+        anyhow::bail!("Image 1 not found: {}", image1);
     }
-    if !std::path::Path::new(&args.image2).exists() {
-        anyhow::bail!("Image 2 not found: {}", args.image2);
+    if !std::path::Path::new(&image2).exists() {
+        anyhow::bail!("Image 2 not found: {}", image2);
     }
 
-    banner::status("□", "IMAGE 1", &args.image1, "red");
-    banner::status("□", "IMAGE 2", &args.image2, "red");
-    banner::status("□", "OUTPUT", &args.output, "red");
+    banner::status("□", "IMAGE 1", &image1, "red");
+    banner::status("□", "IMAGE 2", &image2, "red");
+    banner::status("□", "OUTPUT", &output, "red");
     banner::divider("red");
 
     // Create visual diff
     let status = Command::new("convert")
-        .arg(&args.image1)
-        .arg(&args.image2)
+        .arg(&image1)
+        .arg(&image2)
         .arg("-resize")
         .arg("1024x1024>")
         .arg("-gravity")
@@ -76,7 +90,7 @@ fn main() -> Result<()> {
         .arg("-delete")
         .arg("0-1")
         .arg("-negate")
-        .arg(&args.output)
+        .arg(&output)
         .status()?;
 
     if !status.success() {
