@@ -8,8 +8,6 @@ use base64::{engine::general_purpose::STANDARD, Engine};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use dotfiles_tools::banner;
-use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::Client;
 use std::io::{self, BufRead};
 use std::time::Duration;
@@ -23,8 +21,8 @@ struct Args {
     command: Option<Commands>,
 
     /// URLs to convert (reads from stdin if not provided)
-    #[arg(value_name = "URLS")]
-    urls: Vec<String>,
+    #[arg(value_name = "URL")]
+    url: Option<String>,
 
     /// MIME type (default: image/svg+xml)
     #[arg(short = 't', long, default_value = "image/svg+xml")]
@@ -72,85 +70,20 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("URL2BASE64", "data uri encoding utility", "green");
-    println!();
-
     let client = Client::builder()
         .timeout(Duration::from_secs(args.timeout))
         .build()
         .context("Failed to create HTTP client")?;
 
-    let urls: Vec<String> = if args.urls.is_empty() {
-        // Read from stdin
-        let stdin = io::stdin();
-        stdin.lock().lines().map_while(Result::ok).collect()
+    let url = args
+        .url
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
+
+    if let Ok(result) = convert_url(&client, &url, &args.mime_type) {
+        print!("{}", result);
     } else {
-        args.urls
-    };
-
-    if urls.is_empty() {
-        anyhow::bail!(Args::command().render_help());
+        anyhow::bail!("it fucked up")
     }
-
-    let pb = ProgressBar::new(urls.len() as u64);
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template("{spinner:.green} [{bar:40.cyan/blue}] {pos}/{len} {msg}")
-            .unwrap()
-            .progress_chars("=> "),
-    );
-
-    let mut success_count = 0;
-    let mut error_count = 0;
-
-    for url in &urls {
-        pb.set_message(format!("Processing {}", url.bright_black()));
-
-        match convert_url(&client, url, &args.mime_type) {
-            Ok(data_url) => {
-                println!("{}", data_url);
-                success_count += 1;
-                pb.inc(1);
-            }
-            Err(e) => {
-                error_count += 1;
-                pb.inc(1);
-
-                eprintln!(
-                    "{} {}: {}",
-                    "✗".red().bold(),
-                    url.yellow(),
-                    e.to_string().red()
-                );
-
-                if !args.skip_errors {
-                    pb.finish_and_clear();
-                    return Err(e);
-                }
-            }
-        }
-    }
-
-    pb.finish_and_clear();
-
-    println!(
-        "\n{} Converted {} URLs{}",
-        "✓".green().bold(),
-        success_count.to_string().green(),
-        if error_count > 0 {
-            format!(" ({} failed)", error_count.to_string().red())
-        } else {
-            String::new()
-        }
-    );
-
-    if error_count > 0 && !args.skip_errors {
-        anyhow::bail!(
-            "{} conversion(s) failed - use --skip-errors to ignore",
-            error_count
-        );
-    }
-
     Ok(())
 }
 
