@@ -5,7 +5,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dotfiles_tools::banner;
-use git2::{PushOptions, Repository};
+use git2::{Cred, PushOptions, RemoteCallbacks, Repository};
 use std::io;
 
 #[derive(Parser)]
@@ -89,7 +89,15 @@ fn main() -> Result<()> {
     let mut remote = repo.find_remote("origin")?;
     let refspec = format!("+refs/heads/{0}:refs/heads/{0}", branch_name);
 
+    // Set up callbacks for SSH agent or credentials
+    let mut callbacks = RemoteCallbacks::new();
+    callbacks.credentials(|_url, username_from_url, _allowed_types| {
+        Cred::ssh_key_from_agent(username_from_url.unwrap_or("git"))
+    });
+
     let mut push_opts = PushOptions::new();
+    push_opts.remote_callbacks(callbacks);
+
     remote.push(&[refspec.as_str()], Some(&mut push_opts))?;
 
     println!();
