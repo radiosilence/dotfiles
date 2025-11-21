@@ -13,13 +13,14 @@ use tempfile::TempDir;
 #[command(name = "install-font-macos")]
 #[command(about = "Install fonts from URLs", long_about = None)]
 #[command(version)]
+#[command(args_conflicts_with_subcommands = true)]
 struct Args {
     #[command(subcommand)]
     command: Option<Commands>,
 
     /// Font archive URLs
     #[arg(value_name = "URLS", required = true)]
-    urls: Vec<String>,
+    urls: Option<Vec<String>>,
 }
 
 #[derive(Subcommand)]
@@ -44,6 +45,11 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
+    let urls = args.urls.unwrap_or_else(|| {
+        Args::command().print_help().ok();
+        std::process::exit(1);
+    });
+
     banner::print_banner(
         "FONT INSTALLER",
         "download + extract + install fonts",
@@ -59,7 +65,7 @@ fn main() -> Result<()> {
 
     // Download
     banner::loading("Downloading fonts...");
-    for url in &args.urls {
+    for url in &urls {
         let status = Command::new("aria2c")
             .args(["-x", "8", "-d", dest.to_str().unwrap(), url])
             .status()?;
