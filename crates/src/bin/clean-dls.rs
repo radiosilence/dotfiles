@@ -2,7 +2,7 @@
 //!
 //! Removes .nfo, .txt, sample files, and other cruft from music/video downloads.
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
