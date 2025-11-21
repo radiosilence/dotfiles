@@ -21,7 +21,7 @@ struct Args {
 
     /// Port number to kill process on
     #[arg(value_name = "PORT")]
-    port: u16,
+    port: Option<u16>,
 
     /// Signal to send (default: TERM, also: KILL, INT, HUP, etc)
     #[arg(short, long, value_name = "SIGNAL")]
@@ -49,6 +49,11 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
+    let port = args.port.unwrap_or_else(|| {
+        Args::command().print_help().ok();
+        std::process::exit(1);
+    });
+
     use dotfiles_tools::banner;
     banner::print_glitch_header("KILL-PORT", "magenta");
     banner::loading("Scanning for process on port...");
@@ -63,8 +68,8 @@ fn main() -> Result<()> {
     // Find processes listening on the target port
     for socket in sockets {
         let matches = match socket.protocol_socket_info {
-            ProtocolSocketInfo::Tcp(tcp_info) => tcp_info.local_port == args.port,
-            ProtocolSocketInfo::Udp(udp_info) => udp_info.local_port == args.port,
+            ProtocolSocketInfo::Tcp(tcp_info) => tcp_info.local_port == port,
+            ProtocolSocketInfo::Udp(udp_info) => udp_info.local_port == port,
         };
 
         if matches {
@@ -75,7 +80,7 @@ fn main() -> Result<()> {
     }
 
     if pids.is_empty() {
-        bail!("No process found listening on port {}", args.port);
+        bail!("No process found listening on port {}", port);
     }
 
     // Display found processes
@@ -84,7 +89,7 @@ fn main() -> Result<()> {
             "{} Found process {} on port {}",
             "→".blue().bold(),
             pid.to_string().yellow(),
-            args.port.to_string().cyan()
+            port.to_string().cyan()
         );
     }
 
