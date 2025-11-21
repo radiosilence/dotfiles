@@ -113,20 +113,20 @@
       // If you don't disable them runs all of them which breaks shit
       "language_servers": ["!tsgo", "!typescript-language-server", "..."],
       "formatter": [
-        {
-          "code_action": "source.fixAll.eslint"
-        },
-        {
-          "code_action": "source.fixAll.biome"
-        },
-        {
-          "code_action": "source.organizeImports.biome"
-        },
-        {
-          "language_server": {
-            "name": "biome"
-          }
-        }
+        { "code_action": "source.fixAll.eslint" },
+        { "code_action": "source.fixAll.biome" },
+        { "code_action": "source.organizeImports.biome" },
+        { "language_server": { "name": "biome" } }
+      ]
+    },
+    "TSX": {
+      // If you don't disable them runs all of them which breaks shit
+      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
+      "formatter": [
+        { "code_action": "source.fixAll.eslint" },
+        { "code_action": "source.fixAll.biome" },
+        { "code_action": "source.organizeImports.biome" },
+        { "language_server": { "name": "biome" } }
       ]
     },
     "CSS": {
