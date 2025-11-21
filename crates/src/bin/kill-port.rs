@@ -14,6 +14,7 @@ use std::io;
 #[command(name = "kill-port")]
 #[command(about = "Kill process listening on specified port", long_about = None)]
 #[command(version)]
+#[command(args_conflicts_with_subcommands = true)]
 struct Args {
     #[command(subcommand)]
     command: Option<Commands>,

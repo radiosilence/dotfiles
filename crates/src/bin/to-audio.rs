@@ -1,10 +1,11 @@
 //! Convert audio files to various formats in parallel
 
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dotfiles_tools::{audio, banner, parallel};
-use std::path::PathBuf;
+use std::{io, path::PathBuf};
 
 #[derive(Parser)]
 #[command(name = "to-audio")]
@@ -50,6 +51,11 @@ enum Commands {
         #[arg(short = 'n', long)]
         dry_run: bool,
     },
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
 }
 
 fn main() -> Result<()> {
@@ -58,6 +64,10 @@ fn main() -> Result<()> {
     audio::check_command("ffmpeg")?;
 
     match args.command {
+        Commands::Completion { shell } => {
+            generate(shell, &mut Args::command(), "imp", &mut io::stdout());
+            Ok(())
+        }
         Commands::Flac {
             paths,
             keep,
