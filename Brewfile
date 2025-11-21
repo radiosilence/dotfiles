@@ -9,6 +9,7 @@ tap 'nanovms/ops'
 tap 'withgraphite/tap'
 tap 'metalbear-co/mirrord'
 tap 'hashicorp/tap'
+tap 'supersonic-app/supersonic'
 tap 'tursodatabase/tap'
 
 # =============================================================================
@@ -221,8 +222,8 @@ cask 'rar', args: { no_quarantine: true }, greedy: true
 cask 'tailscale', greedy: true
 cask 'aws-vpn-client', greedy: true
 cask 'mullvad-vpn', greedy: true
-cask 'steam'
-
+cask 'steam', greedy: true
+cask 'supersonic', greedy: true, args: { no_quarantine: true }
 # =============================================================================
 # CREATIVE - Adobe and audio production
 # =============================================================================

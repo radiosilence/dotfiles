@@ -18,12 +18,13 @@ use tempfile::TempDir;
 #[command(name = "imp")]
 #[command(about = "Import music from URLs", long_about = None)]
 #[command(version)]
+#[command(args_conflicts_with_subcommands = true)]
 struct Args {
     #[command(subcommand)]
     command: Option<Commands>,
 
     /// URLs to download and import
-    #[arg(value_name = "URLS", required = true)]
+    #[arg(value_name = "URLS")]
     urls: Vec<String>,
 }
 
@@ -42,6 +43,11 @@ fn main() -> Result<()> {
     if let Some(Commands::Completion { shell }) = args.command {
         generate(shell, &mut Args::command(), "imp", &mut io::stdout());
         return Ok(());
+    }
+
+    if args.urls.is_empty() {
+        Args::command().print_help()?;
+        std::process::exit(1);
     }
 
     banner::print_banner(
