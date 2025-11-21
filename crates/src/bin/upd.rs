@@ -12,7 +12,7 @@ use which::which;
 
 #[derive(Parser)]
 #[command(name = "upd")]
-#[command(about = "Parallel system update orchestrator", long_about = None)]
+#[command(about = "Update the system", long_about = None)]
 #[command(version)]
 struct Args {
     #[arg(short, long)]
