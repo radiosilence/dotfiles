@@ -7,9 +7,8 @@ use anyhow::{Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use reqwest::blocking::Client;
-use std::io::{self, BufRead};
+use std::io::{self};
 use std::time::Duration;
 
 #[derive(Parser)]
