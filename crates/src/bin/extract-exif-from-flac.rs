@@ -10,12 +10,13 @@ use tempfile::TempDir;
 
 #[derive(Parser)]
 #[command(about = "Check if FLAC embedded artwork has been stripped of EXIF data")]
+#[command(args_conflicts_with_subcommands(true))]
 struct Args {
     #[command(subcommand)]
     command: Option<Commands>,
 
     /// FLAC file to check
-    flac_file: String,
+    flac_file: Option<String>,
 }
 
 #[derive(Subcommand)]
@@ -40,6 +41,10 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
+    let flac_file = args
+        .flac_file
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
+
     // Check for required tools
     if !system::which("metaflac") {
         anyhow::bail!("metaflac not found (brew install flac)");
@@ -48,10 +53,10 @@ fn main() -> Result<()> {
         anyhow::bail!("exiftool not found (brew install exiftool)");
     }
 
-    let flac_path = Path::new(&args.flac_file);
+    let flac_path = Path::new(&flac_file);
 
     if !flac_path.exists() {
-        anyhow::bail!("File not found: {}", args.flac_file);
+        anyhow::bail!("File not found: {}", flac_file);
     }
 
     if !flac_path
@@ -59,16 +64,16 @@ fn main() -> Result<()> {
         .map(|e| e.eq_ignore_ascii_case("flac"))
         .unwrap_or(false)
     {
-        anyhow::bail!("Not a FLAC file: {}", args.flac_file);
+        anyhow::bail!("Not a FLAC file: {}", flac_file);
     }
 
     banner::print_glitch_header("EXTRACT-EXIF-FROM-FLAC", "cyan");
-    banner::status("□", "FILE", &args.flac_file, "cyan");
+    banner::status("□", "FILE", &flac_file, "cyan");
 
     // Get picture info
     let output = Command::new("metaflac")
         .args(["--list", "--block-type=PICTURE"])
-        .arg(&args.flac_file)
+        .arg(&flac_file)
         .output()?;
 
     if !output.status.success() {
@@ -99,7 +104,7 @@ fn main() -> Result<()> {
                 // Export picture
                 let export_status = Command::new("metaflac")
                     .arg(format!("--export-picture-to={}", temp_image.display()))
-                    .arg(&args.flac_file)
+                    .arg(&flac_file)
                     .stdout(std::process::Stdio::null())
                     .stderr(std::process::Stdio::null())
                     .status()?;

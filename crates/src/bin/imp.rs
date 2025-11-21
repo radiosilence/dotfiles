@@ -46,8 +46,7 @@ fn main() -> Result<()> {
     }
 
     if args.urls.is_empty() {
-        Args::command().print_help()?;
-        std::process::exit(1);
+        anyhow::bail!(Args::command().render_help());
     }
 
     banner::print_banner(

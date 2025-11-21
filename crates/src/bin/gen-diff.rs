@@ -44,18 +44,15 @@ fn main() -> Result<()> {
         anyhow::bail!("ImageMagick not installed (brew install imagemagick)");
     }
 
-    let image1 = args.image1.unwrap_or_else(|| {
-        Args::command().print_help().ok();
-        std::process::exit(1);
-    });
-    let image2 = args.image2.unwrap_or_else(|| {
-        Args::command().print_help().ok();
-        std::process::exit(1);
-    });
-    let output = args.output.unwrap_or_else(|| {
-        Args::command().print_help().ok();
-        std::process::exit(1);
-    });
+    let image1 = args
+        .image1
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
+    let image2 = args
+        .image2
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
+    let output = args
+        .output
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
     // Check if input files exist
     if !std::path::Path::new(&image1).exists() {

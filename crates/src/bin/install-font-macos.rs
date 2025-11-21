@@ -45,10 +45,9 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    let urls = args.urls.unwrap_or_else(|| {
-        Args::command().print_help().ok();
-        std::process::exit(1);
-    });
+    let urls = args
+        .urls
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
     banner::print_banner(
         "FONT INSTALLER",

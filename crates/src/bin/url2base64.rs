@@ -89,9 +89,7 @@ fn main() -> Result<()> {
     };
 
     if urls.is_empty() {
-        eprintln!("{} No URLs provided", "!".red().bold());
-        eprintln!("Usage: url2base64 <url1> [url2...] or pipe URLs via stdin");
-        std::process::exit(1);
+        anyhow::bail!(Args::command().render_help());
     }
 
     let pb = ProgressBar::new(urls.len() as u64);
@@ -147,7 +145,10 @@ fn main() -> Result<()> {
     );
 
     if error_count > 0 && !args.skip_errors {
-        std::process::exit(1);
+        anyhow::bail!(
+            "{} conversion(s) failed - use --skip-errors to ignore",
+            error_count
+        );
     }
 
     Ok(())
