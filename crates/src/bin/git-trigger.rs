@@ -61,19 +61,23 @@ fn main() -> Result<()> {
     let commit = head.peel_to_commit()?;
     let tree = commit.tree()?;
 
-    // Amend with same message and tree
+    // Amend with same message and tree - keep original parents
     let signature = repo.signature()?;
-    let parents = commit.parents().collect::<Vec<_>>();
+    let parents: Vec<_> = commit.parents().collect();
     let parent_refs: Vec<&git2::Commit> = parents.iter().collect();
 
-    repo.commit(
-        Some("HEAD"),
+    // Update HEAD reference directly for amend
+    let new_commit_oid = repo.commit(
+        None, // Don't update HEAD yet
         &signature,
         &signature,
         commit.message().unwrap_or(""),
         &tree,
         &parent_refs,
     )?;
+
+    // Now update HEAD to point to new commit
+    repo.head()?.set_target(new_commit_oid, "amend commit")?;
 
     println!("{} Force pushing...", "→".bright_magenta().bold());
 
