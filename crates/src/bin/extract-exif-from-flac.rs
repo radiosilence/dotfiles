@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{anyhow, bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
@@ -43,20 +43,20 @@ fn main() -> Result<()> {
 
     let flac_file = args
         .flac_file
-        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
+        .ok_or_else(|| anyhow!(Args::command().render_help()))?;
 
     // Check for required tools
     if !system::which("metaflac") {
-        anyhow::bail!("metaflac not found (brew install flac)");
+        bail!("metaflac not found (brew install flac)");
     }
     if !system::which("exiftool") {
-        anyhow::bail!("exiftool not found (brew install exiftool)");
+        bail!("exiftool not found (brew install exiftool)");
     }
 
     let flac_path = Path::new(&flac_file);
 
     if !flac_path.exists() {
-        anyhow::bail!("File not found: {}", flac_file);
+        bail!("File not found: {}", flac_file);
     }
 
     if !flac_path
@@ -64,7 +64,7 @@ fn main() -> Result<()> {
         .map(|e| e.eq_ignore_ascii_case("flac"))
         .unwrap_or(false)
     {
-        anyhow::bail!("Not a FLAC file: {}", flac_file);
+        bail!("Not a FLAC file: {}", flac_file);
     }
 
     banner::print_glitch_header("EXTRACT-EXIF-FROM-FLAC", "cyan");
@@ -77,7 +77,7 @@ fn main() -> Result<()> {
         .output()?;
 
     if !output.status.success() {
-        anyhow::bail!("metaflac failed");
+        bail!("metaflac failed");
     }
 
     let picture_info = String::from_utf8_lossy(&output.stdout);

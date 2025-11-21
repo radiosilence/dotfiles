@@ -2,10 +2,11 @@
 //!
 //! Removes .nfo, .txt, sample files, and other cruft from music/video downloads.
 
-use anyhow::Result;
+use anyhow::{anyhow, bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
+use dialoguer::Confirm;
 use dotfiles_tools::banner;
 use std::io;
 use std::path::PathBuf;
@@ -93,6 +94,16 @@ fn main() -> Result<()> {
 
     if args.dry_run {
         println!("{} Dry run - no files deleted", "i".blue().bold());
+        return Ok(());
+    }
+
+    let confirmed = Confirm::new()
+        .with_prompt(format!("{} Delete these directories?", "?".yellow().bold()))
+        .default(false)
+        .interact()?;
+
+    if !confirmed {
+        println!("{} Operation cancelled", "×".red().bold());
         return Ok(());
     }
 
