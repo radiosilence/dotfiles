@@ -7,12 +7,13 @@ use std::process::Command;
 
 #[derive(Parser)]
 #[command(about = "Install terminfo to remote host via SSH")]
+#[command(args_conflicts_with_subcommands = true)]
 struct Args {
     #[command(subcommand)]
     command: Option<Commands>,
 
     /// Remote host (e.g., user@hostname)
-    host: String,
+    host: Option<String>,
 }
 
 #[derive(Subcommand)]
@@ -37,8 +38,12 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
+    let host = args
+        .host
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
+
     banner::print_glitch_header("INSTALL-TERMINFO", "cyan");
-    banner::status("□", "TARGET", &args.host, "cyan");
+    banner::status("□", "TARGET", &host, "cyan");
 
     let infocmp = Command::new("infocmp").arg("-x").output()?;
 
@@ -47,7 +52,7 @@ fn main() -> Result<()> {
     }
 
     let mut child = Command::new("ssh")
-        .arg(&args.host)
+        .arg(&host)
         .arg("--")
         .arg("tic")
         .arg("-x")

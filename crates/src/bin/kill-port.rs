@@ -49,10 +49,9 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    let port = args.port.unwrap_or_else(|| {
-        Args::command().print_help().ok();
-        std::process::exit(1);
-    });
+    let port = args
+        .port
+        .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
     use dotfiles_tools::banner;
     banner::print_glitch_header("KILL-PORT", "magenta");
