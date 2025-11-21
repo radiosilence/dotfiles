@@ -45,7 +45,7 @@ fn main() -> Result<()> {
 
     banner::print_banner("GIT-TRIGGER", "CI/CD re-trigger utility", "magenta");
 
-    let repo = Repository::open(".").context("Not a git repository")?;
+    let repo = Repository::discover(".").context("Not a git repository")?;
 
     if args.dry_run {
         println!("{} Would run:", "i".blue().bold());
