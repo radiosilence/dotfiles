@@ -84,3 +84,24 @@ docker run -it dotfiles zsh
 ```
 
 All tools support `--help` and shell completions via `<tool> completion <shell>`.
+
+## Shell Completions
+
+Uses fzf-tab for fuzzy completions with previews. After setup, tab completion opens an fzf popup instead of the standard menu.
+
+**Keys:**
+
+- `Tab` - Open completion menu (fzf)
+- Type to fuzzy filter
+- `Enter` - Select
+- `<` / `>` - Switch between completion groups (files, dirs, options, etc)
+- `Ctrl-Space` - Multi-select
+
+**Previews:**
+
+- Files show syntax-highlighted content (bat)
+- Directories show contents (lsd)
+- Processes show pid/user/cpu/mem
+- Git branches show recent commits
+
+Run `regen-zsh-completions` after installing new CLI tools to generate their completions.
