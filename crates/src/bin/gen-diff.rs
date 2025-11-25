@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::{banner, system};
+use dotfiles_tools::banner;
 use std::io;
 use std::process::Command;
 
@@ -39,7 +39,7 @@ fn main() -> Result<()> {
 
     banner::header("gen-diff");
 
-    if !system::which("convert") {
+    if which::which("convert").is_err() {
         anyhow::bail!("ImageMagick not installed (brew install imagemagick)");
     }
 

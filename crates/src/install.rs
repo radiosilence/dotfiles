@@ -4,7 +4,7 @@ use std::os::unix::fs as unix_fs;
 use std::path::Path;
 use std::process::{Command, Stdio};
 
-use crate::system::which;
+use which::which;
 
 #[derive(Debug)]
 pub struct InstallSummary {
@@ -167,7 +167,7 @@ pub fn install_dotfiles() -> Result<InstallSummary> {
     }
 
     // Install sheldon plugins if available
-    if which("sheldon") {
+    if which("sheldon").is_ok() {
         let result = Command::new("sheldon")
             .arg("source")
             .stdout(Stdio::null())

@@ -1,4 +1,3 @@
-use crate::system;
 use anyhow::Result;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::fs;
@@ -58,22 +57,22 @@ pub fn regenerate_completions() -> Result<()> {
     ];
 
     for cmd in tools {
-        if system::which(cmd) {
+        if which::which(cmd).is_ok() {
             tasks.push((cmd, vec!["completion", "zsh"]));
         }
     }
 
     // Special cases
-    if system::which("gh") {
+    if which::which("gh").is_ok() {
         tasks.push(("gh", vec!["completion", "-s", "zsh"]));
     }
-    if system::which("task") {
+    if which::which("task").is_ok() {
         tasks.push(("task", vec!["--completion", "zsh"]));
     }
-    if system::which("just") {
+    if which::which("just").is_ok() {
         tasks.push(("just", vec!["--completions", "zsh"]));
     }
-    if system::which("aws-vault") {
+    if which::which("aws-vault").is_ok() {
         tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
     }
 
