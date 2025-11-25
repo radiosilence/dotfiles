@@ -1,12 +1,13 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::{banner, system::which};
+use dotfiles_tools::banner;
 use rayon::prelude::*;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use walkdir::WalkDir;
+use which::which;
 
 #[derive(Parser)]
 #[command(about = "Embed artwork into FLAC files")]
@@ -39,10 +40,10 @@ fn main() -> Result<()> {
     banner::header("EMBED-ART");
 
     // Check for required tools
-    if !which("metaflac") {
+    if which("metaflac").is_err() {
         anyhow::bail!("metaflac not found (brew install flac)");
     }
-    if !which("clean-exif") {
+    if which("clean-exif").is_err() {
         anyhow::bail!("clean-exif not found");
     }
 

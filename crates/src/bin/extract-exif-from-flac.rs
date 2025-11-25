@@ -1,7 +1,7 @@
 use anyhow::{anyhow, bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::{banner, system};
+use dotfiles_tools::banner;
 use std::io;
 use std::path::Path;
 use std::process::Command;
@@ -45,10 +45,10 @@ fn main() -> Result<()> {
         .ok_or_else(|| anyhow!(Args::command().render_help()))?;
 
     // Check for required tools
-    if !system::which("metaflac") {
+    if which::which("metaflac").is_err() {
         bail!("metaflac not found (brew install flac)");
     }
-    if !system::which("exiftool") {
+    if which::which("exiftool").is_err() {
         bail!("exiftool not found (brew install exiftool)");
     }
 
