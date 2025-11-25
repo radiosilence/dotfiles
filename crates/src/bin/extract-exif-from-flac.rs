@@ -1,7 +1,6 @@
 use anyhow::{anyhow, bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dotfiles_tools::{banner, system};
 use std::io;
 use std::path::Path;
@@ -67,8 +66,8 @@ fn main() -> Result<()> {
         bail!("Not a FLAC file: {}", flac_file);
     }
 
-    banner::print_glitch_header("EXTRACT-EXIF-FROM-FLAC", "cyan");
-    banner::status("□", "FILE", &flac_file, "cyan");
+    banner::header("EXTRACT-EXIF-FROM-FLAC");
+    banner::status("file", &flac_file);
 
     // Get picture info
     let output = Command::new("metaflac")
@@ -83,7 +82,7 @@ fn main() -> Result<()> {
     let picture_info = String::from_utf8_lossy(&output.stdout);
 
     if picture_info.trim().is_empty() {
-        println!("   {} No embedded artwork\n", "ℹ".blue());
+        banner::info("No embedded artwork");
         return Ok(());
     }
 
@@ -120,19 +119,15 @@ fn main() -> Result<()> {
                         let exif_json = String::from_utf8_lossy(&exif_output.stdout);
 
                         if has_sensitive_data(&exif_json) {
-                            println!(
-                                "   {} {} - Contains sensitive EXIF data",
-                                "⚠".yellow(),
-                                type_desc
-                            );
+                            banner::warn(&format!("{} - Contains sensitive EXIF data", type_desc));
                         } else {
-                            println!("   {} {} - Clean", "✓".green(), type_desc);
+                            banner::ok(&format!("{} - Clean", type_desc));
                         }
                     } else {
-                        println!("   {} {} - Clean (no EXIF data)", "✓".green(), type_desc);
+                        banner::ok(&format!("{} - Clean (no EXIF data)", type_desc));
                     }
                 } else {
-                    println!("   {} {} - Failed to extract", "✗".red(), type_desc);
+                    banner::err(&format!("{} - Failed to extract", type_desc));
                 }
 
                 picture_index += 1;
@@ -140,7 +135,6 @@ fn main() -> Result<()> {
         }
     }
 
-    println!();
     Ok(())
 }
 

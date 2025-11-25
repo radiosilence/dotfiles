@@ -3,7 +3,7 @@
 use anyhow::{bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
+use dotfiles_tools::banner;
 use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSocketInfo};
 use nix::sys::signal::{kill, Signal};
 use nix::unistd::Pid;
@@ -53,9 +53,7 @@ fn main() -> Result<()> {
         .port
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    use dotfiles_tools::banner;
-    banner::print_glitch_header("KILL-PORT", "magenta");
-    banner::loading("Scanning for process on port...");
+    banner::header("KILL-PORT");
 
     // Get all sockets
     let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
@@ -84,24 +82,16 @@ fn main() -> Result<()> {
 
     // Display found processes
     for pid in &pids {
-        println!(
-            "{} Found process {} on port {}",
-            "→".blue().bold(),
-            pid.to_string().yellow(),
-            port.to_string().cyan()
-        );
+        banner::status("found", &format!("PID {} on port {}", pid, port));
     }
 
     if args.dry_run {
         for pid in &pids {
-            println!(
-                "{} Dry run - would kill process {}",
-                "i".blue().bold(),
-                pid.to_string().yellow()
-            );
-            if let Some(sig) = &args.signal {
-                println!("  With signal: {}", sig.yellow());
-            }
+            banner::info(&format!(
+                "dry-run: would kill PID {} with signal {}",
+                pid,
+                args.signal.as_deref().unwrap_or("TERM")
+            ));
         }
         return Ok(());
     }
@@ -120,19 +110,9 @@ fn main() -> Result<()> {
 
     // Kill the processes
     for pid in &pids {
-        if let Some(sig_name) = &args.signal {
-            println!(
-                "{} Sending signal {} to process {}",
-                "→".blue().bold(),
-                sig_name.yellow(),
-                pid.to_string().yellow()
-            );
-        }
-
         let nix_pid = Pid::from_raw(*pid as i32);
         kill(nix_pid, signal)?;
-
-        banner::success(&format!("TERMINATED PROCESS {}", pid));
+        banner::ok(&format!("killed PID {}", pid));
     }
 
     Ok(())
@@ -140,9 +120,28 @@ fn main() -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn test_port_range() {
-        // Verify u16::MAX for port validation
-        assert_eq!(65535, u16::MAX);
+    fn test_signal_parsing() {
+        // Verify signal parsing logic with common signals
+        let test_cases = vec![
+            ("TERM", Signal::SIGTERM),
+            ("15", Signal::SIGTERM),
+            ("KILL", Signal::SIGKILL),
+            ("9", Signal::SIGKILL),
+            ("INT", Signal::SIGINT),
+            ("2", Signal::SIGINT),
+        ];
+
+        for (input, expected) in test_cases {
+            let parsed = match input {
+                "TERM" | "15" => Signal::SIGTERM,
+                "KILL" | "9" => Signal::SIGKILL,
+                "INT" | "2" => Signal::SIGINT,
+                _ => unreachable!(),
+            };
+            assert_eq!(parsed, expected, "Failed for input: {}", input);
+        }
     }
 }

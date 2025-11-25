@@ -6,7 +6,6 @@
 use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dialoguer::Confirm;
 use dotfiles_tools::banner;
 use git2::{BranchType, FetchOptions, Repository};
@@ -42,15 +41,12 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("GIT-SYNC", "branch cleanup util", "yellow");
+    banner::header("GIT-SYNC");
 
     let repo = Repository::open(".").context("Not a git repository")?;
 
     // Prune and fetch
-    println!(
-        "{} Pruning and fetching from origin...",
-        "→".bright_yellow().bold()
-    );
+    banner::info("Pruning and fetching from origin");
 
     let mut remote = repo.find_remote("origin")?;
     let mut fetch_opts = FetchOptions::new();
@@ -63,6 +59,48 @@ fn main() -> Result<()> {
     )?;
 
     // Find branches with deleted remotes
+    let gone_branches = find_gone_branches(&repo)?;
+
+    if gone_branches.is_empty() {
+        banner::ok("No stale branches found");
+        return Ok(());
+    }
+
+    banner::status("Found stale branches", &gone_branches.len().to_string());
+    println!();
+    for branch in &gone_branches {
+        println!("    {}", branch);
+    }
+    println!();
+
+    let confirmed = if args.yes {
+        true
+    } else {
+        Confirm::new()
+            .with_prompt("Delete these branches?")
+            .default(false)
+            .interact()?
+    };
+
+    if !confirmed {
+        banner::warn("Cancelled");
+        return Ok(());
+    }
+
+    banner::info("Deleting branches");
+    for branch_name in &gone_branches {
+        let mut branch = repo.find_branch(branch_name, BranchType::Local)?;
+        branch.delete()?;
+        println!("    {}", branch_name);
+    }
+
+    banner::ok(&format!("Deleted {} branches", gone_branches.len()));
+
+    Ok(())
+}
+
+/// Find local branches whose upstream remotes no longer exist
+fn find_gone_branches(repo: &Repository) -> Result<Vec<String>> {
     let mut gone_branches = Vec::new();
 
     for branch in repo.branches(Some(BranchType::Local))? {
@@ -81,72 +119,5 @@ fn main() -> Result<()> {
         }
     }
 
-    if gone_branches.is_empty() {
-        println!("{} No stale branches found", "✓".green().bold());
-        return Ok(());
-    }
-
-    println!();
-    println!(
-        "{} Found {} stale branches:",
-        "!".yellow().bold(),
-        gone_branches.len().to_string().bright_white().bold()
-    );
-
-    for branch in &gone_branches {
-        println!("  {} {}", "×".red().bold(), branch.white());
-    }
-
-    println!();
-
-    let confirmed = if args.yes {
-        true
-    } else {
-        Confirm::new()
-            .with_prompt(format!("{} Delete these branches?", "?".yellow().bold()))
-            .default(false)
-            .interact()?
-    };
-
-    if !confirmed {
-        println!("{} Cancelled", "×".red().bold());
-        return Ok(());
-    }
-
-    println!();
-    println!("{} Deleting branches...", "→".bright_yellow().bold());
-
-    for branch_name in &gone_branches {
-        let mut branch = repo.find_branch(branch_name, BranchType::Local)?;
-        branch.delete()?;
-        println!("  {} {}", "✓".green().bold(), branch_name.bright_black());
-    }
-
-    println!();
-    println!(
-        "{} Deleted {} branches",
-        "✓".green().bold(),
-        gone_branches.len().to_string().green().bold()
-    );
-
-    Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_branch_type_enum() {
-        // Just verify the enum is usable
-        let _local = BranchType::Local;
-        let _remote = BranchType::Remote;
-    }
-
-    #[test]
-    fn test_fetch_prune_enum() {
-        // Verify FetchPrune is available
-        let _prune_on = git2::FetchPrune::On;
-        let _prune_off = git2::FetchPrune::Off;
-    }
+    Ok(gone_branches)
 }

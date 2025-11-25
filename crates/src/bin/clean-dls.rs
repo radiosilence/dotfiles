@@ -5,7 +5,6 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dialoguer::Confirm;
 use dotfiles_tools::banner;
 use std::io;
@@ -47,14 +46,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("CLEAN-DLS", "scene release garbage removal", "red");
-
-    println!("{} Scanning for garbage files...", "→".bright_red().bold());
-    println!(
-        "{} Patterns: .ds_store, *.nfo, *.txt, *.png, *.jpg, *.jpeg, *.sfv, *sample*, ._*",
-        "→".bright_red().bold()
-    );
-    println!();
+    banner::header("CLEAN-DLS");
 
     let mut to_delete = Vec::new();
 
@@ -73,37 +65,29 @@ fn main() -> Result<()> {
     }
 
     if to_delete.is_empty() {
-        println!("{} No garbage files found", "✓".green().bold());
+        banner::ok("No garbage files found");
         return Ok(());
     }
 
-    println!(
-        "{} Found {} garbage files:",
-        "!".yellow().bold(),
-        to_delete.len().to_string().red().bold()
-    );
+    banner::warn(&format!("Found {} garbage files", to_delete.len()));
 
     for file in &to_delete {
-        println!(
-            "  {} {}",
-            "×".red().bold(),
-            file.display().to_string().bright_black()
-        );
+        println!("  {}", file.display());
     }
-    println!();
 
     if args.dry_run {
-        println!("{} Dry run - no files deleted", "i".blue().bold());
+        banner::status("Mode", "dry-run");
         return Ok(());
     }
 
+    println!();
     let confirmed = Confirm::new()
-        .with_prompt(format!("{} Delete these directories?", "?".yellow().bold()))
+        .with_prompt("Delete these files?")
         .default(false)
         .interact()?;
 
     if !confirmed {
-        println!("{} Operation cancelled", "×".red().bold());
+        banner::err("Cancelled");
         return Ok(());
     }
 
@@ -114,19 +98,9 @@ fn main() -> Result<()> {
         }
     }
 
-    println!(
-        "{} Deleted {} files",
-        "✓".green().bold(),
-        deleted.to_string().green().bold()
-    );
+    banner::ok(&format!("Deleted {deleted} files"));
 
-    // Run prune if it exists
-    println!();
-    println!(
-        "{} Running prune to clean small directories...",
-        "→".bright_red().bold()
-    );
-
+    // Run prune if it exists to clean up empty directories
     let _ = Command::new("prune").args(&args.paths).status();
 
     Ok(())
@@ -150,68 +124,63 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_should_delete_ds_store() {
+    fn should_delete_file_catches_all_patterns() {
+        // DS_Store files
         assert!(should_delete_file(".DS_Store"));
         assert!(should_delete_file(".ds_store"));
-    }
 
-    #[test]
-    fn test_should_delete_nfo() {
+        // Scene release metadata
         assert!(should_delete_file("readme.nfo"));
         assert!(should_delete_file("README.NFO"));
-    }
+        assert!(should_delete_file("info.txt"));
+        assert!(should_delete_file("checksums.sfv"));
 
-    #[test]
-    fn test_should_delete_txt() {
-        assert!(should_delete_file("readme.txt"));
-        assert!(should_delete_file("info.TXT"));
-    }
-
-    #[test]
-    fn test_should_delete_images() {
+        // Images
         assert!(should_delete_file("cover.png"));
         assert!(should_delete_file("image.jpg"));
         assert!(should_delete_file("photo.jpeg"));
-        assert!(should_delete_file("COVER.PNG"));
-    }
 
-    #[test]
-    fn test_should_delete_sfv() {
-        assert!(should_delete_file("checksums.sfv"));
-        assert!(should_delete_file("file.SFV"));
-    }
-
-    #[test]
-    fn test_should_delete_sample() {
+        // Sample files
         assert!(should_delete_file("sample.mp3"));
         assert!(should_delete_file("track-sample.flac"));
         assert!(should_delete_file("SAMPLE.WAV"));
-    }
 
-    #[test]
-    fn test_should_delete_resource_fork() {
+        // macOS resource forks
         assert!(should_delete_file("._file.txt"));
         assert!(should_delete_file("._Document.pdf"));
     }
 
     #[test]
-    fn test_should_not_delete_music() {
+    fn should_delete_file_preserves_real_content() {
         assert!(!should_delete_file("song.mp3"));
         assert!(!should_delete_file("track.flac"));
         assert!(!should_delete_file("audio.wav"));
-    }
-
-    #[test]
-    fn test_should_not_delete_normal_files() {
         assert!(!should_delete_file("document.pdf"));
         assert!(!should_delete_file("script.sh"));
         assert!(!should_delete_file("config.json"));
     }
 
     #[test]
-    fn test_case_insensitive() {
+    fn should_delete_file_is_case_insensitive() {
         assert!(should_delete_file("README.NFO"));
         assert!(should_delete_file("Info.TxT"));
         assert!(should_delete_file("SAMPLE-track.mp3"));
+        assert!(should_delete_file(".DS_STORE"));
+    }
+
+    #[test]
+    fn should_delete_file_handles_edge_cases() {
+        // Contains sample anywhere in name
+        assert!(should_delete_file("samplesong.mp3"));
+        assert!(should_delete_file("song_sample_01.flac"));
+
+        // Resource fork prefix
+        assert!(should_delete_file("._"));
+        assert!(should_delete_file("._something"));
+
+        // Exact .ds_store match
+        assert!(should_delete_file(".ds_store"));
+        assert!(!should_delete_file("ds_store"));
+        assert!(!should_delete_file(".ds_store.backup"));
     }
 }

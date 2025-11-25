@@ -6,7 +6,6 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dialoguer::Confirm;
 use dotfiles_tools::banner;
 use std::io;
@@ -77,17 +76,10 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // ASCII art banner with 90s cracker aesthetic
-    banner::print_banner("PRUNE", "directory cleanup utility", "cyan");
+    banner::header("PRUNE");
 
     let min_size_bytes = args.min_size * 1024;
-
-    println!(
-        "{} Scanning for directories < {}...",
-        "→".bright_cyan().bold(),
-        format_size(min_size_bytes).yellow()
-    );
-    println!();
+    banner::status("threshold", &format_size(min_size_bytes));
 
     let mut candidates = Vec::new();
 
@@ -112,31 +104,22 @@ fn main() -> Result<()> {
     }
 
     if candidates.is_empty() {
-        println!(
-            "{} No directories found below {}",
-            "✓".green().bold(),
-            format_size(min_size_bytes).yellow()
-        );
+        banner::ok(&format!(
+            "No directories found below {}",
+            format_size(min_size_bytes)
+        ));
         return Ok(());
     }
 
     // Sort by size ascending
     candidates.sort_by_key(|(_, size)| *size);
 
-    println!(
-        "{} Found {} candidates:",
-        "!".yellow().bold(),
-        candidates.len().to_string().bright_white().bold()
-    );
+    banner::info(&format!("Found {} candidates", candidates.len()));
     println!();
 
-    // Display candidates in fancy table
-    println!(
-        "  {:<50} {:>12}",
-        "PATH".bright_black(),
-        "SIZE".bright_black()
-    );
-    println!("  {}", "─".repeat(64).bright_black());
+    // Display candidates in table
+    println!("  {:<50} {:>12}", "PATH", "SIZE");
+    println!("  {}", "─".repeat(64));
 
     for (path, size) in &candidates {
         let display_path = path.display().to_string();
@@ -146,20 +129,13 @@ fn main() -> Result<()> {
             display_path
         };
 
-        println!(
-            "  {:<50} {:>12}",
-            display_path.white(),
-            format_size(*size).red().bold()
-        );
+        println!("  {:<50} {:>12}", display_path, format_size(*size));
     }
 
     println!();
-    println!(
-        "{} Total to delete: {}",
-        "→".bright_cyan().bold(),
-        format_size(candidates.iter().map(|(_, s)| s).sum())
-            .red()
-            .bold()
+    banner::status(
+        "total",
+        &format_size(candidates.iter().map(|(_, s)| s).sum()),
     );
     println!();
 
@@ -167,47 +143,32 @@ fn main() -> Result<()> {
         true
     } else {
         Confirm::new()
-            .with_prompt(format!("{} Delete these directories?", "?".yellow().bold()))
+            .with_prompt("Delete these directories?")
             .default(false)
             .interact()?
     };
 
     if !confirmed {
-        println!("{} Operation cancelled", "×".red().bold());
+        banner::warn("Operation cancelled");
         return Ok(());
     }
 
     println!();
-    println!("{} Deleting...", "→".bright_cyan().bold());
-
     let mut deleted = 0;
     for (path, _) in &candidates {
         match std::fs::remove_dir_all(path) {
             Ok(_) => {
-                println!(
-                    "  {} {}",
-                    "×".red().bold(),
-                    path.display().to_string().bright_black()
-                );
+                println!("  × {}", path.display());
                 deleted += 1;
             }
             Err(e) => {
-                eprintln!(
-                    "  {} {}: {}",
-                    "!".yellow().bold(),
-                    path.display().to_string().yellow(),
-                    e.to_string().red()
-                );
+                eprintln!("  ! {}: {}", path.display(), e);
             }
         }
     }
 
     println!();
-    println!(
-        "{} Deleted {} directories",
-        "✓".green().bold(),
-        deleted.to_string().green().bold()
-    );
+    banner::ok(&format!("Deleted {} directories", deleted));
 
     Ok(())
 }

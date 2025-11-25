@@ -3,7 +3,6 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dotfiles_tools::banner;
 use std::io;
 use std::process::Command;
@@ -49,22 +48,16 @@ fn main() -> Result<()> {
         .urls
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    banner::print_banner(
-        "FONT INSTALLER",
-        "download + extract + install fonts",
-        "magenta",
-    );
+    banner::header("FONT INSTALLER");
 
     let temp_dir = TempDir::new()?;
     let dest = temp_dir.path();
 
-    banner::status("□", "TEMP DIR", &dest.display().to_string(), "magenta");
-    banner::divider("magenta");
-    println!();
+    banner::status("temp dir", &dest.display().to_string());
 
     // Download
-    banner::loading("Downloading fonts...");
     for url in &urls {
+        banner::info(&format!("downloading {}", url));
         let status = Command::new("aria2c")
             .args(["-x", "8", "-d", dest.to_str().unwrap(), url])
             .status()?;
@@ -75,7 +68,7 @@ fn main() -> Result<()> {
     }
 
     // Extract
-    banner::loading("Extracting archives...");
+    banner::info("extracting archives");
     for entry in std::fs::read_dir(dest)? {
         let entry = entry?;
         let path = entry.path();
@@ -89,7 +82,7 @@ fn main() -> Result<()> {
     }
 
     // Install fonts
-    banner::loading("Installing fonts...");
+    banner::info("installing fonts");
     let fonts_dir = dirs::home_dir().unwrap().join("Library/Fonts");
 
     std::fs::create_dir_all(&fonts_dir)?;
@@ -102,18 +95,13 @@ fn main() -> Result<()> {
                 if is_font_extension(ext) {
                     let dest_path = fonts_dir.join(entry.file_name());
                     std::fs::copy(entry.path(), &dest_path)?;
-                    println!(
-                        "   {} {}",
-                        "→".bright_black(),
-                        entry.file_name().to_string_lossy().white()
-                    );
                     installed += 1;
                 }
             }
         }
     }
 
-    banner::success(&format!("INSTALLED {} FONTS", installed));
+    banner::ok(&format!("installed {} fonts", installed));
 
     Ok(())
 }
@@ -144,16 +132,5 @@ mod tests {
         assert!(!is_font_extension("zip"));
         assert!(!is_font_extension("pdf"));
         assert!(!is_font_extension("woff"));
-    }
-
-    #[test]
-    fn test_font_dir_creation() {
-        // Test that we can construct the fonts directory path
-        if let Some(home) = dirs::home_dir() {
-            let fonts_dir = home.join("Library/Fonts");
-            assert!(fonts_dir.to_str().is_some());
-            assert!(fonts_dir.to_string_lossy().contains("Library"));
-            assert!(fonts_dir.to_string_lossy().contains("Fonts"));
-        }
     }
 }

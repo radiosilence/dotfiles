@@ -3,7 +3,6 @@
 use anyhow::{bail, Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dialoguer::Editor;
 use dotfiles_tools::banner;
 use git2::{BranchType, Repository};
@@ -43,7 +42,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("GIT-SQUASH", "commit consolidator", "red");
+    banner::header("git-squash");
 
     let repo = Repository::open(".").context("Not a git repository")?;
 
@@ -57,17 +56,8 @@ fn main() -> Result<()> {
         bail!("Already on parent branch '{}'", args.parent);
     }
 
-    println!(
-        "{} Current branch: {}",
-        "→".bright_red().bold(),
-        current_branch.cyan()
-    );
-    println!(
-        "{} Parent branch: {}",
-        "→".bright_red().bold(),
-        args.parent.yellow()
-    );
-    println!();
+    banner::status("Current branch", current_branch);
+    banner::status("Parent branch", &args.parent);
 
     // Find merge base
     let current_commit = head
@@ -87,11 +77,7 @@ fn main() -> Result<()> {
         .merge_base(current_commit.id(), parent_commit.id())
         .context("Failed to find merge base")?;
 
-    println!(
-        "{} Merge base: {}",
-        "→".bright_red().bold(),
-        merge_base.to_string().bright_black()
-    );
+    banner::status("Merge base", &merge_base.to_string()[..7]);
 
     // Collect commits to squash
     let mut revwalk = repo.revwalk()?;
@@ -110,7 +96,7 @@ fn main() -> Result<()> {
     }
 
     if commits.is_empty() {
-        println!("{} No commits to squash", "✓".green().bold());
+        banner::ok("No commits to squash");
         return Ok(());
     }
 
@@ -118,25 +104,20 @@ fn main() -> Result<()> {
     commits.reverse();
 
     println!();
-    println!(
-        "{} Found {} commits to squash:",
-        "!".yellow().bold(),
-        commits.len().to_string().bright_white().bold()
-    );
-
+    banner::info(&format!("Found {} commits to squash:", commits.len()));
     for (i, (oid, msg, author)) in commits.iter().enumerate() {
         println!(
-            "  {} {} {} {}",
-            format!("{:>2}.", i + 1).bright_black(),
-            oid.to_string()[..7].yellow(),
-            msg.white(),
-            format!("({})", author).bright_black()
+            "    {}. {} {} ({})",
+            i + 1,
+            &oid.to_string()[..7],
+            msg,
+            author
         );
     }
     println!();
 
     if args.dry_run {
-        println!("{} Dry run - no changes made", "i".blue().bold());
+        banner::info("Dry run - no changes made");
         return Ok(());
     }
 
@@ -154,7 +135,7 @@ fn main() -> Result<()> {
         .context("Failed to open editor")?
         .unwrap_or(combined_message);
 
-    println!("{} Squashing commits...", "→".bright_red().bold());
+    banner::info("Squashing commits...");
 
     // Reset to merge base (soft)
     let merge_base_commit = repo.find_commit(merge_base)?;
@@ -178,18 +159,8 @@ fn main() -> Result<()> {
     )
     .context("Failed to create squashed commit")?;
 
-    println!();
-    println!(
-        "{} Squashed {} commits into one",
-        "✓".green().bold(),
-        commits.len().to_string().green().bold()
-    );
-    println!();
-    println!(
-        "{} Force push required: {}",
-        "!".yellow().bold(),
-        "git push --force".bright_white().bold()
-    );
+    banner::ok(&format!("Squashed {} commits into one", commits.len()));
+    banner::warn("Force push required: git push --force");
 
     Ok(())
 }
@@ -208,5 +179,11 @@ mod tests {
     fn test_custom_parent_branch() {
         let args = Args::parse_from(["git-squash", "develop"]);
         assert_eq!(args.parent, "develop");
+    }
+
+    #[test]
+    fn test_dry_run_flag() {
+        let args = Args::parse_from(["git-squash", "-n"]);
+        assert!(args.dry_run);
     }
 }

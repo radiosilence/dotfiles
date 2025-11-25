@@ -37,9 +37,8 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("GEN-DIFF", "visual image diff generator", "red");
+    banner::header("gen-diff");
 
-    // Check if ImageMagick is installed
     if !system::which("convert") {
         anyhow::bail!("ImageMagick not installed (brew install imagemagick)");
     }
@@ -54,7 +53,6 @@ fn main() -> Result<()> {
         .output
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    // Check if input files exist
     if !std::path::Path::new(&image1).exists() {
         anyhow::bail!("Image 1 not found: {}", image1);
     }
@@ -62,12 +60,10 @@ fn main() -> Result<()> {
         anyhow::bail!("Image 2 not found: {}", image2);
     }
 
-    banner::status("□", "IMAGE 1", &image1, "red");
-    banner::status("□", "IMAGE 2", &image2, "red");
-    banner::status("□", "OUTPUT", &output, "red");
-    banner::divider("red");
+    banner::status("image1", &image1);
+    banner::status("image2", &image2);
+    banner::status("output", &output);
 
-    // Create visual diff
     let status = Command::new("convert")
         .arg(&image1)
         .arg(&image2)
@@ -94,7 +90,7 @@ fn main() -> Result<()> {
         anyhow::bail!("ImageMagick convert failed");
     }
 
-    banner::success("VISUAL DIFF CREATED");
+    banner::ok("visual diff created");
 
     Ok(())
 }
