@@ -7,9 +7,6 @@ use rayon::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-/// Supported input audio formats
-pub const AUDIO_EXTENSIONS: &[&str] = &["wav", "aiff", "flac", "m4a", "mp3", "ogg"];
-
 /// Convert audio file using ffmpeg
 ///
 /// # Errors
