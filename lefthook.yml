@@ -15,7 +15,7 @@ pre-commit:
       stage_fixed: true
 
     shfmt:
-      glob: "*.{sh,bash,zsh}"
+      glob: "*.{sh,bash}"
       run: |
         if command -v shfmt >/dev/null 2>&1; then
           shfmt -w -s -i 2 {staged_files}

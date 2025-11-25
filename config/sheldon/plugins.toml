@@ -21,6 +21,11 @@ github = "zsh-users/zsh-autosuggestions"
 [plugins.zsh-completions]
 github = "zsh-users/zsh-completions"
 
+# fzf-tab: Replace zsh's default completion menu with fzf
+# Fuzzy search through completions, file previews, the works
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+
 # Search through command history with up/down arrows
 # Use ↑/↓ to search history entries that match your current partial command
 [plugins.zsh-history-substring-search]
