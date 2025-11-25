@@ -1,7 +1,7 @@
 use anyhow::{anyhow, bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::io;
 use std::path::Path;
 use std::process::Command;
@@ -66,8 +66,8 @@ fn main() -> Result<()> {
         bail!("Not a FLAC file: {}", flac_file);
     }
 
-    banner::header("EXTRACT-EXIF-FROM-FLAC");
-    banner::status("file", &flac_file);
+    println!("\n/// {}\n", "EXTRACT-EXIF-FROM-FLAC".bold());
+    println!("  {} file: {}", "→".bright_black(), flac_file);
 
     // Get picture info
     let output = Command::new("metaflac")
@@ -82,7 +82,7 @@ fn main() -> Result<()> {
     let picture_info = String::from_utf8_lossy(&output.stdout);
 
     if picture_info.trim().is_empty() {
-        banner::info("No embedded artwork");
+        println!("  {} No embedded artwork", "·".bright_black());
         return Ok(());
     }
 
@@ -119,15 +119,19 @@ fn main() -> Result<()> {
                         let exif_json = String::from_utf8_lossy(&exif_output.stdout);
 
                         if has_sensitive_data(&exif_json) {
-                            banner::warn(&format!("{} - Contains sensitive EXIF data", type_desc));
+                            println!(
+                                "  {} {} - Contains sensitive EXIF data",
+                                "!".yellow(),
+                                type_desc
+                            );
                         } else {
-                            banner::ok(&format!("{} - Clean", type_desc));
+                            println!("  {} {} - Clean", "✓".green(), type_desc);
                         }
                     } else {
-                        banner::ok(&format!("{} - Clean (no EXIF data)", type_desc));
+                        println!("  {} {} - Clean (no EXIF data)", "✓".green(), type_desc);
                     }
                 } else {
-                    banner::err(&format!("{} - Failed to extract", type_desc));
+                    println!("  {} {} - Failed to extract", "✗".red(), type_desc);
                 }
 
                 picture_index += 1;

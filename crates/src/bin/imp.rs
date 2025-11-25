@@ -5,7 +5,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use rayon::prelude::*;
 use reqwest::blocking::Client;
 use std::fs::File;
@@ -52,12 +52,12 @@ fn main() -> Result<()> {
     let temp_dir = TempDir::new()?;
     let dest = temp_dir.path();
 
-    banner::header("MUSIC IMPORTER");
-    banner::status("temp dir", &dest.display().to_string());
-    banner::status("urls", &args.urls.len().to_string());
+    println!("\n/// {}\n", "MUSIC IMPORTER".bold());
+    println!("  {} temp dir: {}", "→".bright_black(), dest.display());
+    println!("  {} urls: {}", "→".bright_black(), args.urls.len());
 
     // Download in parallel
-    banner::info("Downloading archives...");
+    println!("  {} Downloading archives...", "·".bright_black());
 
     let client = Client::builder()
         .timeout(std::time::Duration::from_secs(300))
@@ -75,14 +75,18 @@ fn main() -> Result<()> {
         .collect();
 
     if successful_downloads.is_empty() {
-        banner::err("No files downloaded successfully");
+        println!("  {} No files downloaded successfully", "✗".red());
         anyhow::bail!("Download failed");
     }
 
-    banner::ok(&format!("Downloaded {} files", successful_downloads.len()));
+    println!(
+        "  {} Downloaded {} files",
+        "✓".green(),
+        successful_downloads.len()
+    );
 
     // Extract archives in parallel
-    banner::info("Extracting archives...");
+    println!("  {} Extracting archives...", "·".bright_black());
 
     let extract_results: Vec<Result<()>> = successful_downloads
         .par_iter()
@@ -95,17 +99,17 @@ fn main() -> Result<()> {
         .collect();
 
     let extract_success = extract_results.iter().filter(|r| r.is_ok()).count();
-    banner::ok(&format!("Extracted {} archives", extract_success));
+    println!("  {} Extracted {} archives", "✓".green(), extract_success);
 
     // Show extracted files
-    banner::info("Files:");
+    println!("  {} Files:", "·".bright_black());
     let _ = Command::new("lsd")
         .args(["--tree", dest.to_str().unwrap()])
         .status()
         .or_else(|_| Command::new("tree").arg(dest.to_str().unwrap()).status());
 
     // Import to beets with stdin exposed for user input
-    banner::info("Importing to beets...");
+    println!("  {} Importing to beets...", "·".bright_black());
 
     let status = Command::new("beet")
         .args(["import", dest.to_str().unwrap()])
@@ -113,11 +117,11 @@ fn main() -> Result<()> {
         .status()?;
 
     if !status.success() {
-        banner::err("Beets import failed");
+        println!("  {} Beets import failed", "✗".red());
         anyhow::bail!("Import failed");
     }
 
-    banner::ok("Import complete");
+    println!("  {} Import complete", "✓".green());
 
     Ok(())
 }

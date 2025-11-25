@@ -3,7 +3,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::io;
 use std::process::Command;
 use tempfile::TempDir;
@@ -48,16 +48,16 @@ fn main() -> Result<()> {
         .urls
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    banner::header("FONT INSTALLER");
+    println!("\n/// {}\n", "FONT INSTALLER".bold());
 
     let temp_dir = TempDir::new()?;
     let dest = temp_dir.path();
 
-    banner::status("temp dir", &dest.display().to_string());
+    println!("  {} temp dir: {}", "→".bright_black(), dest.display());
 
     // Download
     for url in &urls {
-        banner::info(&format!("downloading {}", url));
+        println!("  {} downloading {}", "·".bright_black(), url);
         let status = Command::new("aria2c")
             .args(["-x", "8", "-d", dest.to_str().unwrap(), url])
             .status()?;
@@ -68,7 +68,7 @@ fn main() -> Result<()> {
     }
 
     // Extract
-    banner::info("extracting archives");
+    println!("  {} extracting archives", "·".bright_black());
     for entry in std::fs::read_dir(dest)? {
         let entry = entry?;
         let path = entry.path();
@@ -82,7 +82,7 @@ fn main() -> Result<()> {
     }
 
     // Install fonts
-    banner::info("installing fonts");
+    println!("  {} installing fonts", "·".bright_black());
     let fonts_dir = dirs::home_dir().unwrap().join("Library/Fonts");
 
     std::fs::create_dir_all(&fonts_dir)?;
@@ -101,7 +101,7 @@ fn main() -> Result<()> {
         }
     }
 
-    banner::ok(&format!("installed {} fonts", installed));
+    println!("  {} installed {} fonts", "✓".green(), installed);
 
     Ok(())
 }

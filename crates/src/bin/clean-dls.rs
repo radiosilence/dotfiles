@@ -5,8 +5,8 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
+use colored::Colorize;
 use dialoguer::Confirm;
-use dotfiles_tools::banner;
 use std::io;
 use std::path::PathBuf;
 use std::process::Command;
@@ -46,7 +46,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("CLEAN-DLS");
+    println!("\n/// {}\n", "CLEAN-DLS".bold());
 
     let mut to_delete = Vec::new();
 
@@ -65,18 +65,18 @@ fn main() -> Result<()> {
     }
 
     if to_delete.is_empty() {
-        banner::ok("No garbage files found");
+        println!("  {} No garbage files found", "✓".green());
         return Ok(());
     }
 
-    banner::warn(&format!("Found {} garbage files", to_delete.len()));
+    println!("  {} Found {} garbage files", "!".yellow(), to_delete.len());
 
     for file in &to_delete {
         println!("  {}", file.display());
     }
 
     if args.dry_run {
-        banner::status("Mode", "dry-run");
+        println!("  {} Mode: dry-run", "→".bright_black());
         return Ok(());
     }
 
@@ -87,7 +87,7 @@ fn main() -> Result<()> {
         .interact()?;
 
     if !confirmed {
-        banner::err("Cancelled");
+        println!("  {} Cancelled", "✗".red());
         return Ok(());
     }
 
@@ -98,7 +98,7 @@ fn main() -> Result<()> {
         }
     }
 
-    banner::ok(&format!("Deleted {deleted} files"));
+    println!("  {} Deleted {deleted} files", "✓".green());
 
     // Run prune if it exists to clean up empty directories
     let _ = Command::new("prune").args(&args.paths).status();

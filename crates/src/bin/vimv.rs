@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::fs;
 use std::io::{self, Write};
 use std::process::Command;
@@ -34,7 +34,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("VIMV");
+    println!("\n/// {}\n", "VIMV".bold());
 
     // Get list of files
     let files: Vec<String> = if args.files.is_empty() {
@@ -48,11 +48,11 @@ fn main() -> Result<()> {
     };
 
     if files.is_empty() {
-        banner::warn("No files found");
+        println!("  {} No files found", "!".yellow());
         return Ok(());
     }
 
-    banner::status("files", &files.len().to_string());
+    println!("  {} files: {}", "→".bright_black(), files.len());
 
     // Create temp file with filenames
     let mut temp_file = NamedTempFile::new()?;
@@ -101,16 +101,16 @@ fn main() -> Result<()> {
 
             if is_git_tracked {
                 Command::new("git").args(["mv", "--", old, new]).status()?;
-                banner::info(&format!("git mv {} → {}", old, new));
+                println!("  {} git mv {} → {}", "·".bright_black(), old, new);
             } else {
                 fs::rename(old, new)?;
-                banner::info(&format!("mv {} → {}", old, new));
+                println!("  {} mv {} → {}", "·".bright_black(), old, new);
             }
             count += 1;
         }
     }
 
-    banner::ok(&format!("{} files renamed", count));
+    println!("  {} {} files renamed", "✓".green(), count);
 
     Ok(())
 }

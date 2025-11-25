@@ -3,7 +3,7 @@
 use anyhow::{bail, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSocketInfo};
 use nix::sys::signal::{kill, Signal};
 use nix::unistd::Pid;
@@ -53,7 +53,7 @@ fn main() -> Result<()> {
         .port
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    banner::header("KILL-PORT");
+    println!("\n/// {}\n", "KILL-PORT".bold());
 
     // Get all sockets
     let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
@@ -82,16 +82,22 @@ fn main() -> Result<()> {
 
     // Display found processes
     for pid in &pids {
-        banner::status("found", &format!("PID {} on port {}", pid, port));
+        println!(
+            "  {} found: PID {} on port {}",
+            "→".bright_black(),
+            pid,
+            port
+        );
     }
 
     if args.dry_run {
         for pid in &pids {
-            banner::info(&format!(
-                "dry-run: would kill PID {} with signal {}",
+            println!(
+                "  {} dry-run: would kill PID {} with signal {}",
+                "·".bright_black(),
                 pid,
                 args.signal.as_deref().unwrap_or("TERM")
-            ));
+            );
         }
         return Ok(());
     }
@@ -112,7 +118,7 @@ fn main() -> Result<()> {
     for pid in &pids {
         let nix_pid = Pid::from_raw(*pid as i32);
         kill(nix_pid, signal)?;
-        banner::ok(&format!("killed PID {}", pid));
+        println!("  {} killed PID {}", "✓".green(), pid);
     }
 
     Ok(())

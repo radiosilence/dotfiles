@@ -3,7 +3,7 @@
 use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use git2::{Cred, PushOptions, RemoteCallbacks, Repository};
 use std::io;
 
@@ -42,14 +42,14 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("GIT-TRIGGER");
+    println!("\n/// {}\n", "GIT-TRIGGER".bold());
 
     let repo = Repository::discover(".").context("Not a git repository")?;
 
     if args.dry_run {
-        banner::info("Dry run - would execute:");
-        banner::info("  git commit --amend --no-edit");
-        banner::info("  git push --force");
+        println!("  {} Dry run - would execute:", "·".bright_black());
+        println!("  {}   git commit --amend --no-edit", "·".bright_black());
+        println!("  {}   git push --force", "·".bright_black());
         return Ok(());
     }
 
@@ -92,7 +92,7 @@ fn main() -> Result<()> {
 
     remote.push(&[refspec.as_str()], Some(&mut push_opts))?;
 
-    banner::ok("CI/CD triggered");
+    println!("  {} CI/CD triggered", "✓".green());
 
     Ok(())
 }

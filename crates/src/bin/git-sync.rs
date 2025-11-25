@@ -6,8 +6,8 @@
 use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
+use colored::Colorize;
 use dialoguer::Confirm;
-use dotfiles_tools::banner;
 use git2::{BranchType, FetchOptions, Repository};
 use std::io;
 
@@ -41,12 +41,12 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("GIT-SYNC");
+    println!("\n/// {}\n", "GIT-SYNC".bold());
 
     let repo = Repository::open(".").context("Not a git repository")?;
 
     // Prune and fetch
-    banner::info("Pruning and fetching from origin");
+    println!("  {} Pruning and fetching from origin", "·".bright_black());
 
     let mut remote = repo.find_remote("origin")?;
     let mut fetch_opts = FetchOptions::new();
@@ -62,11 +62,15 @@ fn main() -> Result<()> {
     let gone_branches = find_gone_branches(&repo)?;
 
     if gone_branches.is_empty() {
-        banner::ok("No stale branches found");
+        println!("  {} No stale branches found", "✓".green());
         return Ok(());
     }
 
-    banner::status("Found stale branches", &gone_branches.len().to_string());
+    println!(
+        "  {} Found stale branches: {}",
+        "→".bright_black(),
+        gone_branches.len()
+    );
     println!();
     for branch in &gone_branches {
         println!("    {}", branch);
@@ -83,18 +87,18 @@ fn main() -> Result<()> {
     };
 
     if !confirmed {
-        banner::warn("Cancelled");
+        println!("  {} Cancelled", "!".yellow());
         return Ok(());
     }
 
-    banner::info("Deleting branches");
+    println!("  {} Deleting branches", "·".bright_black());
     for branch_name in &gone_branches {
         let mut branch = repo.find_branch(branch_name, BranchType::Local)?;
         branch.delete()?;
         println!("    {}", branch_name);
     }
 
-    banner::ok(&format!("Deleted {} branches", gone_branches.len()));
+    println!("  {} Deleted {} branches", "✓".green(), gone_branches.len());
 
     Ok(())
 }

@@ -6,8 +6,8 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
+use colored::Colorize;
 use dialoguer::Confirm;
-use dotfiles_tools::banner;
 use std::io;
 use std::path::PathBuf;
 use walkdir::WalkDir;
@@ -76,10 +76,14 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("PRUNE");
+    println!("\n/// {}\n", "PRUNE".bold());
 
     let min_size_bytes = args.min_size * 1024;
-    banner::status("threshold", &format_size(min_size_bytes));
+    println!(
+        "  {} threshold: {}",
+        "→".bright_black(),
+        format_size(min_size_bytes)
+    );
 
     let mut candidates = Vec::new();
 
@@ -104,17 +108,22 @@ fn main() -> Result<()> {
     }
 
     if candidates.is_empty() {
-        banner::ok(&format!(
-            "No directories found below {}",
+        println!(
+            "  {} No directories found below {}",
+            "✓".green(),
             format_size(min_size_bytes)
-        ));
+        );
         return Ok(());
     }
 
     // Sort by size ascending
     candidates.sort_by_key(|(_, size)| *size);
 
-    banner::info(&format!("Found {} candidates", candidates.len()));
+    println!(
+        "  {} Found {} candidates",
+        "·".bright_black(),
+        candidates.len()
+    );
     println!();
 
     // Display candidates in table
@@ -133,9 +142,10 @@ fn main() -> Result<()> {
     }
 
     println!();
-    banner::status(
-        "total",
-        &format_size(candidates.iter().map(|(_, s)| s).sum()),
+    println!(
+        "  {} total: {}",
+        "→".bright_black(),
+        format_size(candidates.iter().map(|(_, s)| s).sum())
     );
     println!();
 
@@ -149,7 +159,7 @@ fn main() -> Result<()> {
     };
 
     if !confirmed {
-        banner::warn("Operation cancelled");
+        println!("  {} Operation cancelled", "!".yellow());
         return Ok(());
     }
 
@@ -168,7 +178,7 @@ fn main() -> Result<()> {
     }
 
     println!();
-    banner::ok(&format!("Deleted {} directories", deleted));
+    println!("  {} Deleted {} directories", "✓".green(), deleted);
 
     Ok(())
 }

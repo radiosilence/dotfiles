@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::io;
 use std::process::Command;
 
@@ -37,7 +37,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("gen-diff");
+    println!("\n/// {}\n", "gen-diff".bold());
 
     if which::which("convert").is_err() {
         anyhow::bail!("ImageMagick not installed (brew install imagemagick)");
@@ -60,9 +60,9 @@ fn main() -> Result<()> {
         anyhow::bail!("Image 2 not found: {}", image2);
     }
 
-    banner::status("image1", &image1);
-    banner::status("image2", &image2);
-    banner::status("output", &output);
+    println!("  {} image1: {}", "→".bright_black(), image1);
+    println!("  {} image2: {}", "→".bright_black(), image2);
+    println!("  {} output: {}", "→".bright_black(), output);
 
     let status = Command::new("convert")
         .arg(&image1)
@@ -90,7 +90,7 @@ fn main() -> Result<()> {
         anyhow::bail!("ImageMagick convert failed");
     }
 
-    banner::ok("visual diff created");
+    println!("  {} visual diff created", "✓".green());
 
     Ok(())
 }

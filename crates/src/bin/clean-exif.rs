@@ -5,7 +5,8 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::{audio, banner, parallel};
+use colored::Colorize;
+use dotfiles_tools::{audio, parallel};
 use img_parts::jpeg::Jpeg;
 use img_parts::png::Png;
 use img_parts::{Bytes, ImageEXIF};
@@ -73,24 +74,27 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("CLEAN-EXIF");
+    println!("\n/// {}\n", "CLEAN-EXIF".bold());
 
     let extensions = ["jpg", "jpeg", "png"];
     let files = parallel::find_files(&args.paths, &extensions);
 
     if files.is_empty() {
-        banner::warn("No image files found");
+        println!("  {} No image files found", "!".yellow());
         return Ok(());
     }
 
     let cores = num_cpus::get();
-    banner::status("Found", &format!("{} images", files.len()));
-    banner::status("Cores", &cores.to_string());
-    banner::status("Stripping", "all EXIF metadata");
+    println!("  {} Found: {} images", "→".bright_black(), files.len());
+    println!("  {} Cores: {}", "→".bright_black(), cores);
+    println!("  {} Stripping: all EXIF metadata", "→".bright_black());
     println!();
 
     if args.dry_run {
-        banner::info("Dry run - files that would be cleaned:");
+        println!(
+            "  {} Dry run - files that would be cleaned:",
+            "·".bright_black()
+        );
         for file in &files {
             println!("    {}", file.display());
         }
@@ -107,17 +111,19 @@ fn main() -> Result<()> {
 
     println!();
     if error_count > 0 {
-        banner::warn(&format!(
-            "Cleaned {} files ({} failed)",
-            success_count, error_count
-        ));
+        println!(
+            "  {} Cleaned {} files ({} failed)",
+            "!".yellow(),
+            success_count,
+            error_count
+        );
         for result in results.iter().filter(|r| r.is_err()) {
             if let Err(e) = result {
-                banner::err(&format!("{}", e));
+                println!("  {} {}", "✗".red(), e);
             }
         }
     } else {
-        banner::ok(&format!("Cleaned {} images", success_count));
+        println!("  {} Cleaned {} images", "✓".green(), success_count);
     }
 
     Ok(())

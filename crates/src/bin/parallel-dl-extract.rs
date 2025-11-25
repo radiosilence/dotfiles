@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::collections::hash_map::DefaultHasher;
 use std::fs;
 use std::hash::{Hash, Hasher};
@@ -45,13 +45,17 @@ fn main() -> Result<()> {
         anyhow::bail!("No URLs provided");
     }
 
-    banner::header("PARALLEL DL+EXTRACT");
+    println!("\n/// {}\n", "PARALLEL DL+EXTRACT".bold());
 
     let temp_dir = TempDir::new()?;
     let dst = temp_dir.path();
 
-    banner::status("temp dir", &dst.to_string_lossy());
-    banner::status("urls", &args.urls.len().to_string());
+    println!(
+        "  {} temp dir: {}",
+        "→".bright_black(),
+        dst.to_string_lossy()
+    );
+    println!("  {} urls: {}", "→".bright_black(), args.urls.len());
 
     // Create aria2c input file
     let urls_file = dst.join("urls.txt");
@@ -66,7 +70,7 @@ fn main() -> Result<()> {
     file.flush()?;
 
     // Download with aria2c
-    banner::info("downloading with aria2c");
+    println!("  {} downloading with aria2c", "·".bright_black());
     let status = Command::new("aria2c")
         .args(["-i", "urls.txt", "-j", "8", "-x", "8", "-d"])
         .arg(dst)
@@ -74,12 +78,12 @@ fn main() -> Result<()> {
         .status()?;
 
     if !status.success() {
-        banner::err("aria2c download failed");
+        println!("  {} aria2c download failed", "✗".red());
         anyhow::bail!("aria2c download failed");
     }
 
     // Extract all zips
-    banner::info("extracting archives");
+    println!("  {} extracting archives", "·".bright_black());
     let zips: Vec<_> = walkdir::WalkDir::new(dst)
         .into_iter()
         .filter_map(|e| e.ok())
@@ -105,7 +109,7 @@ fn main() -> Result<()> {
         fs::remove_file(zip_path)?;
     }
 
-    banner::ok("download & extract complete");
+    println!("  {} download & extract complete", "✓".green());
 
     println!("{}", dst.display());
 
