@@ -1,14 +1,17 @@
 use anyhow::Result;
-use dotfiles_tools::banner;
+use colored::Colorize;
 
 fn main() -> Result<()> {
-    banner::header("ZSH COMPLETIONS");
-    banner::status("generating", "completions (parallel)");
+    println!("\n/// {}\n", "ZSH COMPLETIONS".bold());
+    println!(
+        "  {} generating: completions (parallel)",
+        "→".bright_black()
+    );
 
     dotfiles_tools::regen_completions::regenerate_completions()?;
 
-    banner::ok("completions regenerated");
-    banner::info("restart shell: exec zsh");
+    println!("  {} completions regenerated", "✓".green());
+    println!("  {} restart shell: exec zsh", "·".bright_black());
 
     Ok(())
 }

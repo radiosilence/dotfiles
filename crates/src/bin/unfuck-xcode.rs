@@ -5,7 +5,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::io;
 use std::process::Command;
 
@@ -44,44 +44,56 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("XCODE UNFUCKER");
+    println!("\n/// {}\n", "XCODE UNFUCKER".bold());
 
     if std::env::var("USER").unwrap_or_default() == "root" {
-        banner::warn("Already running as root");
+        println!("  {} Already running as root", "!".yellow());
     } else {
-        banner::info("Requires sudo - you'll be prompted");
+        println!(
+            "  {} Requires sudo - you'll be prompted",
+            "·".bright_black()
+        );
     }
 
     if args.dry_run {
-        banner::info("DRY RUN - no changes made");
-        banner::status("Remove", "/Library/Developer/CommandLineTools");
-        banner::status("Reset", "xcode-select");
+        println!("  {} DRY RUN - no changes made", "·".bright_black());
+        println!(
+            "  {} Remove: /Library/Developer/CommandLineTools",
+            "→".bright_black()
+        );
+        println!("  {} Reset: xcode-select", "→".bright_black());
         return Ok(());
     }
 
     // Remove CommandLineTools
-    banner::status("Removing", "/Library/Developer/CommandLineTools");
+    println!(
+        "  {} Removing: /Library/Developer/CommandLineTools",
+        "→".bright_black()
+    );
     let status = Command::new("sudo")
         .args(["rm", "-rf", "/Library/Developer/CommandLineTools"])
         .status()?;
 
     if !status.success() {
-        banner::err("Failed to remove CommandLineTools");
+        println!("  {} Failed to remove CommandLineTools", "✗".red());
         anyhow::bail!("rm command failed");
     }
 
     // Reset xcode-select
-    banner::status("Resetting", "xcode-select");
+    println!("  {} Resetting: xcode-select", "→".bright_black());
     let status = Command::new("sudo")
         .args(["xcode-select", "--reset"])
         .status()?;
 
     if !status.success() {
-        banner::err("Failed to reset xcode-select");
+        println!("  {} Failed to reset xcode-select", "✗".red());
         anyhow::bail!("xcode-select command failed");
     }
 
-    banner::ok("Xcode unfucked - GUI installer will prompt for CLI Tools");
+    println!(
+        "  {} Xcode unfucked - GUI installer will prompt for CLI Tools",
+        "✓".green()
+    );
 
     Ok(())
 }

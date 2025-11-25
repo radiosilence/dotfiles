@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::io::{self, Write};
 use std::process::Command;
 
@@ -42,13 +42,13 @@ fn main() -> Result<()> {
         .host
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    banner::header("INSTALL-TERMINFO");
-    banner::status("target", &host);
+    println!("\n/// {}\n", "INSTALL-TERMINFO".bold());
+    println!("  {} target: {}", "→".bright_black(), host);
 
     let infocmp = Command::new("infocmp").arg("-x").output()?;
 
     if !infocmp.status.success() {
-        banner::err("infocmp failed");
+        println!("  {} infocmp failed", "✗".red());
         anyhow::bail!("infocmp failed");
     }
 
@@ -65,10 +65,10 @@ fn main() -> Result<()> {
     let status = child.wait()?;
 
     if !status.success() {
-        banner::err("ssh tic failed");
+        println!("  {} ssh tic failed", "✗".red());
         anyhow::bail!("ssh tic failed");
     }
 
-    banner::ok("terminfo installed");
+    println!("  {} terminfo installed", "✓".green());
     Ok(())
 }

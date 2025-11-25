@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use rayon::prelude::*;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -37,7 +37,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("EMBED-ART");
+    println!("\n/// {}\n", "EMBED-ART".bold());
 
     // Check for required tools
     if which("metaflac").is_err() {
@@ -47,11 +47,11 @@ fn main() -> Result<()> {
         anyhow::bail!("clean-exif not found");
     }
 
-    banner::status("paths", &args.paths.join(", "));
-    banner::status("cores", &num_cpus::get().to_string());
+    println!("  {} paths: {}", "→".bright_black(), args.paths.join(", "));
+    println!("  {} cores: {}", "→".bright_black(), num_cpus::get());
 
     // Clean EXIF data from images first
-    banner::info("cleaning exif data from images");
+    println!("  {} cleaning exif data from images", "·".bright_black());
     for path in &args.paths {
         Command::new("clean-exif")
             .arg(path)
@@ -74,7 +74,7 @@ fn main() -> Result<()> {
         .map(|e| e.path().to_path_buf())
         .collect();
 
-    banner::status("flac files", &flac_files.len().to_string());
+    println!("  {} flac files: {}", "→".bright_black(), flac_files.len());
 
     // Process in parallel
     let results: Vec<_> = flac_files
@@ -86,9 +86,9 @@ fn main() -> Result<()> {
     let failed = results.len() - success;
 
     println!();
-    banner::status("embedded", &success.to_string());
+    println!("  {} embedded: {}", "→".bright_black(), success);
     if failed > 0 {
-        banner::status("failed", &failed.to_string());
+        println!("  {} failed: {}", "→".bright_black(), failed);
     }
 
     Ok(())
@@ -119,10 +119,11 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
     let artist_art = find_image(dir, &["artist.jpg", "band.jpg", "artist.png", "band.png"]);
 
     if front_cover.is_none() && disc_art.is_none() && back_cover.is_none() && artist_art.is_none() {
-        banner::warn(&format!(
-            "no artwork found: {}",
+        println!(
+            "  {} no artwork found: {}",
+            "!".yellow(),
             flac_file.file_name().unwrap().to_string_lossy()
-        ));
+        );
         return Ok(());
     }
 
@@ -162,10 +163,18 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
 
     if success {
         std::fs::rename(&temp_file, flac_file)?;
-        banner::ok(&flac_file.file_name().unwrap().to_string_lossy());
+        println!(
+            "  {} {}",
+            "✓".green(),
+            flac_file.file_name().unwrap().to_string_lossy()
+        );
     } else {
         std::fs::remove_file(&temp_file)?;
-        banner::err(&flac_file.file_name().unwrap().to_string_lossy());
+        println!(
+            "  {} {}",
+            "✗".red(),
+            flac_file.file_name().unwrap().to_string_lossy()
+        );
     }
 
     Ok(())

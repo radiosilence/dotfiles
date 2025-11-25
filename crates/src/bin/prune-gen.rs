@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::banner;
+use colored::Colorize;
 use std::fs;
 use std::io;
 use std::process::Command;
@@ -32,8 +32,8 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::header("PRUNE-GEN");
-    banner::status("action", "generating test structure");
+    println!("\n/// {}\n", "PRUNE-GEN".bold());
+    println!("  {} action: generating test structure", "→".bright_black());
 
     let temp_dir = TempDir::new()?;
     let test_dir = temp_dir.path();
@@ -67,8 +67,8 @@ fn main() -> Result<()> {
 
     let path_str = test_dir.to_string_lossy().to_string();
 
-    banner::status("path", &path_str);
-    banner::ok("test structure created");
+    println!("  {} path: {}", "→".bright_black(), path_str);
+    println!("  {} test structure created", "✓".green());
 
     println!("{}", path_str);
 

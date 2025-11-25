@@ -3,7 +3,8 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::{audio, banner, parallel};
+use colored::Colorize;
+use dotfiles_tools::{audio, parallel};
 use std::{io, path::PathBuf};
 
 #[derive(Parser)]
@@ -82,26 +83,29 @@ fn main() -> Result<()> {
 }
 
 fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
-    banner::header("FLAC CONVERSION");
+    println!("\n/// {}\n", "FLAC CONVERSION".bold());
 
     let extensions = ["wav", "aiff", "m4a"];
     let files = parallel::find_files(paths, &extensions);
 
     if files.is_empty() {
-        banner::warn("No audio files found");
+        println!("  {} No audio files found", "!".yellow());
         return Ok(());
     }
 
-    banner::status("Files", &files.len().to_string());
-    banner::status("Format", "FLAC (lossless)");
-    banner::status("Cores", &num_cpus::get().to_string());
+    println!("  {} Files: {}", "→".bright_black(), files.len());
+    println!("  {} Format: FLAC (lossless)", "→".bright_black());
+    println!("  {} Cores: {}", "→".bright_black(), num_cpus::get());
 
     if !keep {
-        banner::warn("Original files will be deleted");
+        println!("  {} Original files will be deleted", "!".yellow());
     }
 
     if dry_run {
-        banner::info("Dry run - files that would be converted:");
+        println!(
+            "  {} Dry run - files that would be converted:",
+            "·".bright_black()
+        );
         for file in &files {
             println!("  {}", file.display());
         }
@@ -124,26 +128,29 @@ fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
 }
 
 fn convert_opus(paths: &[PathBuf], bitrate: u32, keep: bool, dry_run: bool) -> Result<()> {
-    banner::header("OPUS CONVERSION");
+    println!("\n/// {}\n", "OPUS CONVERSION".bold());
 
     let extensions = ["wav", "aiff", "flac", "m4a"];
     let files = parallel::find_files(paths, &extensions);
 
     if files.is_empty() {
-        banner::warn("No audio files found");
+        println!("  {} No audio files found", "!".yellow());
         return Ok(());
     }
 
-    banner::status("Files", &files.len().to_string());
-    banner::status("Format", &format!("Opus @ {}kbps", bitrate));
-    banner::status("Cores", &num_cpus::get().to_string());
+    println!("  {} Files: {}", "→".bright_black(), files.len());
+    println!("  {} Format: Opus @ {}kbps", "→".bright_black(), bitrate);
+    println!("  {} Cores: {}", "→".bright_black(), num_cpus::get());
 
     if !keep {
-        banner::warn("Original files will be deleted");
+        println!("  {} Original files will be deleted", "!".yellow());
     }
 
     if dry_run {
-        banner::info("Dry run - files that would be converted:");
+        println!(
+            "  {} Dry run - files that would be converted:",
+            "·".bright_black()
+        );
         for file in &files {
             println!("  {}", file.display());
         }
@@ -170,18 +177,20 @@ fn print_results(results: &[Result<PathBuf>]) {
     let error_count = results.len() - success_count;
 
     if error_count > 0 {
-        banner::warn(&format!(
-            "Converted {} files ({} failed)",
-            success_count, error_count
-        ));
+        println!(
+            "  {} Converted {} files ({} failed)",
+            "!".yellow(),
+            success_count,
+            error_count
+        );
 
         for result in results.iter().filter(|r| r.is_err()) {
             if let Err(e) = result {
-                banner::err(&e.to_string());
+                println!("  {} {}", "✗".red(), e);
             }
         }
     } else {
-        banner::ok(&format!("Converted {} files", success_count));
+        println!("  {} Converted {} files", "✓".green(), success_count);
     }
 }
 
