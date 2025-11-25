@@ -284,7 +284,6 @@ where
     })
 }
 
-// TODO(JC): Refactor
 fn install_homebrew(pb: &ProgressBar) -> Result<()> {
     run_cmd_quiet(
         "install homebrew",
@@ -299,8 +298,7 @@ fn install_homebrew(pb: &ProgressBar) -> Result<()> {
 }
 
 fn install_fonts(mp: &MultiProgress) -> Result<()> {
-    // TODO: Rewrite somewhat natively
-    let fonts = vec![
+    let fonts = [
         (
             "Hack Ligatured",
             "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip",
@@ -315,20 +313,68 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
         ),
     ];
 
-    for (name, url) in fonts {
-        mp.println(format!("{} installing {} font...", "→".magenta(), name,))?;
-        let status = Command::new("install-font-macos")
-            .arg(url)
-            .stdout(Stdio::null())
-            .status();
+    let fonts_dir = dirs::home_dir()
+        .ok_or_else(|| anyhow::anyhow!("no home dir"))?
+        .join("Library/Fonts");
+    std::fs::create_dir_all(&fonts_dir)?;
 
-        if status.is_ok() {
-            mp.println(format!("{} {} / 完了", "✓".green(), name))?;
-        } else {
-            mp.println(format!("{} {} (failed / 失敗)", "⚠".yellow(), name))?;
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(120))
+        .build()?;
+
+    for (name, url) in fonts {
+        mp.println(format!("{} installing {}...", "→".magenta(), name))?;
+
+        match install_font(&client, url, &fonts_dir) {
+            Ok(count) => {
+                mp.println(format!("{} {} ({} files)", "✓".green(), name, count))?;
+            }
+            Err(e) => {
+                mp.println(format!("{} {} ({})", "⚠".yellow(), name, e))?;
+            }
         }
     }
     Ok(())
+}
+
+fn install_font(
+    client: &reqwest::blocking::Client,
+    url: &str,
+    fonts_dir: &std::path::Path,
+) -> Result<usize> {
+    let response = client.get(url).send()?;
+    if !response.status().is_success() {
+        bail!("HTTP {}", response.status());
+    }
+
+    let bytes = response.bytes()?;
+    let cursor = std::io::Cursor::new(bytes);
+    let mut archive = zip::ZipArchive::new(cursor)?;
+
+    let mut count = 0;
+    for i in 0..archive.len() {
+        let mut file = archive.by_index(i)?;
+        let name = file.name().to_string();
+
+        // Only install .otf and .ttf files
+        let lower = name.to_lowercase();
+        if !lower.ends_with(".otf") && !lower.ends_with(".ttf") {
+            continue;
+        }
+
+        // Extract just the filename, not the full path
+        let filename = std::path::Path::new(&name)
+            .file_name()
+            .map(|s| s.to_string_lossy().to_string())
+            .unwrap_or(name);
+
+        let dest = fonts_dir.join(&filename);
+        let mut outfile = std::fs::File::create(&dest)?;
+        std::io::copy(&mut file, &mut outfile)?;
+        count += 1;
+    }
+
+    Ok(count)
 }
 
 #[cfg(test)]
