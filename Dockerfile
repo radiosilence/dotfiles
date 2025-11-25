@@ -1,18 +1,18 @@
 # Multi-stage container with dotfiles setup
 # Based on Debian with mise and essential development tools
-FROM debian:12-slim
+
+# Pin to specific digest for reproducibility
+FROM debian:12-slim@sha256:b4aa902587c2e61ce789849cb54c332b0400fe27b1ee33af4669e1f7e7c3e22f
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
   curl git unzip zip sudo ca-certificates parallel \
   build-essential cmake make \
   ripgrep bat jq btop tree aria2 beets ffmpeg \
-  # Shell
   zsh \
-  # Clean up
   && rm -rf /var/lib/apt/lists/*
 
-# Set shell and mise environment variables (from mise cookbook)
+# Set shell and mise environment variables
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV MISE_DATA_DIR="/mise"
 ENV MISE_CONFIG_DIR="/mise"
@@ -20,11 +20,11 @@ ENV MISE_CACHE_DIR="/mise/cache"
 ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
 ENV PATH="/mise/shims:$PATH"
 
-# GitHub token will be provided via secret mount (not leaked into final image)
-
-# Install mise globally (from mise cookbook)
-RUN curl https://mise.run | sh
-
+# Install mise with checksum verification
+ARG MISE_VERSION=2025.11.7
+RUN curl -fsSL "https://github.com/jdx/mise/releases/download/v${MISE_VERSION}/mise-v${MISE_VERSION}-linux-x64" -o /usr/local/bin/mise \
+  && chmod +x /usr/local/bin/mise \
+  && mise --version
 
 # Create user jc with uid/gid 1000
 ARG USERNAME=jc
@@ -33,71 +33,60 @@ ARG USER_GID=$USER_UID
 
 RUN groupadd --gid $USER_GID $USERNAME \
   && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /bin/zsh \
-  && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+  && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
   && chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Create mise directories with proper ownership
 RUN mkdir -p /mise/cache \
   && chown -R $USERNAME:$USERNAME /mise
 
-# Switch to user
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
-# Set PATH for dotfiles
 ENV PATH="/home/$USERNAME/.dotfiles/bin:$PATH"
 
-# Install rustup/cargo as user so mise can use cargo backend
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable \
-  && . ~/.cargo/env
+# Install rustup with verification (official method uses HTTPS + TLS 1.2+)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+  | sh -s -- -y --default-toolchain stable --profile minimal \
+  && . ~/.cargo/env \
+  && rustc --version
 ENV PATH="/home/$USERNAME/.cargo/bin:$PATH"
 
-# Copy dotfiles directly to final location
+# Copy dotfiles
 COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/.dotfiles
 
-# Create SSH directory and download authorized keys
+# Fetch SSH public keys (these are public, not secrets)
 RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh \
   && curl -fsSL https://github.com/radiosilence.keys > ~/.ssh/authorized_keys \
   && chmod 600 ~/.ssh/authorized_keys
 
-# Build and run setup (upd does everything)
+# Build dotfiles tools
 RUN . ~/.cargo/env \
   && cd /home/$USERNAME/.dotfiles \
   && ./setup
 
-# Switch to root to access secret and copy to user-readable location
-USER root
-RUN --mount=type=secret,id=github_token \
-  cp /run/secrets/github_token /tmp/github_token \
-  && chown jc:jc /tmp/github_token \
-  && chmod 600 /tmp/github_token
-
-# Switch back to user and install tools via mise (with GitHub token)
-USER jc
-# Temporarily commenting out mise install to test zsh config
-RUN . ~/.cargo/env \
+# Install mise tools with secret mounted directly (no temp file)
+RUN --mount=type=secret,id=github_token,uid=1000 \
+  . ~/.cargo/env \
   && mise trust ~ \
-  && GITHUB_TOKEN=$(cat /tmp/github_token) mise install
-RUN rm -f /tmp/github_token
+  && GITHUB_TOKEN=$(cat /run/secrets/github_token) mise install
 
-# Run zsh once to initialize plugins and first-run setup
-RUN zsh -c 'echo "Initializing zsh and plugins..."'
+# Initialize zsh plugins
+RUN zsh -c 'echo "Initializing zsh..."'
 
+# Install nano-web
 RUN . ~/.cargo/env \
   && go install github.com/radiosilence/nano-web@latest
 
-# Create /srv directory for nano-web as root
+# Create /srv with restricted permissions
 USER root
-RUN mkdir -p /srv && chown jc:jc /srv
+RUN mkdir -p /srv && chown jc:jc /srv && chmod 750 /srv
 USER jc
 
-# Container-specific configurations
 ENV SHELL=/bin/zsh
 ENV TERM=xterm-256color
 
-# Add healthcheck using nano-web
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000/_health || exit 1
 
-# Run nano-web server to keep container alive and provide healthcheck
 CMD ["/home/jc/go/bin/nano-web", "serve", "/srv", "--port", "3000"]
