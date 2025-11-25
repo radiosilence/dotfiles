@@ -45,18 +45,13 @@ fn main() -> Result<()> {
         anyhow::bail!("No URLs provided");
     }
 
-    banner::print_banner(
-        "PARALLEL DL+EXTRACT",
-        "aria2c parallel download + unzip",
-        "cyan",
-    );
+    banner::header("PARALLEL DL+EXTRACT");
 
     let temp_dir = TempDir::new()?;
     let dst = temp_dir.path();
 
-    banner::status("□", "TEMP DIR", &dst.to_string_lossy(), "cyan");
-    banner::status("□", "URLS", &args.urls.len().to_string(), "cyan");
-    banner::divider("cyan");
+    banner::status("temp dir", &dst.to_string_lossy());
+    banner::status("urls", &args.urls.len().to_string());
 
     // Create aria2c input file
     let urls_file = dst.join("urls.txt");
@@ -67,13 +62,11 @@ fn main() -> Result<()> {
         writeln!(file, "{}", url)?;
         writeln!(file, "  dir={}", dir)?;
         writeln!(file, "  out=dl.zip")?;
-
-        eprintln!("[dl] {} to {}", url, dir);
     }
     file.flush()?;
 
     // Download with aria2c
-    banner::status("□", "DOWNLOADING", "aria2c -j 8 -x 8", "cyan");
+    banner::info("downloading with aria2c");
     let status = Command::new("aria2c")
         .args(["-i", "urls.txt", "-j", "8", "-x", "8", "-d"])
         .arg(dst)
@@ -81,11 +74,12 @@ fn main() -> Result<()> {
         .status()?;
 
     if !status.success() {
+        banner::err("aria2c download failed");
         anyhow::bail!("aria2c download failed");
     }
 
     // Extract all zips
-    banner::status("□", "EXTRACTING", "unzipping archives", "cyan");
+    banner::info("extracting archives");
     let zips: Vec<_> = walkdir::WalkDir::new(dst)
         .into_iter()
         .filter_map(|e| e.ok())
@@ -101,8 +95,6 @@ fn main() -> Result<()> {
         let zip_path = entry.path();
         let parent = zip_path.parent().unwrap();
 
-        eprintln!("[extract] {}", zip_path.display());
-
         Command::new("unzip")
             .arg("-q")
             .arg(zip_path)
@@ -113,8 +105,7 @@ fn main() -> Result<()> {
         fs::remove_file(zip_path)?;
     }
 
-    banner::divider("cyan");
-    banner::success("DOWNLOAD & EXTRACT COMPLETE");
+    banner::ok("download & extract complete");
 
     println!("{}", dst.display());
 

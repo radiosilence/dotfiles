@@ -5,7 +5,6 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dotfiles_tools::{audio, banner, parallel};
 use img_parts::jpeg::Jpeg;
 use img_parts::png::Png;
@@ -74,47 +73,26 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("CLEAN-EXIF", "strip metadata from images", "yellow");
-
-    println!("{} Scanning for images...", "→".bright_yellow().bold());
+    banner::header("CLEAN-EXIF");
 
     let extensions = ["jpg", "jpeg", "png"];
     let files = parallel::find_files(&args.paths, &extensions);
 
     if files.is_empty() {
-        println!("{} No image files found", "!".yellow().bold());
+        banner::warn("No image files found");
         return Ok(());
     }
 
     let cores = num_cpus::get();
-    println!();
-    println!(
-        "{} Found {} images",
-        "→".bright_yellow().bold(),
-        files.len().to_string().bright_white().bold()
-    );
-    println!(
-        "{} Cores: {}",
-        "→".bright_yellow().bold(),
-        cores.to_string().green()
-    );
-    println!(
-        "{} Stripping: all EXIF metadata",
-        "→".bright_yellow().bold()
-    );
+    banner::status("Found", &format!("{} images", files.len()));
+    banner::status("Cores", &cores.to_string());
+    banner::status("Stripping", "all EXIF metadata");
     println!();
 
     if args.dry_run {
-        println!(
-            "{} Dry run - files that would be cleaned:",
-            "i".blue().bold()
-        );
+        banner::info("Dry run - files that would be cleaned:");
         for file in &files {
-            println!(
-                "  {} {}",
-                "→".bright_black(),
-                file.display().to_string().white()
-            );
+            println!("    {}", file.display());
         }
         return Ok(());
     }
@@ -129,25 +107,17 @@ fn main() -> Result<()> {
 
     println!();
     if error_count > 0 {
-        println!(
-            "{} Cleaned {} files ({} {})",
-            "!".yellow().bold(),
-            success_count.to_string().green(),
-            error_count.to_string().red(),
-            "failed".red()
-        );
-
+        banner::warn(&format!(
+            "Cleaned {} files ({} failed)",
+            success_count, error_count
+        ));
         for result in results.iter().filter(|r| r.is_err()) {
             if let Err(e) = result {
-                eprintln!("  {} {}", "×".red().bold(), e);
+                banner::err(&format!("{}", e));
             }
         }
     } else {
-        println!(
-            "{} Cleaned {} images",
-            "✓".green().bold(),
-            success_count.to_string().green().bold()
-        );
+        banner::ok(&format!("Cleaned {} images", success_count));
     }
 
     Ok(())
@@ -155,27 +125,68 @@ fn main() -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use img_parts::{Bytes, ImageEXIF};
+    use std::fs;
+    use tempfile::TempDir;
+
+    // Minimal valid 1x1 JPEG (SOI + SOF0 + SOS + EOI)
+    const MINIMAL_JPEG: &[u8] = &[
+        0xFF, 0xD8, // SOI
+        0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x00,
+        0x01, 0x00, 0x00, // APP0
+        0xFF, 0xDB, 0x00, 0x43, 0x00, 0x08, 0x06, 0x06, 0x07, 0x06, 0x05, 0x08, 0x07, 0x07, 0x07,
+        0x09, 0x09, 0x08, 0x0A, 0x0C, 0x14, 0x0D, 0x0C, 0x0B, 0x0B, 0x0C, 0x19, 0x12, 0x13, 0x0F,
+        0x14, 0x1D, 0x1A, 0x1F, 0x1E, 0x1D, 0x1A, 0x1C, 0x1C, 0x20, 0x24, 0x2E, 0x27, 0x20, 0x22,
+        0x2C, 0x23, 0x1C, 0x1C, 0x28, 0x37, 0x29, 0x2C, 0x30, 0x31, 0x34, 0x34, 0x34, 0x1F, 0x27,
+        0x39, 0x3D, 0x38, 0x32, 0x3C, 0x2E, 0x33, 0x34, 0x32, // DQT
+        0xFF, 0xC0, 0x00, 0x0B, 0x08, 0x00, 0x01, 0x00, 0x01, 0x01, 0x01, 0x11, 0x00, // SOF0
+        0xFF, 0xDA, 0x00, 0x08, 0x01, 0x01, 0x00, 0x00, 0x3F, 0x00, 0xD2, // SOS
+        0xFF, 0xD9, // EOI
+    ];
 
     #[test]
-    fn test_image_extensions() {
-        let extensions = ["jpg", "jpeg", "png"];
-        assert!(extensions.contains(&"jpg"));
-        assert!(extensions.contains(&"jpeg"));
-        assert!(extensions.contains(&"png"));
+    fn test_clean_exif_jpeg() {
+        let temp_dir = TempDir::new().unwrap();
+        let test_file = temp_dir.path().join("test.jpg");
+
+        // Create JPEG with EXIF data
+        let mut jpeg = Jpeg::from_bytes(Bytes::from(MINIMAL_JPEG.to_vec())).unwrap();
+        let exif_data = vec![0x45, 0x78, 0x69, 0x66, 0x00, 0x00];
+        jpeg.set_exif(Some(Bytes::from(exif_data)));
+        fs::write(&test_file, jpeg.encoder().bytes()).unwrap();
+
+        // Verify EXIF exists
+        let data = fs::read(&test_file).unwrap();
+        let jpeg_before = Jpeg::from_bytes(Bytes::from(data)).unwrap();
+        assert!(
+            jpeg_before.exif().is_some(),
+            "EXIF should exist before cleaning"
+        );
+
+        // Clean it
+        clean_exif(&test_file).unwrap();
+
+        // Verify EXIF removed
+        let data = fs::read(&test_file).unwrap();
+        let jpeg_after = Jpeg::from_bytes(Bytes::from(data)).unwrap();
+        assert!(
+            jpeg_after.exif().is_none(),
+            "EXIF should be removed after cleaning"
+        );
     }
 
     #[test]
-    fn test_extension_matching() {
-        let path = std::path::Path::new("image.jpg");
-        let ext = path.extension().and_then(|s| s.to_str()).unwrap_or("");
-        assert_eq!(ext, "jpg");
-    }
+    fn test_unsupported_format() {
+        let temp_dir = TempDir::new().unwrap();
+        let test_file = temp_dir.path().join("test.bmp");
+        fs::write(&test_file, b"fake bmp data").unwrap();
 
-    #[test]
-    fn test_jpeg_variations() {
-        let jpg_ext = "jpg";
-        let jpeg_ext = "jpeg";
-        assert!(matches!(jpg_ext, "jpg" | "jpeg"));
-        assert!(matches!(jpeg_ext, "jpg" | "jpeg"));
+        let result = clean_exif(&test_file);
+        assert!(result.is_err(), "Should fail on unsupported format");
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("Unsupported format"));
     }
 }

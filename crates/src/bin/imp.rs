@@ -5,7 +5,7 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use dotfiles_tools::{banner, parallel};
+use dotfiles_tools::banner;
 use rayon::prelude::*;
 use reqwest::blocking::Client;
 use std::fs::File;
@@ -49,23 +49,15 @@ fn main() -> Result<()> {
         anyhow::bail!(Args::command().render_help());
     }
 
-    banner::print_banner(
-        "MUSIC IMPORTER",
-        "download + extract + beets import",
-        "green",
-    );
-
-    // Create temp dir
     let temp_dir = TempDir::new()?;
     let dest = temp_dir.path();
 
-    banner::status("□", "DOWNLOAD DIR", &dest.display().to_string(), "green");
-    banner::status("□", "URLS", &args.urls.len().to_string(), "green");
-    banner::divider("green");
-    println!();
+    banner::header("MUSIC IMPORTER");
+    banner::status("temp dir", &dest.display().to_string());
+    banner::status("urls", &args.urls.len().to_string());
 
     // Download in parallel
-    banner::loading("Downloading archives in parallel...");
+    banner::info("Downloading archives...");
 
     let client = Client::builder()
         .timeout(std::time::Duration::from_secs(300))
@@ -83,14 +75,14 @@ fn main() -> Result<()> {
         .collect();
 
     if successful_downloads.is_empty() {
-        anyhow::bail!("No files downloaded successfully");
+        banner::err("No files downloaded successfully");
+        anyhow::bail!("Download failed");
     }
 
-    banner::loading(&format!("Downloaded {} files", successful_downloads.len()));
-    println!();
+    banner::ok(&format!("Downloaded {} files", successful_downloads.len()));
 
     // Extract archives in parallel
-    banner::loading("Extracting archives...");
+    banner::info("Extracting archives...");
 
     let extract_results: Vec<Result<()>> = successful_downloads
         .par_iter()
@@ -103,31 +95,29 @@ fn main() -> Result<()> {
         .collect();
 
     let extract_success = extract_results.iter().filter(|r| r.is_ok()).count();
-    banner::loading(&format!("Extracted {} archives", extract_success));
-    println!();
+    banner::ok(&format!("Extracted {} archives", extract_success));
 
     // Show extracted files
-    println!();
-    banner::status("□", "EXTRACTED FILES", "", "green");
+    banner::info("Files:");
     let _ = Command::new("lsd")
         .args(["--tree", dest.to_str().unwrap()])
         .status()
         .or_else(|_| Command::new("tree").arg(dest.to_str().unwrap()).status());
 
-    println!();
-    banner::loading("Importing to beets...");
-
     // Import to beets with stdin exposed for user input
+    banner::info("Importing to beets...");
+
     let status = Command::new("beet")
         .args(["import", dest.to_str().unwrap()])
         .stdin(Stdio::inherit())
         .status()?;
 
     if !status.success() {
-        anyhow::bail!("Beets import failed");
+        banner::err("Beets import failed");
+        anyhow::bail!("Import failed");
     }
 
-    banner::success("IMPORT COMPLETE");
+    banner::ok("Import complete");
 
     Ok(())
 }
@@ -149,24 +139,16 @@ fn download_file(client: &Client, url: &str, dest_dir: &Path) -> Result<std::pat
     );
     let dest_path = dest_dir.join(&file_name);
 
-    let pb = parallel::create_progress_bar(response.content_length().unwrap_or(0));
-    pb.set_message(file_name.clone());
-
     let mut file = File::create(&dest_path)?;
-    let mut downloaded = 0u64;
+    let mut buffer = [0; 8192];
 
     loop {
-        let mut buffer = [0; 8192];
         let n = response.read(&mut buffer)?;
         if n == 0 {
             break;
         }
         file.write_all(&buffer[..n])?;
-        downloaded += n as u64;
-        pb.set_position(downloaded);
     }
-
-    pb.finish_and_clear();
 
     Ok(dest_path)
 }
@@ -203,24 +185,53 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_zip_extension() {
-        let path = std::path::Path::new("archive.zip");
-        assert_eq!(path.extension().unwrap(), "zip");
+    fn test_extract_zip_creates_files() -> Result<()> {
+        let temp = TempDir::new()?;
+        let zip_path = temp.path().join("test.zip");
+
+        // Create a simple zip with one file
+        let file = File::create(&zip_path)?;
+        let mut zip = zip::ZipWriter::new(file);
+        let options = zip::write::FileOptions::<()>::default();
+        zip.start_file("test.txt", options)?;
+        zip.write_all(b"test content")?;
+        zip.finish()?;
+
+        let extract_dir = temp.path().join("extracted");
+        std::fs::create_dir(&extract_dir)?;
+
+        extract_zip(&zip_path, &extract_dir)?;
+
+        let extracted_file = extract_dir.join("test.txt");
+        assert!(extracted_file.exists());
+
+        let content = std::fs::read_to_string(extracted_file)?;
+        assert_eq!(content, "test content");
+
+        Ok(())
     }
 
     #[test]
-    fn test_command_construction() {
-        let _aria2c = Command::new("aria2c");
-        let _unzip = Command::new("unzip");
-        let _beet = Command::new("beet");
-    }
+    fn test_extract_zip_handles_nested_dirs() -> Result<()> {
+        let temp = TempDir::new()?;
+        let zip_path = temp.path().join("test.zip");
 
-    #[test]
-    fn test_url_vec() {
-        let urls = [
-            "https://example.com/file1.zip".to_string(),
-            "https://example.com/file2.zip".to_string(),
-        ];
-        assert_eq!(urls.len(), 2);
+        let file = File::create(&zip_path)?;
+        let mut zip = zip::ZipWriter::new(file);
+        let options = zip::write::FileOptions::<()>::default();
+        zip.start_file("dir1/dir2/nested.txt", options)?;
+        zip.write_all(b"nested")?;
+        zip.finish()?;
+
+        let extract_dir = temp.path().join("extracted");
+        std::fs::create_dir(&extract_dir)?;
+
+        extract_zip(&zip_path, &extract_dir)?;
+
+        let nested_file = extract_dir.join("dir1/dir2/nested.txt");
+        assert!(nested_file.exists());
+        assert_eq!(std::fs::read_to_string(nested_file)?, "nested");
+
+        Ok(())
     }
 }

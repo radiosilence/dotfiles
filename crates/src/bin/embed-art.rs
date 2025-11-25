@@ -1,7 +1,6 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dotfiles_tools::{banner, system::which};
 use rayon::prelude::*;
 use std::io;
@@ -37,7 +36,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("EMBED-ART", "flac artwork embedder", "magenta");
+    banner::header("EMBED-ART");
 
     // Check for required tools
     if !which("metaflac") {
@@ -47,13 +46,11 @@ fn main() -> Result<()> {
         anyhow::bail!("clean-exif not found");
     }
 
-    let cores = num_cpus::get();
-    banner::status("□", "PATHS", &args.paths.join(", "), "magenta");
-    banner::status("□", "CORES", &cores.to_string(), "magenta");
-    banner::divider("magenta");
+    banner::status("paths", &args.paths.join(", "));
+    banner::status("cores", &num_cpus::get().to_string());
 
     // Clean EXIF data from images first
-    banner::status("□", "CLEANING", "exif data from images", "magenta");
+    banner::info("cleaning exif data from images");
     for path in &args.paths {
         Command::new("clean-exif")
             .arg(path)
@@ -76,8 +73,7 @@ fn main() -> Result<()> {
         .map(|e| e.path().to_path_buf())
         .collect();
 
-    banner::status("□", "FLAC FILES", &flac_files.len().to_string(), "magenta");
-    banner::divider("magenta");
+    banner::status("flac files", &flac_files.len().to_string());
 
     // Process in parallel
     let results: Vec<_> = flac_files
@@ -88,8 +84,11 @@ fn main() -> Result<()> {
     let success = results.iter().filter(|r| r.is_ok()).count();
     let failed = results.len() - success;
 
-    banner::divider("magenta");
-    banner::success(&format!("{} EMBEDDED  {} FAILED", success, failed));
+    println!();
+    banner::status("embedded", &success.to_string());
+    if failed > 0 {
+        banner::status("failed", &failed.to_string());
+    }
 
     Ok(())
 }
@@ -119,11 +118,10 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
     let artist_art = find_image(dir, &["artist.jpg", "band.jpg", "artist.png", "band.png"]);
 
     if front_cover.is_none() && disc_art.is_none() && back_cover.is_none() && artist_art.is_none() {
-        println!(
-            "   {} {}",
-            "⚠".yellow(),
+        banner::warn(&format!(
+            "no artwork found: {}",
             flac_file.file_name().unwrap().to_string_lossy()
-        );
+        ));
         return Ok(());
     }
 
@@ -163,18 +161,10 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
 
     if success {
         std::fs::rename(&temp_file, flac_file)?;
-        println!(
-            "   {} {}",
-            "✓".green(),
-            flac_file.file_name().unwrap().to_string_lossy()
-        );
+        banner::ok(&flac_file.file_name().unwrap().to_string_lossy());
     } else {
         std::fs::remove_file(&temp_file)?;
-        println!(
-            "   {} {}",
-            "✗".red(),
-            flac_file.file_name().unwrap().to_string_lossy()
-        );
+        banner::err(&flac_file.file_name().unwrap().to_string_lossy());
     }
 
     Ok(())
@@ -212,24 +202,26 @@ mod tests {
     use tempfile::TempDir;
 
     #[test]
-    fn test_find_image_first_match() {
+    fn test_find_image_priority() {
         let temp_dir = TempDir::new().unwrap();
         let cover_path = temp_dir.path().join("cover.jpg");
-        fs::write(&cover_path, b"fake image").unwrap();
+        let folder_path = temp_dir.path().join("folder.jpg");
+        fs::write(&cover_path, b"fake").unwrap();
+        fs::write(&folder_path, b"fake").unwrap();
 
+        // Should return first match in priority order
         let result = find_image(temp_dir.path(), &["cover.jpg", "folder.jpg"]);
-        assert!(result.is_some());
         assert_eq!(result.unwrap(), cover_path);
     }
 
     #[test]
-    fn test_find_image_second_match() {
+    fn test_find_image_fallback() {
         let temp_dir = TempDir::new().unwrap();
         let folder_path = temp_dir.path().join("folder.jpg");
-        fs::write(&folder_path, b"fake image").unwrap();
+        fs::write(&folder_path, b"fake").unwrap();
 
+        // Should find second option when first doesn't exist
         let result = find_image(temp_dir.path(), &["cover.jpg", "folder.jpg"]);
-        assert!(result.is_some());
         assert_eq!(result.unwrap(), folder_path);
     }
 
@@ -241,19 +233,37 @@ mod tests {
     }
 
     #[test]
-    fn test_find_image_wrong_name() {
+    fn test_find_image_multiple_extensions() {
         let temp_dir = TempDir::new().unwrap();
-        let album_path = temp_dir.path().join("album.jpg");
-        fs::write(&album_path, b"fake image").unwrap();
+        let jpg_path = temp_dir.path().join("cover.jpg");
+        let png_path = temp_dir.path().join("folder.png");
+        fs::write(&jpg_path, b"fake").unwrap();
+        fs::write(&png_path, b"fake").unwrap();
 
-        // Should not match because we're looking for different names
-        let result = find_image(temp_dir.path(), &["cover.jpg", "folder.jpg"]);
-        assert!(result.is_none());
+        // Should find jpg when both exist but jpg is first in list
+        let result = find_image(temp_dir.path(), &["cover.jpg", "folder.png"]);
+        assert_eq!(result.unwrap(), jpg_path);
     }
 
     #[test]
-    fn test_which_command() {
-        // Test that which works with common commands
-        assert!(which("ls") || which("dir")); // Should exist on any system
+    fn test_find_image_extension_matters() {
+        let temp_dir = TempDir::new().unwrap();
+        let png_path = temp_dir.path().join("cover.png");
+        fs::write(&png_path, b"fake").unwrap();
+
+        // Should not match jpg when png exists
+        let result = find_image(temp_dir.path(), &["cover.jpg"]);
+        assert!(result.is_none());
+
+        // Should match when explicitly looking for png
+        let result = find_image(temp_dir.path(), &["cover.png"]);
+        assert_eq!(result.unwrap(), png_path);
+    }
+
+    #[test]
+    fn test_find_image_empty_list() {
+        let temp_dir = TempDir::new().unwrap();
+        let result = find_image(temp_dir.path(), &[]);
+        assert!(result.is_none());
     }
 }

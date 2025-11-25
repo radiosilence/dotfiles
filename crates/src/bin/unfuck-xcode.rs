@@ -5,7 +5,6 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dotfiles_tools::banner;
 use std::io;
 use std::process::Command;
@@ -45,79 +44,44 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("XCODE UNFUCKER", "remove corrupt CLI tools", "red");
+    banner::header("XCODE UNFUCKER");
 
     if std::env::var("USER").unwrap_or_default() == "root" {
-        banner::warning("Already running as root");
+        banner::warn("Already running as root");
     } else {
-        banner::warning("Requires sudo - you'll be prompted");
+        banner::info("Requires sudo - you'll be prompted");
     }
 
-    println!();
-    banner::status(
-        "□",
-        "ACTION",
-        "Remove /Library/Developer/CommandLineTools",
-        "red",
-    );
-    banner::status("□", "ACTION", "Reset xcode-select", "red");
-    banner::status("□", "RESULT", "Triggers GUI reinstall prompt", "yellow");
-    banner::divider("red");
-    println!();
-
     if args.dry_run {
-        banner::loading("DRY RUN - no changes made");
+        banner::info("DRY RUN - no changes made");
+        banner::status("Remove", "/Library/Developer/CommandLineTools");
+        banner::status("Reset", "xcode-select");
         return Ok(());
     }
 
     // Remove CommandLineTools
-    banner::loading("Removing CommandLineTools...");
+    banner::status("Removing", "/Library/Developer/CommandLineTools");
     let status = Command::new("sudo")
         .args(["rm", "-rf", "/Library/Developer/CommandLineTools"])
         .status()?;
 
     if !status.success() {
-        anyhow::bail!("Failed to remove CommandLineTools");
+        banner::err("Failed to remove CommandLineTools");
+        anyhow::bail!("rm command failed");
     }
 
     // Reset xcode-select
-    banner::loading("Resetting xcode-select...");
+    banner::status("Resetting", "xcode-select");
     let status = Command::new("sudo")
         .args(["xcode-select", "--reset"])
         .status()?;
 
     if !status.success() {
-        anyhow::bail!("Failed to reset xcode-select");
+        banner::err("Failed to reset xcode-select");
+        anyhow::bail!("xcode-select command failed");
     }
 
-    banner::success("XCODE UNFUCKED");
-    println!();
-    println!(
-        "   {} GUI installer will prompt for CLI Tools",
-        "!".yellow().bold()
-    );
+    banner::ok("Xcode unfucked - GUI installer will prompt for CLI Tools");
 
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_command_line_tools_path() {
-        let path = "/Library/Developer/CommandLineTools";
-        assert!(path.starts_with("/Library/Developer/"));
-    }
-
-    #[test]
-    fn test_user_env_var() {
-        // Just verify we can read USER env var
-        let _user = std::env::var("USER");
-    }
-
-    #[test]
-    fn test_sudo_command_construction() {
-        let _cmd = Command::new("sudo");
-    }
 }

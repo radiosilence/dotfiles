@@ -1,7 +1,6 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
-use colored::Colorize;
 use dotfiles_tools::banner;
 use std::fs;
 use std::io::{self, Write};
@@ -35,7 +34,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_banner("VIMV", "batch rename with editor", "yellow");
+    banner::header("VIMV");
 
     // Get list of files
     let files: Vec<String> = if args.files.is_empty() {
@@ -49,11 +48,11 @@ fn main() -> Result<()> {
     };
 
     if files.is_empty() {
-        banner::warning("NO FILES FOUND");
+        banner::warn("No files found");
         return Ok(());
     }
 
-    banner::status("□", "FILES", &files.len().to_string(), "yellow");
+    banner::status("files", &files.len().to_string());
 
     // Create temp file with filenames
     let mut temp_file = NamedTempFile::new()?;
@@ -82,8 +81,6 @@ fn main() -> Result<()> {
         );
     }
 
-    banner::divider("yellow");
-
     // Perform renames
     let mut count = 0;
     for (old, new) in files.iter().zip(new_files.iter()) {
@@ -104,44 +101,16 @@ fn main() -> Result<()> {
 
             if is_git_tracked {
                 Command::new("git").args(["mv", "--", old, new]).status()?;
-                println!("   {} {} → {}", "git".cyan(), old.dimmed(), new);
+                banner::info(&format!("git mv {} → {}", old, new));
             } else {
                 fs::rename(old, new)?;
-                println!("   {} {} → {}", "mv".green(), old.dimmed(), new);
+                banner::info(&format!("mv {} → {}", old, new));
             }
             count += 1;
         }
     }
 
-    banner::divider("yellow");
-    banner::success(&format!("{} FILES RENAMED", count));
+    banner::ok(&format!("{} files renamed", count));
 
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_editor_env_var() {
-        let editor = std::env::var("EDITOR").unwrap_or_else(|_| "vi".to_string());
-        assert!(!editor.is_empty());
-    }
-
-    #[test]
-    fn test_git_command_construction() {
-        let _cmd = Command::new("git");
-    }
-
-    #[test]
-    fn test_file_count_validation() {
-        let original_count = 5;
-        let new_count = 5;
-        assert_eq!(original_count, new_count);
-
-        let original_count = 5;
-        let new_count = 4;
-        assert_ne!(original_count, new_count);
-    }
 }

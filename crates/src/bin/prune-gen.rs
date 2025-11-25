@@ -32,8 +32,8 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    banner::print_glitch_header("PRUNE-GEN", "yellow");
-    banner::status("□", "ACTION", "generating test structure", "yellow");
+    banner::header("PRUNE-GEN");
+    banner::status("action", "generating test structure");
 
     let temp_dir = TempDir::new()?;
     let test_dir = temp_dir.path();
@@ -67,8 +67,8 @@ fn main() -> Result<()> {
 
     let path_str = test_dir.to_string_lossy().to_string();
 
-    banner::status("□", "PATH", &path_str, "yellow");
-    banner::success("TEST STRUCTURE CREATED");
+    banner::status("path", &path_str);
+    banner::ok("test structure created");
 
     println!("{}", path_str);
 
@@ -97,30 +97,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_create_large_file_command() {
-        // Just verify the function is callable and returns Ok for 0 MB
-        // (dd with count=0 should be safe and fast)
+    fn test_create_large_file_zero_bytes() {
         let temp = TempDir::new().unwrap();
         let file_path = temp.path().join("test.dat");
         let result = create_large_file(&file_path, 0);
         assert!(result.is_ok());
+        assert!(file_path.exists());
     }
 
     #[test]
-    fn test_path_with_spaces() {
+    fn test_directory_with_spaces() {
         let temp = TempDir::new().unwrap();
         let dir_with_spaces = temp.path().join("dir with spaces");
-        let result = fs::create_dir_all(&dir_with_spaces);
-        assert!(result.is_ok());
+        fs::create_dir_all(&dir_with_spaces).unwrap();
         assert!(dir_with_spaces.exists());
-    }
-
-    #[test]
-    fn test_nested_directory_creation() {
-        let temp = TempDir::new().unwrap();
-        let nested = temp.path().join("a/b/c/d");
-        let result = fs::create_dir_all(&nested);
-        assert!(result.is_ok());
-        assert!(nested.exists());
     }
 }

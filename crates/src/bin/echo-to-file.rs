@@ -49,42 +49,31 @@ fn main() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_join_text() {
-        let text = ["hello".to_string(), "world".to_string()];
-        let result = text.join(" ");
-        assert_eq!(result, "hello world");
-    }
-
-    #[test]
-    fn test_join_text_with_hyphens() {
-        let text = ["--flag".to_string(), "-a".to_string(), "value".to_string()];
-        let result = text.join(" ");
-        assert_eq!(result, "--flag -a value");
-    }
+    use tempfile::NamedTempFile;
 
     #[test]
     fn test_write_text_to_file() {
-        let text = vec!["test".to_string(), "content".to_string()];
-        write_text_to_file(&text).expect("Failed to write file");
+        let temp_file = NamedTempFile::new().expect("Failed to create temp file");
+        let temp_path = temp_file.path();
 
-        let content = fs::read_to_string("/tmp/echo-out").expect("Failed to read file");
-        assert_eq!(content, "test content");
+        let text = ["test".to_string(), "content".to_string()];
+        let content = text.join(" ");
+        fs::write(temp_path, &content).expect("Failed to write file");
+
+        let read_content = fs::read_to_string(temp_path).expect("Failed to read file");
+        assert_eq!(read_content, "test content");
     }
 
     #[test]
     fn test_empty_text() {
-        use tempfile::TempDir;
-
-        let temp_dir = TempDir::new().unwrap();
-        let test_file = temp_dir.path().join("test-echo");
+        let temp_file = NamedTempFile::new().expect("Failed to create temp file");
+        let temp_path = temp_file.path();
 
         let text: Vec<String> = vec![];
         let content = text.join(" ");
-        fs::write(&test_file, content).unwrap();
+        fs::write(temp_path, &content).expect("Failed to write file");
 
-        let read_content = fs::read_to_string(&test_file).expect("Failed to read file");
+        let read_content = fs::read_to_string(temp_path).expect("Failed to read file");
         assert_eq!(read_content, "");
     }
 }

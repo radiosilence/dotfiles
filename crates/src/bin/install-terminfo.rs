@@ -42,12 +42,13 @@ fn main() -> Result<()> {
         .host
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    banner::print_glitch_header("INSTALL-TERMINFO", "cyan");
-    banner::status("□", "TARGET", &host, "cyan");
+    banner::header("INSTALL-TERMINFO");
+    banner::status("target", &host);
 
     let infocmp = Command::new("infocmp").arg("-x").output()?;
 
     if !infocmp.status.success() {
+        banner::err("infocmp failed");
         anyhow::bail!("infocmp failed");
     }
 
@@ -64,30 +65,10 @@ fn main() -> Result<()> {
     let status = child.wait()?;
 
     if !status.success() {
+        banner::err("ssh tic failed");
         anyhow::bail!("ssh tic failed");
     }
 
-    banner::success("TERMINFO INSTALLED");
+    banner::ok("terminfo installed");
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_host_string_format() {
-        let hosts = vec!["user@hostname", "root@192.168.1.1", "deploy@example.com"];
-
-        for host in hosts {
-            assert!(host.contains('@'));
-        }
-    }
-
-    #[test]
-    fn test_command_building() {
-        // Verify Command::new works with infocmp and ssh
-        let _infocmp = Command::new("infocmp");
-        let _ssh = Command::new("ssh");
-    }
 }
