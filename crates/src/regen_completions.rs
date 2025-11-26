@@ -24,7 +24,6 @@ pub fn regenerate_completions() -> Result<()> {
         "kubectl",
         "lefthook",
         "nano-web",
-        "npm",
         "op",
         "orbctl",
         "pulumi",
@@ -76,6 +75,22 @@ pub fn regenerate_completions() -> Result<()> {
     }
     if which::which("aws-vault").is_ok() {
         tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
+    }
+    if which::which("bun").is_ok() {
+        tasks.push(("bun", vec!["completions"]));
+    }
+
+    // npm is special - outputs a sourceable script, not a compdef
+    // Write to conf.d so it gets sourced automatically
+    if which::which("npm").is_ok() {
+        if let Ok(output) = Command::new("npm").arg("completion").output() {
+            if output.status.success() && !output.stdout.is_empty() {
+                let npm_completion_file =
+                    format!("{}/.dotfiles/config/zsh/conf.d/npm-completion.zsh", home);
+                fs::write(&npm_completion_file, output.stdout)?;
+                println!("✓ npm (sourced completion)");
+            }
+        }
     }
 
     let mp = MultiProgress::new();

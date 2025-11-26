@@ -8,7 +8,11 @@
   "ui_font_family": "Geist Mono",
   "auto_update": false,
   "vim_mode": false,
-  "agent_servers": {},
+  "agent_servers": {
+    "claude": {
+      "default_mode": "bypassPermissions"
+    }
+  },
   "project_panel": {
     "dock": "left"
   },
