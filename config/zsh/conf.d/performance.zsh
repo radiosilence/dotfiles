@@ -32,6 +32,11 @@ if [[ -d ~/.config/zsh/completions ]]; then
   fpath=(~/.config/zsh/completions $fpath)
 fi
 
+# Add brew completions (includes proper _git that sources git-completion.bash)
+if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
+  fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+fi
+
 # Load completions
 autoload -Uz compinit
 compinit
@@ -89,7 +94,6 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 
 # Git completion tweaks
 zstyle ':completion:*:git-checkout:*' sort false
-zstyle ':completion:*:*:git:*' script ~/.config/zsh/completions/_git 2>/dev/null
 
 # fzf-tab config (if loaded)
 zstyle ':fzf-tab:*' fzf-flags --height=50% --layout=reverse --border=rounded --info=inline
