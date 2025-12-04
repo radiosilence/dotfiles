@@ -79,6 +79,9 @@ pub fn regenerate_completions() -> Result<()> {
     if which::which("bun").is_ok() {
         tasks.push(("bun", vec!["completions"]));
     }
+    if which::which("rg").is_ok() {
+        tasks.push(("rg", vec!["--generate", "complete-zsh"]));
+    }
 
     // npm is special - outputs a sourceable script, not a compdef
     // Write to conf.d so it gets sourced automatically
