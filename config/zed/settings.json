@@ -115,7 +115,12 @@
   "languages": {
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
-      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
+      "language_servers": [
+        "tsgo",
+        "!typescript-language-server",
+        "!vtsls",
+        "..."
+      ],
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
@@ -125,7 +130,12 @@
     },
     "TSX": {
       // If you don't disable them runs all of them which breaks shit
-      "language_servers": ["!tsgo", "!typescript-language-server", "..."],
+      "language_servers": [
+        "tsgo",
+        "!typescript-language-server",
+        "!vtsls",
+        "..."
+      ],
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
