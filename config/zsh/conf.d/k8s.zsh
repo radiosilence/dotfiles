@@ -6,8 +6,8 @@ alias kubectl='kubecolor'
 # Make kubectl completions work with kubecolor alias
 compdef kubecolor=kubectl
 
-alias kgp='kubectl get pods | grep '
-alias kgpw='kubectl get pods -w | grep '
+alias kgp='kubecolor get pods --force-colors | rg '
+alias kgpw='kubecolor get pods -w --force-colors | rg '
 alias klg='kubectl logs -f '
 
 ksh() {
