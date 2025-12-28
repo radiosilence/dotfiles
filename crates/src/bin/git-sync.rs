@@ -3,13 +3,14 @@
 //! After PRs are merged and remote branches deleted, this cleans up
 //! the stale local tracking branches.
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Confirm;
-use git2::{BranchType, FetchOptions, Repository};
+use git2::{BranchType, Repository};
 use std::io;
+use std::process::Command;
 
 #[derive(Parser)]
 #[command(name = "git-sync")]
@@ -45,18 +46,17 @@ fn main() -> Result<()> {
 
     let repo = Repository::open(".").context("Not a git repository")?;
 
-    // Prune and fetch
+    // Prune and fetch (shelling out for auth compatibility)
     println!("  {} Pruning and fetching from origin", "·".bright_black());
 
-    let mut remote = repo.find_remote("origin")?;
-    let mut fetch_opts = FetchOptions::new();
-    fetch_opts.prune(git2::FetchPrune::On);
+    let fetch = Command::new("git")
+        .args(["fetch", "--prune", "origin"])
+        .status()
+        .context("Failed to run git fetch")?;
 
-    remote.fetch(
-        &["refs/heads/*:refs/remotes/origin/*"],
-        Some(&mut fetch_opts),
-        None,
-    )?;
+    if !fetch.success() {
+        bail!("git fetch --prune failed");
+    }
 
     // Find branches with deleted remotes
     let gone_branches = find_gone_branches(&repo)?;
