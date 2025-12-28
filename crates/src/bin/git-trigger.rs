@@ -1,10 +1,9 @@
 //! Amend and force push to trigger CI/CD
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use git2::Repository;
 use std::io;
 use std::process::Command;
 
@@ -45,8 +44,6 @@ fn main() -> Result<()> {
 
     println!("\n/// {}\n", "GIT-TRIGGER".bold());
 
-    let repo = Repository::discover(".").context("Not a git repository")?;
-
     if args.dry_run {
         println!("  {} Dry run - would execute:", "·".bright_black());
         println!("  {}   git commit --amend --no-edit", "·".bright_black());
@@ -54,44 +51,25 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Get HEAD commit
-    let head = repo.head()?;
-    let commit = head.peel_to_commit()?;
-    let tree = commit.tree()?;
+    // Amend commit
+    let amend = Command::new("git")
+        .args(["commit", "--amend", "--no-edit"])
+        .status()
+        .context("Failed to run git commit --amend")?;
 
-    // Amend with same message and tree
-    let signature = repo.signature()?;
-    let parents: Vec<_> = commit.parents().collect();
-    let parent_refs: Vec<&git2::Commit> = parents.iter().collect();
-
-    let new_commit_oid = repo.commit(
-        None,
-        &signature,
-        &signature,
-        commit.message().unwrap_or(""),
-        &tree,
-        &parent_refs,
-    )?;
-
-    repo.head()?.set_target(new_commit_oid, "amend commit")?;
-
-    // Get current branch
-    let head = repo.head()?;
-    let branch_name = head.shorthand().context("No branch name")?;
+    if !amend.success() {
+        bail!("git commit --amend failed");
+    }
 
     // Push with force
-    let mut remote = repo.find_remote("origin")?;
-    let refspec = format!("+refs/heads/{0}:refs/heads/{0}", branch_name);
+    let push = Command::new("git")
+        .args(["push", "--force"])
+        .status()
+        .context("Failed to run git push")?;
 
-    let mut callbacks = RemoteCallbacks::new();
-    callbacks.credentials(|_url, username_from_url, _allowed_types| {
-        Cred::ssh_key_from_agent(username_from_url.unwrap_or("git"))
-    });
-
-    let mut push_opts = PushOptions::new();
-    push_opts.remote_callbacks(callbacks);
-
-    remote.push(&[refspec.as_str()], Some(&mut push_opts))?;
+    if !push.success() {
+        bail!("git push --force failed");
+    }
 
     println!("  {} CI/CD triggered", "✓".green());
 
