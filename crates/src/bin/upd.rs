@@ -192,7 +192,7 @@ fn main() -> Result<()> {
             let upgrade_ok = run_cmd(
                 "brew:upgrade",
                 pb,
-                Command::new("brew").arg("upgrade").arg("--quiet"),
+                Command::new("brew").args(["upgrade", "--greedy", "--quiet"]),
             )
             .is_ok();
             let cleanup_ok = run_cmd(

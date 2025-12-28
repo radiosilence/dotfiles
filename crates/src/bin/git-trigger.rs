@@ -4,8 +4,9 @@ use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use git2::{Cred, PushOptions, RemoteCallbacks, Repository};
+use git2::Repository;
 use std::io;
+use std::process::Command;
 
 #[derive(Parser)]
 #[command(name = "git-trigger")]
