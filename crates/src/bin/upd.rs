@@ -159,18 +159,30 @@ fn main() -> Result<()> {
         }));
     }
 
+    // brew bundle may require sudo for casks, run it interactively before parallel tasks
     if has_brew {
+        let home = std::env::var("HOME")?;
+        mp.println(format!(
+            "{}",
+            "/// .BREW BUNDLE (may prompt for sudo)".blue()
+        ))?;
+        let bundle_status = mp.suspend(|| {
+            Command::new("brew")
+                .args(["bundle", "--quiet"])
+                .current_dir(&home)
+                .stdin(Stdio::inherit())
+                .stdout(Stdio::inherit())
+                .stderr(Stdio::inherit())
+                .status()
+        })?;
+        if !bundle_status.success() {
+            mp.println(format!("{} brew bundle failed", "✗".red()))?;
+        } else {
+            mp.println(format!("{} brew bundle complete", "✓".green()))?;
+        }
+        mp.println("")?;
+
         handles.push(create_task("brew", &mp, |pb| {
-            let home = std::env::var("HOME")?;
-            let bundle_ok = run_cmd(
-                "brew:bundle",
-                pb,
-                Command::new("brew")
-                    .arg("bundle")
-                    .arg("--quiet")
-                    .current_dir(&home),
-            )
-            .is_ok();
             let update_ok = run_cmd(
                 "brew:update",
                 pb,
@@ -190,9 +202,6 @@ fn main() -> Result<()> {
             )
             .is_ok();
 
-            if !bundle_ok {
-                bail!("Failed to bundle brew")
-            }
             if !update_ok {
                 bail!("Failed to update brew")
             }
