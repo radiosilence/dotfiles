@@ -15,7 +15,7 @@ upd() {
 
   # Rebuild binaries (only if changed)
   printf "\033[35m→ rebuilding rust binaries...\033[0m\n"
-  (cd ~/.dotfiles/crates && cargo install --path . --quiet --bins --root ~/.dotfiles --force) || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
+  (cd ~/.dotfiles/crates && cargo install --path . --bins --root ~/.dotfiles --force) || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
 
   # Run upd binary
   ~/.dotfiles/bin/upd "$@" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }

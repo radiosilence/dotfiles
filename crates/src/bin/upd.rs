@@ -223,15 +223,17 @@ fn main() -> Result<()> {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
     }
 
-    mp.println("")?;
-    mp.println(format!("{}", "/// .REGENERATING ZSH COMPLETIONS".bold()))?;
-    mp.println("")?;
-    mp.suspend(|| dotfiles_tools::regen_completions::regenerate_completions().unwrap());
+    mp.clear()?;
 
-    mp.println("")?;
-    mp.println("")?;
-    mp.println(format!("{}", "/// .SYSTEM UPDATE COMPLETE".bold()))?;
-    mp.println("")?;
+    println!();
+    println!("{}", "/// .REGENERATING ZSH COMPLETIONS".bold());
+    println!();
+    dotfiles_tools::regen_completions::regenerate_completions()?;
+
+    println!();
+    println!();
+    println!("{}", "/// .SYSTEM UPDATE COMPLETE".bold());
+    println!();
 
     Ok(())
 }
@@ -384,18 +386,4 @@ fn install_font(
     }
 
     Ok(count)
-}
-
-#[cfg(test)]
-mod tests {
-
-    #[test]
-    fn test_platform_detection() {
-        // Test that platform detection compiles and returns consistent values
-        #[cfg(target_os = "macos")]
-        assert!(cfg!(target_os = "macos"));
-
-        #[cfg(target_os = "linux")]
-        assert!(cfg!(target_os = "linux"));
-    }
 }

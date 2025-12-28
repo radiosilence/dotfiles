@@ -67,6 +67,9 @@ pub fn regenerate_completions() -> Result<()> {
     if which::which("gh").is_ok() {
         tasks.push(("gh", vec!["completion", "-s", "zsh"]));
     }
+    if which::which("idiotify").is_ok() {
+        tasks.push(("idiotify", vec!["completions", "zsh"]));
+    }
     if which::which("task").is_ok() {
         tasks.push(("task", vec!["--completion", "zsh"]));
     }
