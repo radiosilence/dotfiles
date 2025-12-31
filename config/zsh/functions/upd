@@ -1,22 +1,60 @@
 upd() {
   setopt LOCAL_OPTIONS ERR_RETURN
 
-  # update repo
-  (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
+  local dotfiles_dir=~/.dotfiles
+  local crates_dir="$dotfiles_dir/crates"
+  local bin_dir="$dotfiles_dir/bin"
+  local hash_file="$crates_dir/.last-build-hash"
 
   # Pull dotfiles
-  if [ -d ~/.dotfiles/.git ]; then
+  if [ -d "$dotfiles_dir/.git" ]; then
     printf "\033[36m→ pulling ~/.dotfiles...\033[0m\n"
-    (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
+    (cd "$dotfiles_dir" && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
   fi
 
-  # Ensure bin directory exists
-  mkdir -p ~/.dotfiles/bin || { printf "\033[31m✗ failed to create bin directory\033[0m\n"; return 1; }
+  mkdir -p "$bin_dir" || { printf "\033[31m✗ failed to create bin directory\033[0m\n"; return 1; }
 
-  # Rebuild binaries (only if changed)
-  printf "\033[35m→ rebuilding rust binaries...\033[0m\n"
-  (cd ~/.dotfiles/crates && cargo install --path . --bins --root ~/.dotfiles --force) || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
+  # Check if rebuild is needed:
+  # - binary missing
+  # - hash file missing
+  # - committed changes to crates/ (tree hash differs)
+  # - uncommitted changes in crates/
+  local needs_rebuild=0
+  local current_hash
+  local stored_hash
+
+  if [[ ! -x "$bin_dir/upd" ]]; then
+    needs_rebuild=1
+  else
+    # Get tree hash of crates/ (committed state)
+    current_hash=$(cd "$dotfiles_dir" && git rev-parse HEAD:crates 2>/dev/null) || current_hash="unknown"
+
+    # Check for uncommitted changes in crates/
+    if (cd "$dotfiles_dir" && ! git diff --quiet -- crates/ 2>/dev/null) || \
+       (cd "$dotfiles_dir" && ! git diff --cached --quiet -- crates/ 2>/dev/null); then
+      # Append dirty marker if there are local changes
+      current_hash="${current_hash}-dirty"
+    fi
+
+    if [[ -f "$hash_file" ]]; then
+      stored_hash=$(<"$hash_file")
+      if [[ "$current_hash" != "$stored_hash" ]]; then
+        needs_rebuild=1
+      fi
+    else
+      needs_rebuild=1
+    fi
+  fi
+
+  if (( needs_rebuild )); then
+    printf "\033[35m→ rebuilding rust binaries...\033[0m\n"
+    (cd "$crates_dir" && cargo install --path . --bins --root "$dotfiles_dir") || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
+    # Store the hash after successful build
+    echo "$current_hash" > "$hash_file"
+  else
+    printf "\033[32m✓ rust binaries up to date\033[0m\n"
+  fi
 
   # Run upd binary
-  ~/.dotfiles/bin/upd "$@" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
+  "$bin_dir/upd" "$@" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
 }
