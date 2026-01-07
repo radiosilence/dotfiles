@@ -10,6 +10,7 @@
   "vim_mode": false,
   "agent_servers": {
     "claude": {
+      "default_model": "opus",
       "default_mode": "bypassPermissions"
     }
   },
