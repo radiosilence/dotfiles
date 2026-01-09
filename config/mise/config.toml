@@ -44,7 +44,7 @@ kubectl = "latest"                             # Kubernetes CLI
 
 # GitHub & misc
 "aqua:cli/cli" = "latest"                      # GitHub CLI
-"ubi:mikefarah/yq" = "latest"                  # YAML processor
+"ubi:mikefarah/yq" = "latest"  # YAML processor
 "github:radiosilence/nano-web" = "latest"         # Minimal web server
 
 [settings]
