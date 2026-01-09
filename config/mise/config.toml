@@ -17,7 +17,7 @@ fd = "latest"                                  # Fast find alternative
 "github:lsd-rs/lsd" = "latest"                    # Modern ls replacement
 "github:ajeetdsouza/zoxide" = "latest"            # Smart cd replacement
 "github:Canop/broot" = "latest"                   # Directory navigation
-"ubi:yt-dlp/yt-dlp" = "latest"                 # Video downloader
+"ubi:yt-dlp/yt-dlp" = "latest"               # Video downloader
 
 # Shell & prompt
 "github:rossmacarthur/sheldon" = "latest"         # Zsh plugin manager
