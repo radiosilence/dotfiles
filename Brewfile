@@ -139,7 +139,6 @@ brew 'flac'
 brew 'sox'
 brew 'libsndfile'
 brew 'atomicparsley'
-brew 'cmus'
 brew 'ttfautohint'
 
 cask 'foobar2000', greedy: true
@@ -168,7 +167,6 @@ brew 'xz'
 # API TOOLS - API testing and protocol buffers
 # =============================================================================
 
-# brew 'bufbuild/buf/buf'
 brew 'evans'
 brew 'jsonnet'
 
@@ -215,7 +213,7 @@ cask 'tailscale-app', greedy: true
 cask 'aws-vpn-client', greedy: true
 cask 'mullvad-vpn', greedy: true
 cask 'steam', greedy: true
-cask 'supersonic', greedy: true, args: { no_quarantine: true }
+
 # =============================================================================
 # CREATIVE - Adobe and audio production
 # =============================================================================
