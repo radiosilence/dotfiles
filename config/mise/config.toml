@@ -17,7 +17,7 @@ fd = "latest"                                  # Fast find alternative
 "github:lsd-rs/lsd" = "latest"                    # Modern ls replacement
 "github:ajeetdsouza/zoxide" = "latest"            # Smart cd replacement
 "github:Canop/broot" = "latest"                   # Directory navigation
-"github:yt-dlp/yt-dlp" = "latest"                 # Video downloader
+"ubi:yt-dlp/yt-dlp" = "latest"                 # Video downloader
 
 # Shell & prompt
 "github:rossmacarthur/sheldon" = "latest"         # Zsh plugin manager
@@ -35,7 +35,7 @@ protobuf = "latest"                            # Protocol buffers
 
 # Code quality
 "github:koalaman/shellcheck" = "latest"           # Shell script linter
-"github:evilmartians/lefthook" = "latest"         # Git hooks manager
+"ubi:evilmartians/lefthook" = "latest"         # Git hooks manager
 
 # Kubernetes & cloud
 kubectl = "latest"                             # Kubernetes CLI
@@ -44,7 +44,7 @@ kubectl = "latest"                             # Kubernetes CLI
 
 # GitHub & misc
 "aqua:cli/cli" = "latest"                      # GitHub CLI
-"github:mikefarah/yq" = "latest"                  # YAML processor
+"ubi:mikefarah/yq" = "latest"                  # YAML processor
 "github:radiosilence/nano-web" = "latest"         # Minimal web server
 
 [settings]
