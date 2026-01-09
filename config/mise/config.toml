@@ -26,7 +26,7 @@ fd = "latest"  # Fast find alternative
 pipx = "latest"  # Python app installer
 protobuf = "latest"  # Protocol buffers
 "github:bufbuild/buf" = "latest"  # Protobuf toolchain
-"github:casey/just" = "latest"  # Task runner (crabs
+"github:casey/just" = "latest"  # Task runner (crabs)
 "github:go-task/task" = "latest"  # Task runner
 "github:astral-sh/uv" = "latest"  # Fast Python package installer
 "github:alire-project/alire" = { version = "latest", exe = "alr" }  # ADA tooling
@@ -42,6 +42,7 @@ kubectl = "latest"  # Kubernetes CLI
 # GitHub & misc
 "github:cli/cli" = "latest"  # GitHub CLI
 "github:radiosilence/nano-web" = "latest"  # Minimal web server
+"github:tursodatabase/turso" = "latest"  # Turso CLI
 
 [settings]
 paranoid = false
