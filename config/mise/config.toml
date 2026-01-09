@@ -24,7 +24,7 @@ fd = "latest" # Fast find alternative
 "github:starship/starship" = "latest"  # Cross-shell prompt
 
 # Development tools
-helix = "latest"  # Terminal text editor
+"github:helix-editor/helix" = { version = "latest", bin = "hx" }  # Terminal text editor
 pipx = "latest" # Python app installer
 protobuf = "latest" # Protocol buffers
 "github:bufbuild/buf" = "latest" # Protobuf toolchain
