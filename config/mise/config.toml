@@ -5,7 +5,6 @@ KERL_BUILD_DOCS = "yes"
 # Language runtimes
 bun = "latest" # Fast JS runtime & package manager
 deno = "latest"  # Secure JS/TS runtime
-go = "latest"  # Go language
 node = "24"  # Node.js LTS
 python = "3.12"  # Python 3.12
 rust = "latest"  # Rust toolchain
@@ -18,6 +17,7 @@ fd = "latest" # Fast find alternative
 "github:ajeetdsouza/zoxide" = "latest" # Smart cd replacement
 "github:Canop/broot" = "latest"  # Directory navigation
 "github:yt-dlp/yt-dlp" = { version = "latest", bin = "yt-dlp" }  # Video downloader
+"github:BurntSushi/ripgrep" = "latest"
 
 # Shell & prompt
 "github:rossmacarthur/sheldon" = "latest"  # Zsh plugin manager
@@ -36,6 +36,8 @@ protobuf = "latest" # Protocol buffers
 # Code quality
 "github:koalaman/shellcheck" = "latest"  # Shell script linter
 "github:evilmartians/lefthook" = { version= "latest", bin = "lefthook" }  # Git hooks manager
+"github:golangci/golangci-lint" = "latest"
+"github:rust-lang/rust-analyzer" = "latest"
 
 # Kubernetes & cloud
 kubectl = "latest"  # Kubernetes CLI
