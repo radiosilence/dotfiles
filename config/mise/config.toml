@@ -37,7 +37,6 @@ protobuf = "latest" # Protocol buffers
 "github:koalaman/shellcheck" = "latest"  # Shell script linter
 "github:evilmartians/lefthook" = { version= "latest", bin = "lefthook" }  # Git hooks manager
 "github:golangci/golangci-lint" = "latest"
-"github:rust-lang/rust-analyzer" = "latest"
 
 # Kubernetes & cloud
 kubectl = "latest"  # Kubernetes CLI
