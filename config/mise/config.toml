@@ -12,40 +12,40 @@ rust = "latest"             # Rust toolchain
 
 # CLI utilities
 fd = "latest"                                  # Fast find alternative
-"ubi:junegunn/fzf" = "latest"                  # Fuzzy finder
-"ubi:jqlang/jq" = "latest"                     # JSON processor
-"ubi:lsd-rs/lsd" = "latest"                    # Modern ls replacement
-"ubi:ajeetdsouza/zoxide" = "latest"            # Smart cd replacement
-"ubi:Canop/broot" = "latest"                   # Directory navigation
-"ubi:yt-dlp/yt-dlp" = "latest"                 # Video downloader
+"github:junegunn/fzf" = "latest"                  # Fuzzy finder
+"github:jqlang/jq" = "latest"                     # JSON processor
+"github:lsd-rs/lsd" = "latest"                    # Modern ls replacement
+"github:ajeetdsouza/zoxide" = "latest"            # Smart cd replacement
+"github:Canop/broot" = "latest"                   # Directory navigation
+"github:yt-dlp/yt-dlp" = "latest"                 # Video downloader
 
 # Shell & prompt
-"ubi:rossmacarthur/sheldon" = "latest"         # Zsh plugin manager
-"ubi:starship/starship" = "latest"             # Cross-shell prompt
+"github:rossmacarthur/sheldon" = "latest"         # Zsh plugin manager
+"github:starship/starship" = "latest"             # Cross-shell prompt
 
 # Development tools
 helix = "latest"                               # Terminal text editor
 pipx = "latest"                                # Python app installer
 protobuf = "latest"                            # Protocol buffers
-"ubi:bufbuild/buf" = "latest"                  # Protobuf toolchain
-"ubi:casey/just" = "latest"                    # Task runner (crabs
-"ubi:go-task/task" = "latest"                  # Task runner
-"ubi:astral-sh/uv" = "latest"                  # Fast Python package installer
-"ubi:alire-project/alire" = { version = "latest", exe = "alr" }  # ADA tooling
+"github:bufbuild/buf" = "latest"                  # Protobuf toolchain
+"github:casey/just" = "latest"                    # Task runner (crabs
+"github:go-task/task" = "latest"                  # Task runner
+"github:astral-sh/uv" = "latest"                  # Fast Python package installer
+"github:alire-project/alire" = { version = "latest", exe = "alr" }  # ADA tooling
 
 # Code quality
-"ubi:koalaman/shellcheck" = "latest"           # Shell script linter
-"ubi:evilmartians/lefthook" = "latest"         # Git hooks manager
+"github:koalaman/shellcheck" = "latest"           # Shell script linter
+"github:evilmartians/lefthook" = "latest"         # Git hooks manager
 
 # Kubernetes & cloud
 kubectl = "latest"                             # Kubernetes CLI
-"ubi:derailed/k9s" = "latest"                  # Kubernetes TUI
-"ubi:kubecolor/kubecolor" = "latest"           # Colorized kubectl
+"github:derailed/k9s" = "latest"                  # Kubernetes TUI
+"github:kubecolor/kubecolor" = "latest"           # Colorized kubectl
 
 # GitHub & misc
 "aqua:cli/cli" = "latest"                      # GitHub CLI
-"ubi:mikefarah/yq" = "latest"                  # YAML processor
-"ubi:radiosilence/nano-web" = "latest"         # Minimal web server
+"github:mikefarah/yq" = "latest"                  # YAML processor
+"github:radiosilence/nano-web" = "latest"         # Minimal web server
 
 [settings]
 paranoid = false
