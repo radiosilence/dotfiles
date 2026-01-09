@@ -43,7 +43,7 @@ kubectl = "latest"  # Kubernetes CLI
 "github:kubecolor/kubecolor" = "latest"  # Colorized kubectl
 
 # GitHub & misc
-"aqua:cli/cli" = "latest" # GitHub CLI
+"github:cli/cli" = "latest" # GitHub CLI
 # "github:mikefarah/yq" = { version = "latest", bin = "yq" } # YAML processor
 "github:radiosilence/nano-web" = "latest"  # Minimal web server
 
