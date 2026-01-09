@@ -3,57 +3,50 @@ KERL_BUILD_DOCS = "yes"
 
 [tools]
 # Language runtimes
-bun = "latest" # Fast JS runtime & package manager
+bun = "latest"  # Fast JS runtime & package manager
 deno = "latest"  # Secure JS/TS runtime
 node = "24"  # Node.js LTS
 python = "3.12"  # Python 3.12
 rust = "latest"  # Rust toolchain
-
+yq = "latest"  # YAML processor
 # CLI utilities
-fd = "latest" # Fast find alternative
-"github:junegunn/fzf" = "latest" # Fuzzy finder
+fd = "latest"  # Fast find alternative
+"github:junegunn/fzf" = "latest"  # Fuzzy finder
 "github:jqlang/jq" = "latest"  # JSON processor
-"github:lsd-rs/lsd" = "latest" # Modern ls replacement
-"github:ajeetdsouza/zoxide" = "latest" # Smart cd replacement
+"github:lsd-rs/lsd" = "latest"  # Modern ls replacement
+"github:ajeetdsouza/zoxide" = "latest"  # Smart cd replacement
 "github:Canop/broot" = "latest"  # Directory navigation
 "github:yt-dlp/yt-dlp" = { version = "latest", bin = "yt-dlp" }  # Video downloader
 "github:BurntSushi/ripgrep" = "latest"
-
 # Shell & prompt
 "github:rossmacarthur/sheldon" = "latest"  # Zsh plugin manager
 "github:starship/starship" = "latest"  # Cross-shell prompt
-
 # Development tools
 "github:helix-editor/helix" = { version = "latest", bin = "hx" }  # Terminal text editor
-pipx = "latest" # Python app installer
-protobuf = "latest" # Protocol buffers
-"github:bufbuild/buf" = "latest" # Protobuf toolchain
-"github:casey/just" = "latest" # Task runner (crabs
-"github:go-task/task" = "latest" # Task runner
-"github:astral-sh/uv" = "latest" # Fast Python package installer
-"github:alire-project/alire" = { version = "latest", exe = "alr" } # ADA tooling
-
+pipx = "latest"  # Python app installer
+protobuf = "latest"  # Protocol buffers
+"github:bufbuild/buf" = "latest"  # Protobuf toolchain
+"github:casey/just" = "latest"  # Task runner (crabs
+"github:go-task/task" = "latest"  # Task runner
+"github:astral-sh/uv" = "latest"  # Fast Python package installer
+"github:alire-project/alire" = { version = "latest", exe = "alr" }  # ADA tooling
+"github:tamasfe/taplo" = "latest"  # TOML formatter
 # Code quality
 "github:koalaman/shellcheck" = "latest"  # Shell script linter
-"github:evilmartians/lefthook" = { version= "latest", bin = "lefthook" }  # Git hooks manager
+"github:evilmartians/lefthook" = { version = "latest", bin = "lefthook" }  # Git hooks manager
 "github:golangci/golangci-lint" = "latest"
-
 # Kubernetes & cloud
 kubectl = "latest"  # Kubernetes CLI
-"github:derailed/k9s" = "latest" # Kubernetes TUI
+"github:derailed/k9s" = "latest"  # Kubernetes TUI
 "github:kubecolor/kubecolor" = "latest"  # Colorized kubectl
-
 # GitHub & misc
-"github:cli/cli" = "latest" # GitHub CLI
-# "github:mikefarah/yq" = { version = "latest", bin = "yq" } # YAML processor
+"github:cli/cli" = "latest"  # GitHub CLI
 "github:radiosilence/nano-web" = "latest"  # Minimal web server
 
 [settings]
 paranoid = false
 not_found_auto_install = true
 experimental = true
-idiomatic_version_file = true
-trusted_config_paths = ['~/workspace', "~/.dotfiles", "~/.config/mise"]
+trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
-#disable_tools = ["ruby"]

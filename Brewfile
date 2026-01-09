@@ -171,7 +171,6 @@ brew 'xz'
 # brew 'bufbuild/buf/buf'
 brew 'evans'
 brew 'jsonnet'
-brew 'taplo'
 
 # =============================================================================
 # MISC - Specialized and experimental tools
