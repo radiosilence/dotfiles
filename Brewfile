@@ -27,6 +27,7 @@ brew 'gnupg'
 brew 'openssl@3'
 brew 'tmux'
 brew 'tpm'
+brew 'mise'
 
 # =============================================================================
 # DEV TOOLS - Editors, IDEs, and dev applications
@@ -49,9 +50,6 @@ cask 'zen', greedy: true
 # LANGUAGES - Runtimes and language tools
 # =============================================================================
 
-brew 'node'
-brew 'mise'
-brew 'uv'
 brew 'luarocks'
 
 # =============================================================================
@@ -68,9 +66,7 @@ brew 'clang-format'
 # =============================================================================
 
 brew 'ansible-language-server'
-brew 'elixir-ls'
 brew 'lua-language-server'
-brew 'rust-analyzer'
 brew 'ruby-lsp'
 brew 'solargraph'
 brew 'terraform-ls'
@@ -109,6 +105,7 @@ brew 'grpcurl'
 # CLI UTILS - Shell productivity and file management
 # =============================================================================
 
+brew 'aria2'
 brew 'bat'
 brew 'fastfetch'
 brew 'fcp'
@@ -116,12 +113,9 @@ brew 'htop'
 brew 'btop'
 brew 'hyperfine'
 brew 'mas'
-brew 'ripgrep'
 brew 'shfmt'
 brew 'tree'
 brew 'tig'
-brew 'helix'
-brew 'golangci-lint'
 brew 'swiftformat'
 brew 'mdless'
 brew 'exiftool'
@@ -149,7 +143,7 @@ brew 'cmus'
 brew 'ttfautohint'
 
 cask 'foobar2000', greedy: true
-cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
+cask 'mpv', args: { no_quarantine: true }, greedy: true
 cask 'xld', args: { no_quarantine: true }, greedy: true
 
 # =============================================================================
@@ -183,7 +177,6 @@ brew 'taplo'
 # MISC - Specialized and experimental tools
 # =============================================================================
 
-brew 'aria2'
 brew 'cmatrix'
 brew 'ios-deploy'
 brew 'metalbear-co/mirrord/mirrord'
