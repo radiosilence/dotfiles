@@ -17,7 +17,7 @@ fd = "latest"  # Fast find alternative
 "github:ajeetdsouza/zoxide" = "latest"  # Smart cd replacement
 "github:Canop/broot" = "latest"  # Directory navigation
 "github:yt-dlp/yt-dlp" = { version = "latest", bin = "yt-dlp" }  # Video downloader
-"github:BurntSushi/ripgrep" = "latest"
+"github:BurntSushi/ripgrep" = "latest"  # Fast grep
 # Shell & prompt
 "github:rossmacarthur/sheldon" = "latest"  # Zsh plugin manager
 "github:starship/starship" = "latest"  # Cross-shell prompt
@@ -34,7 +34,7 @@ protobuf = "latest"  # Protocol buffers
 # Code quality
 "github:koalaman/shellcheck" = "latest"  # Shell script linter
 "github:evilmartians/lefthook" = { version = "latest", bin = "lefthook" }  # Git hooks manager
-"github:golangci/golangci-lint" = "latest"
+"github:golangci/golangci-lint" = "latest"  # Go linter
 # Kubernetes & cloud
 kubectl = "latest"  # Kubernetes CLI
 "github:derailed/k9s" = "latest"  # Kubernetes TUI
@@ -45,22 +45,22 @@ kubectl = "latest"  # Kubernetes CLI
 "github:tursodatabase/turso" = "latest"  # Turso CLI
 "github:withgraphite/homebrew-tap" = { version = "latest", exe = "gt" }  # Graphite CLI
 # Git
-"github:git-lfs/git-lfs" = "latest"
+"github:git-lfs/git-lfs" = "latest"  # Large file storage
 # Terminal
-"github:tmux/tmux-builds" = "latest"
+"github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
 "github:sharkdp/bat" = "latest"  # Cat with wings
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
 "github:sharkdp/hyperfine" = "latest"  # Benchmarking
 "github:rclone/rclone" = "latest"  # Cloud sync
 # Infra & cloud
-"github:argoproj/argo-cd" = { version = "latest", exe = "argocd" }
-"github:99designs/aws-vault" = "latest"
-"github:pulumi/pulumi" = "latest"
-"github:tilt-dev/tilt" = "latest"
-"github:metalbear-co/mirrord" = "latest"
+"github:argoproj/argo-cd" = { version = "latest", exe = "argocd" }  # GitOps CD
+"github:99designs/aws-vault" = "latest"  # AWS credential manager
+"github:pulumi/pulumi" = "latest"  # IaC in real languages
+"github:tilt-dev/tilt" = "latest"  # K8s dev environment
+"github:metalbear-co/mirrord" = "latest"  # Local-to-cluster debugging
 # API tools
-"github:fullstorydev/grpcurl" = "latest"
-"github:ktr0731/evans" = "latest"
+"github:fullstorydev/grpcurl" = "latest"  # gRPC curl
+"github:ktr0731/evans" = "latest"  # gRPC REPL
 # Code formatting
 "github:mvdan/sh" = { version = "latest", exe = "shfmt" }
 "github:nicklockwood/SwiftFormat" = { version = "latest", exe = "swiftformat" }
@@ -69,8 +69,8 @@ kubectl = "latest"  # Kubernetes CLI
 "npm:yaml-language-server" = "latest"
 "npm:vscode-langservers-extracted" = "latest"
 "npm:@ansible/ansible-language-server" = "latest"
-terraform = "latest"
-terraform-ls = "latest"
+terraform = "latest"  # IaC
+terraform-ls = "latest"  # Terraform LSP
 
 [settings]
 paranoid = false
