@@ -62,13 +62,13 @@ kubectl = "latest"  # Kubernetes CLI
 "github:fullstorydev/grpcurl" = "latest"  # gRPC curl
 "github:ktr0731/evans" = "latest"  # gRPC REPL
 # Code formatting
-"github:mvdan/sh" = { version = "latest", exe = "shfmt" }
-"github:nicklockwood/SwiftFormat" = { version = "latest", exe = "swiftformat" }
+"github:mvdan/sh" = { version = "latest", exe = "shfmt" }  # Shell formatter
+"github:nicklockwood/SwiftFormat" = { version = "latest", exe = "swiftformat" }  # Swift formatter
 # Language servers
-"github:LuaLS/lua-language-server" = "latest"
-"npm:yaml-language-server" = "latest"
-"npm:vscode-langservers-extracted" = "latest"
-"npm:@ansible/ansible-language-server" = "latest"
+"github:LuaLS/lua-language-server" = "latest"  # Lua LSP
+"npm:yaml-language-server" = "latest"  # YAML LSP
+"npm:vscode-langservers-extracted" = "latest"  # HTML/CSS/JSON LSPs
+"npm:@ansible/ansible-language-server" = "latest"  # Ansible LSP
 terraform = "latest"  # IaC
 terraform-ls = "latest"  # Terraform LSP
 
