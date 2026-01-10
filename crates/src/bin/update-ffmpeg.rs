@@ -4,11 +4,13 @@
 //! the mise config.toml with new download URLs.
 
 use anyhow::{Context, Result};
-use clap::Parser;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{generate, Shell};
 use colored::Colorize;
 use regex::Regex;
 use scraper::{Html, Selector};
 use std::fs;
+use std::io;
 use std::path::PathBuf;
 use toml_edit::{DocumentMut, Item, Value};
 
@@ -17,6 +19,9 @@ use toml_edit::{DocumentMut, Item, Value};
 #[command(about = "Update ffmpeg build URLs in mise config", long_about = None)]
 #[command(version)]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Path to mise config.toml
     #[arg(short, long, default_value = "~/.config/mise/config.toml")]
     config: String,
@@ -28,6 +33,15 @@ struct Args {
     /// Dry run - don't write changes
     #[arg(short = 'n', long)]
     dry_run: bool,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Generate shell completions
+    Completion {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
 }
 
 #[derive(Debug)]
@@ -153,6 +167,17 @@ fn update_config(
 
 fn main() -> Result<()> {
     let args = Args::parse();
+
+    if let Some(Commands::Completion { shell }) = args.command {
+        generate(
+            shell,
+            &mut Args::command(),
+            "update-ffmpeg",
+            &mut io::stdout(),
+        );
+        return Ok(());
+    }
+
     let config_path = expand_path(&args.config);
 
     println!("\n/// {}\n", "UPDATE-FFMPEG".bold());

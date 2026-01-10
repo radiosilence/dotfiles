@@ -53,6 +53,7 @@ pub fn regenerate_completions() -> Result<()> {
         "to-audio",
         "unfuck-xcode",
         "upd",
+        "update-ffmpeg",
         "url2base64",
         "vimv",
     ];
