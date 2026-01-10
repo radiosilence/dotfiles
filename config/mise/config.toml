@@ -47,8 +47,6 @@ kubectl = "latest"  # Kubernetes CLI
 "npm:yaml-language-server" = "latest"
 "npm:vscode-langservers-extracted" = "latest"
 "npm:@ansible/ansible-language-server" = "latest"
-# CLI tools
-"npm:vercel" = "latest"
 
 [settings]
 paranoid = false
