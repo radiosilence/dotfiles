@@ -22,4 +22,9 @@ cd "$DOTFILES_DIR/crates"
 cargo install --path . --bins --root "$DOTFILES_DIR" --force
 
 printf "\033[32m✓ Binaries built and installed to ~/.dotfiles/bin\033[0m\n"
-printf "\033[36m\n→ Run 'upd' to complete setup\033[0m\n"
+
+# Run upd to complete setup (brew, mise, etc)
+printf "\033[36m\n→ Running upd to complete setup...\033[0m\n"
+"$DOTFILES_DIR/bin/upd"
+
+printf "\033[32m✓ Setup complete!\033[0m\n"

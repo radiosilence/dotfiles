@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal dev environment. macOS/Linux, zsh, Rust tooling.
+Personal dev environment. macOS, zsh, Rust tooling.
 
 ## Setup
 
@@ -9,72 +9,54 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/setup
 ```
 
-The `setup` script installs Rust if needed, builds the tools, then run `upd` to finish setup.
+The `setup` script installs Rust if needed, builds all tools, and runs `upd` to install packages and configure everything.
 
-## What's here
+## What's Here
 
-**Shell & Editor configs** - zsh (modular), git, ssh, starship, ghostty, helix, zed
+- **Shell configs** - Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
+- **23 Rust binaries** - System maintenance, git workflow, media processing, file operations
+- **Tool management** - mise for runtimes, Brewfile for system packages
+- **Terminal configs** - tmux, WezTerm, ghostty, starship prompt
 
-**Runtime management** - mise for languages/tools, Brewfile for system packages
+## Documentation
 
-**22 Rust binaries** in `crates/` - built via `cargo install --path . --bins`
+| Doc                                                   | Description                                                  |
+| ----------------------------------------------------- | ------------------------------------------------------------ |
+| [cheatsheet.md](docs/cheatsheet.md)                   | **Complete reference** - all commands, aliases, functions    |
+| [new-tools.md](docs/new-tools.md)                     | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
+| [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews                         |
 
-## Tools
+## Highlights
 
-### System
+**System**
 
-| Command                     | Description                                    |
-| --------------------------- | ---------------------------------------------- |
-| `upd`                       | Parallel system updater (brew, apt, mise, etc) |
-| `kill-port <port>`          | Kill process on port                           |
-| `prune [path] [size_kb]`    | Delete small directories                       |
-| `vimv [files]`              | Batch rename in $EDITOR                        |
-| `unfuck-xcode`              | Fix corrupt Xcode CLI tools                    |
-| `install-font-macos <urls>` | Install fonts from URLs                        |
-| `install-terminfo <host>`   | Install terminfo via SSH                       |
-| `regen-zsh-completions`     | Rebuild shell completions                      |
+- `upd` - Update everything (dotfiles, brew, mise, rust bins)
+- `kill-port <port>` - Kill process on port
+- `prune` - Find and delete small directories
 
-### Git
+**Git workflow**
 
-| Command               | Description                  |
-| --------------------- | ---------------------------- |
-| `git-sync`            | Delete merged local branches |
-| `git-squash [branch]` | Squash commits on branch     |
-| `git-trigger`         | Empty commit to trigger CI   |
+- `git-sync` - Delete merged local branches
+- `git-squash` - Squash commits for clean PRs
+- `git-trigger` - Re-trigger CI with empty amend
+- `fm` / `fr` - Fuzzy merge/rebase with fzf
 
-### Audio
+**Media**
 
-| Command                         | Description                      |
-| ------------------------------- | -------------------------------- |
-| `to-audio opus/flac [paths]`    | Convert audio formats (parallel) |
-| `embed-art [paths]`             | Embed artwork into FLACs         |
-| `clean-exif [paths]`            | Strip EXIF from images           |
-| `extract-exif-from-flac <file>` | Check FLAC art for EXIF          |
+- `to-audio opus|flac` - Parallel audio conversion
+- `embed-art` - Embed cover art into FLACs
+- `imp` - Download + extract + beets import
 
-### Downloads
+**Files**
 
-| Command                      | Description                       |
-| ---------------------------- | --------------------------------- |
-| `imp <urls>`                 | Download + extract + beets import |
-| `parallel-dl-extract <urls>` | Parallel download + unzip         |
-| `url2base64 <url>`           | Fetch URL as base64 data URL      |
+- `vimv` - Batch rename in $EDITOR
+- `clean-dls` - Remove scene release garbage
 
-### Misc
+All binaries support `--help` and have shell completions.
 
-| Command                        | Description                       |
-| ------------------------------ | --------------------------------- |
-| `clean-dls [paths]`            | Remove scene release garbage      |
-| `gen-diff <img1> <img2> <out>` | Visual image diff                 |
-| `prune-gen`                    | Generate test directory structure |
-| `echo-to-file <text>`          | Write to /tmp/echo-out            |
+## Related
 
-## Building
-
-```sh
-cd crates
-cargo build --release
-cargo install --path . --bins --root ~/.dotfiles
-```
+- [browser-schedule](https://github.com/radiosilence/browser-schedule) - Time-based browser switching for macOS
 
 ## Docker
 
@@ -82,26 +64,3 @@ cargo install --path . --bins --root ~/.dotfiles
 docker build -t dotfiles .
 docker run -it dotfiles zsh
 ```
-
-All tools support `--help` and shell completions via `<tool> completion <shell>`.
-
-## Shell Completions
-
-Uses fzf-tab for fuzzy completions with previews. After setup, tab completion opens an fzf popup instead of the standard menu.
-
-**Keys:**
-
-- `Tab` - Open completion menu (fzf)
-- Type to fuzzy filter
-- `Enter` - Select
-- `<` / `>` - Switch between completion groups (files, dirs, options, etc)
-- `Ctrl-Space` - Multi-select
-
-**Previews:**
-
-- Files show syntax-highlighted content (bat)
-- Directories show contents (lsd)
-- Processes show pid/user/cpu/mem
-- Git branches show recent commits
-
-Run `regen-zsh-completions` after installing new CLI tools to generate their completions.

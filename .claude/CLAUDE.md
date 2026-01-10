@@ -13,10 +13,12 @@
 #### Available Custom Tools
 
 **IMPORTANT:** Before running shell commands, deployments, or infrastructure tasks, ALWAYS read the relevant docs first:
+
 - `~/.dotfiles/docs/commands.md` - Custom scripts and aliases
+- `~/.dotfiles/docs-local/context.md` - Work-specific context (namespaces, environments, etc)
 - `~/.dotfiles/docs-local/` - Work-specific CLI docs if this directory exists
 
-Do NOT guess at CLI usage - check the docs.
+Do NOT guess at CLI usage - check the docs. Read silently, don't output the full contents.
 
 #### Response Style
 
