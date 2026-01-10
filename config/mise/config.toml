@@ -80,11 +80,6 @@ kubectl = "latest"  # Kubernetes CLI
 "pipx:nginx-language-server" = "latest"  # Nginx LSP
 terraform = "latest"  # IaC
 terraform-ls = "latest"  # Terraform LSP
-# Ruby tools
-"gem:cocoapods" = "latest"  # iOS dependency manager
-"gem:fastlane" = "latest"  # iOS/Android automation
-"gem:rubocop" = "latest"  # Ruby linter
-"gem:ruby-lsp" = "latest"  # Ruby LSP
 # JS tools
 "npm:prettier" = "latest"  # Code formatter
 "npm:jest" = "latest"  # Test runner
