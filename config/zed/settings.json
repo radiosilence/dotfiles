@@ -19,11 +19,7 @@
     "dock": "left",
   },
   "git_panel": {
-    "dock": "right",
-  },
-  // TODO: word_diff_enabled is a preview feature, move to git config when stable
-  "git": {
-    "word_diff_enabled": true,
+    "dock": "left",
   },
   "features": {
     "edit_prediction_provider": "zed",
