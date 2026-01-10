@@ -60,6 +60,11 @@ kubectl = "latest"  # Kubernetes CLI
 "github:sharkdp/bat" = "latest"  # Cat with wings
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
 "github:sharkdp/hyperfine" = "latest"  # Benchmarking
+"github:dandavison/delta" = "latest"  # Better git diffs
+"github:bootandy/dust" = "latest"  # Better du
+"github:dalance/procs" = "latest"  # Better ps
+"github:XAMPPRocky/tokei" = "latest"  # Code stats
+"github:ducaale/xh" = "latest"  # Modern HTTP client
 "github:rclone/rclone" = "latest"  # Cloud sync
 # Infra & cloud
 "github:argoproj/argo-cd" = { version = "latest", exe = "argocd" }  # GitOps CD

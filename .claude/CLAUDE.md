@@ -2,9 +2,13 @@
 
 ### Tooling
 
-- Always use `mise x` for language based tools.
 - Always run the configured formatter (biome/prettier/mix format) after doing any work.
 - If you have added/modified tests, always verify they work.
+
+#### Shell Commands
+
+- Always run bash commands through `zsh -i -c '...'` to get access to aliases, mise tools, and full environment.
+- This means mise-managed tools are already in PATH - no need for `mise x`.
 
 #### Response Style
 

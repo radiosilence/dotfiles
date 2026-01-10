@@ -20,12 +20,10 @@ brew 'zsh'
 brew 'git'
 
 brew 'curl'
-brew 'wget'
 brew 'coreutils'
 brew 'findutils'
 brew 'gnupg'
 brew 'openssl@3'
-brew 'tpm'
 brew 'mise'
 
 # =============================================================================
@@ -62,12 +60,6 @@ brew 'llvm'
 brew 'clang-format'
 
 # =============================================================================
-# LSPS - Language servers for editor integration
-# =============================================================================
-
-brew 'solargraph'
-
-# =============================================================================
 # INFRA - Cloud, orchestration, and DevOps
 # =============================================================================
 
@@ -96,7 +88,6 @@ brew 'fcp'
 brew 'htop'
 brew 'btop'
 brew 'mas'
-brew 'tree'
 
 brew 'mdless'
 brew 'exiftool'
@@ -160,7 +151,7 @@ brew 'testdisk'
 
 brew 'whalebrew'
 
-brew 'wrk'
+brew 'oha'
 
 # =============================================================================
 # PRODUCTIVITY - Office and productivity apps
@@ -206,7 +197,6 @@ cask 'altair-graphql-client', greedy: true
 
 cask_args require_sha: true
 
-cask '1password', greedy: true
 cask 'slack', greedy: true
 cask 'telegram', greedy: true
 cask 'whatsapp', greedy: true
