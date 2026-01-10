@@ -132,8 +132,10 @@ fn main() -> Result<()> {
 
     for (path, size) in &candidates {
         let display_path = path.display().to_string();
-        let display_path = if display_path.len() > 48 {
-            format!("...{}", &display_path[display_path.len() - 45..])
+        let char_count = display_path.chars().count();
+        let display_path = if char_count > 48 {
+            let suffix: String = display_path.chars().skip(char_count - 45).collect();
+            format!("...{}", suffix)
         } else {
             display_path
         };
