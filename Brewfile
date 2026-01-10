@@ -79,8 +79,7 @@ brew 'aws-sso-util'
 
 brew 'azure-cli'
 brew 'cf-terraforming'
-brew 'hashicorp/tap/terraform'
-brew 'terraform-ls'
+
 brew 'watchman'
 
 # =============================================================================
