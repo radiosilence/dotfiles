@@ -33,6 +33,7 @@ brew 'mise'
 # =============================================================================
 
 cask 'zed', greedy: true
+cask 'zed@preview', greedy: true
 cask 'figma', greedy: true
 cask 'fork', greedy: true
 cask 'beekeeper-studio', greedy: true
