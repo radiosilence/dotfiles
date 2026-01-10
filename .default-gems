@@ -1,7 +1,3 @@
 bundler
 pry
 gem-ctags
-cocoapods
-fastlane
-ruby-lsp
-rubocop

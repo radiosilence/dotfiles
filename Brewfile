@@ -64,7 +64,6 @@ brew 'clang-format'
 # LSPS - Language servers for editor integration
 # =============================================================================
 
-brew 'ruby-lsp'
 brew 'solargraph'
 
 # =============================================================================
