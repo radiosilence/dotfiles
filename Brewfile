@@ -130,7 +130,7 @@ brew 'atomicparsley'
 brew 'ttfautohint'
 
 cask 'foobar2000', greedy: true
-cask 'mpv', args: { no_quarantine: true }, greedy: true
+cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
 cask 'xld', args: { no_quarantine: true }, greedy: true
 
 # =============================================================================
