@@ -52,6 +52,14 @@ kubectl = "latest"  # Kubernetes CLI
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
 "github:sharkdp/hyperfine" = "latest"  # Benchmarking
 "github:rclone/rclone" = "latest"  # Cloud sync
+
+# Media
+[tools."http:ffmpeg"]
+version = "8.0.1"
+
+[tools."http:ffmpeg".platforms]
+macos-arm64 = { url = "https://ffmpeg.martin-riedl.de/download/macos/arm64/1766430132_8.0.1/ffmpeg.zip" }
+linux-x64 = { url = "https://ffmpeg.martin-riedl.de/download/linux/amd64/1766430728_8.0.1/ffmpeg.zip" }
 # Infra & cloud
 "github:argoproj/argo-cd" = { version = "latest", exe = "argocd" }  # GitOps CD
 "github:99designs/aws-vault" = "latest"  # AWS credential manager
