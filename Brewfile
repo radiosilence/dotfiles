@@ -131,7 +131,6 @@ brew 'ttfautohint'
 
 cask 'foobar2000', greedy: true
 cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
-cask 'xld', args: { no_quarantine: true }, greedy: true
 
 # =============================================================================
 # DATABASE - Database clients and tools
