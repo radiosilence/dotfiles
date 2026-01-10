@@ -43,21 +43,18 @@ kubectl = "latest"  # Kubernetes CLI
 "github:cli/cli" = "latest"  # GitHub CLI
 "github:radiosilence/nano-web" = "latest"  # Minimal web server
 "github:tursodatabase/turso" = "latest"  # Turso CLI
-"github:withgraphite/graphite-cli" = { version = "latest", exe = "gt" }  # Graphite CLI
+"github:withgraphite/homebrew-tap" = { version = "latest", exe = "gt" }  # Graphite CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"
 # Terminal
 "github:tmux/tmux-builds" = "latest"
 "github:sharkdp/bat" = "latest"  # Cat with wings
-"github:aristocratos/btop" = "latest"  # Resource monitor
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
 "github:sharkdp/hyperfine" = "latest"  # Benchmarking
 "github:rclone/rclone" = "latest"  # Cloud sync
 # Infra & cloud
 "github:argoproj/argo-cd" = { version = "latest", exe = "argocd" }
 "github:99designs/aws-vault" = "latest"
-"github:hashicorp/terraform" = "latest"
-"github:hashicorp/terraform-ls" = "latest"
 "github:pulumi/pulumi" = "latest"
 "github:tilt-dev/tilt" = "latest"
 "github:metalbear-co/mirrord" = "latest"
