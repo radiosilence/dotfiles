@@ -6,6 +6,10 @@ authors = ["James Cleveland"]
 license = "MIT"
 resolver = "2"
 
+[lib]
+name = "dotfiles_tools"
+path = "src/lib.rs"
+
 # Multiple binaries in one package
 [[bin]]
 name = "kill-port"
@@ -95,63 +99,55 @@ path = "src/bin/echo-to-file.rs"
 name = "parallel-dl-extract"
 path = "src/bin/parallel-dl-extract.rs"
 
+[[bin]]
+name = "update-ffmpeg"
+path = "src/bin/update-ffmpeg.rs"
+
 [dependencies]
-# CLI
-clap = { version = "4", features = ["derive", "cargo", "env"] }
-clap_complete = "4"
-dialoguer = "0.12"
-indicatif = { version = "0.18", features = ["rayon"] }
-
-# Async
-reqwest = { version = "0.12", features = ["blocking", "stream"] }
-
-# Parallelism
-rayon = "1"
-
 # Error handling
 anyhow = "1"
-
-# File/Path utilities
-walkdir = "2"
-tempfile = "3"
-zip = "7"
-
+# Encoding
+base64 = "0.22"
+# CLI
+clap = { version = "4", features = ["cargo", "derive", "env"] }
+clap_complete = "4"
+# Terminal colors
+colored = "3"
+dialoguer = "0.12"
+# Directories
+dirs = "6"
+# Git
+git2 = "0.20"
+# Image processing
+img-parts = "0.4"
+indicatif = { version = "0.18", features = ["rayon"] }
 # System info
 netstat2 = "0.11"
 nix = { version = "0.30", features = ["signal"] }
-
-# Directories
-dirs = "6"
-
-# Git
-git2 = "0.20"
-
-# Encoding
-base64 = "0.22"
-
-# Logging
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-
-# Terminal colors
-colored = "3"
-
-# Unicode width calculation
-unicode-width = "0.2"
-
-# Image processing
-img-parts = "0.4"
-
 # CPU detection
 num_cpus = "1"
-
+# Parallelism
+rayon = "1"
+# Regex
+regex = "1"
+# Async
+reqwest = { version = "0.12", features = ["blocking", "stream"] }
+# HTML parsing
+scraper = "0.23"
+tempfile = "3"
+# TOML
+toml_edit = "0.22"
+# Logging
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+# Unicode width calculation
+unicode-width = "0.2"
+# File/Path utilities
+walkdir = "2"
 # Command detection
 which = "8"
+zip = "7"
 
 [dev-dependencies]
 assert_cmd = "2"
 assert_fs = "1"
 predicates = "3"
-
-[lib]
-name = "dotfiles_tools"
-path = "src/lib.rs"
