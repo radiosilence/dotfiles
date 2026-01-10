@@ -18,14 +18,13 @@ tap 'tursodatabase/tap'
 
 brew 'zsh'
 brew 'git'
-brew 'git-lfs'
+
 brew 'curl'
 brew 'wget'
 brew 'coreutils'
 brew 'findutils'
 brew 'gnupg'
 brew 'openssl@3'
-brew 'tmux'
 brew 'tpm'
 brew 'mise'
 
@@ -65,10 +64,8 @@ brew 'clang-format'
 # LSPS - Language servers for editor integration
 # =============================================================================
 
-brew 'lua-language-server'
 brew 'ruby-lsp'
 brew 'solargraph'
-brew 'terraform-ls'
 
 # =============================================================================
 # INFRA - Cloud, orchestration, and DevOps
@@ -76,16 +73,13 @@ brew 'terraform-ls'
 
 brew 'ansible'
 brew 'ansible-lint'
-brew 'argocd'
 brew 'awscli'
 brew 'aws-shell'
 brew 'aws-sso-util'
-brew 'aws-vault'
+
 brew 'azure-cli'
 brew 'cf-terraforming'
-brew 'hashicorp/tap/terraform'
-brew 'pulumi'
-brew 'tilt'
+
 brew 'watchman'
 
 # =============================================================================
@@ -96,24 +90,20 @@ brew 'nmap'
 brew 'iperf3'
 brew 'telnet'
 brew 'unbound'
-brew 'grpcurl'
 
 # =============================================================================
 # CLI UTILS - Shell productivity and file management
 # =============================================================================
 
 brew 'aria2'
-brew 'bat'
-brew 'fastfetch'
+
 brew 'fcp'
 brew 'htop'
-brew 'btop'
-brew 'hyperfine'
 brew 'mas'
-brew 'shfmt'
+
 brew 'tree'
 brew 'tig'
-brew 'swiftformat'
+
 brew 'mdless'
 brew 'exiftool'
 
@@ -124,7 +114,7 @@ brew 'exiftool'
 brew 'fswatch'
 brew 'parallel'
 brew 'rsync'
-brew 'rclone'
+
 brew 'syncthing'
 
 # =============================================================================
@@ -164,7 +154,6 @@ brew 'xz'
 # API TOOLS - API testing and protocol buffers
 # =============================================================================
 
-brew 'evans'
 brew 'jsonnet'
 
 # =============================================================================
@@ -173,13 +162,13 @@ brew 'jsonnet'
 
 brew 'cmatrix'
 brew 'ios-deploy'
-brew 'metalbear-co/mirrord/mirrord'
+
 brew 'nanovms/ops/ops'
 brew 'qemu'
 brew 'testdisk'
 
 brew 'whalebrew'
-brew 'withgraphite/tap/graphite'
+
 brew 'wrk'
 
 # =============================================================================
