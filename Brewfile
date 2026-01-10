@@ -65,13 +65,10 @@ brew 'clang-format'
 # LSPS - Language servers for editor integration
 # =============================================================================
 
-brew 'ansible-language-server'
 brew 'lua-language-server'
 brew 'ruby-lsp'
 brew 'solargraph'
 brew 'terraform-ls'
-brew 'vscode-langservers-extracted'
-brew 'yaml-language-server'
 
 # =============================================================================
 # INFRA - Cloud, orchestration, and DevOps
@@ -180,7 +177,7 @@ brew 'metalbear-co/mirrord/mirrord'
 brew 'nanovms/ops/ops'
 brew 'qemu'
 brew 'testdisk'
-brew 'vercel-cli'
+
 brew 'whalebrew'
 brew 'withgraphite/tap/graphite'
 brew 'wrk'
