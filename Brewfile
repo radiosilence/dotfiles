@@ -122,7 +122,6 @@ brew 'syncthing'
 # MEDIA - Audio/video processing and playback
 # =============================================================================
 
-brew 'ffmpeg'
 brew 'flac'
 brew 'sox'
 brew 'libsndfile'
