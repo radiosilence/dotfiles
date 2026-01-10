@@ -152,6 +152,7 @@ brew 'testdisk'
 brew 'whalebrew'
 
 brew 'oha'
+brew 'tokei'
 
 # =============================================================================
 # PRODUCTIVITY - Office and productivity apps

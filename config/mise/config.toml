@@ -63,7 +63,6 @@ kubectl = "latest"  # Kubernetes CLI
 "github:dandavison/delta" = "latest"  # Better git diffs
 "github:bootandy/dust" = "latest"  # Better du
 "github:dalance/procs" = "latest"  # Better ps
-"github:XAMPPRocky/tokei" = "latest"  # Code stats
 "github:ducaale/xh" = "latest"  # Modern HTTP client
 "github:rclone/rclone" = "latest"  # Cloud sync
 # Infra & cloud
