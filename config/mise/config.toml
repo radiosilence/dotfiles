@@ -84,8 +84,19 @@ linux-x64 = { url = "https://ffmpeg.martin-riedl.de/download/linux/amd64/1766430
 "npm:yaml-language-server" = "latest"  # YAML LSP
 "npm:vscode-langservers-extracted" = "latest"  # HTML/CSS/JSON LSPs
 "npm:@ansible/ansible-language-server" = "latest"  # Ansible LSP
+"pipx:nginx-language-server" = "latest"  # Nginx LSP
+"go:github.com/lasorda/protobuf-language-server" = "latest"  # Protobuf LSP
 terraform = "latest"  # IaC
 terraform-ls = "latest"  # Terraform LSP
+# Ruby tools
+"gem:cocoapods" = "latest"  # iOS dependency manager
+"gem:fastlane" = "latest"  # iOS/Android automation
+"gem:rubocop" = "latest"  # Ruby linter
+"gem:ruby-lsp" = "latest"  # Ruby LSP
+# JS tools
+"npm:prettier" = "latest"  # Code formatter
+"npm:jest" = "latest"  # Test runner
+"npm:@anthropic-ai/claude-code" = "latest"  # Claude Code CLI
 
 [settings]
 paranoid = false
