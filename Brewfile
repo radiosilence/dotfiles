@@ -71,13 +71,10 @@ brew 'solargraph'
 # INFRA - Cloud, orchestration, and DevOps
 # =============================================================================
 
-brew 'ansible'
-brew 'ansible-lint'
 brew 'awscli'
 brew 'aws-shell'
 brew 'aws-sso-util'
 
-brew 'azure-cli'
 brew 'cf-terraforming'
 
 brew 'watchman'
@@ -95,15 +92,11 @@ brew 'unbound'
 # CLI UTILS - Shell productivity and file management
 # =============================================================================
 
-brew 'aria2'
-
 brew 'fcp'
 brew 'htop'
 brew 'btop'
 brew 'mas'
-
 brew 'tree'
-brew 'tig'
 
 brew 'mdless'
 brew 'exiftool'
