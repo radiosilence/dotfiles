@@ -12,7 +12,11 @@
 
 #### Available Custom Tools
 
-See `~/.dotfiles/docs/commands.md` for full list of custom scripts and aliases.
+**IMPORTANT:** Before running shell commands, deployments, or infrastructure tasks, ALWAYS read the relevant docs first:
+- `~/.dotfiles/docs/commands.md` - Custom scripts and aliases
+- `~/.dotfiles/docs-local/` - Work-specific CLI docs if this directory exists
+
+Do NOT guess at CLI usage - check the docs.
 
 #### Response Style
 
