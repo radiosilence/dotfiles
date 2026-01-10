@@ -2,7 +2,7 @@
   "use_on_type_format": false,
   "tab_size": 2,
   "toolbar": {
-    "code_actions": true
+    "code_actions": true,
   },
   "hover_popover_delay": 200,
   "ui_font_family": "Geist Mono",
@@ -11,23 +11,23 @@
   "agent_servers": {
     "claude": {
       "default_model": "opus",
-      "default_mode": "bypassPermissions"
-    }
+      "default_mode": "bypassPermissions",
+    },
   },
   "project_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "outline_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "git_panel": {
-    "dock": "right"
+    "dock": "right",
   },
   "features": {
-    "edit_prediction_provider": "zed"
+    "edit_prediction_provider": "zed",
   },
   "edit_predictions": {
-    "mode": "subtle"
+    "mode": "subtle",
   },
   "inlay_hints": {
     "enabled": true,
@@ -43,8 +43,8 @@
       "control": true,
       "function": true,
       "platform": true,
-      "shift": true
-    }
+      "shift": true,
+    },
   },
   "use_system_prompts": true,
   "auto_install_extensions": {
@@ -68,7 +68,7 @@
     "stylelint": true,
     "terraform": true,
     "toml": true,
-    "zedokai": true
+    "zedokai": true,
   },
   "agent": {
     "dock": "right",
@@ -76,13 +76,13 @@
     "default_profile": "write",
     "inline_assistant_model": {
       "provider": "zed.dev",
-      "model": "claude-sonnet-4"
+      "model": "claude-sonnet-4",
     },
     "always_allow_tool_actions": true,
     "default_model": {
       "provider": "anthropic",
-      "model": "claude-sonnet-4-thinking-latest"
-    }
+      "model": "claude-sonnet-4-thinking-latest",
+    },
   },
   "agent_ui_font_size": 13.0,
   "ui_font_size": 13.0,
@@ -93,20 +93,20 @@
     "font_family": "GeistMono Nerd Font",
     // "font_family": "Geist Mono",
     "font_features": {
-      "liga": false
+      "liga": false,
     },
     "cursor_shape": "bar",
-    "minimum_contrast": 0
+    "minimum_contrast": 0,
   },
   "theme": {
     "mode": "dark",
     "light": "One Light",
-    "dark": "Zedokai"
+    "dark": "Zedokai",
   },
   "minimap": {
     "display_in": "active_editor",
     "thumb": "always",
-    "show": "never"
+    "show": "never",
   },
   "helix_mode": false,
   "wrap_guides": [80, 100],
@@ -120,14 +120,14 @@
         "tsgo",
         "!typescript-language-server",
         "!vtsls",
-        "..."
+        "...",
       ],
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
         { "code_action": "source.organizeImports.biome" },
-        { "language_server": { "name": "biome" } }
-      ]
+        { "language_server": { "name": "biome" } },
+      ],
     },
     "TSX": {
       // If you don't disable them runs all of them which breaks shit
@@ -135,45 +135,52 @@
         "tsgo",
         "!typescript-language-server",
         "!vtsls",
-        "..."
+        "...",
       ],
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
         { "code_action": "source.organizeImports.biome" },
-        { "language_server": { "name": "biome" } }
-      ]
+        { "language_server": { "name": "biome" } },
+      ],
+    },
+    "Proto": {
+      "language_servers": ["buf"],
     },
     "CSS": {
       "code_actions_on_format": {
         "source.fixAll.stylelint": true,
-        "source.organizeImports.biome": true
-      }
+        "source.organizeImports.biome": true,
+      },
     },
     "SCSS": {
       "code_actions_on_format": {
-        "source.fixAll.stylelint": true
-      }
+        "source.fixAll.stylelint": true,
+      },
     },
     "GraphQL": { "formatter": { "language_server": { "name": "biome" } } },
     "Elixir": {
       "formatter": {
         "external": {
           "command": "mix",
-          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
-        }
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
       },
       "language_servers": [
         "expert",
         "!elixir-ls",
         "!next-ls",
         "!lexical",
-        "..."
+        "...",
       ],
-      "format_on_save": "on"
+      "format_on_save": "on",
     },
     "Ruby": {
-      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."]
+      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."],
+      "formatter": [
+        { "code_action": "source.fixAll.rubocop" },
+        { "language_server": { "name": "rubocop" } },
+      ],
     },
     "Python": {
       "language_servers": ["pyright", "ruff"],
@@ -183,33 +190,33 @@
         { "code_action": "source.fixAll.ruff" },
         {
           "language_server": {
-            "name": "ruff"
-          }
-        }
-      ]
+            "name": "ruff",
+          },
+        },
+      ],
     },
     "YAML": {
-      "formatter": "prettier"
-    }
+      "formatter": "prettier",
+    },
   },
   "lsp": {
     "rust-analyzer": {
       "enable_lsp_tasks": true,
       "binary": {
-        "ignore_system_version": true
+        "ignore_system_version": true,
       },
       "initialization_options": {
         "inlayHints": {
           "maxLength": null,
           "lifetimeElisionHints": {
             "enable": "skip_trivial",
-            "useParameterNames": true
+            "useParameterNames": true,
           },
           "closureReturnTypeHints": {
-            "enable": "always"
-          }
-        }
-      }
+            "enable": "always",
+          },
+        },
+      },
     },
     "harper-ls": {
       "settings": {
@@ -218,47 +225,47 @@
           "userDictPath": "~/.config/harper-ls/dictionary.txt",
           "fileDictPath": "~/.config/harper-ls/file-dicts",
           "linters": {
-            "AvoidCurses": false
-          }
-        }
-      }
+            "AvoidCurses": false,
+          },
+        },
+      },
     },
     "stylelint-lsp": {
       "settings": {
         "stylelint": {
-          "validate": ["css", "postcss", "scss"]
-        }
-      }
+          "validate": ["css", "postcss", "scss"],
+        },
+      },
     },
     "some-sass": {
-      "settings": {}
+      "settings": {},
     },
     "rubocop": {
       "initialization_options": {
-        "safeAutocorrect": false
-      }
+        "safeAutocorrect": false,
+      },
     },
     "ruby-lsp": {
       "initialization_options": {
         "enabledFeatures": {
-          "diagnostics": false
-        }
-      }
+          "diagnostics": false,
+        },
+      },
     },
     "vtsls": {
       "settings": {
         "typescript": {
           "tsserver": {
-            "maxTsServerMemory": 26384
-          }
-        }
-      }
+            "maxTsServerMemory": 26384,
+          },
+        },
+      },
     },
     "biome": {
       "settings": {
-        "require_config_file": true
-      }
+        "require_config_file": true,
+      },
     },
-    "ruff": {}
-  }
+    "ruff": {},
+  },
 }
