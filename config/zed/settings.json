@@ -1,5 +1,4 @@
 {
-  "use_on_type_format": false,
   "tab_size": 2,
   "toolbar": {
     "code_actions": true,
@@ -7,7 +6,6 @@
   "hover_popover_delay": 200,
   "ui_font_family": "Geist Mono",
   "auto_update": false,
-  "vim_mode": false,
   "agent_servers": {
     "claude": {
       "default_model": "opus",
@@ -22,6 +20,10 @@
   },
   "git_panel": {
     "dock": "right",
+  },
+  // TODO: word_diff_enabled is a preview feature, move to git config when stable
+  "git": {
+    "word_diff_enabled": true,
   },
   "features": {
     "edit_prediction_provider": "zed",
@@ -56,7 +58,9 @@
     "docker-compose": true,
     "dockerfile": true,
     "elixir": true,
+    "emmet": true,
     "git-firefly": true,
+    "harper": true,
     "helm": true,
     "html": true,
     "ruby": true,
@@ -66,6 +70,7 @@
     "proto": true,
     "scss": true,
     "stylelint": true,
+    "tailwind-css": true,
     "terraform": true,
     "toml": true,
     "zedokai": true,
@@ -91,7 +96,6 @@
   "terminal": {
     "dock": "bottom",
     "font_family": "GeistMono Nerd Font",
-    // "font_family": "Geist Mono",
     "font_features": {
       "liga": false,
     },
@@ -108,11 +112,21 @@
     "thumb": "always",
     "show": "never",
   },
-  "helix_mode": false,
   "wrap_guides": [80, 100],
   "soft_wrap": "none",
   "format_on_save": "on",
   "ensure_final_newline_on_save": false,
+  "sticky_scroll": {
+    "enabled": true,
+  },
+  "preview_tabs": {
+    "enabled": true,
+    "enable_preview_from_file_finder": true,
+    "enable_preview_from_code_navigation": true,
+  },
+  "inline_diagnostics": {
+    "enabled": true,
+  },
   "languages": {
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
@@ -122,6 +136,7 @@
         "!vtsls",
         "...",
       ],
+      "colorize_brackets": true,
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
@@ -137,6 +152,7 @@
         "!vtsls",
         "...",
       ],
+      "colorize_brackets": true,
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
@@ -160,6 +176,7 @@
     },
     "GraphQL": { "formatter": { "language_server": { "name": "biome" } } },
     "Elixir": {
+      "colorize_brackets": true,
       "formatter": {
         "external": {
           "command": "mix",
@@ -176,6 +193,7 @@
       "format_on_save": "on",
     },
     "Ruby": {
+      "colorize_brackets": true,
       "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."],
       "formatter": [
         { "code_action": "source.fixAll.rubocop" },
@@ -183,6 +201,7 @@
       ],
     },
     "Python": {
+      "colorize_brackets": true,
       "language_servers": ["pyright", "ruff"],
       "format_on_save": "on",
       "formatter": [
@@ -197,6 +216,15 @@
     },
     "YAML": {
       "formatter": "prettier",
+    },
+    "Rust": {
+      "colorize_brackets": true,
+    },
+    "Go": {
+      "colorize_brackets": true,
+    },
+    "JSON": {
+      "colorize_brackets": true,
     },
   },
   "lsp": {
@@ -267,5 +295,6 @@
       },
     },
     "ruff": {},
+    "tailwindcss": {},
   },
 }
