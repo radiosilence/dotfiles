@@ -46,6 +46,14 @@ kubectl = "latest"  # Kubernetes CLI
 "github:withgraphite/homebrew-tap" = { version = "latest", exe = "gt" }  # Graphite CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
+"github:jonas/tig" = "latest"  # Git TUI
+# CLI utilities (extra)
+"github:aria2/aria2" = "latest"  # Download accelerator
+# Ansible
+"pipx:ansible" = { version = "latest", uvx = false, pipx_args = "--include-deps" }  # Config management
+"pipx:ansible-lint" = "latest"  # Ansible linter
+# Music library
+"pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer" }  # Music organizer
 # Terminal
 "github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
 "github:sharkdp/bat" = "latest"  # Cat with wings
