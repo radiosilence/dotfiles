@@ -48,8 +48,6 @@ kubectl = "latest"  # Kubernetes CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
 "github:jonas/tig" = "latest"  # Git TUI
-# CLI utilities (extra)
-"github:aria2/aria2" = "latest"  # Download accelerator
 # Ansible
 "pipx:ansible" = { version = "latest", uvx = false, pipx_args = "--include-deps" }  # Config management
 "pipx:ansible-lint" = "latest"  # Ansible linter
