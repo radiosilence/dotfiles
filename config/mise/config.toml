@@ -89,7 +89,7 @@ terraform-ls = "latest"  # Terraform LSP
 "npm:jest" = "latest"  # Test runner
 "npm:@anthropic-ai/claude-code" = "latest"  # Claude Code CLI
 "github:radiosilence/fastmail-cli" = "latest" # Fastmail CLI
-"npm:fastmail-mcp-server" = "latest" # Fastmail MCP Server
+"npm:mainlymcpfolk" = "latest" # Fastmail MCP Server
 # Go things
 
 # Media - ffmpeg with optimized Apple Silicon builds (auto-updated by update-ffmpeg)
