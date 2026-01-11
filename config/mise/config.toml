@@ -103,6 +103,7 @@ linux-x64 = { url = "https://ffmpeg.martin-riedl.de/download/linux/amd64/1766430
 [settings]
 paranoid = false
 not_found_auto_install = true
+fetch_remote_versions_cache = "30m"
 experimental = true
 trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"

@@ -8,4 +8,6 @@ todos
 settings.json
 .claude
 *
-!CLAUDE.md
+!CLAUDE.mdcontext/
+
+context/
