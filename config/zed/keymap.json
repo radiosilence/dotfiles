@@ -10,7 +10,7 @@
     "context": "Workspace",
     "bindings": {
       // "shift shift": "file_finder::Toggle"
-    }
+    },
   },
   {
     "context": "Editor",
@@ -20,17 +20,17 @@
         "task::Spawn",
         {
           "task_name": "tv.text",
-          "reveal_target": "center"
-        }
+          "reveal_target": "center",
+        },
       ],
-      "cmd-i": "agent::QuoteSelection"
-    }
+      "cmd-i": "agent::AddSelectionToThread",
+    },
   },
   {
     "context": "vim_mode == visual",
     "bindings": {
-      "alt-;": "vim::OtherEnd"
-    }
+      "alt-;": "vim::OtherEnd",
+    },
   },
   {
     "context": "vim_mode == helix_normal && !menu",
@@ -40,7 +40,7 @@
       "shift-h": "pane::ActivatePreviousItem",
       "shift-l": "pane::ActivateNextItem",
       "g r": "editor::FindAllReferences",
-      "g space": "editor::OpenExcerpts"
-    }
-  }
+      "g space": "editor::OpenExcerpts",
+    },
+  },
 ]
