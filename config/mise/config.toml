@@ -68,7 +68,7 @@ kubectl = "latest"  # Kubernetes CLI
 "github:rclone/rclone" = "latest"  # Cloud sync
 # Infra & cloud
 "github:argoproj/argo-cd" = { version = "latest", exe = "argocd" }  # GitOps CD
-"github:99designs/aws-vault" = "latest"  # AWS credential manager
+"github:ByteNess/aws-vault" = "latest"  # AWS credential manager
 "github:pulumi/pulumi" = "latest"  # IaC in real languages
 "github:tilt-dev/tilt" = "latest"  # K8s dev environment
 "github:metalbear-co/mirrord" = "latest"  # Local-to-cluster debugging
