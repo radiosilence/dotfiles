@@ -69,7 +69,7 @@
     "stylelint": true,
     "tailwind-css": true,
     "terraform": true,
-    "toml": true,
+    "tombi": true,
     "zedokai": true,
   },
   "agent": {
@@ -218,6 +218,10 @@
       "colorize_brackets": true,
     },
     "JSON": {
+      "colorize_brackets": true,
+    },
+    "TOML": {
+      "language_servers": ["tombi"],
       "colorize_brackets": true,
     },
   },
