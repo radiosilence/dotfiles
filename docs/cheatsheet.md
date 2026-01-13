@@ -8,49 +8,49 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 
 ### System & Maintenance
 
-| Command | Description |
-|---------|-------------|
-| `upd [-v]` | Update everything - pulls dotfiles, rebuilds rust bins, runs brew/mise |
-| `kill-port <port> [-n]` | Kill process on port (`-n` dry-run, `-s` signal) |
-| `prune [paths] [-s kb] [-y]` | Find and delete small directories (default 3MB threshold) |
-| `regen-zsh-completions` | Rebuild shell completions from installed tools |
-| `unfuck-xcode` | Reset Xcode CLI tools when they're corrupted |
-| `install-terminfo <host>` | Install terminfo entries (ghostty, etc) via SSH |
+| Command                      | Description                                                            |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| `upd [-v]`                   | Update everything - pulls dotfiles, rebuilds rust bins, runs brew/mise |
+| `kill-port <port> [-n]`      | Kill process on port (`-n` dry-run, `-s` signal)                       |
+| `prune [paths] [-s kb] [-y]` | Find and delete small directories (default 3MB threshold)              |
+| `regen-zsh-completions`      | Rebuild shell completions from installed tools                         |
+| `unfuck-xcode`               | Reset Xcode CLI tools when they're corrupted                           |
+| `install-terminfo <host>`    | Install terminfo entries (ghostty, etc) via SSH                        |
 
 ### Git Workflow
 
-| Command | Description |
-|---------|-------------|
-| `git-sync [-y]` | Delete local branches already merged to main |
+| Command                    | Description                                                |
+| -------------------------- | ---------------------------------------------------------- |
+| `git-sync [-y]`            | Delete local branches already merged to main               |
 | `git-squash [parent] [-n]` | Squash commits for clean PR history (default parent: main) |
-| `git-trigger [-n]` | Amend + force push to re-trigger CI |
+| `git-trigger [-n]`         | Amend + force push to re-trigger CI                        |
 
 ### Media & Audio
 
-| Command | Description |
-|---------|-------------|
-| `to-audio flac\|opus [paths]` | Convert audio (flac=lossless, opus=lossy efficient) |
-| `embed-art [paths]` | Embed cover.jpg/png into FLAC files |
-| `clean-exif [paths]` | Strip EXIF data from images |
-| `extract-exif-from-flac <file>` | Check FLAC embedded art for EXIF data |
-| `update-ffmpeg [-s] [-n]` | Update ffmpeg URLs in mise config (`-s` snapshot builds) |
+| Command                         | Description                                              |
+| ------------------------------- | -------------------------------------------------------- |
+| `to-audio flac\|opus [paths]`   | Convert audio (flac=lossless, opus=lossy efficient)      |
+| `embed-art [paths]`             | Embed cover.jpg/png into FLAC files                      |
+| `clean-exif [paths]`            | Strip EXIF data from images                              |
+| `extract-exif-from-flac <file>` | Check FLAC embedded art for EXIF data                    |
+| `update-ffmpeg [-s] [-n]`       | Update ffmpeg URLs in mise config (`-s` snapshot builds) |
 
 ### File Operations
 
-| Command | Description |
-|---------|-------------|
-| `vimv [files]` | Batch rename files in $EDITOR - edit names, save to apply |
-| `clean-dls [paths] [-n]` | Remove scene release garbage (nfo, txt, samples) |
-| `gen-diff <img1> <img2> <out>` | Generate visual diff between two images |
-| `url2base64 <url>` | Fetch URL content and output as base64 data URL |
+| Command                        | Description                                               |
+| ------------------------------ | --------------------------------------------------------- |
+| `vimv [files]`                 | Batch rename files in $EDITOR - edit names, save to apply |
+| `clean-dls [paths] [-n]`       | Remove scene release garbage (nfo, txt, samples)          |
+| `gen-diff <img1> <img2> <out>` | Generate visual diff between two images                   |
+| `url2base64 <url>`             | Fetch URL content and output as base64 data URL           |
 
 ### Downloads & Import
 
-| Command | Description |
-|---------|-------------|
-| `imp <urls>` | Download + extract + beets music import (aria2c parallel) |
-| `parallel-dl-extract <urls>` | Parallel download and extract archives |
-| `install-font-macos <urls>` | Download and install fonts to ~/Library/Fonts |
+| Command                      | Description                                               |
+| ---------------------------- | --------------------------------------------------------- |
+| `imp <urls>`                 | Download + extract + beets music import (aria2c parallel) |
+| `parallel-dl-extract <urls>` | Parallel download and extract archives                    |
+| `install-font-macos <urls>`  | Download and install fonts to ~/Library/Fonts             |
 
 ---
 
@@ -58,15 +58,15 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 
 Located in `~/.config/zsh/functions/`.
 
-| Function | Description |
-|----------|-------------|
-| `fm` | **Fuzzy merge** - fzf select branch to merge |
-| `fr` | **Fuzzy rebase** - fzf select branch to rebase onto |
-| `take <path>` | Create directory and cd into it |
-| `taketmp` | Create temp directory and cd into it |
-| `using <cmd>` | Check if command exists (returns 0/1) |
-| `fonts! [-f] <urls>` | Elegant font installer with progress (`-f` force overwrite) |
-| `upd` | Wrapper that pulls dotfiles, builds bins, then runs upd binary |
+| Function             | Description                                                    |
+| -------------------- | -------------------------------------------------------------- |
+| `fm`                 | **Fuzzy merge** - fzf select branch to merge                   |
+| `fr`                 | **Fuzzy rebase** - fzf select branch to rebase onto            |
+| `take <path>`        | Create directory and cd into it                                |
+| `taketmp`            | Create temp directory and cd into it                           |
+| `using <cmd>`        | Check if command exists (returns 0/1)                          |
+| `fonts! [-f] <urls>` | Elegant font installer with progress (`-f` force overwrite)    |
+| `upd`                | Wrapper that pulls dotfiles, builds bins, then runs upd binary |
 
 ---
 
@@ -77,6 +77,7 @@ Located in `~/.config/zsh/functions/`.
 80+ aliases. Here are the greatest hits:
 
 **Basics**
+
 ```
 g          git
 gs         git status -sb
@@ -87,6 +88,7 @@ glog       git log --oneline --graph --decorate
 ```
 
 **Adding & Committing**
+
 ```
 gaa        git add --all
 gap        git add --patch
@@ -98,6 +100,7 @@ gcn!       git commit --amend --no-edit
 ```
 
 **Branches & Checkout**
+
 ```
 gco <br>   git checkout <branch>
 gcb <br>   git checkout -b <branch>
@@ -108,6 +111,7 @@ gbD        git branch -D
 ```
 
 **Push & Pull**
+
 ```
 gp         git push
 gpl        git pull
@@ -119,6 +123,7 @@ gupa       git pull --rebase --autostash
 ```
 
 **Rebase & Merge**
+
 ```
 grbi       git rebase -i
 grba       git rebase --abort
@@ -128,6 +133,7 @@ gma        git merge --abort
 ```
 
 **Stash**
+
 ```
 gstaa      git stash apply
 gstp       git stash pop
@@ -136,6 +142,7 @@ gstall     git stash --all
 ```
 
 **Reset & Clean**
+
 ```
 grhh       git reset --hard
 groh       git reset origin/$(current_branch) --hard
@@ -144,6 +151,7 @@ gru        git reset --
 ```
 
 **Misc**
+
 ```
 grt        cd to git root
 gwip       WIP commit (add all, commit --wip--)
@@ -155,7 +163,7 @@ glola      log --graph --all
 
 ```
 whatport <port>   lsof -i :<port> - find what's using a port
-listening         lsof -iTCP -sTCP:LISTEN - all listening ports  
+listening         lsof -iTCP -sTCP:LISTEN - all listening ports
 psg <pattern>     procs --tree | grep - search processes
 recent [time]     fd --changed-within <time> - recently modified (default: 1h)
 sizes [path]      dust -d 2 - disk usage breakdown
@@ -177,6 +185,20 @@ z <partial>   zoxide - smart cd with frecency
 ...           cd ../..
 ```
 
+### Kubernetes (`k8s.zsh`)
+
+All have fzf-tab completion with colored pod/resource previews.
+
+```
+klg <pod>     kubectl logs -f (follow logs)
+ksh <pod>     kubectl exec -it -- /bin/sh (shell into pod)
+kgp <pat>     get pods | rg (search pods)
+kgpw <pat>    get pods -w | rg (watch pods)
+kcme <cm>     edit configmap
+ksv <secret>  view secret (base64 decoded)
+kkp           kill pods (fzf multi-select with TAB)
+```
+
 ### Misc
 
 ```
@@ -190,19 +212,19 @@ gh            gh with GITHUB_TOKEN unset (uses keyring)
 
 These are configured as defaults or available directly.
 
-| Old | New | Why |
-|-----|-----|-----|
-| `cat` | `bat` | Syntax highlighting, line numbers, git integration |
-| `ls` | `lsd` | Icons, colors, tree view |
-| `cd` | `zoxide` | Learns frecency, `z partial-match` jumps anywhere |
-| `du` | `dust` | Visual bar charts of disk usage |
-| `ps` | `procs` | Color-coded, tree view, searchable |
-| `grep` | `rg` | Ripgrep - fast, respects .gitignore |
-| `find` | `fd` | Simpler syntax, fast, respects .gitignore |
-| `diff` | `delta` | Syntax highlighting, word-level diffs |
-| `curl` | `xh` | HTTPie-like, colorized, sensible defaults |
-| `wrk` | `oha` | HTTP load testing with live TUI |
-| `wc -l` | `tokei` | Code stats per language |
+| Old     | New      | Why                                                |
+| ------- | -------- | -------------------------------------------------- |
+| `cat`   | `bat`    | Syntax highlighting, line numbers, git integration |
+| `ls`    | `lsd`    | Icons, colors, tree view                           |
+| `cd`    | `zoxide` | Learns frecency, `z partial-match` jumps anywhere  |
+| `du`    | `dust`   | Visual bar charts of disk usage                    |
+| `ps`    | `procs`  | Color-coded, tree view, searchable                 |
+| `grep`  | `rg`     | Ripgrep - fast, respects .gitignore                |
+| `find`  | `fd`     | Simpler syntax, fast, respects .gitignore          |
+| `diff`  | `delta`  | Syntax highlighting, word-level diffs              |
+| `curl`  | `xh`     | HTTPie-like, colorized, sensible defaults          |
+| `wrk`   | `oha`    | HTTP load testing with live TUI                    |
+| `wc -l` | `tokei`  | Code stats per language                            |
 
 See [new-tools.md](new-tools.md) for detailed usage.
 
@@ -213,6 +235,7 @@ See [new-tools.md](new-tools.md) for detailed usage.
 Tab completion opens fzf instead of zsh's default menu.
 
 **Keys**
+
 - `Tab` - Open completion popup
 - Type to fuzzy filter
 - `Enter` - Select
@@ -220,8 +243,9 @@ Tab completion opens fzf instead of zsh's default menu.
 - `Ctrl-Space` - Multi-select
 
 **Previews**
+
 - Files: syntax-highlighted content (bat)
-- Directories: contents (lsd)  
+- Directories: contents (lsd)
 - Processes: pid/user/cpu/mem
 - Git branches: recent commits
 
