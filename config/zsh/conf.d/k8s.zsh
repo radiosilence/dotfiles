@@ -34,3 +34,31 @@ compdef _k8s_pods kgp
 # kgpw - get pods watch with grep
 kgpw() { kubecolor get pods -w --force-colors | rg "$@" }
 compdef _k8s_pods kgpw
+
+# ConfigMap completion helper
+_k8s_configmaps() {
+  local -a cms
+  cms=(${(f)"$(kubectl get configmaps -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null)"})
+  _describe 'configmap' cms
+}
+
+# Secret completion helper
+_k8s_secrets() {
+  local -a secrets
+  secrets=(${(f)"$(kubectl get secrets -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null)"})
+  _describe 'secret' secrets
+}
+
+# fzf-tab previews for configmaps and secrets
+zstyle ':fzf-tab:complete:kcme:*' fzf-preview 'kubecolor get configmap $word -o yaml --force-colors 2>/dev/null | head -50'
+zstyle ':fzf-tab:complete:ksv:*' fzf-preview 'kubectl get secret $word -o jsonpath="{.data}" 2>/dev/null | tr "," "\n" | cut -d: -f1'
+
+# kcme - edit configmap
+kcme() { kubectl edit configmap "$@" }
+compdef _k8s_configmaps kcme
+
+# ksv - view secret (decoded)
+ksv() {
+  kubectl get secret "$1" -o json | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
+}
+compdef _k8s_secrets ksv
