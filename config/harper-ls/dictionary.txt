@@ -2,7 +2,6 @@ Anthropic
 Apigee
 Astro
 Auth0
-Auth0
 Axios
 B2C
 BDD
@@ -60,6 +59,7 @@ fastmail
 fzf
 ghostty
 github
+gql
 i18n
 mise
 mobx
