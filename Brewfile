@@ -25,6 +25,7 @@ brew 'findutils'
 brew 'gnupg'
 brew 'openssl@3'
 brew 'mise'
+brew 'gh' # Fallback for mise private repo access
 
 # =============================================================================
 # DEV TOOLS - Editors, IDEs, and dev applications
