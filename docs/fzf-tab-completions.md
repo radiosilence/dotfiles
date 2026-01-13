@@ -30,7 +30,7 @@ eval "$(fzf --zsh)"
 
 ### 3. Configure fzf-tab styling and previews
 
-In `~/.config/zsh/conf.d/performance.zsh` (or wherever you do zstyles):
+In `~/.config/zsh/conf.d/shell.zsh` (or wherever you do zstyles):
 
 ```zsh
 # fzf-tab config
