@@ -222,7 +222,6 @@
     },
     "TOML": {
       "language_servers": ["tombi"],
-      "colorize_brackets": true,
     },
   },
   "lsp": {
