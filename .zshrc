@@ -1,19 +1,6 @@
-# Ultra-performant Zsh configuration
-# Equivalent to Fish shell setup
+# Zsh configuration
+# Files in conf.d are loaded in alphabetical order (use numeric prefixes for ordering)
 
-# Performance: Load in specific order for optimal startup
-source ~/.config/zsh/conf.d/shell.zsh
-source ~/.config/zsh/conf.d/00-path.zsh
-source ~/.config/zsh/conf.d/01-brew.zsh
-source ~/.config/zsh/conf.d/02-mise.zsh
-
-# Load remaining configuration modules (starship must be last)
 for config in ~/.config/zsh/conf.d/*.zsh; do
-  case "$(basename "$config")" in
-  shell.zsh | 00-path.zsh | 01-brew.zsh | 02-mise.zsh | starship.zsh) continue ;;
-  *) [[ -r "$config" ]] && source "$config" ;;
-  esac
+  [[ -r "$config" ]] && source "$config"
 done
-
-# Load starship last to ensure it sees all environment changes
-[[ -r ~/.config/zsh/conf.d/starship.zsh ]] && source ~/.config/zsh/conf.d/starship.zsh
