@@ -187,7 +187,7 @@ z <partial>   zoxide - smart cd with frecency
 
 ### Kubernetes (`k8s.zsh`)
 
-All have fzf-tab completion with colored pod/resource previews.
+All have fzf-tab completion with coloured pod/resource previews.
 
 ```
 klg <pod>     kubectl logs -f (follow logs)
