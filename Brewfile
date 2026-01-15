@@ -26,7 +26,7 @@ brew 'gnupg'
 brew 'openssl@3'
 brew 'mise'
 brew 'gh' # Fallback for mise private repo access
-brew 'sheldon' # fallback for darwin-x64
+brew 'sheldon' if Hardware::CPU.intel? # Fallback: mise pulls wrong arch binary
 
 # =============================================================================
 # DEV TOOLS - Editors, IDEs, and dev applications
