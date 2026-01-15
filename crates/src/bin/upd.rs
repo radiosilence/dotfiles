@@ -51,6 +51,10 @@ fn main() -> Result<()> {
     let has_mise = which("mise").is_ok();
     let has_yt_dlp = which("yt-dlp").is_ok();
 
+    if dotfiles_tools::install::install_dotfiles().is_err() {
+        bail!("installing dotfiles failed");
+    }
+
     if is_macos && !has_brew {
         mp.println(format!("{}", "/// .INSTALLING HOMEBREW".blue()))?;
         if create_task("install homebrew", &mp, install_homebrew)
@@ -78,9 +82,7 @@ fn main() -> Result<()> {
     if needs_sudo && Command::new("sudo").arg("-v").status().is_err() {
         bail!("Failed to get sudo authentication");
     }
-    if dotfiles_tools::install::install_dotfiles().is_err() {
-        bail!("installing dotfiles failed");
-    }
+
     // Spawn background thread to keep sudo alive
     let sudo_keepalive = if needs_sudo {
         let keepalive = Arc::new(std::sync::atomic::AtomicBool::new(true));
