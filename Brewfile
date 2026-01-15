@@ -117,6 +117,7 @@ brew 'atomicparsley'
 
 cask 'foobar2000', greedy: true
 cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
+brew 'ffmpeg' if Hardware::CPU.intel? # Fallback: mise pulls wrong arch binary
 
 # =============================================================================
 # DATABASE - Database clients and tools
