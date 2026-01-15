@@ -77,6 +77,7 @@ brew 'watchman'
 # NETWORKING - Network tools and debugging
 # =============================================================================
 
+brew 'aria2'
 brew 'nmap'
 brew 'iperf3'
 brew 'telnet'
@@ -210,5 +211,3 @@ cask 'whatsapp', greedy: true
 
 mas 'Adobe Lightroom', id: 1_451_544_217
 mas 'Infuse', id: 1_136_220_934
-brew 'tesseract'
-brew 'aria2'
