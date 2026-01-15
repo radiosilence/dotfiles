@@ -130,7 +130,7 @@ pub fn update_config(
 pub fn update_ffmpeg(use_snapshot: bool) -> Result<bool> {
     let config_path = expand_path("~/.config/mise/config.toml");
 
-    let platforms = [("macos", "arm64"), ("linux", "amd64")];
+    let platforms = [("macos", "arm64"), ("macos", "amd64"), ("linux", "amd64")];
 
     let mut builds = Vec::new();
 
