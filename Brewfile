@@ -26,6 +26,7 @@ brew 'gnupg'
 brew 'openssl@3'
 brew 'mise'
 brew 'gh' # Fallback for mise private repo access
+brew 'sheldon' # fallback for darwin-x64
 
 # =============================================================================
 # DEV TOOLS - Editors, IDEs, and dev applications
