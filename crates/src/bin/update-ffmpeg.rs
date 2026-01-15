@@ -186,7 +186,7 @@ fn main() -> Result<()> {
     println!("  {} Fetching {} builds...", "→".bright_black(), build_type);
 
     // Platforms we care about
-    let platforms = [("macos", "arm64"), ("linux", "amd64")];
+    let platforms = [("macos", "arm64"), ("macos", "amd64"), ("linux", "amd64")];
 
     let mut builds = Vec::new();
 

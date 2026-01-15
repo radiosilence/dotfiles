@@ -7,22 +7,9 @@ upd() {
     (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
   fi
 
-  mkdir -p ~/.dotfiles/bin || { printf "\033[31m✗ failed to create bin directory\033[0m\n"; return 1; }
-
-  # Build binaries (cargo's incremental compilation handles change detection)
+  # Build and install binaries
   printf "\033[35m→ building rust binaries...\033[0m\n"
-  (cd ~/.dotfiles/crates && cargo build --release --quiet) || { printf "\033[31m✗ cargo build failed\033[0m\n"; return 1; }
-
-  # Copy binaries if newer
-  for bin in ~/.dotfiles/crates/target/release/*; do
-    [[ -x "$bin" && -f "$bin" ]] || continue
-    local name=$(basename "$bin")
-    # Skip non-binary files (like .d files)
-    [[ "$name" == *.* ]] && continue
-    if [[ ! -f ~/.dotfiles/bin/$name || "$bin" -nt ~/.dotfiles/bin/$name ]]; then
-      cp "$bin" ~/.dotfiles/bin/
-    fi
-  done
+  cargo install --path ~/.dotfiles/crates --root ~/.dotfiles --quiet || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
 
   # Run upd binary
   ~/.dotfiles/bin/upd "$@" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
