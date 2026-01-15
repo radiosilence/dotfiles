@@ -99,7 +99,7 @@ version = "8.0.1"
 
 [tools."http:ffmpeg".platforms]
 macos-arm64 = { url = "https://ffmpeg.martin-riedl.de/download/macos/arm64/1766430132_8.0.1/ffmpeg.zip" }
-macos-x64 = { url = "https://ffmpeg.martin-riedl.de/download/macos/amd64/1766430132_8.0.1/ffmpeg.zip" }
+macos-x64 = { url = "https://ffmpeg.martin-riedl.de/download/macos/amd64/1766437297_8.0.1/ffmpeg.zip" }
 linux-x64 = { url = "https://ffmpeg.martin-riedl.de/download/linux/amd64/1766430728_8.0.1/ffmpeg.zip" }
 
 [settings]
