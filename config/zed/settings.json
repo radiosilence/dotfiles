@@ -1,4 +1,14 @@
 {
+  "context_servers": {
+    "folk": {
+      "command": "mise",
+      "args": ["x", "--", "mainlymcpfolk"]
+    },
+    "fastmail": {
+      "command": "mise",
+      "args": ["x", "--", "fastmail-cli", "mcp"]
+    }
+  },
   "tab_size": 2,
   "toolbar": {
     "code_actions": true,
@@ -125,9 +135,9 @@
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "tsgo",
+        "!tsgo",
+        "vtsls",
         "!typescript-language-server",
-        "!vtsls",
         "...",
       ],
       "colorize_brackets": true,
@@ -141,9 +151,9 @@
     "TSX": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "tsgo",
+        "!tsgo",
+        "vtsls",
         "!typescript-language-server",
-        "!vtsls",
         "...",
       ],
       "colorize_brackets": true,

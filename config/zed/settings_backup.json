@@ -1,4 +1,18 @@
 {
+  "context_servers": {
+    "folk": {
+      "command": {
+        "path": "mise",
+        "args": ["x", "--", "mainlymcpfolk"]
+      }
+    },
+    "fastmail": {
+      "command": {
+        "path": "mise",
+        "args": ["x", "--", "fastmail-cli", "mcp"]
+      }
+    }
+  },
   "tab_size": 2,
   "toolbar": {
     "code_actions": true,
@@ -19,11 +33,7 @@
     "dock": "left",
   },
   "git_panel": {
-    "dock": "right",
-  },
-  // TODO: word_diff_enabled is a preview feature, move to git config when stable
-  "git": {
-    "word_diff_enabled": true,
+    "dock": "left",
   },
   "features": {
     "edit_prediction_provider": "zed",
@@ -73,7 +83,7 @@
     "stylelint": true,
     "tailwind-css": true,
     "terraform": true,
-    "toml": true,
+    "tombi": true,
     "zedokai": true,
   },
   "agent": {
@@ -123,18 +133,15 @@
   "preview_tabs": {
     "enabled": true,
     "enable_preview_from_file_finder": true,
-    "enable_preview_from_code_navigation": true,
-  },
-  "inline_diagnostics": {
-    "enabled": true,
+    "enable_keep_preview_on_code_navigation": true,
   },
   "languages": {
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "tsgo",
+        "!tsgo",
+        "vtsls",
         "!typescript-language-server",
-        "!vtsls",
         "...",
       ],
       "colorize_brackets": true,
@@ -148,9 +155,9 @@
     "TSX": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "tsgo",
+        "!tsgo",
+        "vtsls",
         "!typescript-language-server",
-        "!vtsls",
         "...",
       ],
       "colorize_brackets": true,
@@ -226,6 +233,9 @@
     },
     "JSON": {
       "colorize_brackets": true,
+    },
+    "TOML": {
+      "language_servers": ["tombi"],
     },
   },
   "lsp": {
