@@ -4,3 +4,6 @@
 for config in ~/.config/zsh/conf.d/*.zsh; do
   [[ -r "$config" ]] && source "$config"
 done
+
+# Zed MCP secrets
+[[ -f ~/.config/zed/.secrets ]] && source ~/.config/zed/.secrets
