@@ -16,19 +16,36 @@ zstyle ':fzf-tab:complete:kcme:*' fzf-preview 'kubecolor get configmap $word -o 
 zstyle ':fzf-tab:complete:ksv:*' fzf-preview 'kubectl get secret $word -o jsonpath="{.data}" 2>/dev/null | tr "," "\n" | cut -d: -f1'
 zstyle ':fzf-tab:complete:kd:*' fzf-preview 'kubecolor get ${words[2]} $word -o wide --force-colors 2>/dev/null'
 
+# Completion helpers for functions
+_k8s_pods() {
+  local -a pods
+  pods=(${(f)"$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null)"})
+  _describe 'pod' pods
+}
+
+_k8s_secrets() {
+  local -a secrets
+  secrets=(${(f)"$(kubectl get secrets -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null)"})
+  _describe 'secret' secrets
+}
+
 # Functions that actually need logic
 
 # ksh - needs -it and shell path
 ksh() { kubectl exec -it "$1" -- /bin/sh }
+compdef _k8s_pods ksh
 
 # kgp/kgpw - pipe to rg, can't be simple alias
 kgp() { kubecolor get pods --force-colors | rg "$@" }
 kgpw() { kubecolor get pods -w --force-colors | rg "$@" }
+compdef _k8s_pods kgp
+compdef _k8s_pods kgpw
 
 # ksv - decode secrets
 ksv() {
   kubectl get secret "$1" -o json | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
 }
+compdef _k8s_secrets ksv
 
 # kkp - interactive pod killer
 kkp() {
