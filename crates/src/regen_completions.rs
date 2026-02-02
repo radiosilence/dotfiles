@@ -74,6 +74,9 @@ pub fn regenerate_completions() -> Result<()> {
     if which::which("fastmail-cli").is_ok() {
         tasks.push(("fastmail-cli", vec!["completions", "zsh"]));
     }
+    if which::which("codeowners-cli").is_ok() {
+        tasks.push(("codeowners-cli", vec!["completions", "zsh"]));
+    }
     if which::which("task").is_ok() {
         tasks.push(("task", vec!["--completion", "zsh"]));
     }

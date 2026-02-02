@@ -233,10 +233,17 @@
     "TOML": {
       "language_servers": ["tombi"],
     },
+    "CODEOWNERS": {
+      "formatter": {
+        "language_server": {
+          "name": "codeowners-lsp",
+        },
+      },
+    },
   },
   "lsp": {
     "codeowners-lsp": {
-      "settings": {
+      "initialization_options": {
         "individual": "@radiosilence",
         "validate_owners": true,
         "github_token": "env:GITHUB_TOKEN",
