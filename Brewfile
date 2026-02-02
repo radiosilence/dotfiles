@@ -168,6 +168,7 @@ cask 'notion-calendar', greedy: true
 cask '1password', greedy: true
 cask '1password-cli', greedy: true
 cask 'claude', greedy: true
+cask 'opencode-desktop', greedy: true
 
 # =============================================================================
 # COMMUNICATION - Messaging and collaboration
@@ -213,3 +214,4 @@ cask 'whatsapp', greedy: true
 
 mas 'Adobe Lightroom', id: 1_451_544_217
 mas 'Infuse', id: 1_136_220_934
+
