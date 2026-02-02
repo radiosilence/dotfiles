@@ -93,6 +93,7 @@ terraform-ls = "latest"  # Terraform LSP
 "npm:mainlymcpfolk" = "latest"  # Fastmail MCP Server
 # Rust things
 "cargo:graphql_client_cli" = "latest"
+opencode = "latest"
 
 # Media - ffmpeg with optimized Apple Silicon builds (auto-updated by update-ffmpeg)
 [tools."http:ffmpeg"]

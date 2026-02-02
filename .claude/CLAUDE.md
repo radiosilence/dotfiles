@@ -39,7 +39,7 @@ If the user references something that seems to need background context, check `~
 - Prioritize information density over verbosity
 - Explain the "why" behind decisions and implementations
 - Avoid marketing language and feature promotion
-- Focus on technical insights not obvious from code skimmingb
+- Focus on technical insights not obvious from code skimming
 - Omit trivial breakdowns of obvious functionality
 - **Always update the docs and readme after doing any changes**
   - Style should be concise and non-salesy

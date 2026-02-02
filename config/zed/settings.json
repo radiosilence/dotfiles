@@ -2,12 +2,12 @@
   "context_servers": {
     "folk": {
       "command": "mise",
-      "args": ["x", "--", "mainlymcpfolk"]
+      "args": ["x", "--", "mainlymcpfolk"],
     },
     "fastmail": {
       "command": "mise",
-      "args": ["x", "--", "fastmail-cli", "mcp"]
-    }
+      "args": ["x", "--", "fastmail-cli", "mcp"],
+    },
   },
   "tab_size": 2,
   "toolbar": {
@@ -42,9 +42,9 @@
     "edit_debounce_ms": 0,
     "scroll_debounce_ms": 0,
     "show_background": true,
-    "show_other_hints": false,
-    "show_parameter_hints": false,
-    "show_type_hints": false,
+    "show_other_hints": true,
+    "show_parameter_hints": true,
+    "show_type_hints": true,
     "show_value_hints": true,
     "toggle_on_modifiers_press": {
       "alt": true,
@@ -84,7 +84,7 @@
   },
   "agent": {
     "dock": "right",
-    "play_sound_when_agent_done": true,
+    "play_sound_when_agent_done": false,
     "default_profile": "write",
     "inline_assistant_model": {
       "provider": "zed.dev",
@@ -165,7 +165,7 @@
       ],
     },
     "Proto": {
-      "language_servers": ["buf"],
+      "language_servers": ["buf", "..."],
     },
     "CSS": {
       "code_actions_on_format": {
@@ -206,7 +206,7 @@
     },
     "Python": {
       "colorize_brackets": true,
-      "language_servers": ["pyright", "ruff"],
+      "language_servers": ["pyright", "ruff", "codeowners-lsp"],
       "format_on_save": "on",
       "formatter": [
         { "code_action": "source.organizeImports.ruff" },
@@ -235,6 +235,13 @@
     },
   },
   "lsp": {
+    "codeowners-lsp": {
+      "settings": {
+        "individual": "@radiosilence",
+        "validate_owners": true,
+        "github_token": "env:GITHUB_TOKEN",
+      },
+    },
     "rust-analyzer": {
       "enable_lsp_tasks": true,
       "binary": {

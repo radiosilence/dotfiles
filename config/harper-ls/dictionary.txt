@@ -9,6 +9,7 @@ BitBucket
 C30
 CD
 CDK
+CODEOWNERS
 CSPM
 CloudFront
 CouchDB

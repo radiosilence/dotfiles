@@ -2,7 +2,6 @@
 .dotfiles-dir
 *.code-workspace
 .ruby-lsp
-.claude
 
 # Cargo install artifacts
 .crates.toml
