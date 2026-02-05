@@ -6,6 +6,55 @@ use std::process::{Command, Stdio};
 
 use which::which;
 
+/// Binary names from this crate that should NOT exist in ~/.cargo/bin
+const OUR_BINARIES: &[&str] = &[
+    "clean-dls",
+    "clean-exif",
+    "echo-to-file",
+    "embed-art",
+    "extract-exif-from-flac",
+    "gen-diff",
+    "git-squash",
+    "git-sync",
+    "git-trigger",
+    "imp",
+    "install-font-macos",
+    "install-terminfo",
+    "kill-port",
+    "parallel-dl-extract",
+    "prune",
+    "prune-gen",
+    "regen-zsh-completions",
+    "to-audio",
+    "unfuck-xcode",
+    "upd",
+    "update-ffmpeg",
+    "url2base64",
+    "vimv",
+];
+
+/// Remove stale binaries from ~/.cargo/bin that conflict with ~/.dotfiles/bin
+pub fn cleanup_stale_cargo_bins() -> Result<Vec<String>> {
+    let home = std::env::var("HOME").context("HOME not set")?;
+    let cargo_bin = Path::new(&home).join(".cargo/bin");
+
+    if !cargo_bin.exists() {
+        return Ok(vec![]);
+    }
+
+    let mut removed = vec![];
+    for bin in OUR_BINARIES {
+        let path = cargo_bin.join(bin);
+        if path.exists() {
+            fs::remove_file(&path)
+                .with_context(|| format!("Failed to remove {}", path.display()))?;
+            removed.push(bin.to_string());
+        }
+    }
+
+    Ok(removed)
+}
+
 #[derive(Debug)]
 pub struct InstallSummary {
     pub dotfiles_linked: usize,
