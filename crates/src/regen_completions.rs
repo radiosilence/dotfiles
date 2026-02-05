@@ -121,25 +121,35 @@ pub fn regenerate_completions() -> Result<()> {
             let args = args.clone();
             let completions_dir = completions_dir_clone.clone();
             thread::spawn(move || {
-                pb.set_style(match Command::new(&cmd).args(args.as_slice()).output() {
+                let (success, msg) = match Command::new(&cmd).args(args.as_slice()).output() {
                     Ok(output) => {
                         if output.status.success() && !output.stdout.is_empty() {
                             fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)
                                 .unwrap();
-                            ProgressStyle::with_template("{spinner:.green} {msg}")
-                                .unwrap()
-                                .tick_strings(&["✓"])
+                            (true, format!("✓ {}", cmd))
                         } else {
-                            ProgressStyle::with_template("{spinner:.red} {msg}")
-                                .unwrap()
-                                .tick_strings(&["✗"])
+                            let stderr = String::from_utf8_lossy(&output.stderr);
+                            let err = if !stderr.is_empty() {
+                                stderr.lines().next().unwrap_or("").to_string()
+                            } else if output.stdout.is_empty() {
+                                "empty output".to_string()
+                            } else {
+                                format!("exit code {}", output.status.code().unwrap_or(-1))
+                            };
+                            (false, format!("✗ {}: {}", cmd, err))
                         }
                     }
-                    Err(_) => ProgressStyle::with_template("{spinner:.red} {msg}")
-                        .unwrap()
-                        .tick_strings(&["✗"]),
-                });
-                pb.finish();
+                    Err(e) => (false, format!("✗ {}: {}", cmd, e)),
+                };
+                pb.set_style(
+                    ProgressStyle::with_template(if success {
+                        "{msg:.green}"
+                    } else {
+                        "{msg:.red}"
+                    })
+                    .unwrap(),
+                );
+                pb.finish_with_message(msg);
             })
         })
         .collect();

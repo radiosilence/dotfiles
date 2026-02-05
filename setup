@@ -23,6 +23,19 @@ cargo install --path . --bins --root "$DOTFILES_DIR" --force
 
 printf "\033[32m✓ Binaries built and installed to ~/.dotfiles/bin\033[0m\n"
 
+# Clean up stale binaries from ~/.cargo/bin
+printf "\033[35m→ Cleaning up stale cargo binaries...\033[0m\n"
+for bin in clean-dls clean-exif echo-to-file embed-art extract-exif-from-flac \
+           gen-diff git-squash git-sync git-trigger imp install-font-macos \
+           install-terminfo kill-port parallel-dl-extract prune prune-gen \
+           regen-zsh-completions to-audio unfuck-xcode upd update-ffmpeg \
+           url2base64 vimv; do
+  if [ -f "$HOME/.cargo/bin/$bin" ]; then
+    rm "$HOME/.cargo/bin/$bin"
+    printf "  removed %s\n" "$bin"
+  fi
+done
+
 # Run upd to complete setup (brew, mise, etc)
 printf "\033[36m\n→ Running upd to complete setup...\033[0m\n"
 "$DOTFILES_DIR/bin/upd"
