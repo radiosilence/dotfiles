@@ -81,6 +81,7 @@
     "terraform": true,
     "tombi": true,
     "zedokai": true,
+    "codeowners": true,
   },
   "agent": {
     "dock": "right",
@@ -165,7 +166,7 @@
       ],
     },
     "Proto": {
-      "language_servers": ["buf", "..."],
+      "language_servers": ["buf", "!protobuf-language-server", "..."],
     },
     "CSS": {
       "code_actions_on_format": {
@@ -188,7 +189,7 @@
         },
       },
       "language_servers": [
-        "expert",
+        "!expert",
         "!elixir-ls",
         "!next-ls",
         "!lexical",
@@ -231,7 +232,7 @@
       "colorize_brackets": true,
     },
     "TOML": {
-      "language_servers": ["tombi"],
+      "language_servers": ["tombi", "..."],
     },
     "CODEOWNERS": {
       "formatter": {
@@ -243,6 +244,9 @@
   },
   "lsp": {
     "codeowners-lsp": {
+      "binary": {
+        "path": "/Users/james.cleveland/workspace/radiosilence/codeowners-lsp/target/release/codeowners-lsp",
+      },
       "initialization_options": {
         "individual": "@radiosilence",
         "validate_owners": true,
@@ -286,9 +290,6 @@
         },
       },
     },
-    "some-sass": {
-      "settings": {},
-    },
     "rubocop": {
       "initialization_options": {
         "safeAutocorrect": false,
@@ -316,6 +317,5 @@
       },
     },
     "ruff": {},
-    "tailwindcss": {},
   },
 }
