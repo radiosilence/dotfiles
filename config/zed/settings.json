@@ -18,7 +18,6 @@
   "auto_update": false,
   "agent_servers": {
     "claude": {
-      "default_model": "opus",
       "default_mode": "bypassPermissions",
     },
   },
@@ -31,10 +30,8 @@
   "git_panel": {
     "dock": "left",
   },
-  "features": {
-    "edit_prediction_provider": "zed",
-  },
   "edit_predictions": {
+    "provider": "zed",
     "mode": "subtle",
   },
   "inlay_hints": {
@@ -44,7 +41,7 @@
     "show_background": true,
     "show_other_hints": true,
     "show_parameter_hints": true,
-    "show_type_hints": true,
+    "show_type_hints": false,
     "show_value_hints": true,
     "toggle_on_modifiers_press": {
       "alt": true,
