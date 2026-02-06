@@ -222,7 +222,7 @@ mod tests {
     #[test]
     fn test_get_dir_size_empty() {
         let temp_dir = TempDir::new().unwrap();
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 0);
     }
 
@@ -232,7 +232,7 @@ mod tests {
         let file_path = temp_dir.path().join("test.txt");
         fs::write(&file_path, "hello world").unwrap();
 
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 11); // "hello world" is 11 bytes
     }
 
@@ -242,7 +242,7 @@ mod tests {
         fs::write(temp_dir.path().join("file1.txt"), "12345").unwrap();
         fs::write(temp_dir.path().join("file2.txt"), "67890").unwrap();
 
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 10); // 5 + 5 bytes
     }
 
@@ -254,7 +254,7 @@ mod tests {
         fs::write(temp_dir.path().join("root.txt"), "abc").unwrap();
         fs::write(nested.join("nested.txt"), "def").unwrap();
 
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 6); // 3 + 3 bytes
     }
 }
