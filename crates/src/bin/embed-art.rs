@@ -48,7 +48,10 @@ fn main() -> Result<()> {
     }
 
     println!("  {} paths: {}", "→".bright_black(), args.paths.join(", "));
-    println!("  {} cores: {}", "→".bright_black(), num_cpus::get());
+    let cores = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1);
+    println!("  {} cores: {}", "→".bright_black(), cores);
 
     // Clean EXIF data from images first
     println!("  {} cleaning exif data from images", "·".bright_black());

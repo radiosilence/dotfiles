@@ -86,60 +86,109 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Extract pictures to temp dir
+    // Parse picture blocks from metaflac --list output
     let temp_dir = TempDir::new()?;
-    let mut picture_index = 0;
+    let pictures = parse_picture_blocks(&picture_info);
 
-    for line in picture_info.lines() {
-        if line.contains("type:") {
-            if let Some(type_str) = line.split(':').nth(1) {
-                let picture_type: u8 = type_str.trim().parse().unwrap_or(0);
-                let type_desc = get_picture_type_desc(picture_type);
+    if pictures.is_empty() {
+        println!("  {} No picture blocks parsed", "·".bright_black());
+        return Ok(());
+    }
 
-                let temp_image = temp_dir
-                    .path()
-                    .join(format!("picture_{}.jpg", picture_index));
+    for (i, pic) in pictures.iter().enumerate() {
+        let type_desc = get_picture_type_desc(pic.picture_type);
+        let temp_image = temp_dir.path().join(format!("picture_{i}.jpg"));
 
-                // Export picture
-                let export_status = Command::new("metaflac")
-                    .arg(format!("--export-picture-to={}", temp_image.display()))
-                    .arg(&flac_file)
-                    .stdout(std::process::Stdio::null())
-                    .stderr(std::process::Stdio::null())
-                    .status()?;
+        // Export specific picture by block number
+        let export_status = Command::new("metaflac")
+            .arg(format!("--block-number={}", pic.block_number))
+            .arg(format!("--export-picture-to={}", temp_image.display()))
+            .arg(&flac_file)
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()?;
 
-                if export_status.success() {
-                    // Check EXIF data
-                    let exif_output = Command::new("exiftool")
-                        .args(["-json", "-q"])
-                        .arg(&temp_image)
-                        .output()?;
+        if export_status.success() {
+            // Check EXIF data
+            let exif_output = Command::new("exiftool")
+                .args(["-json", "-q"])
+                .arg(&temp_image)
+                .output()?;
 
-                    if exif_output.status.success() {
-                        let exif_json = String::from_utf8_lossy(&exif_output.stdout);
+            if exif_output.status.success() {
+                let exif_json = String::from_utf8_lossy(&exif_output.stdout);
 
-                        if has_sensitive_data(&exif_json) {
-                            println!(
-                                "  {} {} - Contains sensitive EXIF data",
-                                "!".yellow(),
-                                type_desc
-                            );
-                        } else {
-                            println!("  {} {} - Clean", "✓".green(), type_desc);
-                        }
-                    } else {
-                        println!("  {} {} - Clean (no EXIF data)", "✓".green(), type_desc);
-                    }
+                if has_sensitive_data(&exif_json) {
+                    println!(
+                        "  {} {} - Contains sensitive EXIF data",
+                        "!".yellow(),
+                        type_desc
+                    );
                 } else {
-                    println!("  {} {} - Failed to extract", "✗".red(), type_desc);
+                    println!("  {} {} - Clean", "✓".green(), type_desc);
                 }
-
-                picture_index += 1;
+            } else {
+                println!("  {} {} - Clean (no EXIF data)", "✓".green(), type_desc);
             }
+        } else {
+            println!("  {} {} - Failed to extract", "✗".red(), type_desc);
         }
     }
 
     Ok(())
+}
+
+struct PictureBlock {
+    block_number: u32,
+    picture_type: u8,
+}
+
+/// Parse metaflac --list output to extract block numbers and picture types.
+///
+/// The output has two `type:` lines per block — the first is the block type
+/// (always `6` for PICTURE), the second is the picture type (e.g. `3` for
+/// front cover). We skip the block-type line and only capture the picture type.
+///
+/// ```text
+/// METADATA block #2
+///   type: 6 (PICTURE)
+///   is last: false
+///   length: 489516
+///   type: 3 (Cover (front))
+/// ```
+fn parse_picture_blocks(output: &str) -> Vec<PictureBlock> {
+    let mut blocks = Vec::new();
+    let mut current_block_number: Option<u32> = None;
+    let mut seen_block_type = false;
+
+    for line in output.lines() {
+        let trimmed = line.trim();
+
+        // Match "METADATA block #N"
+        if let Some(rest) = trimmed.strip_prefix("METADATA block #") {
+            current_block_number = rest.parse().ok();
+            seen_block_type = false;
+        }
+
+        // Match "type: N (description)"
+        if trimmed.starts_with("type:") {
+            if !seen_block_type {
+                // First type: line is the block type (6 = PICTURE), skip it
+                seen_block_type = true;
+            } else if let Some(block_num) = current_block_number {
+                // Second type: line is the picture type
+                let after_colon = trimmed.strip_prefix("type:").unwrap_or("").trim();
+                let type_str = after_colon.split_whitespace().next().unwrap_or("0");
+                let picture_type: u8 = type_str.parse().unwrap_or(0);
+                blocks.push(PictureBlock {
+                    block_number: block_num,
+                    picture_type,
+                });
+            }
+        }
+    }
+
+    blocks
 }
 
 fn has_sensitive_data(exif_json: &str) -> bool {
@@ -195,6 +244,52 @@ fn get_picture_type_desc(picture_type: u8) -> &'static str {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_parse_picture_blocks_single() {
+        let output = "\
+METADATA block #2
+  type: 6 (PICTURE)
+  is last: false
+  length: 489516
+  type: 3 (Cover (front))
+  MIME type: image/jpeg
+";
+        let blocks = parse_picture_blocks(output);
+        assert_eq!(blocks.len(), 1);
+        assert_eq!(blocks[0].block_number, 2);
+        assert_eq!(blocks[0].picture_type, 3);
+    }
+
+    #[test]
+    fn test_parse_picture_blocks_multiple() {
+        let output = "\
+METADATA block #2
+  type: 6 (PICTURE)
+  is last: false
+  length: 100
+  type: 3 (Cover (front))
+  MIME type: image/jpeg
+METADATA block #3
+  type: 6 (PICTURE)
+  is last: true
+  length: 200
+  type: 4 (Cover (back))
+  MIME type: image/png
+";
+        let blocks = parse_picture_blocks(output);
+        assert_eq!(blocks.len(), 2);
+        assert_eq!(blocks[0].block_number, 2);
+        assert_eq!(blocks[0].picture_type, 3);
+        assert_eq!(blocks[1].block_number, 3);
+        assert_eq!(blocks[1].picture_type, 4);
+    }
+
+    #[test]
+    fn test_parse_picture_blocks_empty() {
+        let blocks = parse_picture_blocks("");
+        assert!(blocks.is_empty());
+    }
 
     #[test]
     fn test_has_sensitive_data_gps() {

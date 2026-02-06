@@ -30,10 +30,6 @@ struct Args {
     /// Timeout in seconds
     #[arg(long, default_value = "30")]
     timeout: u64,
-
-    /// Skip failed URLs instead of exiting
-    #[arg(short, long)]
-    skip_errors: bool,
 }
 
 #[derive(Subcommand)]
@@ -78,11 +74,8 @@ fn main() -> Result<()> {
         .url
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    if let Ok(result) = convert_url(&client, &url, &args.mime_type) {
-        print!("{}", result);
-    } else {
-        anyhow::bail!("it fucked up")
-    }
+    let result = convert_url(&client, &url, &args.mime_type)?;
+    print!("{result}");
     Ok(())
 }
 

@@ -102,17 +102,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Parse signal
-    let signal = match args.signal.as_deref() {
-        None | Some("TERM") | Some("15") => Signal::SIGTERM,
-        Some("KILL") | Some("9") => Signal::SIGKILL,
-        Some("INT") | Some("2") => Signal::SIGINT,
-        Some("HUP") | Some("1") => Signal::SIGHUP,
-        Some("QUIT") | Some("3") => Signal::SIGQUIT,
-        Some("USR1") | Some("10") => Signal::SIGUSR1,
-        Some("USR2") | Some("12") => Signal::SIGUSR2,
-        Some(sig) => bail!("Unsupported signal: {}", sig),
-    };
+    let signal = parse_signal(args.signal.as_deref())?;
 
     // Kill the processes
     for pid in &pids {
@@ -124,30 +114,34 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+fn parse_signal(sig: Option<&str>) -> Result<Signal> {
+    match sig {
+        None | Some("TERM") | Some("15") => Ok(Signal::SIGTERM),
+        Some("KILL") | Some("9") => Ok(Signal::SIGKILL),
+        Some("INT") | Some("2") => Ok(Signal::SIGINT),
+        Some("HUP") | Some("1") => Ok(Signal::SIGHUP),
+        Some("QUIT") | Some("3") => Ok(Signal::SIGQUIT),
+        Some("USR1") | Some("10") => Ok(Signal::SIGUSR1),
+        Some("USR2") | Some("12") => Ok(Signal::SIGUSR2),
+        Some(s) => bail!("Unsupported signal: {}", s),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_signal_parsing() {
-        // Verify signal parsing logic with common signals
-        let test_cases = vec![
-            ("TERM", Signal::SIGTERM),
-            ("15", Signal::SIGTERM),
-            ("KILL", Signal::SIGKILL),
-            ("9", Signal::SIGKILL),
-            ("INT", Signal::SIGINT),
-            ("2", Signal::SIGINT),
-        ];
-
-        for (input, expected) in test_cases {
-            let parsed = match input {
-                "TERM" | "15" => Signal::SIGTERM,
-                "KILL" | "9" => Signal::SIGKILL,
-                "INT" | "2" => Signal::SIGINT,
-                _ => unreachable!(),
-            };
-            assert_eq!(parsed, expected, "Failed for input: {}", input);
-        }
+        assert_eq!(parse_signal(None).unwrap(), Signal::SIGTERM);
+        assert_eq!(parse_signal(Some("TERM")).unwrap(), Signal::SIGTERM);
+        assert_eq!(parse_signal(Some("15")).unwrap(), Signal::SIGTERM);
+        assert_eq!(parse_signal(Some("KILL")).unwrap(), Signal::SIGKILL);
+        assert_eq!(parse_signal(Some("9")).unwrap(), Signal::SIGKILL);
+        assert_eq!(parse_signal(Some("INT")).unwrap(), Signal::SIGINT);
+        assert_eq!(parse_signal(Some("2")).unwrap(), Signal::SIGINT);
+        assert_eq!(parse_signal(Some("HUP")).unwrap(), Signal::SIGHUP);
+        assert_eq!(parse_signal(Some("USR1")).unwrap(), Signal::SIGUSR1);
+        assert!(parse_signal(Some("BOGUS")).is_err());
     }
 }
