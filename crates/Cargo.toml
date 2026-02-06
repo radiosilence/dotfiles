@@ -123,24 +123,18 @@ img-parts = "0.4"
 indicatif = { version = "0.18", features = ["rayon"] }
 # System info
 netstat2 = "0.11"
-nix = { version = "0.30", features = ["signal"] }
-# CPU detection
-num_cpus = "1"
+nix = { version = "0.30", features = ["signal", "user"] }
 # Parallelism
 rayon = "1"
 # Regex
 regex = "1"
 # Async
-reqwest = { version = "0.12", features = ["blocking", "stream"] }
+reqwest = { version = "0.12", features = ["blocking"] }
 # HTML parsing
 scraper = "0.23"
 tempfile = "3"
 # TOML
 toml_edit = "0.22"
-# Logging
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-# Unicode width calculation
-unicode-width = "0.2"
 # File/Path utilities
 walkdir = "2"
 # Command detection

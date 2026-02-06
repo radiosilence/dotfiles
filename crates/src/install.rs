@@ -93,16 +93,20 @@ pub fn install_dotfiles() -> Result<InstallSummary> {
     for entry in fs::read_dir(&dotfiles)? {
         let entry = entry?;
         let path = entry.path();
-        let filename = path.file_name().unwrap().to_str().unwrap();
+        let Some(filename) = path.file_name().and_then(|f| f.to_str()) else {
+            continue;
+        };
 
         // Skip non-dotfiles and special cases
         if !filename.starts_with('.') {
             continue;
         }
 
-        match filename {
-            "." | ".." | ".git" | ".gitignore" | ".config" | ".vscode" | ".sonarlint" => continue,
-            _ => {}
+        if matches!(
+            filename,
+            "." | ".." | ".git" | ".gitignore" | ".config" | ".vscode" | ".sonarlint"
+        ) {
+            continue;
         }
 
         let target = home_path.join(filename);
@@ -138,7 +142,9 @@ pub fn install_dotfiles() -> Result<InstallSummary> {
         for entry in fs::read_dir(&dotfiles_config)? {
             let entry = entry?;
             let path = entry.path();
-            let dirname = path.file_name().unwrap();
+            let Some(dirname) = path.file_name() else {
+                continue;
+            };
             let target = config_dir.join(dirname);
 
             // Check if already correctly linked
@@ -217,15 +223,15 @@ pub fn install_dotfiles() -> Result<InstallSummary> {
 
     // Install sheldon plugins if available
     if which("sheldon").is_ok() {
-        let result = Command::new("sheldon")
+        let installed = Command::new("sheldon")
             .arg("source")
             .stdout(Stdio::null())
             .stderr(Stdio::null())
-            .output();
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false);
 
-        if result.is_ok() {
-            summary.sheldon_installed = true;
-        }
+        summary.sheldon_installed = installed;
     }
 
     Ok(summary)

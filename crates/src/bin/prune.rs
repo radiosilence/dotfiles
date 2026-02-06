@@ -9,7 +9,7 @@ use clap_complete::{generate, Shell};
 use colored::Colorize;
 use dialoguer::Confirm;
 use std::io;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 #[derive(Parser)]
@@ -25,7 +25,7 @@ struct Args {
     paths: Vec<PathBuf>,
 
     /// Minimum size in KB (directories below this are candidates)
-    #[arg(short = 's', long, default_value = "3096", env = "MIN_SIZE")]
+    #[arg(short = 's', long, default_value = "3072", env = "MIN_SIZE")]
     min_size: u64,
 
     /// Delete without confirmation
@@ -42,7 +42,7 @@ enum Commands {
     },
 }
 
-fn get_dir_size(path: &PathBuf) -> Result<u64> {
+fn get_dir_size(path: &Path) -> Result<u64> {
     let mut total = 0;
     for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
         if entry.file_type().is_file() {
@@ -99,7 +99,7 @@ fn main() -> Result<()> {
             .filter_map(|e| e.ok())
         {
             if entry.file_type().is_dir() {
-                let size = get_dir_size(&entry.path().to_path_buf())?;
+                let size = get_dir_size(entry.path())?;
                 if size < min_size_bytes {
                     candidates.push((entry.path().to_path_buf(), size));
                 }
@@ -222,7 +222,7 @@ mod tests {
     #[test]
     fn test_get_dir_size_empty() {
         let temp_dir = TempDir::new().unwrap();
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 0);
     }
 
@@ -232,7 +232,7 @@ mod tests {
         let file_path = temp_dir.path().join("test.txt");
         fs::write(&file_path, "hello world").unwrap();
 
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 11); // "hello world" is 11 bytes
     }
 
@@ -242,7 +242,7 @@ mod tests {
         fs::write(temp_dir.path().join("file1.txt"), "12345").unwrap();
         fs::write(temp_dir.path().join("file2.txt"), "67890").unwrap();
 
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 10); // 5 + 5 bytes
     }
 
@@ -254,7 +254,7 @@ mod tests {
         fs::write(temp_dir.path().join("root.txt"), "abc").unwrap();
         fs::write(nested.join("nested.txt"), "def").unwrap();
 
-        let size = get_dir_size(&temp_dir.path().to_path_buf()).unwrap();
+        let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 6); // 3 + 3 bytes
     }
 }

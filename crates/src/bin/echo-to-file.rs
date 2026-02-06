@@ -24,9 +24,14 @@ enum Commands {
     },
 }
 
-fn write_text_to_file(text: &[String]) -> Result<()> {
+fn echo_out_path() -> std::path::PathBuf {
+    let uid = nix::unistd::getuid();
+    std::env::temp_dir().join(format!("echo-out-{uid}"))
+}
+
+fn write_text_to_file(text: &[String], path: &std::path::Path) -> Result<()> {
     let content = text.join(" ");
-    fs::write("/tmp/echo-out", content)?;
+    fs::write(path, content)?;
     Ok(())
 }
 
@@ -43,37 +48,33 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    write_text_to_file(&args.text)
+    write_text_to_file(&args.text, &echo_out_path())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tempfile::NamedTempFile;
 
     #[test]
     fn test_write_text_to_file() {
-        let temp_file = NamedTempFile::new().expect("Failed to create temp file");
-        let temp_path = temp_file.path();
-
-        let text = ["test".to_string(), "content".to_string()];
-        let content = text.join(" ");
-        fs::write(temp_path, &content).expect("Failed to write file");
-
-        let read_content = fs::read_to_string(temp_path).expect("Failed to read file");
-        assert_eq!(read_content, "test content");
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let text = vec!["test".to_string(), "content".to_string()];
+        write_text_to_file(&text, tmp.path()).unwrap();
+        assert_eq!(fs::read_to_string(tmp.path()).unwrap(), "test content");
     }
 
     #[test]
-    fn test_empty_text() {
-        let temp_file = NamedTempFile::new().expect("Failed to create temp file");
-        let temp_path = temp_file.path();
-
+    fn test_write_empty_text() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
         let text: Vec<String> = vec![];
-        let content = text.join(" ");
-        fs::write(temp_path, &content).expect("Failed to write file");
+        write_text_to_file(&text, tmp.path()).unwrap();
+        assert_eq!(fs::read_to_string(tmp.path()).unwrap(), "");
+    }
 
-        let read_content = fs::read_to_string(temp_path).expect("Failed to read file");
-        assert_eq!(read_content, "");
+    #[test]
+    fn test_echo_out_path_contains_uid() {
+        let path = echo_out_path();
+        let filename = path.file_name().unwrap().to_str().unwrap();
+        assert!(filename.starts_with("echo-out-"));
     }
 }

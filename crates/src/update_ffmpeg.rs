@@ -8,7 +8,7 @@ use colored::Colorize;
 use regex::Regex;
 use scraper::{Html, Selector};
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use toml_edit::{DocumentMut, Item, Value};
 
 #[derive(Debug)]
@@ -18,25 +18,32 @@ pub struct BuildInfo {
 }
 
 pub fn expand_path(path: &str) -> PathBuf {
-    if path.starts_with("~/") {
+    if let Some(rest) = path.strip_prefix("~/") {
         dirs::home_dir()
-            .map(|h| h.join(&path[2..]))
+            .map(|h| h.join(rest))
             .unwrap_or_else(|| PathBuf::from(path))
     } else {
         PathBuf::from(path)
     }
 }
 
-pub fn fetch_build_info(platform: &str, arch: &str, use_snapshot: bool) -> Result<BuildInfo> {
+/// Fetch the ffmpeg builds page HTML (done once, reused for all platforms)
+pub fn fetch_build_page() -> Result<String> {
     let url = "https://ffmpeg.martin-riedl.de/";
-
-    let html = reqwest::blocking::get(url)
+    reqwest::blocking::get(url)
         .context("Failed to fetch build info page")?
         .text()
-        .context("Failed to read response")?;
+        .context("Failed to read response")
+}
 
-    let document = Html::parse_document(&html);
-
+/// Parse build info for a specific platform/arch from already-fetched HTML
+pub fn parse_build_info(
+    html: &str,
+    platform: &str,
+    arch: &str,
+    use_snapshot: bool,
+) -> Result<BuildInfo> {
+    let document = Html::parse_document(html);
     let link_selector = Selector::parse("a[href]").unwrap();
 
     let version_pattern = if use_snapshot {
@@ -70,7 +77,7 @@ pub fn build_url(platform: &str, arch: &str, info: &BuildInfo) -> String {
 }
 
 pub fn update_config(
-    config_path: &PathBuf,
+    config_path: &Path,
     builds: &[(String, String, BuildInfo)],
     dry_run: bool,
 ) -> Result<()> {
@@ -121,6 +128,7 @@ pub fn update_config(
         println!("{doc}");
     } else {
         fs::write(config_path, doc.to_string()).context("Failed to write config file")?;
+        println!("  {} Updated {}", "✓".green(), config_path.display());
     }
 
     Ok(())
@@ -129,13 +137,13 @@ pub fn update_config(
 /// Update ffmpeg URLs in mise config, returns true if updated
 pub fn update_ffmpeg(use_snapshot: bool) -> Result<bool> {
     let config_path = expand_path("~/.config/mise/config.toml");
-
     let platforms = [("macos", "arm64"), ("macos", "amd64"), ("linux", "amd64")];
 
+    let html = fetch_build_page()?;
     let mut builds = Vec::new();
 
     for (platform, arch) in &platforms {
-        if let Ok(info) = fetch_build_info(platform, arch, use_snapshot) {
+        if let Ok(info) = parse_build_info(&html, platform, arch, use_snapshot) {
             builds.push((platform.to_string(), arch.to_string(), info));
         }
     }
@@ -146,4 +154,60 @@ pub fn update_ffmpeg(use_snapshot: bool) -> Result<bool> {
 
     update_config(&config_path, &builds, false)?;
     Ok(true)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_expand_path_tilde() {
+        let path = expand_path("~/test");
+        assert!(path.to_str().unwrap().ends_with("/test"));
+        assert!(!path.to_str().unwrap().starts_with("~"));
+    }
+
+    #[test]
+    fn test_expand_path_absolute() {
+        let path = expand_path("/tmp/test");
+        assert_eq!(path, PathBuf::from("/tmp/test"));
+    }
+
+    #[test]
+    fn test_build_url() {
+        let info = BuildInfo {
+            version: "7.1".to_string(),
+            timestamp: "12345".to_string(),
+        };
+        let url = build_url("macos", "arm64", &info);
+        assert_eq!(
+            url,
+            "https://ffmpeg.martin-riedl.de/download/macos/arm64/12345_7.1/ffmpeg.zip"
+        );
+    }
+
+    #[test]
+    fn test_parse_build_info_from_html() {
+        let html = r#"
+        <html><body>
+        <a href="/download/macos/arm64/1766430132_8.0.1/ffmpeg.zip">ffmpeg</a>
+        <a href="/download/linux/amd64/1766430100_8.0.1/ffmpeg.zip">ffmpeg</a>
+        </body></html>
+        "#;
+
+        let info = parse_build_info(html, "macos", "arm64", false).unwrap();
+        assert_eq!(info.version, "8.0.1");
+        assert_eq!(info.timestamp, "1766430132");
+
+        let info = parse_build_info(html, "linux", "amd64", false).unwrap();
+        assert_eq!(info.version, "8.0.1");
+        assert_eq!(info.timestamp, "1766430100");
+    }
+
+    #[test]
+    fn test_parse_build_info_not_found() {
+        let html = "<html><body></body></html>";
+        let result = parse_build_info(html, "macos", "arm64", false);
+        assert!(result.is_err());
+    }
 }

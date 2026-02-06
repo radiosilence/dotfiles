@@ -124,9 +124,11 @@ pub fn regenerate_completions() -> Result<()> {
                 let (success, msg) = match Command::new(&cmd).args(args.as_slice()).output() {
                     Ok(output) => {
                         if output.status.success() && !output.stdout.is_empty() {
-                            fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)
-                                .unwrap();
-                            (true, format!("✓ {}", cmd))
+                            match fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)
+                            {
+                                Ok(()) => (true, format!("✓ {}", cmd)),
+                                Err(e) => (false, format!("✗ {}: write failed: {}", cmd, e)),
+                            }
                         } else {
                             let stderr = String::from_utf8_lossy(&output.stderr);
                             let err = if !stderr.is_empty() {
@@ -141,14 +143,14 @@ pub fn regenerate_completions() -> Result<()> {
                     }
                     Err(e) => (false, format!("✗ {}: {}", cmd, e)),
                 };
-                pb.set_style(
-                    ProgressStyle::with_template(if success {
-                        "{msg:.green}"
-                    } else {
-                        "{msg:.red}"
-                    })
-                    .unwrap(),
-                );
+                let template = if success {
+                    "{msg:.green}"
+                } else {
+                    "{msg:.red}"
+                };
+                if let Ok(style) = ProgressStyle::with_template(template) {
+                    pb.set_style(style);
+                }
                 pb.finish_with_message(msg);
             })
         })
