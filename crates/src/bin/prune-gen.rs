@@ -79,7 +79,7 @@ fn main() -> Result<()> {
 }
 
 fn create_large_file(path: &std::path::Path, mb: usize) -> Result<()> {
-    Command::new("dd")
+    let status = Command::new("dd")
         .args([
             "if=/dev/zero",
             &format!("of={}", path.display()),
@@ -89,6 +89,9 @@ fn create_large_file(path: &std::path::Path, mb: usize) -> Result<()> {
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
         .status()?;
+    if !status.success() {
+        anyhow::bail!("dd failed for {}", path.display());
+    }
     Ok(())
 }
 

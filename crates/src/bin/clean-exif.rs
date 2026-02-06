@@ -84,7 +84,9 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    let cores = num_cpus::get();
+    let cores = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1);
     println!("  {} Found: {} images", "→".bright_black(), files.len());
     println!("  {} Cores: {}", "→".bright_black(), cores);
     println!("  {} Stripping: all EXIF metadata", "→".bright_black());

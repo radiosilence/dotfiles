@@ -58,6 +58,12 @@ enum Commands {
     },
 }
 
+fn available_cores() -> usize {
+    std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1)
+}
+
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -65,7 +71,7 @@ fn main() -> Result<()> {
 
     match args.command {
         Commands::Completion { shell } => {
-            generate(shell, &mut Args::command(), "imp", &mut io::stdout());
+            generate(shell, &mut Args::command(), "to-audio", &mut io::stdout());
             Ok(())
         }
         Commands::Flac {
@@ -95,7 +101,7 @@ fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
 
     println!("  {} Files: {}", "→".bright_black(), files.len());
     println!("  {} Format: FLAC (lossless)", "→".bright_black());
-    println!("  {} Cores: {}", "→".bright_black(), num_cpus::get());
+    println!("  {} Cores: {}", "→".bright_black(), available_cores());
 
     if !keep {
         println!("  {} Original files will be deleted", "!".yellow());
@@ -140,7 +146,7 @@ fn convert_opus(paths: &[PathBuf], bitrate: u32, keep: bool, dry_run: bool) -> R
 
     println!("  {} Files: {}", "→".bright_black(), files.len());
     println!("  {} Format: Opus @ {}kbps", "→".bright_black(), bitrate);
-    println!("  {} Cores: {}", "→".bright_black(), num_cpus::get());
+    println!("  {} Cores: {}", "→".bright_black(), available_cores());
 
     if !keep {
         println!("  {} Original files will be deleted", "!".yellow());

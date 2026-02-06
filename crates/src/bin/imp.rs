@@ -12,7 +12,10 @@ use std::fs::File;
 use std::io::{self, Read, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use tempfile::TempDir;
+
+static DOWNLOAD_COUNTER: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Parser)]
 #[command(name = "imp")]
@@ -104,15 +107,17 @@ fn main() -> Result<()> {
     // Show extracted files
     println!("  {} Files:", "·".bright_black());
     let _ = Command::new("lsd")
-        .args(["--tree", dest.to_str().unwrap()])
+        .args(["--tree"])
+        .arg(dest)
         .status()
-        .or_else(|_| Command::new("tree").arg(dest.to_str().unwrap()).status());
+        .or_else(|_| Command::new("tree").arg(dest).status());
 
     // Import to beets with stdin exposed for user input
     println!("  {} Importing to beets...", "·".bright_black());
 
     let status = Command::new("beet")
-        .args(["import", dest.to_str().unwrap()])
+        .arg("import")
+        .arg(dest)
         .stdin(Stdio::inherit())
         .status()?;
 
@@ -133,13 +138,9 @@ fn download_file(client: &Client, url: &str, dest_dir: &Path) -> Result<std::pat
         anyhow::bail!("Failed to download {}: {}", url, response.status());
     }
 
-    // Generate unique filename since we'll scan for zips anyway
     let file_name = format!(
         "download_{}.zip",
-        std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_nanos()
+        DOWNLOAD_COUNTER.fetch_add(1, Ordering::Relaxed)
     );
     let dest_path = dest_dir.join(&file_name);
 

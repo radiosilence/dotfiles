@@ -11,22 +11,16 @@ use std::process::Command;
 ///
 /// # Errors
 /// Returns error if ffmpeg command fails or file paths are invalid
-///
-/// # Panics
-/// Panics if input or output paths contain invalid UTF-8
 pub fn ffmpeg_convert(
     input: &Path,
     output: &Path,
     codec: &str,
     bitrate: Option<u32>,
 ) -> Result<()> {
-    let mut args = vec![
-        "-i",
-        input.to_str().expect("Invalid UTF-8 in input path"),
-        "-c:a",
-        codec,
-        "-vn", // No video
-    ];
+    let input_str = input.to_str().context("Invalid UTF-8 in input path")?;
+    let output_str = output.to_str().context("Invalid UTF-8 in output path")?;
+
+    let mut args = vec!["-i", input_str, "-c:a", codec, "-vn"];
 
     let bitrate_str;
     if let Some(br) = bitrate {
@@ -34,7 +28,7 @@ pub fn ffmpeg_convert(
         args.extend(&["-b:a", &bitrate_str]);
     }
 
-    args.push(output.to_str().expect("Invalid UTF-8 in output path"));
+    args.push(output_str);
 
     let status = Command::new("ffmpeg")
         .args(&args)
@@ -56,7 +50,7 @@ pub fn ffmpeg_convert(
 /// Returns a vector of results, one per file. Failed files have error results.
 pub fn process_files_parallel<F>(files: Vec<PathBuf>, processor: F) -> Vec<Result<PathBuf>>
 where
-    F: Fn(&PathBuf, &ProgressBar) -> Result<()> + Sync + Send,
+    F: Fn(&Path, &ProgressBar) -> Result<()> + Sync + Send,
 {
     let pb = parallel::create_progress_bar(files.len() as u64);
 
@@ -85,11 +79,6 @@ where
 /// # Errors
 /// Returns error if the command is not found or cannot be executed
 pub fn check_command(cmd: &str) -> Result<()> {
-    Command::new(cmd)
-        .arg("--version")
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .status()
-        .with_context(|| format!("{cmd} not found - please install it"))?;
+    which::which(cmd).with_context(|| format!("{cmd} not found - please install it"))?;
     Ok(())
 }

@@ -1,6 +1,6 @@
 //! Install fonts from URLs on macOS
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
@@ -58,8 +58,9 @@ fn main() -> Result<()> {
     // Download
     for url in &urls {
         println!("  {} downloading {}", "·".bright_black(), url);
+        let dest_str = dest.to_str().context("Invalid temp dir path")?;
         let status = Command::new("aria2c")
-            .args(["-x", "8", "-d", dest.to_str().unwrap(), url])
+            .args(["-x", "8", "-d", dest_str, url])
             .status()?;
 
         if !status.success() {
@@ -74,8 +75,10 @@ fn main() -> Result<()> {
         let path = entry.path();
 
         if path.extension().and_then(|s| s.to_str()) == Some("zip") {
+            let path_str = path.to_str().context("Invalid zip path")?;
+            let dest_str = dest.to_str().context("Invalid dest path")?;
             Command::new("unzip")
-                .args(["-q", path.to_str().unwrap(), "-d", dest.to_str().unwrap()])
+                .args(["-q", path_str, "-d", dest_str])
                 .status()?;
             std::fs::remove_file(&path)?;
         }
@@ -83,7 +86,9 @@ fn main() -> Result<()> {
 
     // Install fonts
     println!("  {} installing fonts", "·".bright_black());
-    let fonts_dir = dirs::home_dir().unwrap().join("Library/Fonts");
+    let fonts_dir = dirs::home_dir()
+        .context("Could not determine home directory")?
+        .join("Library/Fonts");
 
     std::fs::create_dir_all(&fonts_dir)?;
 
@@ -107,7 +112,7 @@ fn main() -> Result<()> {
 }
 
 fn is_font_extension(ext: &str) -> bool {
-    matches!(ext, "otf" | "ttf" | "OTF" | "TTF")
+    ext.eq_ignore_ascii_case("otf") || ext.eq_ignore_ascii_case("ttf")
 }
 
 #[cfg(test)]

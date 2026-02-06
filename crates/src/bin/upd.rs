@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
@@ -51,9 +51,7 @@ fn main() -> Result<()> {
     let has_mise = which("mise").is_ok();
     let has_yt_dlp = which("yt-dlp").is_ok();
 
-    if dotfiles_tools::install::install_dotfiles().is_err() {
-        bail!("installing dotfiles failed");
-    }
+    dotfiles_tools::install::install_dotfiles().context("installing dotfiles failed")?;
 
     if is_macos && !has_brew {
         mp.println(format!("{}", "/// .INSTALLING HOMEBREW".blue()))?;
@@ -90,8 +88,8 @@ fn main() -> Result<()> {
         Some((
             thread::spawn(move || {
                 while keepalive_clone.load(std::sync::atomic::Ordering::Relaxed) {
-                    thread::sleep(std::time::Duration::from_secs(60));
                     let _ = Command::new("sudo").arg("-v").status();
+                    thread::sleep(std::time::Duration::from_secs(60));
                 }
             }),
             keepalive,
@@ -222,12 +220,16 @@ fn main() -> Result<()> {
         }));
     }
 
+    let mut any_failed = false;
     for handle in handles {
-        let _ = handle.join();
+        if let Ok(false) = handle.join() {
+            any_failed = true;
+        }
     }
 
-    if let Some((_, keepalive)) = sudo_keepalive {
+    if let Some((handle, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
+        let _ = handle.join();
     }
 
     mp.clear()?;
@@ -239,7 +241,14 @@ fn main() -> Result<()> {
 
     println!();
     println!();
-    println!("{}", "/// .SYSTEM UPDATE COMPLETE".bold());
+    if any_failed {
+        println!(
+            "{}",
+            "/// .SYSTEM UPDATE COMPLETE (with errors)".yellow().bold()
+        );
+    } else {
+        println!("{}", "/// .SYSTEM UPDATE COMPLETE".bold());
+    }
     println!();
 
     Ok(())
@@ -248,12 +257,8 @@ fn main() -> Result<()> {
 fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()> {
     if !child.wait()?.success() {
         if let Some(stderr) = child.stderr.take() {
-            for line in BufReader::new(stderr).lines() {
-                pb.println(format!(
-                    "  {} {}",
-                    format!("{}  ", name).bright_red(),
-                    line.unwrap()
-                ));
+            for line in BufReader::new(stderr).lines().map_while(Result::ok) {
+                pb.println(format!("  {} {}", format!("{}  ", name).bright_red(), line));
             }
         }
         bail!("{} failed", name);
@@ -270,18 +275,16 @@ fn run_cmd_quiet(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> 
 
 fn run_cmd(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
     let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
-    for line in BufReader::new(child.stdout.take().unwrap()).lines() {
-        pb.println(format!(
-            "  {} {}",
-            format!("{}  ", name).green(),
-            line.unwrap()
-        ));
+    if let Some(stdout) = child.stdout.take() {
+        for line in BufReader::new(stdout).lines().map_while(Result::ok) {
+            pb.println(format!("  {} {}", format!("{}  ", name).green(), line));
+        }
     }
     handle_cmd_errs(name, pb, &mut child)?;
     Ok(())
 }
 
-fn create_task<F>(name: &str, mp: &MultiProgress, cb: F) -> JoinHandle<()>
+fn create_task<F>(name: &str, mp: &MultiProgress, cb: F) -> JoinHandle<bool>
 where
     F: Fn(&ProgressBar) -> Result<(), anyhow::Error> + Send + 'static,
 {
@@ -290,15 +293,18 @@ where
     pb.enable_steady_tick(Duration::from_millis(80));
     pb.set_message(String::from(name));
     thread::spawn(move || {
-        pb.set_style(match cb(&pb) {
-            Ok(_) => ProgressStyle::with_template("{spinner:.green} {msg}")
+        let success = cb(&pb).is_ok();
+        pb.set_style(if success {
+            ProgressStyle::with_template("{spinner:.green} {msg}")
                 .unwrap()
-                .tick_strings(&["✓"]),
-            Err(_) => ProgressStyle::with_template("{spinner:.red} {msg}")
+                .tick_strings(&["✓"])
+        } else {
+            ProgressStyle::with_template("{spinner:.red} {msg}")
                 .unwrap()
-                .tick_strings(&["✗"]),
+                .tick_strings(&["✗"])
         });
         pb.finish();
+        success
     })
 }
 
