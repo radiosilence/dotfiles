@@ -34,6 +34,7 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 | [cheatsheet.md](docs/cheatsheet.md)                   | **Complete reference** - all commands, aliases, functions    |
 | [new-tools.md](docs/new-tools.md)                     | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
 | [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews                         |
+| [CHANGELOG.md](CHANGELOG.md)                          | Full history from 2018 to present (1421 commits)             |
 
 ## Highlights
 
