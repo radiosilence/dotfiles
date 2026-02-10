@@ -3,7 +3,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use std::io::{self, BufRead, BufReader};
+use std::io::{self, BufRead, BufReader, Write};
 use std::process::{Child, Command, Stdio};
 use std::sync::Arc;
 use std::thread::{self, JoinHandle};
@@ -53,14 +53,8 @@ fn main() -> Result<()> {
 
     dotfiles_tools::install::install_dotfiles().context("installing dotfiles failed")?;
 
-    if is_macos && !has_brew {
-        mp.println(format!("{}", "/// .INSTALLING HOMEBREW".blue()))?;
-        if create_task("install homebrew", &mp, install_homebrew)
-            .join()
-            .is_err()
-        {
-            bail!("could not install brew");
-        }
+    if is_macos {
+        check_auth_status(&mp)?;
     }
 
     if is_macos && has_brew && which("install-font-macos").is_ok() {
@@ -227,6 +221,13 @@ fn main() -> Result<()> {
         }
     }
 
+    // Deploy browser policies after brew upgrade (which may replace .app bundles)
+    if is_macos {
+        if let Err(e) = deploy_browser_policies(&mp) {
+            mp.println(format!("  {} browser policies: {}", "!".yellow(), e))?;
+        }
+    }
+
     if let Some((handle, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
         let _ = handle.join();
@@ -239,7 +240,47 @@ fn main() -> Result<()> {
     println!();
     dotfiles_tools::regen_completions::regenerate_completions()?;
 
+    // Summary
     println!();
+    println!("{}", "/// .STATUS".bold());
+    println!();
+
+    let mut manual_steps: Vec<String> = vec![];
+
+    let gh_ok = Command::new("gh")
+        .args(["auth", "status"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false);
+    if !gh_ok && which("gh").is_ok() {
+        manual_steps.push("gh auth login".to_string());
+    }
+
+    let op_ok = Command::new("op")
+        .args(["account", "list"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false);
+    if !op_ok && which("op").is_ok() {
+        manual_steps.push(
+            "1Password: Settings -> Developer -> CLI Integration, then 'op plugin init'"
+                .to_string(),
+        );
+    }
+
+    if manual_steps.is_empty() {
+        println!("  {} all good", "✓".green());
+    } else {
+        println!("  {} remaining manual steps:", "→".yellow());
+        for step in &manual_steps {
+            println!("    {} {}", "·".bright_black(), step);
+        }
+    }
+
     println!();
     if any_failed {
         println!(
@@ -254,6 +295,123 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+fn check_auth_status(mp: &MultiProgress) -> Result<()> {
+    mp.println(format!("{}", "/// .AUTH STATUS".bold()))?;
+
+    let gh_authed = which("gh").is_ok()
+        && Command::new("gh")
+            .args(["auth", "status"])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status()
+            .map(|s| s.success())
+            .unwrap_or(false);
+
+    if which("gh").is_ok() {
+        if gh_authed {
+            mp.println(format!("  {} gh", "✓".green()))?;
+        } else {
+            mp.println(format!("  {} gh not authenticated", "!".yellow()))?;
+            mp.println(format!("     run: {}", "gh auth login".cyan()))?;
+        }
+    }
+
+    let op_integrated = which("op").is_ok()
+        && Command::new("op")
+            .args(["account", "list"])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status()
+            .map(|s| s.success())
+            .unwrap_or(false);
+
+    if which("op").is_ok() {
+        if op_integrated {
+            mp.println(format!("  {} 1password cli", "✓".green()))?;
+        } else {
+            mp.println(format!("  {} 1password cli not integrated", "!".yellow()))?;
+            mp.println("     1. open 1Password -> Settings -> Developer -> CLI Integration")?;
+            mp.println(format!("     2. run: {}", "op plugin init".cyan()))?;
+        }
+    }
+
+    mp.println("")?;
+    Ok(())
+}
+
+fn deploy_browser_policies(mp: &MultiProgress) -> Result<()> {
+    let policies_src = dirs::home_dir()
+        .ok_or_else(|| anyhow::anyhow!("no home dir"))?
+        .join(".dotfiles/config/firefox/policies.json");
+
+    if !policies_src.exists() {
+        return Ok(());
+    }
+
+    let policy_content = std::fs::read(&policies_src)?;
+
+    let browsers: &[(&str, &str)] = &[
+        (
+            "Firefox",
+            "/Applications/Firefox.app/Contents/Resources/distribution",
+        ),
+        (
+            "Zen",
+            "/Applications/Zen.app/Contents/Resources/distribution",
+        ),
+    ];
+
+    for (name, dist_dir) in browsers {
+        let dist_path = std::path::Path::new(dist_dir);
+        // Check if the app itself exists (go up 3 levels: distribution -> Resources -> Contents -> .app)
+        let app_exists = dist_path
+            .parent()
+            .and_then(|p| p.parent())
+            .and_then(|p| p.parent())
+            .is_some_and(|p| p.exists());
+
+        if !app_exists {
+            continue;
+        }
+
+        if !dist_path.exists() {
+            let status = Command::new("sudo")
+                .args(["mkdir", "-p", dist_dir])
+                .status()?;
+            if !status.success() {
+                mp.println(format!("  {} failed to create dir for {}", "!".yellow(), name))?;
+                continue;
+            }
+        }
+
+        let dest = dist_path.join("policies.json");
+        let mut child = Command::new("sudo")
+            .args(["tee", &dest.to_string_lossy()])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::null())
+            .spawn()?;
+
+        if let Some(ref mut stdin) = child.stdin {
+            stdin.write_all(&policy_content)?;
+        }
+        // Drop stdin so tee gets EOF
+        child.stdin.take();
+
+        let status = child.wait()?;
+        if status.success() {
+            mp.println(format!("  {} browser policies -> {}", "✓".green(), name))?;
+        } else {
+            mp.println(format!(
+                "  {} failed to write policies for {}",
+                "!".yellow(),
+                name
+            ))?;
+        }
+    }
+
+    Ok(())
+}
+
 fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()> {
     if !child.wait()?.success() {
         if let Some(stderr) = child.stderr.take() {
@@ -263,13 +421,6 @@ fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()
         }
         bail!("{} failed", name);
     }
-    Ok(())
-}
-
-fn run_cmd_quiet(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
-    let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::null()).spawn()?;
-    handle_cmd_errs(name, pb, &mut child)?;
-
     Ok(())
 }
 
@@ -308,19 +459,6 @@ where
     })
 }
 
-fn install_homebrew(pb: &ProgressBar) -> Result<()> {
-    run_cmd_quiet(
-        "install homebrew",
-        pb,
-        Command::new("/bin/bash").args([
-            "-c",
-            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
-        ]),
-    )?;
-
-    Ok(())
-}
-
 fn install_fonts(mp: &MultiProgress) -> Result<()> {
     let fonts = [
         (
@@ -329,11 +467,15 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
         ),
         (
             "Geist",
-            "https://github.com/vercel/geist-font/releases/download/1.3.0/Geist-1.3.0.zip",
+            "https://github.com/vercel/geist-font/releases/download/1.6.0/Geist-1.6.0.zip",
         ),
         (
             "Geist Mono",
-            "https://github.com/vercel/geist-font/releases/download/1.3.0/GeistMono-1.3.0.zip",
+            "https://github.com/vercel/geist-font/releases/download/1.6.0/GeistMono-1.6.0.zip",
+        ),
+        (
+            "Geist Mono Nerd Font",
+            "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip",
         ),
     ];
 

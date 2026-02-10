@@ -62,7 +62,6 @@ kubectl = "latest"  # Kubernetes CLI
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
 "github:sharkdp/hyperfine" = "latest"  # Benchmarking
 "github:dandavison/delta" = "latest"  # Better git diffs
-"github:bootandy/dust" = "latest"  # Better du
 "github:dalance/procs" = "latest"  # Better ps
 "github:ducaale/xh" = "latest"  # Modern HTTP client
 "github:rclone/rclone" = "latest"  # Cloud sync

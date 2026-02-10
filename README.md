@@ -9,7 +9,16 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/setup
 ```
 
-The `setup` script installs Rust if needed, builds all tools, and runs `upd` to install packages and configure everything.
+The `setup` script handles the full bootstrap chain:
+
+1. Xcode Command Line Tools (headless install via softwareupdate)
+2. Rosetta 2 (Apple Silicon only)
+3. Homebrew + `brew bundle`
+4. Rust via mise (no rustup needed)
+5. Builds all Rust binaries
+6. Runs `upd` — dotfile linking, auth checks, package updates, browser extension policies, zsh completions
+
+After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`, 1Password CLI integration) is guided but manual — `upd` prints what's needed.
 
 ## What's Here
 
