@@ -57,26 +57,33 @@ fn main() -> Result<()> {
         check_auth_status(&mp)?;
     }
 
-    if is_macos && has_brew && which("install-font-macos").is_ok() {
-        let home = std::env::var("HOME")?;
-        let fonts_dir = std::path::Path::new(&home).join("Library/Fonts");
-
-        if fonts_dir.exists() {
-            let font_count = std::fs::read_dir(&fonts_dir)?.count();
-            if font_count < 10 {
-                mp.println("installing fonts...")?;
-                install_fonts(&mp)?;
-            }
-        }
+    if is_macos {
+        install_fonts(&mp)?;
     }
 
     let needs_sudo = has_apt || has_dnf || (is_macos && has_brew);
-    if needs_sudo && Command::new("sudo").arg("-v").status().is_err() {
-        bail!("Failed to get sudo authentication");
-    }
+    let has_sudo = if needs_sudo {
+        match Command::new("sudo").arg("-v").status() {
+            Ok(s) if s.success() => true,
+            _ => {
+                // Hard requirement for apt/dnf - can't do much without sudo there
+                if has_apt || has_dnf {
+                    bail!("Failed to get sudo authentication");
+                }
+                // Brew can mostly work without sudo, just skip cask installs
+                mp.println(format!(
+                    "  {} sudo auth failed, brew bundle/casks may be skipped",
+                    "!".yellow()
+                ))?;
+                false
+            }
+        }
+    } else {
+        false
+    };
 
     // Spawn background thread to keep sudo alive
-    let sudo_keepalive = if needs_sudo {
+    let sudo_keepalive = if has_sudo {
         let keepalive = Arc::new(std::sync::atomic::AtomicBool::new(true));
         let keepalive_clone = keepalive.clone();
         Some((
@@ -165,7 +172,7 @@ fn main() -> Result<()> {
             "{}",
             "/// .BREW BUNDLE (may prompt for sudo)".blue()
         ))?;
-        let bundle_status = mp.suspend(|| {
+        let bundle_result = mp.suspend(|| {
             Command::new("brew")
                 .args(["bundle", "--quiet"])
                 .current_dir(&home)
@@ -173,11 +180,21 @@ fn main() -> Result<()> {
                 .stdout(Stdio::inherit())
                 .stderr(Stdio::inherit())
                 .status()
-        })?;
-        if !bundle_status.success() {
-            mp.println(format!("{} brew bundle failed", "✗".red()))?;
-        } else {
-            mp.println(format!("{} brew bundle complete", "✓".green()))?;
+        });
+        match bundle_result {
+            Ok(status) if status.success() => {
+                mp.println(format!("{} brew bundle complete", "✓".green()))?;
+            }
+            Ok(_) => {
+                mp.println(format!("{} brew bundle failed (continuing)", "✗".red()))?;
+            }
+            Err(e) => {
+                mp.println(format!(
+                    "{} brew bundle error: {} (continuing)",
+                    "✗".red(),
+                    e
+                ))?;
+            }
         }
         mp.println("")?;
 
@@ -379,7 +396,11 @@ fn deploy_browser_policies(mp: &MultiProgress) -> Result<()> {
                 .args(["mkdir", "-p", dist_dir])
                 .status()?;
             if !status.success() {
-                mp.println(format!("  {} failed to create dir for {}", "!".yellow(), name))?;
+                mp.println(format!(
+                    "  {} failed to create dir for {}",
+                    "!".yellow(),
+                    name
+                ))?;
                 continue;
             }
         }
@@ -460,22 +481,27 @@ where
 }
 
 fn install_fonts(mp: &MultiProgress) -> Result<()> {
-    let fonts = [
+    // (name, url, marker file to check if already installed)
+    let fonts: &[(&str, &str, &str)] = &[
         (
             "Hack Ligatured",
             "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip",
+            "HackNerdFontJBMLigatured-Regular.ttf",
         ),
         (
             "Geist",
             "https://github.com/vercel/geist-font/releases/download/1.6.0/Geist-1.6.0.zip",
+            "Geist-Regular.otf",
         ),
         (
             "Geist Mono",
             "https://github.com/vercel/geist-font/releases/download/1.6.0/GeistMono-1.6.0.zip",
+            "GeistMono-Regular.otf",
         ),
         (
             "Geist Mono Nerd Font",
             "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip",
+            "GeistMonoNerdFont-Regular.otf",
         ),
     ];
 
@@ -484,11 +510,20 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
         .join("Library/Fonts");
     std::fs::create_dir_all(&fonts_dir)?;
 
+    let missing: Vec<_> = fonts
+        .iter()
+        .filter(|(_, _, marker)| !fonts_dir.join(marker).exists())
+        .collect();
+
+    if missing.is_empty() {
+        return Ok(());
+    }
+
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(120))
         .build()?;
 
-    for (name, url) in fonts {
+    for (name, url, _) in missing {
         mp.println(format!("{} installing {}...", "→".magenta(), name))?;
 
         match install_font(&client, url, &fonts_dir) {
