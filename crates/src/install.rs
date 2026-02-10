@@ -234,5 +234,52 @@ pub fn install_dotfiles() -> Result<InstallSummary> {
         summary.sheldon_installed = installed;
     }
 
+    // Install launchd agents on macOS
+    if cfg!(target_os = "macos") {
+        let launchd_src = dotfiles.join("config/launchd");
+        let launch_agents = home_path.join("Library/LaunchAgents");
+
+        if launchd_src.exists() {
+            fs::create_dir_all(&launch_agents)?;
+
+            for entry in fs::read_dir(&launchd_src)? {
+                let entry = entry?;
+                let path = entry.path();
+                if path.extension().and_then(|e| e.to_str()) != Some("plist") {
+                    continue;
+                }
+
+                let Some(filename) = path.file_name() else {
+                    continue;
+                };
+                let dest = launch_agents.join(filename);
+
+                // Only copy if content differs
+                let needs_update = if dest.exists() {
+                    fs::read(&path).ok() != fs::read(&dest).ok()
+                } else {
+                    true
+                };
+
+                if needs_update {
+                    fs::copy(&path, &dest).with_context(|| {
+                        format!("Failed to copy {} to {}", path.display(), dest.display())
+                    })?;
+                    // Reload the agent
+                    let _ = Command::new("launchctl")
+                        .args(["unload", &dest.to_string_lossy()])
+                        .stdout(Stdio::null())
+                        .stderr(Stdio::null())
+                        .output();
+                    let _ = Command::new("launchctl")
+                        .args(["load", &dest.to_string_lossy()])
+                        .stdout(Stdio::null())
+                        .stderr(Stdio::null())
+                        .output();
+                }
+            }
+        }
+    }
+
     Ok(summary)
 }

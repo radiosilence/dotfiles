@@ -1,5 +1,6 @@
 # Kubernetes configuration
 command -v kubecolor >/dev/null || return
+command -v kubectl >/dev/null || return
 
 alias kubectl='kubecolor'
 compdef kubecolor=kubectl

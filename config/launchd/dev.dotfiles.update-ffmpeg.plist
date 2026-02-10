@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>dev.dotfiles.update-ffmpeg</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-l</string>
+    <string>-c</string>
+    <string>~/.dotfiles/bin/update-ffmpeg &amp;&amp; cd ~/.dotfiles &amp;&amp; git diff --quiet config/mise/config.toml || (git add config/mise/config.toml &amp;&amp; git commit -m "chore: update ffmpeg URLs" &amp;&amp; git push)</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>9</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/tmp/update-ffmpeg.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/update-ffmpeg.log</string>
+</dict>
+</plist>

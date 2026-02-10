@@ -1,30 +1,103 @@
 #!/bin/sh
 # Bootstrap script - run this on a fresh system
-# Usage: ./setup
+# Usage: git clone https://github.com/radiosilence/dotfiles ~/.dotfiles && ~/.dotfiles/setup
 
 set -e
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-printf "\033[34m🚀 Dotfiles Bootstrap\033[0m\n"
+printf "\033[1m/// .DOTFILES BOOTSTRAP\033[0m\n\n"
 
-# Check if we have cargo/rust already
-if ! command -v cargo >/dev/null 2>&1; then
-  printf "\033[33m→ Rust not found, installing rustup...\033[0m\n"
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
-  . "$HOME/.cargo/env"
-  printf "\033[32m✓ Rust installed\033[0m\n"
+# --- Xcode Command Line Tools ---
+if xcode-select -p >/dev/null 2>&1; then
+  printf "\033[32m  ok xcode CLT\033[0m\n"
+else
+  printf "\033[33m  -> installing xcode command line tools...\033[0m\n"
+  # Sentinel file makes CLT appear in softwareupdate list
+  touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+  CLT_LABEL=$(/usr/sbin/softwareupdate -l 2>&1 \
+    | grep -B 1 -E 'Command Line Tools' \
+    | awk -F'*' '/^ *\*/ {print $2}' \
+    | sed -e 's/^ *Label: //' -e 's/^ *//' \
+    | sort -V \
+    | tail -n1)
+  if [ -n "$CLT_LABEL" ]; then
+    /usr/sbin/softwareupdate -i "$CLT_LABEL" --verbose
+    /usr/bin/xcode-select --switch /Library/Developer/CommandLineTools
+  else
+    rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    printf "\033[31m  !! could not find CLT in softwareupdate\033[0m\n"
+    printf "     download manually: https://developer.apple.com/download/all/\n"
+    exit 1
+  fi
+  rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+  printf "\033[32m  ok xcode CLT installed\033[0m\n"
 fi
 
-# Build all binaries
-printf "\033[35m→ Building Rust binaries...\033[0m\n"
+# --- Rosetta 2 (Apple Silicon only) ---
+if [ "$(uname -m)" = "arm64" ]; then
+  if /usr/bin/pgrep -q oahd 2>/dev/null; then
+    printf "\033[32m  ok rosetta 2\033[0m\n"
+  else
+    printf "\033[33m  -> installing rosetta 2...\033[0m\n"
+    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+    printf "\033[32m  ok rosetta 2 installed\033[0m\n"
+  fi
+fi
+
+# --- Homebrew ---
+if command -v brew >/dev/null 2>&1; then
+  printf "\033[32m  ok homebrew\033[0m\n"
+else
+  printf "\033[33m  -> installing homebrew...\033[0m\n"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Get brew into PATH for rest of script
+  if [ -d /opt/homebrew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  else
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+  printf "\033[32m  ok homebrew installed\033[0m\n"
+fi
+
+# --- Brewfile symlink ---
+BREWFILE_TARGET="$HOME/Brewfile"
+if [ -L "$BREWFILE_TARGET" ] && [ "$(readlink "$BREWFILE_TARGET")" = "$DOTFILES_DIR/Brewfile" ]; then
+  printf "\033[32m  ok brewfile linked\033[0m\n"
+else
+  ln -sf "$DOTFILES_DIR/Brewfile" "$BREWFILE_TARGET"
+  printf "\033[32m  ok brewfile linked\033[0m\n"
+fi
+
+# --- brew bundle ---
+printf "\n\033[1m/// .BREW BUNDLE\033[0m\n\n"
+brew bundle --file="$DOTFILES_DIR/Brewfile" --quiet || true
+
+# --- mise + rust ---
+if command -v mise >/dev/null 2>&1; then
+  printf "\n\033[1m/// .RUST (via mise)\033[0m\n\n"
+  eval "$(mise activate sh)"
+  printf "\033[33m  -> mise install rust...\033[0m\n"
+  mise install rust
+  printf "\033[32m  ok rust\033[0m\n"
+else
+  printf "\033[31m  !! mise not found after brew bundle - check Brewfile\033[0m\n"
+  exit 1
+fi
+
+# --- Build Rust binaries ---
+if ! command -v cargo >/dev/null 2>&1; then
+  printf "\033[31m  !! cargo not found after mise install rust\033[0m\n"
+  exit 1
+fi
+
+printf "\n\033[1m/// .BUILD\033[0m\n\n"
+printf "\033[33m  -> building rust binaries...\033[0m\n"
 cd "$DOTFILES_DIR/crates"
 cargo install --path . --bins --root "$DOTFILES_DIR" --force
+printf "\033[32m  ok binaries -> ~/.dotfiles/bin\033[0m\n"
 
-printf "\033[32m✓ Binaries built and installed to ~/.dotfiles/bin\033[0m\n"
-
-# Clean up stale binaries from ~/.cargo/bin
-printf "\033[35m→ Cleaning up stale cargo binaries...\033[0m\n"
+# --- Clean stale cargo binaries ---
 for bin in clean-dls clean-exif echo-to-file embed-art extract-exif-from-flac \
            gen-diff git-squash git-sync git-trigger imp install-font-macos \
            install-terminfo kill-port parallel-dl-extract prune prune-gen \
@@ -32,12 +105,10 @@ for bin in clean-dls clean-exif echo-to-file embed-art extract-exif-from-flac \
            url2base64 vimv; do
   if [ -f "$HOME/.cargo/bin/$bin" ]; then
     rm "$HOME/.cargo/bin/$bin"
-    printf "  removed %s\n" "$bin"
+    printf "  removed stale %s\n" "$bin"
   fi
 done
 
-# Run upd to complete setup (brew, mise, etc)
-printf "\033[36m\n→ Running upd to complete setup...\033[0m\n"
+# --- Run upd ---
+printf "\n"
 "$DOTFILES_DIR/bin/upd"
-
-printf "\033[32m✓ Setup complete!\033[0m\n"
