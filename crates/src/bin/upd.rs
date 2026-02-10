@@ -76,7 +76,7 @@ fn main() -> Result<()> {
         }
     }
 
-    let needs_sudo = has_apt || has_dnf;
+    let needs_sudo = has_apt || has_dnf || (is_macos && has_brew);
     if needs_sudo && Command::new("sudo").arg("-v").status().is_err() {
         bail!("Failed to get sudo authentication");
     }
