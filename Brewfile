@@ -212,6 +212,6 @@ cask 'whatsapp', greedy: true
 # MAC APP STORE
 # =============================================================================
 
-mas 'Adobe Lightroom', id: 1_451_544_217
-mas 'Infuse', id: 1_136_220_934
+# mas 'Adobe Lightroom', id: 1_451_544_217
+# mas 'Infuse', id: 1_136_220_934
 
