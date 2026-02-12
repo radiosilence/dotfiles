@@ -3,7 +3,7 @@ use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use std::io::{self, BufRead, BufReader, Write};
+use std::io::{self, BufRead, BufReader};
 use std::process::{Child, Command, Stdio};
 use std::sync::Arc;
 use std::thread::{self, JoinHandle};
@@ -226,13 +226,6 @@ fn main() -> Result<()> {
         }
     }
 
-    // Deploy browser policies after brew upgrade (which may replace .app bundles)
-    if is_macos {
-        if let Err(e) = deploy_browser_policies(&mp) {
-            mp.println(format!("  {} browser policies: {}", "!".yellow(), e))?;
-        }
-    }
-
     if let Some((handle, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
         let _ = handle.join();
@@ -341,83 +334,6 @@ fn check_auth_status(mp: &MultiProgress) -> Result<()> {
     }
 
     mp.println("")?;
-    Ok(())
-}
-
-fn deploy_browser_policies(mp: &MultiProgress) -> Result<()> {
-    let policies_src = dirs::home_dir()
-        .ok_or_else(|| anyhow::anyhow!("no home dir"))?
-        .join(".dotfiles/config/firefox/policies.json");
-
-    if !policies_src.exists() {
-        return Ok(());
-    }
-
-    let policy_content = std::fs::read(&policies_src)?;
-
-    let browsers: &[(&str, &str)] = &[
-        (
-            "Firefox",
-            "/Applications/Firefox.app/Contents/Resources/distribution",
-        ),
-        (
-            "Zen",
-            "/Applications/Zen.app/Contents/Resources/distribution",
-        ),
-    ];
-
-    for (name, dist_dir) in browsers {
-        let dist_path = std::path::Path::new(dist_dir);
-        // Check if the app itself exists (go up 3 levels: distribution -> Resources -> Contents -> .app)
-        let app_exists = dist_path
-            .parent()
-            .and_then(|p| p.parent())
-            .and_then(|p| p.parent())
-            .is_some_and(|p| p.exists());
-
-        if !app_exists {
-            continue;
-        }
-
-        if !dist_path.exists() {
-            let status = Command::new("sudo")
-                .args(["mkdir", "-p", dist_dir])
-                .status()?;
-            if !status.success() {
-                mp.println(format!(
-                    "  {} failed to create dir for {}",
-                    "!".yellow(),
-                    name
-                ))?;
-                continue;
-            }
-        }
-
-        let dest = dist_path.join("policies.json");
-        let mut child = Command::new("sudo")
-            .args(["tee", &dest.to_string_lossy()])
-            .stdin(Stdio::piped())
-            .stdout(Stdio::null())
-            .spawn()?;
-
-        if let Some(ref mut stdin) = child.stdin {
-            stdin.write_all(&policy_content)?;
-        }
-        // Drop stdin so tee gets EOF
-        child.stdin.take();
-
-        let status = child.wait()?;
-        if status.success() {
-            mp.println(format!("  {} browser policies -> {}", "✓".green(), name))?;
-        } else {
-            mp.println(format!(
-                "  {} failed to write policies for {}",
-                "!".yellow(),
-                name
-            ))?;
-        }
-    }
-
     Ok(())
 }
 
