@@ -85,9 +85,7 @@ pub fn regenerate_completions() -> Result<()> {
     if which::which("aws-vault").is_ok() {
         tasks.push(("aws-vault", vec!["--completion-script-zsh"]));
     }
-    if which::which("bun").is_ok() {
-        tasks.push(("bun", vec!["completions"]));
-    }
+
     if which::which("rg").is_ok() {
         tasks.push(("rg", vec!["--generate", "complete-zsh"]));
     }
