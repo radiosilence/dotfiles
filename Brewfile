@@ -33,7 +33,6 @@ brew 'sheldon' if Hardware::CPU.intel? # Fallback: mise pulls wrong arch binary
 # =============================================================================
 
 cask 'zed', greedy: true
-cask 'zed@preview', greedy: true
 cask 'figma', greedy: true
 cask 'fork', greedy: true
 cask 'beekeeper-studio', greedy: true
