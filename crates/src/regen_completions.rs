@@ -160,5 +160,7 @@ pub fn regenerate_completions() -> Result<()> {
         let _ = handle.join();
     }
 
+    mp.clear()?;
+
     Ok(())
 }
