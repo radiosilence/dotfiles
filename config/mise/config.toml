@@ -1,6 +1,6 @@
 [env]
 KERL_BUILD_DOCS = "yes"
-GITHUB_TOKEN = "{{exec(command='gh auth token 2>/dev/null || echo \"\"')}}"
+GITHUB_TOKEN = "{{exec(command='GITHUB_TOKEN=\"\" gh auth token 2>/dev/null || echo \"\"')}}"
 # More secure, annoying option:
 # GITHUB_TOKEN = "{{exec(command='op plugin run -- gh auth token')}}"
 

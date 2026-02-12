@@ -8,7 +8,28 @@
       "{d634138d-c276-4fc8-924b-40a0ea21d284}": {
         "installation_mode": "normal_installed",
         "install_url": "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi"
+      },
+      "jid1-xUfzOsOFlzSOXg@jetpack": {
+        "installation_mode": "normal_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/reddit-enhancement-suite/latest.xpi"
+      },
+      "search@kagi.com": {
+        "installation_mode": "normal_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/kagi-search-for-firefox/latest.xpi"
       }
+    },
+    "SearchEngines": {
+      "Default": "Kagi",
+      "Add": [
+        {
+          "Name": "Kagi",
+          "URLTemplate": "https://kagi.com/search?q={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://kagi.com/favicon.ico",
+          "Description": "Kagi Search",
+          "Alias": "k"
+        }
+      ]
     },
     "DisableTelemetry": true,
     "DisableFirefoxStudies": true,
