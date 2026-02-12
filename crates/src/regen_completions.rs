@@ -30,7 +30,6 @@ pub fn regenerate_completions() -> Result<()> {
         "tilt",
         "turso",
         "yq",
-        // Internal company tools
         "fcloud",
         "houston",
         // Our binaries
@@ -91,6 +90,9 @@ pub fn regenerate_completions() -> Result<()> {
     }
     if which::which("rg").is_ok() {
         tasks.push(("rg", vec!["--generate", "complete-zsh"]));
+    }
+    if which::which("lsd").is_ok() {
+        tasks.push(("lsd", vec!["--generate-completion", "zsh"]));
     }
 
     // npm is special - outputs a sourceable script, not a compdef
