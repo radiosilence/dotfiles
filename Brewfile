@@ -18,6 +18,8 @@ tap 'tursodatabase/tap'
 
 brew 'zsh'
 brew 'git'
+cask '1password', greedy: true
+cask '1password-cli', greedy: true
 
 brew 'curl'
 brew 'coreutils'
@@ -164,8 +166,6 @@ brew 'tokei'
 
 cask 'notion', greedy: true
 cask 'notion-calendar', greedy: true
-cask '1password', greedy: true
-cask '1password-cli', greedy: true
 cask 'claude', greedy: true
 cask 'opencode-desktop', greedy: true
 
