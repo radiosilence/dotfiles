@@ -49,7 +49,6 @@ fn main() -> Result<()> {
     let has_apt = which("apt-get").is_ok();
     let has_dnf = which("dnf").is_ok();
     let has_mise = which("mise").is_ok();
-    let has_yt_dlp = which("yt-dlp").is_ok();
 
     dotfiles_tools::install::install_dotfiles().context("installing dotfiles failed")?;
 
@@ -149,17 +148,6 @@ fn main() -> Result<()> {
                 "mise:reshim",
                 pb,
                 Command::new("mise").arg("reshim").current_dir(&home),
-            )?;
-            Ok(())
-        }));
-    }
-
-    if has_yt_dlp {
-        handles.push(create_task("yt-dlp", &mp, |pb| {
-            run_cmd(
-                "yt-dlp",
-                pb,
-                Command::new("yt-dlp").arg("--update-to").arg("nightly"),
             )?;
             Ok(())
         }));
