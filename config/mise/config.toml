@@ -44,7 +44,6 @@ kubectl = "latest"  # Kubernetes CLI
 "github:derailed/k9s" = "latest"  # Kubernetes TUI
 "github:kubecolor/kubecolor" = "latest"  # Colorized kubectl
 # GitHub & misc
-"github:cli/cli" = "latest"  # GitHub CLI
 "github:radiosilence/nano-web" = "latest"  # Minimal web server
 "github:tursodatabase/turso" = "latest"  # Turso CLI
 "github:withgraphite/homebrew-tap" = { version = "latest", exe = "gt" }  # Graphite CLI
