@@ -6,10 +6,10 @@ Personal dev environment. macOS, zsh, Rust tooling.
 
 ```sh
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
-~/.dotfiles/setup
+~/.dotfiles/setup-macos
 ```
 
-The `setup` script handles the full bootstrap chain:
+The `setup-macos` script handles the full bootstrap chain:
 
 1. Xcode Command Line Tools (headless install via softwareupdate)
 2. Rosetta 2 (Apple Silicon only)
