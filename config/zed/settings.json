@@ -163,7 +163,7 @@
       ],
     },
     "Proto": {
-      "language_servers": ["buf", "!protobuf-language-server", "..."],
+      "language_servers": ["buf", "codeowners-lsp"],
     },
     "CSS": {
       "code_actions_on_format": {

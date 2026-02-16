@@ -16,6 +16,16 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Smarter font installation with per-font marker files, graceful sudo fallback (`56ea49a`)
 - Sudo keepalive for brew + mise GH token fallback (`8c3cd9c`)
 
+**Repo gardening:**
+
+- Removed `crates/CANDIDATES.md` — all tools fully rewritten to Rust, doc was stale
+- Removed dead Ruby configs (`.gemrc`, `.default-gems`, `.rubocop.yml`) — no Ruby managed by mise anymore
+- Removed `misc/fb2k/` — Windows foobar2000 configs on a macOS repo
+- Removed `config/firefox/policies.json` — not deployed by any script
+- Fixed `crates/README.md` — corrected binary count (23 not 26), removed references to nonexistent justfile and banner module, listed all tools
+- Renamed `setup` → `setup-macos`, updated README.md to match
+- Zed: added codeowners-lsp to Proto language servers
+
 **Maintenance:**
 
 - Dependabot bumps: `time` 0.3.44→0.3.47, `bytes` 1.11.0→1.11.1
