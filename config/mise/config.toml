@@ -90,7 +90,7 @@ terraform-ls = "latest"  # Terraform LSP
 # Rust things
 "cargo:graphql_client_cli" = "latest"
 opencode = "latest"
-"github:radiosilence/codeowners-lsp" = { version = "latest", exe = "codeowners-cli" }
+"github:radiosilence/codeowners-lsp" = "latest"
 
 # Media - ffmpeg with optimized Apple Silicon builds (auto-updated by update-ffmpeg)
 [tools."http:ffmpeg"]
