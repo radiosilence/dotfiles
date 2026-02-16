@@ -33,7 +33,6 @@ protobuf = "latest"  # Protocol buffers
 "github:casey/just" = "latest"  # Task runner (crabs)
 "github:go-task/task" = "latest"  # Task runner (gopher)
 "github:astral-sh/uv" = "latest"  # Fast Python package installer
-"github:alire-project/alire" = { version = "latest", exe = "alr" }  # ADA tooling
 "github:tamasfe/taplo" = "latest"  # TOML formatter
 # Code quality
 "github:koalaman/shellcheck" = "latest"  # Shell script linter
@@ -46,7 +45,7 @@ kubectl = "latest"  # Kubernetes CLI
 # GitHub & misc
 "github:radiosilence/nano-web" = "latest"  # Minimal web server
 "github:tursodatabase/turso" = "latest"  # Turso CLI
-"github:withgraphite/homebrew-tap" = { version = "latest", exe = "gt" }  # Graphite CLI
+"github:withgraphite/homebrew-tap" = "latest"  # Graphite CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
 # Ansible
@@ -64,7 +63,7 @@ kubectl = "latest"  # Kubernetes CLI
 "github:ducaale/xh" = "latest"  # Modern HTTP client
 "github:rclone/rclone" = "latest"  # Cloud sync
 # Infra & cloud
-"github:argoproj/argo-cd" = { version = "latest", exe = "argocd" }  # GitOps CD
+"github:argoproj/argo-cd" = "latest"  # GitOps CD
 "github:ByteNess/aws-vault" = "latest"  # AWS credential manager
 "github:pulumi/pulumi" = "latest"  # IaC in real languages
 "github:tilt-dev/tilt" = "latest"  # K8s dev environment
@@ -73,7 +72,7 @@ kubectl = "latest"  # Kubernetes CLI
 "github:fullstorydev/grpcurl" = "latest"  # gRPC curl
 "github:ktr0731/evans" = "latest"  # gRPC REPL
 # Code formatting
-"github:mvdan/sh" = { version = "latest", exe = "shfmt" }  # Shell formatter
+"github:mvdan/sh" = "latest"  # Shell formatter
 # Language servers
 "github:LuaLS/lua-language-server" = "latest"  # Lua LSP
 "npm:yaml-language-server" = "latest"  # YAML LSP
