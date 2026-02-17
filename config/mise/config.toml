@@ -72,7 +72,7 @@ kubectl = "latest"  # Kubernetes CLI
 "github:fullstorydev/grpcurl" = "latest"  # gRPC curl
 "github:ktr0731/evans" = "latest"  # gRPC REPL
 # Code formatting
-"github:mvdan/sh" = "latest"  # Shell formatter
+"github:mvdan/sh" = { version = "latest", bin = "shfmt" }  # Shell formatter
 # Language servers
 "github:LuaLS/lua-language-server" = "latest"  # Lua LSP
 "npm:yaml-language-server" = "latest"  # YAML LSP

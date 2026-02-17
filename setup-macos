@@ -15,12 +15,12 @@ else
   printf "\033[33m  -> installing xcode command line tools...\033[0m\n"
   # Sentinel file makes CLT appear in softwareupdate list
   touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-  CLT_LABEL=$(/usr/sbin/softwareupdate -l 2>&1 \
-    | grep -B 1 -E 'Command Line Tools' \
-    | awk -F'*' '/^ *\*/ {print $2}' \
-    | sed -e 's/^ *Label: //' -e 's/^ *//' \
-    | sort -V \
-    | tail -n1)
+  CLT_LABEL=$(/usr/sbin/softwareupdate -l 2>&1 |
+    grep -B 1 -E 'Command Line Tools' |
+    awk -F'*' '/^ *\*/ {print $2}' |
+    sed -e 's/^ *Label: //' -e 's/^ *//' |
+    sort -V |
+    tail -n1)
   if [ -n "$CLT_LABEL" ]; then
     /usr/sbin/softwareupdate -i "$CLT_LABEL" --verbose
     /usr/bin/xcode-select --switch /Library/Developer/CommandLineTools
@@ -85,29 +85,8 @@ else
   exit 1
 fi
 
-# --- Build Rust binaries ---
-if ! command -v cargo >/dev/null 2>&1; then
-  printf "\033[31m  !! cargo not found after mise install rust\033[0m\n"
-  exit 1
-fi
-
 printf "\n\033[1m/// .BUILD\033[0m\n\n"
-printf "\033[33m  -> building rust binaries...\033[0m\n"
-cd "$DOTFILES_DIR/crates"
-cargo install --path . --bins --root "$DOTFILES_DIR" --force
-printf "\033[32m  ok binaries -> ~/.dotfiles/bin\033[0m\n"
-
-# --- Clean stale cargo binaries ---
-for bin in clean-dls clean-exif echo-to-file embed-art extract-exif-from-flac \
-           gen-diff git-squash git-sync git-trigger imp install-font-macos \
-           install-terminfo kill-port parallel-dl-extract prune prune-gen \
-           regen-zsh-completions to-audio unfuck-xcode upd update-ffmpeg \
-           url2base64 vimv; do
-  if [ -f "$HOME/.cargo/bin/$bin" ]; then
-    rm "$HOME/.cargo/bin/$bin"
-    printf "  removed stale %s\n" "$bin"
-  fi
-done
+"$DOTFILES_DIR/reinstall-bins"
 
 # --- Run upd ---
 printf "\n"
