@@ -60,6 +60,26 @@ else
   printf "\033[32m  ok homebrew installed\033[0m\n"
 fi
 
+# --- TouchID for sudo ---
+SUDO_LOCAL="/etc/pam.d/sudo_local"
+if [ -f "$SUDO_LOCAL" ] && grep -q pam_tid "$SUDO_LOCAL"; then
+  printf "\033[32m  ok touchid sudo\033[0m\n"
+else
+  printf "\033[33m  -> enabling touchid for sudo...\033[0m\n"
+  sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
+  printf "\033[32m  ok touchid sudo\033[0m\n"
+fi
+
+# --- Sudo timeout ---
+SUDO_TIMEOUT="/etc/sudoers.d/timeout"
+if [ -f "$SUDO_TIMEOUT" ]; then
+  printf "\033[32m  ok sudo timeout\033[0m\n"
+else
+  printf "\033[33m  -> setting sudo timeout to 30 min...\033[0m\n"
+  sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
+  printf "\033[32m  ok sudo timeout\033[0m\n"
+fi
+
 # --- Brewfile symlink ---
 BREWFILE_TARGET="$HOME/Brewfile"
 if [ -L "$BREWFILE_TARGET" ] && [ "$(readlink "$BREWFILE_TARGET")" = "$DOTFILES_DIR/Brewfile" ]; then
