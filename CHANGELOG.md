@@ -8,8 +8,16 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### February
 
+**Terminal & multiplexing:**
+
+- Ported all Ghostty settings to WezTerm — font size, monokai-pro palette fix, alt keybinds, shift+enter
+- Replaced tmux with WezTerm's unix domain multiplexer for local session persistence — no prefix key, native splits persist across restarts
+- Modernized `.wezterm.lua` to use `config_builder()` API
+
 **Security & bootstrap hardening:**
 
+- Setup now configures TouchID for sudo via `/etc/pam.d/sudo_local` (survives macOS updates)
+- Setup now sets 30-min sudo timeout via `/etc/sudoers.d/timeout`
 - Dropped OpenSSL dependency entirely, switched to rustls (`e23f321`) — no more system OpenSSL version hell
 - Comprehensive crate audit (`6a968b7`) — bug fixes, security hardening, better error handling across all binaries
 - Overhauled setup process (`2234f80`) — fresh Mac goes from zero to fully configured with `./setup`, no manual steps beyond `gh auth login`
