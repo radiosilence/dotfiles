@@ -8,6 +8,25 @@ DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 printf "\033[1m/// .DOTFILES BOOTSTRAP\033[0m\n\n"
 
+# --- Sudo setup (first, so the session carries through the rest) ---
+SUDO_LOCAL="/etc/pam.d/sudo_local"
+if [ -f "$SUDO_LOCAL" ] && grep -q pam_tid "$SUDO_LOCAL"; then
+  printf "\033[32m  ok touchid sudo\033[0m\n"
+else
+  printf "\033[33m  -> enabling touchid for sudo...\033[0m\n"
+  sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
+  printf "\033[32m  ok touchid sudo\033[0m\n"
+fi
+
+SUDO_TIMEOUT="/etc/sudoers.d/timeout"
+if [ -f "$SUDO_TIMEOUT" ]; then
+  printf "\033[32m  ok sudo timeout\033[0m\n"
+else
+  printf "\033[33m  -> setting sudo timeout to 30 min...\033[0m\n"
+  sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
+  printf "\033[32m  ok sudo timeout\033[0m\n"
+fi
+
 # --- Xcode Command Line Tools ---
 if xcode-select -p >/dev/null 2>&1; then
   printf "\033[32m  ok xcode CLT\033[0m\n"
@@ -58,26 +77,6 @@ else
     eval "$(/usr/local/bin/brew shellenv)"
   fi
   printf "\033[32m  ok homebrew installed\033[0m\n"
-fi
-
-# --- TouchID for sudo ---
-SUDO_LOCAL="/etc/pam.d/sudo_local"
-if [ -f "$SUDO_LOCAL" ] && grep -q pam_tid "$SUDO_LOCAL"; then
-  printf "\033[32m  ok touchid sudo\033[0m\n"
-else
-  printf "\033[33m  -> enabling touchid for sudo...\033[0m\n"
-  sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
-  printf "\033[32m  ok touchid sudo\033[0m\n"
-fi
-
-# --- Sudo timeout ---
-SUDO_TIMEOUT="/etc/sudoers.d/timeout"
-if [ -f "$SUDO_TIMEOUT" ]; then
-  printf "\033[32m  ok sudo timeout\033[0m\n"
-else
-  printf "\033[33m  -> setting sudo timeout to 30 min...\033[0m\n"
-  sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
-  printf "\033[32m  ok sudo timeout\033[0m\n"
 fi
 
 # --- Brewfile symlink ---
