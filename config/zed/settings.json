@@ -64,6 +64,7 @@
     "elixir": true,
     "emmet": true,
     "git-firefly": true,
+    "graphql": true,
     "harper": true,
     "helm": true,
     "html": true,
@@ -303,12 +304,12 @@
       "settings": {
         "javascript": {
           "updateImportsOnFileMove": {
-            "enabled": "always"
-          }
+            "enabled": "always",
+          },
         },
         "typescript": {
           "updateImportsOnFileMove": {
-            "enabled": "always"
+            "enabled": "always",
           },
           "tsserver": {
             "maxTsServerMemory": 26384,

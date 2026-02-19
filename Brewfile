@@ -214,3 +214,4 @@ cask 'whatsapp', greedy: true
 # mas 'Adobe Lightroom', id: 1_451_544_217
 # mas 'Infuse', id: 1_136_220_934
 
+brew "ffmpeg"
