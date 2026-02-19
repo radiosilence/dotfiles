@@ -99,10 +99,6 @@ path = "src/bin/echo-to-file.rs"
 name = "parallel-dl-extract"
 path = "src/bin/parallel-dl-extract.rs"
 
-[[bin]]
-name = "update-ffmpeg"
-path = "src/bin/update-ffmpeg.rs"
-
 [dependencies]
 # Error handling
 anyhow = "1"
@@ -129,7 +125,10 @@ rayon = "1"
 # Regex
 regex = "1"
 # Async
-reqwest = { version = "0.13", default-features = false, features = ["blocking", "rustls"] }
+reqwest = { version = "0.13", default-features = false, features = [
+  "blocking",
+  "rustls"
+] }
 # HTML parsing
 scraper = "0.23"
 tempfile = "3"

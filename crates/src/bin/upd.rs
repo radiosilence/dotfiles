@@ -134,11 +134,7 @@ fn main() -> Result<()> {
     if has_mise {
         handles.push(create_task("mise", &mp, |pb| {
             let home = std::env::var("HOME")?;
-            // Update ffmpeg URLs before mise update
-            pb.set_message("mise: updating ffmpeg");
-            if let Err(e) = dotfiles_tools::update_ffmpeg::update_ffmpeg(false) {
-                pb.println(format!("  {} ffmpeg update: {}", "!".yellow(), e));
-            }
+
             run_cmd(
                 "mise:up",
                 pb,
