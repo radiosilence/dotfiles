@@ -1,0 +1,18 @@
+# Brewfile roles — copy to dotfiles-roles and uncomment what you need.
+# One role per line. Core packages are always installed.
+# For one-off packages, create Brewfile.local (also gitignored).
+#
+# browsers     — firefox, zen
+# dev          — zed, figma, fork, beekeeper, lens, graphql client, databases
+# infra        — aws, cloudflare, watchman, qemu, whalebrew
+# docker       — orbstack
+# media        — ffmpeg, flac, sox, foobar2000, mpv
+# photo        — adobe creative cloud
+# audio-hw     — focusrite control
+# networking   — nmap, iperf3, telnet, unbound, testdisk
+# vpn          — tailscale, aws vpn, mullvad
+# social       — discord, signal, telegram, whatsapp
+# work         — notion, notion calendar, slack
+# gaming       — steam
+# terminals    — ghostty
+# ai           — claude, opencode
