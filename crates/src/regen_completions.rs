@@ -6,10 +6,13 @@ use std::thread;
 use std::time::Duration;
 
 pub fn regenerate_completions() -> Result<()> {
-    let home = std::env::var("HOME")?;
-    let completions_dir = format!("{}/.config/zsh/completions", home);
-    println!("Generating completions for zsh... to {}", completions_dir);
-    let _ = fs::remove_file(format!("{}/.zcompdump", home));
+    let home = crate::home_dir()?;
+    let completions_dir = home.join(".config/zsh/completions");
+    println!(
+        "Generating completions for zsh... to {}",
+        completions_dir.display()
+    );
+    let _ = fs::remove_file(home.join(".zcompdump"));
 
     let _ = fs::remove_dir_all(&completions_dir);
     fs::create_dir_all(&completions_dir)?;
@@ -52,7 +55,6 @@ pub fn regenerate_completions() -> Result<()> {
         "to-audio",
         "unfuck-xcode",
         "upd",
-        "update-ffmpeg",
         "url2base64",
         "vimv",
     ];
@@ -99,7 +101,7 @@ pub fn regenerate_completions() -> Result<()> {
         if let Ok(output) = Command::new("npm").arg("completion").output() {
             if output.status.success() && !output.stdout.is_empty() {
                 let npm_completion_file =
-                    format!("{}/.dotfiles/config/zsh/conf.d/npm-completion.zsh", home);
+                    home.join(".dotfiles/config/zsh/conf.d/npm-completion.zsh");
                 fs::write(&npm_completion_file, output.stdout)?;
                 println!("✓ npm (sourced completion)");
             }
@@ -124,7 +126,7 @@ pub fn regenerate_completions() -> Result<()> {
                 let (success, msg) = match Command::new(&cmd).args(args.as_slice()).output() {
                     Ok(output) => {
                         if output.status.success() && !output.stdout.is_empty() {
-                            match fs::write(format!("{}/_{}", completions_dir, cmd), output.stdout)
+                            match fs::write(completions_dir.join(format!("_{cmd}")), output.stdout)
                             {
                                 Ok(()) => (true, format!("✓ {}", cmd)),
                                 Err(e) => (false, format!("✗ {}: write failed: {}", cmd, e)),

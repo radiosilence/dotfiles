@@ -1,7 +1,6 @@
 use anyhow::{Context, Result};
 use std::fs;
 use std::os::unix::fs as unix_fs;
-use std::path::Path;
 use std::process::{Command, Stdio};
 
 use which::which;
@@ -28,15 +27,14 @@ const OUR_BINARIES: &[&str] = &[
     "to-audio",
     "unfuck-xcode",
     "upd",
-    "update-ffmpeg",
     "url2base64",
     "vimv",
 ];
 
 /// Remove stale binaries from ~/.cargo/bin that conflict with ~/.dotfiles/bin
 pub fn cleanup_stale_cargo_bins() -> Result<Vec<String>> {
-    let home = std::env::var("HOME").context("HOME not set")?;
-    let cargo_bin = Path::new(&home).join(".cargo/bin");
+    let home = crate::home_dir()?;
+    let cargo_bin = home.join(".cargo/bin");
 
     if !cargo_bin.exists() {
         return Ok(vec![]);
@@ -66,8 +64,7 @@ pub struct InstallSummary {
 }
 
 pub fn install_dotfiles() -> Result<InstallSummary> {
-    let home = std::env::var("HOME").context("HOME not set")?;
-    let home_path = Path::new(&home);
+    let home_path = crate::home_dir()?;
     let dotfiles = home_path.join(".dotfiles");
 
     let mut summary = InstallSummary {
