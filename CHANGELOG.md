@@ -14,6 +14,15 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Replaced tmux with WezTerm's unix domain multiplexer for local session persistence — no prefix key, native splits persist across restarts
 - Modernized `.wezterm.lua` to use `config_builder()` API
 
+**Crate audit & upd improvements:**
+
+- Comprehensive crate audit: deduplicated `home_dir()`, `available_cores()`, `print_results()` into shared lib — removed ~370 lines of duplication across binaries
+- Purged unused deps (`regex`, `toml_edit`, `scraper`), standardized all `env::var("HOME")` to `dirs::home_dir()` wrapper
+- Fixed `clean-dls` bug where `is_sample_file` missed multi-dot filenames like `track.sample.mp3`
+- Added missing `#[command(name)]` to 6 binaries, standardized `check_command` usage, fixed bare unwraps
+- Deduplicated `upd` auth checks into reusable `AuthStatus` struct
+- `upd` wrapper no longer rebuilds Rust binaries by default — pass `--rebuild` to pull dotfiles + recompile
+
 **Security & bootstrap hardening:**
 
 - Setup now configures TouchID for sudo via `/etc/pam.d/sudo_local` (survives macOS updates)
