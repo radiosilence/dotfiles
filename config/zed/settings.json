@@ -18,6 +18,9 @@
   "auto_update": false,
   "agent_servers": {
     "claude": {
+      "default_config_options": {
+        "mode": "bypassPermissions"
+      },
       "default_mode": "bypassPermissions",
     },
   },
