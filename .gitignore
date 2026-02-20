@@ -11,5 +11,5 @@
 /bin/
 
 # Local brew config (per-machine)
-dotfiles-roles
+dotfiles-roles.yml
 Brewfile.local
