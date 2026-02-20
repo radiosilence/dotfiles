@@ -1,4 +1,4 @@
-# Brewfile roles — copy to dotfiles-roles and uncomment what you need.
+# Brewfile roles — copy to ./dotfiles-roles and uncomment what you need.
 # One role per line. Core packages are always installed.
 # For one-off packages, create Brewfile.local (also gitignored).
 #
