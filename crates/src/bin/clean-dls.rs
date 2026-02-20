@@ -126,7 +126,7 @@ fn should_delete_file(filename: &str) -> bool {
 /// Check if a filename is a sample file using word boundary matching
 /// to avoid false positives like "resampled.flac" or "SamplerV2.wav"
 fn is_sample_file(lower: &str) -> bool {
-    let stem = lower.rsplit('.').next_back().unwrap_or(lower);
+    let stem = lower.rsplit_once('.').map_or(lower, |(s, _)| s);
     // Exact match or word-boundary: "sample", "sample-xxx", "xxx-sample", "xxx_sample_xxx"
     stem == "sample"
         || stem.starts_with("sample-")

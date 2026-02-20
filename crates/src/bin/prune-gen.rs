@@ -83,7 +83,7 @@ fn create_large_file(path: &std::path::Path, mb: usize) -> Result<()> {
         .args([
             "if=/dev/zero",
             &format!("of={}", path.display()),
-            "bs=1M",
+            "bs=1m",
             &format!("count={}", mb),
         ])
         .stdout(std::process::Stdio::null())

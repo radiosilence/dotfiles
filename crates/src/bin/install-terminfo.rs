@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
@@ -6,6 +6,7 @@ use std::io::{self, Write};
 use std::process::Command;
 
 #[derive(Parser)]
+#[command(name = "install-terminfo")]
 #[command(about = "Install terminfo to remote host via SSH")]
 #[command(args_conflicts_with_subcommands = true)]
 struct Args {
@@ -61,7 +62,11 @@ fn main() -> Result<()> {
         .stdin(std::process::Stdio::piped())
         .spawn()?;
 
-    child.stdin.as_mut().unwrap().write_all(&infocmp.stdout)?;
+    child
+        .stdin
+        .as_mut()
+        .context("failed to open stdin pipe")?
+        .write_all(&infocmp.stdout)?;
     let status = child.wait()?;
 
     if !status.success() {
