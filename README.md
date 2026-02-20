@@ -24,7 +24,7 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 
 - **Shell configs** - Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
 - **23 Rust binaries** - System maintenance, git workflow, media processing, file operations
-- **Tool management** - mise for runtimes, Brewfile for system packages
+- **Tool management** - mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
 - **Terminal configs** - tmux, WezTerm, ghostty, starship prompt
 
 ## Documentation
