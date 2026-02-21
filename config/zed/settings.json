@@ -18,6 +18,15 @@
   "auto_update": false,
   "agent_servers": {
     "claude": {
+      "favorite_config_option_values": {
+        "model": [
+          "opus[1m]"
+        ]
+      },
+      "default_config_options": {
+        "mode": "bypassPermissions",
+        "model": "default"
+      },
       "default_mode": "bypassPermissions",
     },
   },
