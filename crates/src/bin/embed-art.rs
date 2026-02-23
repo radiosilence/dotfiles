@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
@@ -7,9 +7,9 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use walkdir::WalkDir;
-use which::which;
 
 #[derive(Parser)]
+#[command(name = "embed-art")]
 #[command(about = "Embed artwork into FLAC files")]
 struct Args {
     #[command(subcommand)]
@@ -39,19 +39,15 @@ fn main() -> Result<()> {
 
     println!("\n/// {}\n", "EMBED-ART".bold());
 
-    // Check for required tools
-    if which("metaflac").is_err() {
-        anyhow::bail!("metaflac not found (brew install flac)");
-    }
-    if which("clean-exif").is_err() {
-        anyhow::bail!("clean-exif not found");
-    }
+    dotfiles_tools::check_command("metaflac")?;
+    dotfiles_tools::check_command("clean-exif")?;
 
     println!("  {} paths: {}", "→".bright_black(), args.paths.join(", "));
-    let cores = std::thread::available_parallelism()
-        .map(|n| n.get())
-        .unwrap_or(1);
-    println!("  {} cores: {}", "→".bright_black(), cores);
+    println!(
+        "  {} cores: {}",
+        "→".bright_black(),
+        dotfiles_tools::available_cores()
+    );
 
     // Clean EXIF data from images first
     println!("  {} cleaning exif data from images", "·".bright_black());
@@ -98,7 +94,9 @@ fn main() -> Result<()> {
 }
 
 fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
-    let dir = flac_file.parent().unwrap();
+    let dir = flac_file
+        .parent()
+        .context("FLAC file has no parent directory")?;
 
     // Find artwork files
     let front_cover = find_image(
@@ -125,7 +123,7 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
         println!(
             "  {} no artwork found: {}",
             "!".yellow(),
-            flac_file.file_name().unwrap().to_string_lossy()
+            flac_file.file_name().unwrap_or_default().to_string_lossy()
         );
         return Ok(());
     }
@@ -169,14 +167,14 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
         println!(
             "  {} {}",
             "✓".green(),
-            flac_file.file_name().unwrap().to_string_lossy()
+            flac_file.file_name().unwrap_or_default().to_string_lossy()
         );
     } else {
         std::fs::remove_file(&temp_file)?;
         println!(
             "  {} {}",
             "✗".red(),
-            flac_file.file_name().unwrap().to_string_lossy()
+            flac_file.file_name().unwrap_or_default().to_string_lossy()
         );
     }
 

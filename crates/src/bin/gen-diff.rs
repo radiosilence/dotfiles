@@ -6,6 +6,7 @@ use std::io;
 use std::process::Command;
 
 #[derive(Parser)]
+#[command(name = "gen-diff")]
 #[command(about = "Create a visual diff of two images using ImageMagick")]
 #[command(args_conflicts_with_subcommands = true)]
 struct Args {
@@ -37,11 +38,9 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "gen-diff".bold());
+    println!("\n/// {}\n", "GEN-DIFF".bold());
 
-    if which::which("convert").is_err() {
-        anyhow::bail!("ImageMagick not installed (brew install imagemagick)");
-    }
+    dotfiles_tools::check_command("convert")?;
 
     let image1 = args
         .image1

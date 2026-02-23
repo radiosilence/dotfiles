@@ -50,6 +50,9 @@ fn main() -> Result<()> {
 
     println!("\n/// {}\n", "FONT INSTALLER".bold());
 
+    dotfiles_tools::check_command("aria2c")?;
+    dotfiles_tools::check_command("unzip")?;
+
     let temp_dir = TempDir::new()?;
     let dest = temp_dir.path();
 
@@ -86,9 +89,7 @@ fn main() -> Result<()> {
 
     // Install fonts
     println!("  {} installing fonts", "·".bright_black());
-    let fonts_dir = dirs::home_dir()
-        .context("Could not determine home directory")?
-        .join("Library/Fonts");
+    let fonts_dir = dotfiles_tools::home_dir()?.join("Library/Fonts");
 
     std::fs::create_dir_all(&fonts_dir)?;
 

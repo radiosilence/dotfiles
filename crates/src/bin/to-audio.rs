@@ -58,12 +58,6 @@ enum Commands {
     },
 }
 
-fn available_cores() -> usize {
-    std::thread::available_parallelism()
-        .map(|n| n.get())
-        .unwrap_or(1)
-}
-
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -101,7 +95,11 @@ fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
 
     println!("  {} Files: {}", "→".bright_black(), files.len());
     println!("  {} Format: FLAC (lossless)", "→".bright_black());
-    println!("  {} Cores: {}", "→".bright_black(), available_cores());
+    println!(
+        "  {} Cores: {}",
+        "→".bright_black(),
+        dotfiles_tools::available_cores()
+    );
 
     if !keep {
         println!("  {} Original files will be deleted", "!".yellow());
@@ -129,7 +127,7 @@ fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
         Ok(())
     });
 
-    print_results(&results);
+    dotfiles_tools::print_results(&results, "Converted");
     Ok(())
 }
 
@@ -146,7 +144,11 @@ fn convert_opus(paths: &[PathBuf], bitrate: u32, keep: bool, dry_run: bool) -> R
 
     println!("  {} Files: {}", "→".bright_black(), files.len());
     println!("  {} Format: Opus @ {}kbps", "→".bright_black(), bitrate);
-    println!("  {} Cores: {}", "→".bright_black(), available_cores());
+    println!(
+        "  {} Cores: {}",
+        "→".bright_black(),
+        dotfiles_tools::available_cores()
+    );
 
     if !keep {
         println!("  {} Original files will be deleted", "!".yellow());
@@ -174,30 +176,8 @@ fn convert_opus(paths: &[PathBuf], bitrate: u32, keep: bool, dry_run: bool) -> R
         Ok(())
     });
 
-    print_results(&results);
+    dotfiles_tools::print_results(&results, "Converted");
     Ok(())
-}
-
-fn print_results(results: &[Result<PathBuf>]) {
-    let success_count = results.iter().filter(|r| r.is_ok()).count();
-    let error_count = results.len() - success_count;
-
-    if error_count > 0 {
-        println!(
-            "  {} Converted {} files ({} failed)",
-            "!".yellow(),
-            success_count,
-            error_count
-        );
-
-        for result in results.iter().filter(|r| r.is_err()) {
-            if let Err(e) = result {
-                println!("  {} {}", "✗".red(), e);
-            }
-        }
-    } else {
-        println!("  {} Converted {} files", "✓".green(), success_count);
-    }
 }
 
 #[cfg(test)]

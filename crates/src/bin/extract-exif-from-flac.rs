@@ -8,6 +8,7 @@ use std::process::Command;
 use tempfile::TempDir;
 
 #[derive(Parser)]
+#[command(name = "extract-exif-from-flac")]
 #[command(about = "Check if FLAC embedded artwork has been stripped of EXIF data")]
 #[command(args_conflicts_with_subcommands(true))]
 struct Args {
@@ -44,13 +45,8 @@ fn main() -> Result<()> {
         .flac_file
         .ok_or_else(|| anyhow!(Args::command().render_help()))?;
 
-    // Check for required tools
-    if which::which("metaflac").is_err() {
-        bail!("metaflac not found (brew install flac)");
-    }
-    if which::which("exiftool").is_err() {
-        bail!("exiftool not found (brew install exiftool)");
-    }
+    dotfiles_tools::check_command("metaflac")?;
+    dotfiles_tools::check_command("exiftool")?;
 
     let flac_path = Path::new(&flac_file);
 

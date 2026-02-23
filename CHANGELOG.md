@@ -14,6 +14,24 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Replaced tmux with WezTerm's unix domain multiplexer for local session persistence — no prefix key, native splits persist across restarts
 - Modernized `.wezterm.lua` to use `config_builder()` API
 
+**Brewfile roles:**
+
+- Split monolithic Brewfile into role-based system — `brewfiles.d/` with 15 role files (core, browsers, dev, infra, docker, media, photo, audio-hw, networking, vpn, social, work, gaming, terminals, ai)
+- `dotfiles-roles` file (gitignored, per-machine) controls which roles are active — defaults to core-only if missing
+- `dotfiles-roles.template` committed as reference for available roles
+- Taps moved into their respective role files instead of all loading globally
+- `Brewfile.local` support for machine-specific one-off packages (also gitignored)
+- Fixed duplicate ffmpeg entry, fixed rar (was `brew`, should be `cask`)
+
+**Crate audit & upd improvements:**
+
+- Comprehensive crate audit: deduplicated `home_dir()`, `available_cores()`, `print_results()` into shared lib — removed ~370 lines of duplication across binaries
+- Purged unused deps (`regex`, `toml_edit`, `scraper`), standardized all `env::var("HOME")` to `dirs::home_dir()` wrapper
+- Fixed `clean-dls` bug where `is_sample_file` missed multi-dot filenames like `track.sample.mp3`
+- Added missing `#[command(name)]` to 6 binaries, standardized `check_command` usage, fixed bare unwraps
+- Deduplicated `upd` auth checks into reusable `AuthStatus` struct
+- `upd` wrapper no longer rebuilds Rust binaries by default — pass `--rebuild` to pull dotfiles + recompile
+
 **Security & bootstrap hardening:**
 
 - Setup now configures TouchID for sudo via `/etc/pam.d/sudo_local` (survives macOS updates)

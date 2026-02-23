@@ -8,6 +8,7 @@ use std::process::Command;
 use tempfile::NamedTempFile;
 
 #[derive(Parser)]
+#[command(name = "vimv")]
 #[command(about = "Batch rename files using your $EDITOR")]
 struct Args {
     #[command(subcommand)]

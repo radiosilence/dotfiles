@@ -122,18 +122,12 @@ netstat2 = "0.11"
 nix = { version = "0.30", features = ["signal", "user"] }
 # Parallelism
 rayon = "1"
-# Regex
-regex = "1"
 # Async
 reqwest = { version = "0.13", default-features = false, features = [
   "blocking",
   "rustls"
 ] }
-# HTML parsing
-scraper = "0.23"
 tempfile = "3"
-# TOML
-toml_edit = "0.22"
 # File/Path utilities
 walkdir = "2"
 # Command detection

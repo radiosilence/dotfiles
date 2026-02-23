@@ -4,7 +4,6 @@ use clap_complete::{generate, Shell};
 use colored::Colorize;
 use std::fs;
 use std::io;
-use std::process::Command;
 use tempfile::TempDir;
 
 #[derive(Parser)]
@@ -79,19 +78,8 @@ fn main() -> Result<()> {
 }
 
 fn create_large_file(path: &std::path::Path, mb: usize) -> Result<()> {
-    let status = Command::new("dd")
-        .args([
-            "if=/dev/zero",
-            &format!("of={}", path.display()),
-            "bs=1M",
-            &format!("count={}", mb),
-        ])
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .status()?;
-    if !status.success() {
-        anyhow::bail!("dd failed for {}", path.display());
-    }
+    let f = std::fs::File::create(path)?;
+    f.set_len((mb as u64) * 1024 * 1024)?;
     Ok(())
 }
 

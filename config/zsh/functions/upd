@@ -1,16 +1,28 @@
 upd() {
   setopt LOCAL_OPTIONS ERR_RETURN
 
-  # Pull dotfiles
-  if [ -d ~/.dotfiles/.git ]; then
-    printf "\033[36m→ pulling ~/.dotfiles...\033[0m\n"
-    (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
+  local rebuild=0
+  local args=()
+  for arg in "$@"; do
+    if [[ "$arg" == "--rebuild" ]]; then
+      rebuild=1
+    else
+      args+=("$arg")
+    fi
+  done
+
+  if (( rebuild )); then
+    # Pull dotfiles
+    if [ -d ~/.dotfiles/.git ]; then
+      printf "\033[36m→ pulling ~/.dotfiles...\033[0m\n"
+      (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
+    fi
+
+    # Build and install binaries
+    printf "\033[35m→ building rust binaries...\033[0m\n"
+    cargo install --path ~/.dotfiles/crates --root ~/.dotfiles --quiet || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
   fi
 
-  # Build and install binaries
-  printf "\033[35m→ building rust binaries...\033[0m\n"
-  cargo install --path ~/.dotfiles/crates --root ~/.dotfiles --quiet || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
-
   # Run upd binary
-  ~/.dotfiles/bin/upd "$@" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
+  ~/.dotfiles/bin/upd "${args[@]}" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
 }

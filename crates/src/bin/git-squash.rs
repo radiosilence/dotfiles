@@ -42,7 +42,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "git-squash".bold());
+    println!("\n/// {}\n", "GIT-SQUASH".bold());
 
     let repo = Repository::open(".").context("Not a git repository")?;
 
