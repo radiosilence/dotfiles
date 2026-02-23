@@ -52,9 +52,11 @@ fn main() -> Result<()> {
 
     dotfiles_tools::install::install_dotfiles().context("installing dotfiles failed")?;
 
-    if is_macos {
-        check_auth_status(&mp)?;
-    }
+    let auth_status = if is_macos {
+        check_auth_status(&mp)?
+    } else {
+        AuthStatus::default()
+    };
 
     if is_macos {
         install_fonts(&mp)?;
@@ -133,7 +135,7 @@ fn main() -> Result<()> {
     }
     if has_mise {
         handles.push(create_task("mise", &mp, |pb| {
-            let home = std::env::var("HOME")?;
+            let home = dotfiles_tools::home_dir()?;
 
             run_cmd(
                 "mise:up",
@@ -151,7 +153,7 @@ fn main() -> Result<()> {
 
     // brew bundle may require sudo for casks, run it interactively before parallel tasks
     if has_brew {
-        let home = std::env::var("HOME")?;
+        let home = dotfiles_tools::home_dir()?;
         mp.println(format!(
             "{}",
             "/// .BREW BUNDLE (may prompt for sudo)".blue()
@@ -241,25 +243,11 @@ fn main() -> Result<()> {
 
     let mut manual_steps: Vec<String> = vec![];
 
-    let gh_ok = Command::new("gh")
-        .args(["auth", "status"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-        .map(|s| s.success())
-        .unwrap_or(false);
-    if !gh_ok && which("gh").is_ok() {
+    if !auth_status.gh_ok && which("gh").is_ok() {
         manual_steps.push("gh auth login".to_string());
     }
 
-    let op_ok = Command::new("op")
-        .args(["account", "list"])
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-        .map(|s| s.success())
-        .unwrap_or(false);
-    if !op_ok && which("op").is_ok() {
+    if !auth_status.op_ok && which("op").is_ok() {
         manual_steps.push(
             "1Password: Settings -> Developer -> CLI Integration, then 'op plugin init'"
                 .to_string(),
@@ -289,10 +277,16 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn check_auth_status(mp: &MultiProgress) -> Result<()> {
+#[derive(Default)]
+struct AuthStatus {
+    gh_ok: bool,
+    op_ok: bool,
+}
+
+fn check_auth_status(mp: &MultiProgress) -> Result<AuthStatus> {
     mp.println(format!("{}", "/// .AUTH STATUS".bold()))?;
 
-    let gh_authed = which("gh").is_ok()
+    let gh_ok = which("gh").is_ok()
         && Command::new("gh")
             .args(["auth", "status"])
             .stdout(Stdio::null())
@@ -302,7 +296,7 @@ fn check_auth_status(mp: &MultiProgress) -> Result<()> {
             .unwrap_or(false);
 
     if which("gh").is_ok() {
-        if gh_authed {
+        if gh_ok {
             mp.println(format!("  {} gh", "✓".green()))?;
         } else {
             mp.println(format!("  {} gh not authenticated", "!".yellow()))?;
@@ -310,7 +304,7 @@ fn check_auth_status(mp: &MultiProgress) -> Result<()> {
         }
     }
 
-    let op_integrated = which("op").is_ok()
+    let op_ok = which("op").is_ok()
         && Command::new("op")
             .args(["account", "list"])
             .stdout(Stdio::null())
@@ -320,7 +314,7 @@ fn check_auth_status(mp: &MultiProgress) -> Result<()> {
             .unwrap_or(false);
 
     if which("op").is_ok() {
-        if op_integrated {
+        if op_ok {
             mp.println(format!("  {} 1password cli", "✓".green()))?;
         } else {
             mp.println(format!("  {} 1password cli not integrated", "!".yellow()))?;
@@ -330,7 +324,7 @@ fn check_auth_status(mp: &MultiProgress) -> Result<()> {
     }
 
     mp.println("")?;
-    Ok(())
+    Ok(AuthStatus { gh_ok, op_ok })
 }
 
 fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()> {
@@ -405,9 +399,7 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
         ),
     ];
 
-    let fonts_dir = dirs::home_dir()
-        .ok_or_else(|| anyhow::anyhow!("no home dir"))?
-        .join("Library/Fonts");
+    let fonts_dir = dotfiles_tools::home_dir()?.join("Library/Fonts");
     std::fs::create_dir_all(&fonts_dir)?;
 
     let missing: Vec<_> = fonts

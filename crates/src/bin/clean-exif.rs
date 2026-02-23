@@ -84,11 +84,12 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    let cores = std::thread::available_parallelism()
-        .map(|n| n.get())
-        .unwrap_or(1);
     println!("  {} Found: {} images", "→".bright_black(), files.len());
-    println!("  {} Cores: {}", "→".bright_black(), cores);
+    println!(
+        "  {} Cores: {}",
+        "→".bright_black(),
+        dotfiles_tools::available_cores()
+    );
     println!("  {} Stripping: all EXIF metadata", "→".bright_black());
     println!();
 
@@ -108,25 +109,8 @@ fn main() -> Result<()> {
         Ok(())
     });
 
-    let success_count = results.iter().filter(|r| r.is_ok()).count();
-    let error_count = results.len() - success_count;
-
     println!();
-    if error_count > 0 {
-        println!(
-            "  {} Cleaned {} files ({} failed)",
-            "!".yellow(),
-            success_count,
-            error_count
-        );
-        for result in results.iter().filter(|r| r.is_err()) {
-            if let Err(e) = result {
-                println!("  {} {}", "✗".red(), e);
-            }
-        }
-    } else {
-        println!("  {} Cleaned {} images", "✓".green(), success_count);
-    }
+    dotfiles_tools::print_results(&results, "Cleaned");
 
     Ok(())
 }

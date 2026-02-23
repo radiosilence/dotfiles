@@ -10,6 +10,7 @@ use std::process::Command;
 use tempfile::TempDir;
 
 #[derive(Parser)]
+#[command(name = "parallel-dl-extract")]
 #[command(about = "Parallel download and extract URLs using aria2c")]
 struct Args {
     #[command(subcommand)]
@@ -97,7 +98,9 @@ fn main() -> Result<()> {
 
     for entry in zips {
         let zip_path = entry.path();
-        let parent = zip_path.parent().unwrap();
+        let Some(parent) = zip_path.parent() else {
+            continue;
+        };
 
         Command::new("unzip")
             .arg("-q")
