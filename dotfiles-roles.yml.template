@@ -16,3 +16,4 @@ roles:
   # - gaming       # steam
   # - terminals    # ghostty
   # - ai           # claude, opencode
+  # - tailscale    # tailscale
