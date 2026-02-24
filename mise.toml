@@ -1,8 +1,4 @@
 [tools]
-elixir = "latest"
-erlang = "latest"
-"github:casey/just" = "latest"
-node = "24"
 
 [tasks.reinstall-bins]
 description = "Build and install rust binaries from crates/"
