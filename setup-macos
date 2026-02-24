@@ -92,24 +92,20 @@ fi
 printf "\n\033[1m/// .BREW BUNDLE\033[0m\n\n"
 brew bundle --file="$DOTFILES_DIR/Brewfile" --quiet || true
 
-# --- mise + rust ---
+# --- mise tools ---
 if command -v mise >/dev/null 2>&1; then
-  printf "\n\033[1m/// .RUST (via mise)\033[0m\n\n"
+  printf "\n\033[1m/// .MISE TOOLS\033[0m\n\n"
   export PATH="$HOME/.local/share/mise/shims:$PATH"
-  if ! command -v rustc >/dev/null 2>&1 || ! command -v cargo >/dev/null 2>&1; then
-    printf "\033[33m  -> mise install rust...\033[0m\n"
-    mise install rust
-    printf "\033[32m  ok rust\033[0m\n"
-  else
-    printf "\033[32m  ok rust (already installed)\033[0m\n"
-  fi
+  printf "\033[33m  -> mise install...\033[0m\n"
+  mise install
+  printf "\033[32m  ok mise tools\033[0m\n"
 else
   printf "\033[31m  !! mise not found after brew bundle - check Brewfile\033[0m\n"
   exit 1
 fi
 
 printf "\n\033[1m/// .BUILD\033[0m\n\n"
-"$DOTFILES_DIR/reinstall-bins"
+just --justfile "$DOTFILES_DIR/justfile" reinstall-bins
 
 # --- Run upd ---
 printf "\n"
