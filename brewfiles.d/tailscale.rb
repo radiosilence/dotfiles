@@ -1,0 +1,1 @@
+cask 'tailscale-app', greedy: true
