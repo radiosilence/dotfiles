@@ -1,4 +1,5 @@
 [tools]
 elixir = "latest"
 erlang = "latest"
+"github:casey/just" = "latest"
 node = "24"
