@@ -105,7 +105,7 @@ else
 fi
 
 printf "\n\033[1m/// .BUILD\033[0m\n\n"
-just --justfile "$DOTFILES_DIR/justfile" reinstall-bins
+mise run reinstall-bins
 
 # --- Run upd ---
 printf "\n"

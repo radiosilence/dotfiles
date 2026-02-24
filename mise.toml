@@ -3,3 +3,25 @@ elixir = "latest"
 erlang = "latest"
 "github:casey/just" = "latest"
 node = "24"
+
+[tasks.reinstall-bins]
+description = "Build and install rust binaries from crates/"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+if ! command -v cargo >/dev/null 2>&1; then
+    printf "\033[31m  !! cargo not found\033[0m\n"
+    exit 1
+fi
+cd "{{config_root}}/crates"
+bins=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[].targets[] | select(.kind[] == "bin") | .name')
+for bin in $bins; do
+    if [ -f "$HOME/.cargo/bin/$bin" ]; then
+        rm "$HOME/.cargo/bin/$bin"
+        printf "  removed stale %s from ~/.cargo/bin\n" "$bin"
+    fi
+done
+printf "\033[33m  -> building rust binaries...\033[0m\n"
+cargo install --path . --bins --root "{{config_root}}"
+printf "\033[32m  ok binaries -> ~/.dotfiles/bin\033[0m\n"
+'''
