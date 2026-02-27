@@ -5,6 +5,25 @@ skip_global_compinit=1
 #    ><(((º>   I loved Fish shell, but Zsh is my new home   <º)))><
 #              Thanks for all the fish-y memories! 🐟→🚀
 
+# Deduplicate PATH and FPATH
+typeset -U path fpath
+
+# Cache eval output for faster startup
+# Usage: _cached_eval "name" "command to generate init script"
+# Regenerate with: rm ~/.cache/zsh/eval/<name>.zsh
+_cached_eval() {
+  local name=$1 cmd=$2
+  local cache_dir=~/.cache/zsh/eval
+  local cache_file="$cache_dir/$name.zsh"
+
+  [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
+
+  if [[ ! -f $cache_file ]]; then
+    eval "$cmd" > "$cache_file"
+  fi
+  source "$cache_file"
+}
+
 # Zsh options for performance
 setopt NO_BEEP
 setopt AUTO_CD

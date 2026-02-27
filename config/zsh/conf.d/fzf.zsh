@@ -1,4 +1,4 @@
 # FZF configuration
 command -v fzf >/dev/null || return
 
-eval "$(fzf --zsh)"
+_cached_eval "fzf" "fzf --zsh"
