@@ -1,5 +1,7 @@
 ### Claude Code Configuration
 
+USE THE FUCKING AGENTS FOR FUCKS SAKES I DONT WANT TO HAVE TO REPEAT MYSELF
+
 ### Tooling
 
 - Always run the configured formatter (biome/prettier/mix format) after doing any work.
@@ -59,4 +61,4 @@ If the user references something that seems to need background context, check `~
 #### GitHub Workflow
 
 - Always use the gh client when handling github links/runs/etc
-- **Push before slow checks:** When committing, push to CI immediately after commits pass lint-staged. Run typecheck/tests locally *after* pushing (in background). CI will catch issues in parallel. If local checks find problems, fix and push again — the new push cancels the previous CI run.
+- **Push before slow checks:** When committing, push to CI immediately after commits pass lint-staged. Run typecheck/tests locally _after_ pushing (in background). CI will catch issues in parallel. If local checks find problems, fix and push again — the new push cancels the previous CI run.
