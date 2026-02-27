@@ -1,7 +1,7 @@
 # Mise (runtime version manager)
 command -v mise >/dev/null || return
 
-eval "$(mise activate zsh)"
+_cached_eval "mise" "mise activate zsh"
 
 alias m='mise'
 alias mi='mise i'
