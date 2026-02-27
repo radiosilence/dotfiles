@@ -1,7 +1,7 @@
 # Bun configuration
 command -v bun >/dev/null || return
 
-[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
+[ -s ~/.bun/_bun ] && source ~/.bun/_bun
 
 alias b='bun'
 alias bi='bun install'

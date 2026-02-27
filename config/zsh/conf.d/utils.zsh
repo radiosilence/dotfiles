@@ -15,5 +15,3 @@ alias listening='lsof -iTCP -sTCP:LISTEN -P -n'
 # Grep processes with tree view
 psg() { procs --tree | grep -i $1 }
 
-# Pretty git log
-alias glog='git log --oneline --graph --decorate -20'

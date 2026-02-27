@@ -17,7 +17,7 @@ family = "GeistMono Nerd Font"
 style = "Italic"
 
 [font.bold_italic]
-family = "Geist Mono"
+family = "GeistMono Nerd Font"
 style = "Bold Italic"
 
 # Window configuration
@@ -89,11 +89,6 @@ hide_when_typing = false
 program = "/opt/homebrew/bin/zsh"
 
 # Key bindings (emulating some WezTerm functionality)
-[[keyboard.bindings]]
-key = "W"
-mods = "Command"
-action = "Quit"
-
 [[keyboard.bindings]]
 key = "D"
 mods = "Command"

@@ -64,13 +64,16 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 
 All binaries support `--help` and have shell completions.
 
+## Architecture Notes
+
+**Git signing** - Commit signing is configured globally (`git.d/sign.conf`) via 1Password SSH agent. Tag signing and `user.signingkey` are set in the local git config per-machine since keys are machine-specific.
+
+**Tool duplication** - Some tools exist in both brew and mise intentionally:
+- `sheldon` — brew for Intel (no arm64 binary on their releases), mise for Apple Silicon
+- `uv` — brew only (system-wide Python tooling, not per-project)
+
+**Lefthook** - Uses `mise x --` to run tools. The `zsh -i -c` convention in CLAUDE.md is specifically for Claude Code agent sessions (full shell env), not for git hooks.
+
 ## Related
 
 - [browser-schedule](https://github.com/radiosilence/browser-schedule) - Time-based browser switching for macOS
-
-## Docker
-
-```sh
-docker build -t dotfiles .
-docker run -it dotfiles zsh
-```

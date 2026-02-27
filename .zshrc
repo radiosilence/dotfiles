@@ -7,5 +7,3 @@ done
 
 # Zed MCP secrets
 [[ -f ~/.config/zed/.secrets ]] && source ~/.config/zed/.secrets
-
-source /Users/jc/.config/broot/launcher/bash/br

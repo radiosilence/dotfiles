@@ -109,7 +109,6 @@ ggpnv() {
 }
 
 # More aliases
-alias ggpur='ggu'
 alias ggpull='git pull origin $(git_current_branch)'
 alias ggpush='git push origin $(git_current_branch)'
 alias ggsup='git branch --set-upstream-to=origin/$(git_current_branch)'
@@ -183,11 +182,9 @@ alias grv='git remote -v'
 
 # Status/Show
 alias gs='git status -sb'
-alias gsd='git svn dcommit'
 alias gsh='git show'
 alias gsi='git submodule init'
 alias gsps='git show --pretty=short --show-signature'
-alias gsr='git svn rebase'
 alias gst='git status'
 
 # Stash

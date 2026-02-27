@@ -33,7 +33,6 @@ protobuf = "latest"  # Protocol buffers
 "github:bufbuild/buf" = "latest"  # Protobuf toolchain
 "github:casey/just" = "latest"  # Task runner (crabs)
 "github:go-task/task" = "latest"  # Task runner (gopher)
-"github:astral-sh/uv" = "latest"  # Fast Python package installer
 "github:tamasfe/taplo" = "latest"  # TOML formatter
 # Code quality
 "github:koalaman/shellcheck" = "latest"  # Shell script linter
