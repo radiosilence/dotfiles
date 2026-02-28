@@ -26,6 +26,10 @@ github = "zsh-users/zsh-completions"
 [plugins.fzf-tab]
 github = "Aloxaf/fzf-tab"
 
+# Claude Code CLI completions
+[plugins.claude-code-completion]
+github = "1160054/claude-code-zsh-completion"
+
 # Search through command history with up/down arrows
 # Use ↑/↓ to search history entries that match your current partial command
 [plugins.zsh-history-substring-search]
