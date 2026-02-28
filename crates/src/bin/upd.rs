@@ -49,6 +49,7 @@ fn main() -> Result<()> {
     let has_apt = which("apt-get").is_ok();
     let has_dnf = which("dnf").is_ok();
     let has_mise = which("mise").is_ok();
+    let has_claude = which("claude").is_ok();
 
     dotfiles_tools::install::install_dotfiles().context("installing dotfiles failed")?;
 
@@ -146,6 +147,17 @@ fn main() -> Result<()> {
                 "mise:reshim",
                 pb,
                 Command::new("mise").arg("reshim").current_dir(&home),
+            )?;
+            Ok(())
+        }));
+    }
+
+    if has_claude {
+        handles.push(create_task("claude", &mp, |pb| {
+            run_cmd(
+                "claude:update",
+                pb,
+                Command::new("claude").arg("--update"),
             )?;
             Ok(())
         }));

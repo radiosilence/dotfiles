@@ -104,6 +104,15 @@ else
   exit 1
 fi
 
+# --- Claude Code ---
+if command -v claude >/dev/null 2>&1; then
+  printf "\033[32m  ok claude code\033[0m\n"
+else
+  printf "\033[33m  -> installing claude code...\033[0m\n"
+  curl -fsSL https://claude.ai/install.sh | bash
+  printf "\033[32m  ok claude code installed\033[0m\n"
+fi
+
 printf "\n\033[1m/// .BUILD\033[0m\n\n"
 mise run reinstall-bins
 
