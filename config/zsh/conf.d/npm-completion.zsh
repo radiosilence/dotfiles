@@ -1,5 +1,3 @@
-command -v npm >/dev/null || return
-
 ###-begin-npm-completion-###
 #
 # npm command completion script

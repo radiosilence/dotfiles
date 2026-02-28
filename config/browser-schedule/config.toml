@@ -1,19 +1,15 @@
 [browsers]
-work = "Firefox"
 personal = "Zen"
+work = "Firefox"
 
 [urls]
-personal = ["reddit.com", "news.ycombinator.com"]
-work = ["atlassian.net", "meet.google.com", "figma.com", "mail.google.com"]
-
-[work_time]
-start = "9:00"
-end = "18:00"
-# Note: Inverse time ranges for night shifts are supported (e.g., start = "18:00", end = "9:00")
+personal = [ "reddit.com", "news.ycombinator.com" ]
+work = [ "atlassian.net", "meet.google.com", "figma.com", "mail.google.com" ]
 
 [work_days]
-start = "Mon"
 end = "Fri"
+start = "Mon"
 
-# [log]
-# enabled = false
+[work_time]
+end = "18:00"
+start = "9:30"
