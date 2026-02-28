@@ -91,8 +91,19 @@ pub fn regenerate_completions() -> Result<()> {
     if which::which("rg").is_ok() {
         tasks.push(("rg", vec!["--generate", "complete-zsh"]));
     }
-    if which::which("lsd").is_ok() {
-        tasks.push(("lsd", vec!["--generate-completion", "zsh"]));
+    // lsd ships pre-built completions (no runtime generation since 1.x)
+    if let Ok(lsd_path) = which::which("lsd") {
+        let lsd_completion = lsd_path
+            .parent()
+            .unwrap_or(lsd_path.as_path())
+            .join("autocomplete/_lsd");
+        if lsd_completion.exists() {
+            if let Err(e) = fs::copy(&lsd_completion, completions_dir.join("_lsd")) {
+                println!("✗ lsd: copy failed: {}", e);
+            } else {
+                println!("✓ lsd (pre-built)");
+            }
+        }
     }
 
     // npm is special - outputs a sourceable script, not a compdef
