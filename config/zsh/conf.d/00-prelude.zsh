@@ -57,8 +57,14 @@ if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
 fi
 
 # Load completions
+# compinit -C skips the security audit (~10ms vs ~340ms for full compinit).
+# Run full compinit only when .zcompdump is missing or older than 24 hours.
 autoload -Uz compinit
-compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 
 # Force autoload of custom completions
 if [[ -d ~/.config/zsh/completions ]]; then
