@@ -25,4 +25,11 @@ upd() {
 
   # Run upd binary
   ~/.dotfiles/bin/upd "${args[@]}" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
+
+  # Clear zsh caches so next shell rebuilds with updated tools
+  printf "\033[36m→ clearing zsh caches...\033[0m\n"
+  rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
+  rm -f ~/.config/zsh/conf.d/*.zwc
+  rm -f ~/.zcompdump
+  printf "\033[32m✓\033[0m zsh caches cleared (next shell will rebuild)\n"
 }
