@@ -3,3 +3,4 @@ koan.db
 koan.db-wal
 koan.db-shm
 cache/
+*.log
