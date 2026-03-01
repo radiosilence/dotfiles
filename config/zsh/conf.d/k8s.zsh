@@ -3,7 +3,7 @@ command -v kubecolor >/dev/null || return
 command -v kubectl >/dev/null || return
 
 alias kubectl='kubecolor'
-compdef kubecolor=kubectl
+compdef kubecolor=kubectl 2>/dev/null
 
 # Simple aliases - zsh inherits kubectl completions automatically
 alias klg='kubectl logs -f'
