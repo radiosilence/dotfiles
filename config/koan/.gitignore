@@ -1,0 +1,5 @@
+config.local.toml
+koan.db
+koan.db-wal
+koan.db-shm
+cache/
