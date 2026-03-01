@@ -13,3 +13,6 @@
 # Local brew config (per-machine)
 dotfiles-roles.yml
 Brewfile.local
+
+# Zsh compiled files
+*.zwc
