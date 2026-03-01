@@ -52,15 +52,21 @@ if [[ -d ~/.config/zsh/completions ]]; then
 fi
 
 # Add brew completions (includes proper _git that sources git-completion.bash)
-if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
-  fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
-fi
+# /opt/homebrew for Apple Silicon, /usr/local for Intel Macs
+for _brew_zsh in /opt/homebrew/share/zsh/site-functions /usr/local/share/zsh/site-functions; do
+  if [[ -d $_brew_zsh ]]; then
+    fpath=($_brew_zsh $fpath)
+    break
+  fi
+done
+unset _brew_zsh
 
 # Load completions
 # compinit -C skips the security audit (~10ms vs ~340ms for full compinit).
-# Run full compinit only when .zcompdump is missing or older than 24 hours.
+# Rebuild when: dump missing, older than 24h, or completions dir was modified since dump.
 autoload -Uz compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+if [[ -n ~/.zcompdump(#qN.mh+24) ]] || \
+   [[ -d ~/.config/zsh/completions && ~/.config/zsh/completions -nt ~/.zcompdump ]]; then
   compinit
 else
   compinit -C
