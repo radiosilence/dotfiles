@@ -1,0 +1,17 @@
+[library]
+watch = true
+
+[playback]
+exclusive_mode = false
+software_volume = false
+replaygain = "off"
+
+[organize]
+default = "default"
+
+[organize.patterns]
+default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$left(%date%,4)')' ])%album% '['%codec%']'/[$num(%discnumber%,2)][%tracknumber%. ][%artist% - ]%title%"
+
+[remote]
+enabled = true
+transcode_quality = "original"
