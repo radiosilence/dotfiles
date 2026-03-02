@@ -9,8 +9,15 @@ USE THE FUCKING AGENTS FOR FUCKS SAKES I DONT WANT TO HAVE TO REPEAT MYSELF
 
 #### Shell Commands
 
-- Always run bash commands through `zsh -i -c '...'` to get access to aliases, mise tools, and full environment.
-- This means mise-managed tools are already in PATH - no need for `mise x`.
+- Do NOT use `zsh -i` — it causes `zle` errors in non-TTY contexts.
+- Use `mise x -- <command>` to run commands that need mise-managed tools, e.g.:
+  - JS/TS: `node`, `bun`, `deno`, `prettier`, `jest`
+  - Elixir: `mix`, `elixir`, `iex`
+  - Python: `python`, `pipx`
+  - Go: `go`, `golangci-lint`
+  - Rust: `rust`, `cargo`
+  - Infra: `kubectl`, `terraform`, `pulumi`, `ansible`
+  - Tools: `jq`, `yq`, `rg`, `fd`, `bat`, `just`, `task`, `shfmt`, `shellcheck`, `buf`
 
 #### Available Custom Tools
 
