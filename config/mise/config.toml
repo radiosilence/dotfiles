@@ -90,6 +90,7 @@ terraform-ls = "latest"  # Terraform LSP
 "cargo:graphql_client_cli" = "latest"
 opencode = "latest"
 "github:radiosilence/codeowners-lsp" = "latest"
+"github:radiosilence/koan" = "latest"
 
 [settings]
 paranoid = false
