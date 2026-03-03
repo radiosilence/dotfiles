@@ -71,6 +71,23 @@ fi
 printf "\n\033[1m/// .BREW BUNDLE\033[0m\n\n"
 brew bundle --file="$DOTFILES_DIR/Brewfile" --quiet || true
 
+# --- GitHub CLI auth (needed for mise to install private/github tools) ---
+if (( $+commands[gh] )); then
+  if ! gh auth status &>/dev/null; then
+    printf "\n\033[1m/// .GITHUB AUTH\033[0m\n\n"
+    printf "\033[33m  -> gh is not authenticated. open a new tab and run:\033[0m\n"
+    printf "\033[36m     gh auth login\033[0m\n"
+    printf "\033[33m  -> press enter when done...\033[0m"
+    read -r
+  fi
+  if gh auth status &>/dev/null; then
+    printf "\033[32m  ok gh authenticated\033[0m\n"
+    export GITHUB_TOKEN="$(gh auth token)"
+  else
+    printf "\033[33m  !! gh still not authenticated, mise install may fail for github tools\033[0m\n"
+  fi
+fi
+
 # --- mise tools ---
 if (( $+commands[mise] )); then
   printf "\n\033[1m/// .MISE TOOLS\033[0m\n\n"
