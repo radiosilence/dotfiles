@@ -5,13 +5,14 @@ Personal dev environment. macOS, zsh, Rust tooling.
 ## Setup
 
 ```sh
+xcode-select --install  # needed for git, compilers, etc.
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/setup-macos
 ```
 
 The `setup-macos` script handles the full bootstrap chain:
 
-1. Xcode Command Line Tools (headless install via softwareupdate)
+1. Copies `dotfiles.toml.template` → `dotfiles.toml` (prompts to customize)
 2. Rosetta 2 (Apple Silicon only)
 3. Homebrew + `brew bundle`
 4. Rust via mise (no rustup needed)
@@ -63,6 +64,16 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 - `clean-dls` - Remove scene release garbage
 
 All binaries support `--help` and have shell completions.
+
+## Configuration
+
+`dotfiles.toml.template` is the tracked default config. On first setup, it's copied to `dotfiles.toml` (gitignored) so you can customize without dirtying the repo.
+
+The config drives:
+- **ZSH completions** (`[[completions.tools]]`) — add a tool's completions by appending a few lines of TOML instead of editing Rust source. Supports custom commands, pre-built completions, and sourced scripts.
+- **Fonts** (`[[fonts]]`) — macOS font auto-installation. `upd` downloads and installs any fonts not already present.
+
+The shared `config` module (`crates/src/config.rs`) loads the TOML at runtime, falling back to the template if no local copy exists.
 
 ## Architecture Notes
 

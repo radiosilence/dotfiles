@@ -1,12 +1,27 @@
 #!/bin/sh
 # Bootstrap script - run this on a fresh system
-# Usage: git clone https://github.com/radiosilence/dotfiles ~/.dotfiles && ~/.dotfiles/setup
+# Prerequisites: xcode-select --install
+# Usage: git clone https://github.com/radiosilence/dotfiles ~/.dotfiles && ~/.dotfiles/setup-macos
 
 set -e
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 printf "\033[1m/// .DOTFILES BOOTSTRAP\033[0m\n\n"
+
+# --- dotfiles.toml (first, so config is available for everything else) ---
+if [ ! -f "$DOTFILES_DIR/dotfiles.toml" ]; then
+  cp "$DOTFILES_DIR/dotfiles.toml.template" "$DOTFILES_DIR/dotfiles.toml"
+  printf "\033[32m  ok dotfiles.toml created from template\033[0m\n"
+  printf "\033[33m  -> edit %s/dotfiles.toml to customize fonts, completions, etc.\033[0m\n" "$DOTFILES_DIR"
+  printf "     press enter to continue, or 'e' to edit now: "
+  read answer
+  if [ "$answer" = "e" ] || [ "$answer" = "E" ]; then
+    "${EDITOR:-vim}" "$DOTFILES_DIR/dotfiles.toml"
+  fi
+else
+  printf "\033[32m  ok dotfiles.toml\033[0m\n"
+fi
 
 # --- Sudo setup (first, so the session carries through the rest) ---
 SUDO_LOCAL="/etc/pam.d/sudo_local"
@@ -25,32 +40,6 @@ else
   printf "\033[33m  -> setting sudo timeout to 30 min...\033[0m\n"
   sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
   printf "\033[32m  ok sudo timeout\033[0m\n"
-fi
-
-# --- Xcode Command Line Tools ---
-if xcode-select -p >/dev/null 2>&1; then
-  printf "\033[32m  ok xcode CLT\033[0m\n"
-else
-  printf "\033[33m  -> installing xcode command line tools...\033[0m\n"
-  # Sentinel file makes CLT appear in softwareupdate list
-  touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-  CLT_LABEL=$(/usr/sbin/softwareupdate -l 2>&1 |
-    grep -B 1 -E 'Command Line Tools' |
-    awk -F'*' '/^ *\*/ {print $2}' |
-    sed -e 's/^ *Label: //' -e 's/^ *//' |
-    sort -V |
-    tail -n1)
-  if [ -n "$CLT_LABEL" ]; then
-    /usr/sbin/softwareupdate -i "$CLT_LABEL" --verbose
-    /usr/bin/xcode-select --switch /Library/Developer/CommandLineTools
-  else
-    rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-    printf "\033[31m  !! could not find CLT in softwareupdate\033[0m\n"
-    printf "     download manually: https://developer.apple.com/download/all/\n"
-    exit 1
-  fi
-  rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-  printf "\033[32m  ok xcode CLT installed\033[0m\n"
 fi
 
 # --- Rosetta 2 (Apple Silicon only) ---

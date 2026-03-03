@@ -1,0 +1,198 @@
+# Dotfiles configuration
+#
+# Copy to dotfiles.toml to customize (gitignored).
+# setup-macos does this automatically; template is the tracked default.
+#
+# [completions.tools] — ZSH completion generation
+#   Default: runs `<name> completion zsh`, writes to `_<name>`
+#   Override `command` for tools with different invocations.
+#   `type` controls special handling:
+#     - "prebuilt": copies from `source` (relative to binary location)
+#     - "sourced": runs command, writes to `output` (relative to ~/.dotfiles)
+#
+# [[fonts]] — macOS font auto-installation (checked by upd)
+
+# --- External tools ---
+
+[[completions.tools]]
+name = "argocd"
+
+[[completions.tools]]
+name = "docker"
+
+[[completions.tools]]
+name = "helm"
+
+[[completions.tools]]
+name = "k9s"
+
+[[completions.tools]]
+name = "kubectl"
+
+[[completions.tools]]
+name = "lefthook"
+
+[[completions.tools]]
+name = "nano-web"
+
+[[completions.tools]]
+name = "op"
+
+[[completions.tools]]
+name = "orbctl"
+
+[[completions.tools]]
+name = "pulumi"
+
+[[completions.tools]]
+name = "tilt"
+
+[[completions.tools]]
+name = "turso"
+
+[[completions.tools]]
+name = "yq"
+
+[[completions.tools]]
+name = "fcloud"
+
+[[completions.tools]]
+name = "houston"
+
+[[completions.tools]]
+name = "gh"
+command = ["gh", "completion", "-s", "zsh"]
+
+[[completions.tools]]
+name = "idiotify"
+command = ["idiotify", "completions", "zsh"]
+
+[[completions.tools]]
+name = "koan"
+command = ["koan", "completions", "zsh"]
+
+[[completions.tools]]
+name = "fastmail-cli"
+command = ["fastmail-cli", "completions", "zsh"]
+
+[[completions.tools]]
+name = "codeowners-cli"
+command = ["codeowners-cli", "completions", "zsh"]
+
+[[completions.tools]]
+name = "task"
+command = ["task", "--completion", "zsh"]
+
+[[completions.tools]]
+name = "just"
+command = ["just", "--completions", "zsh"]
+
+[[completions.tools]]
+name = "aws-vault"
+command = ["aws-vault", "--completion-script-zsh"]
+
+[[completions.tools]]
+name = "rg"
+command = ["rg", "--generate", "complete-zsh"]
+
+[[completions.tools]]
+name = "pup"
+command = ["pup", "completions", "zsh"]
+
+[[completions.tools]]
+name = "lsd"
+type = "prebuilt"
+source = "autocomplete/_lsd"
+
+[[completions.tools]]
+name = "npm"
+type = "sourced"
+output = "config/zsh/conf.d/npm-completion.zsh"
+command = ["npm", "completion"]
+
+# --- Our binaries ---
+
+[[completions.tools]]
+name = "clean-dls"
+
+[[completions.tools]]
+name = "clean-exif"
+
+[[completions.tools]]
+name = "echo-to-file"
+
+[[completions.tools]]
+name = "embed-art"
+
+[[completions.tools]]
+name = "extract-exif-from-flac"
+
+[[completions.tools]]
+name = "gen-diff"
+
+[[completions.tools]]
+name = "git-squash"
+
+[[completions.tools]]
+name = "git-sync"
+
+[[completions.tools]]
+name = "git-trigger"
+
+[[completions.tools]]
+name = "imp"
+
+[[completions.tools]]
+name = "install-font-macos"
+
+[[completions.tools]]
+name = "install-terminfo"
+
+[[completions.tools]]
+name = "kill-port"
+
+[[completions.tools]]
+name = "parallel-dl-extract"
+
+[[completions.tools]]
+name = "prune"
+
+[[completions.tools]]
+name = "prune-gen"
+
+[[completions.tools]]
+name = "to-audio"
+
+[[completions.tools]]
+name = "unfuck-xcode"
+
+[[completions.tools]]
+name = "upd"
+
+[[completions.tools]]
+name = "url2base64"
+
+[[completions.tools]]
+name = "vimv"
+
+# --- Fonts (macOS) ---
+
+[[fonts]]
+name = "Hack Ligatured"
+url = "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip"
+marker_file = "HackNerdFontJBMLigatured-Regular.ttf"
+
+[[fonts]]
+name = "Geist"
+url = "https://github.com/vercel/geist-font/releases/download/1.6.0/Geist-1.6.0.zip"
+marker_file = "Geist-Regular.otf"
+
+[[fonts]]
+name = "Geist Mono"
+url = "https://github.com/vercel/geist-font/releases/download/1.6.0/GeistMono-1.6.0.zip"
+marker_file = "GeistMono-Regular.otf"
+
+[[fonts]]
+name = "Geist Mono Nerd Font"
+url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip"
+marker_file = "GeistMonoNerdFont-Regular.otf"
