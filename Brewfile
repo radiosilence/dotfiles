@@ -17,8 +17,9 @@ end
 
 cask_args require_sha: true
 
-# Taps used by core
+# Taps
 tap 'buo/cask-upgrade'
+tap 'radiosilence/browser-schedule'
 
 # Core — always loaded
 brewfiles_dir = File.join(dotfiles_dir, 'brewfiles.d')
