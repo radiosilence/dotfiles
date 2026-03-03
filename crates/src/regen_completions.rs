@@ -19,13 +19,28 @@ pub fn regenerate_completions() -> Result<()> {
     );
 
     let _ = fs::remove_file(home.join(".zcompdump"));
-    let _ = fs::remove_dir_all(&completions_dir);
-    fs::create_dir_all(&completions_dir)?;
+
+    // Ensure completions dir exists (create parents if needed, e.g. on fresh system)
+    if completions_dir.is_symlink() && !completions_dir.exists() {
+        // Dangling symlink — remove it so create_dir_all works
+        let _ = fs::remove_file(&completions_dir);
+    }
+    if completions_dir.exists() {
+        // Clear existing completions but keep the directory
+        if let Ok(entries) = fs::read_dir(&completions_dir) {
+            for entry in entries.flatten() {
+                let _ = fs::remove_file(entry.path());
+            }
+        }
+    } else if let Err(e) = fs::create_dir_all(&completions_dir) {
+        println!("  ✗ cannot create {}: {}", completions_dir.display(), e);
+        return Ok(());
+    }
 
     let config = match DotfilesConfig::load() {
         Ok(c) => c,
-        Err(_) => {
-            println!("No dotfiles.toml found, skipping");
+        Err(e) => {
+            println!("  ✗ failed to load dotfiles.toml: {e}");
             return Ok(());
         }
     };
@@ -47,40 +62,47 @@ pub fn regenerate_completions() -> Result<()> {
 
         match tool_type {
             "prebuilt" => {
-                let source = tool
-                    .source
-                    .as_ref()
-                    .expect("prebuilt tool missing `source`");
-                let bin_path = which::which(&tool.name).unwrap();
+                let Some(source) = tool.source.as_ref() else {
+                    println!("  ✗ {}: prebuilt missing `source` field", tool.name);
+                    continue;
+                };
+                let Ok(bin_path) = which::which(&tool.name) else {
+                    continue;
+                };
                 let src = bin_path
                     .parent()
                     .unwrap_or(bin_path.as_path())
                     .join(source);
                 if src.exists() {
-                    if let Err(e) = fs::copy(&src, completions_dir.join(format!("_{}", tool.name)))
-                    {
-                        println!("✗ {}: copy failed: {}", tool.name, e);
-                    } else {
-                        println!("✓ {} (pre-built)", tool.name);
+                    match fs::copy(&src, completions_dir.join(format!("_{}", tool.name))) {
+                        Ok(_) => println!("  ✓ {} (pre-built)", tool.name),
+                        Err(e) => println!("  ✗ {}: copy failed: {}", tool.name, e),
                     }
                 }
             }
             "sourced" => {
-                let cmd = tool
-                    .command
-                    .as_ref()
-                    .expect("sourced tool missing `command`");
-                let output_rel = tool
-                    .output
-                    .as_ref()
-                    .expect("sourced tool missing `output`");
+                let Some(cmd) = tool.command.as_ref() else {
+                    println!("  ✗ {}: sourced missing `command` field", tool.name);
+                    continue;
+                };
+                let Some(output_rel) = tool.output.as_ref() else {
+                    println!("  ✗ {}: sourced missing `output` field", tool.name);
+                    continue;
+                };
                 let output_path = dotfiles.join(output_rel);
                 let name = tool.name.clone();
 
+                // Ensure parent dir exists
+                if let Some(parent) = output_path.parent() {
+                    let _ = fs::create_dir_all(parent);
+                }
+
                 match Command::new(&cmd[0]).args(&cmd[1..]).output() {
                     Ok(out) if out.status.success() && !out.stdout.is_empty() => {
-                        fs::write(&output_path, out.stdout)?;
-                        println!("✓ {} (sourced)", name);
+                        match fs::write(&output_path, &out.stdout) {
+                            Ok(()) => println!("  ✓ {} (sourced)", name),
+                            Err(e) => println!("  ✗ {}: write failed: {}", name, e),
+                        }
                     }
                     Ok(out) => {
                         let stderr = String::from_utf8_lossy(&out.stderr);
@@ -89,13 +111,12 @@ pub fn regenerate_completions() -> Result<()> {
                             .next()
                             .filter(|s| !s.is_empty())
                             .unwrap_or("empty output");
-                        println!("✗ {}: {}", name, err);
+                        println!("  ✗ {}: {}", name, err);
                     }
-                    Err(e) => println!("✗ {}: {}", name, e),
+                    Err(e) => println!("  ✗ {}: {}", name, e),
                 }
             }
             _ => {
-                // default: run command, write to _<name>
                 let cmd: Vec<String> = tool.command.unwrap_or_else(|| {
                     vec![
                         tool.name.clone(),
