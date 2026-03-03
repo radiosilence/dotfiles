@@ -1,2 +1,5 @@
 # oh-my-claudecode state
 .omc/
+
+# Claude overrides
+./claude/*.local.*
