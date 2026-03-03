@@ -92,6 +92,63 @@ terraform-ls = "latest"  # Terraform LSP
 "github:radiosilence/koan" = "latest"
 "github:datadog-labs/pup" = "latest"
 
+[tasks.set-git-email]
+description = "Set git email for cwd's root dir: mise run set-git-email user@example.com"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+email="${1:?Usage: mise run set-git-email <email>}"
+
+# Use the git toplevel's parent as the includeIf dir, falling back to cwd
+if git_root=$(git rev-parse --show-toplevel 2>/dev/null); then
+  dir=$(dirname "$git_root")
+else
+  dir=$(pwd)
+fi
+
+# Ensure trailing slash for gitdir matching
+[[ "$dir" == */ ]] || dir="$dir/"
+
+# Derive conf name from path: ~/workspace/surgeventures -> workspace--surgeventures
+short_dir="${dir/#$HOME\//}"
+short_dir="${short_dir%/}"
+name="${short_dir//\//--}"
+mkdir -p "$HOME/.local/git.d"
+conf_file="$HOME/.local/git.d/${name}.conf"
+
+# Clean up old locations
+old_basename=$(basename "${dir%/}")
+for old in "$HOME/.git.${old_basename}.conf" "$HOME/.local/git.d/${old_basename}.conf"; do
+  if [ -f "$old" ] && [ "$old" != "$conf_file" ]; then
+    rm "$old"
+    printf "\033[33m  rm\033[0m %s (migrated)\n" "$old"
+  fi
+done
+
+# Write/update the conf file
+printf '[user]\nemail = "%s"\n' "$email" > "$conf_file"
+printf "\033[32m  ok\033[0m %s\n" "$conf_file"
+
+# Upsert includeIf in ~/.gitconfig
+gitconfig="$HOME/.gitconfig"
+[ -f "$gitconfig" ] || touch "$gitconfig"
+
+# Use ~ in paths for portability
+short_dir="${dir/#$HOME/~}"
+short_conf="${conf_file/#$HOME/~}"
+include_pattern="gitdir:${short_dir}"
+
+if grep -qF "$include_pattern" "$gitconfig" 2>/dev/null; then
+  # Update path in case it moved (e.g. from ~/.git.foo.conf to ~/.local/git.d/)
+  sed -i '' "/\[includeIf \"gitdir:${short_dir//\//\\/}\"\]/{n;s|path = .*|path = ${short_conf}|;}" "$gitconfig"
+  printf "\033[32m  ok\033[0m updated includeIf in %s\n" "$gitconfig"
+else
+  printf '\n[includeIf "gitdir:%s"]\npath = %s\n' "$short_dir" "$short_conf" >> "$gitconfig"
+  printf "\033[32m  ok\033[0m added includeIf to %s\n" "$gitconfig"
+fi
+'''
+
 [settings]
 paranoid = false
 not_found_auto_install = true
