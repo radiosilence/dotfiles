@@ -91,6 +91,7 @@ terraform-ls = "latest"  # Terraform LSP
 opencode = "latest"
 "github:radiosilence/codeowners-lsp" = "latest"
 "github:radiosilence/koan" = "latest"
+"github:datadog-labs/pup" = "latest"
 
 [settings]
 paranoid = false

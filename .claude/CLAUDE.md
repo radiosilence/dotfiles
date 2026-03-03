@@ -6,6 +6,7 @@ USE THE FUCKING AGENTS FOR FUCKS SAKES I DONT WANT TO HAVE TO REPEAT MYSELF
 
 - Always run the configured formatter (biome/prettier/mix format) after doing any work.
 - If you have added/modified tests, always verify they work.
+- Any long running commands such as codegen, typechecks, lint etc should ALWAYS be done with a team member agent so as not to block.
 
 #### Shell Commands
 
