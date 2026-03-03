@@ -87,8 +87,6 @@ terraform-ls = "latest"  # Terraform LSP
 "github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
 "npm:mainlymcpfolk" = "latest"  # Fastmail MCP Server
 # Rust things
-"cargo:graphql_client_cli" = "latest"
-opencode = "latest"
 "github:radiosilence/codeowners-lsp" = "latest"
 "github:radiosilence/koan" = "latest"
 "github:datadog-labs/pup" = "latest"

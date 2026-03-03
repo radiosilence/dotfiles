@@ -1,5 +1,121 @@
 [tools]
 
+[tasks.link]
+description = "Symlink dotfiles and configs to their destinations"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="{{config_root}}"
+
+# --- Dotfiles (.* → ~) ---
+for f in "$DOTFILES"/.*; do
+  name=$(basename "$f")
+  case "$name" in
+    .|..|.git|.gitignore|.github|.claude|.vscode|.sonarlint|\
+    .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json)
+      continue ;;
+  esac
+
+  target="$HOME/$name"
+
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
+    continue
+  fi
+
+  rm -rf "$target"
+  ln -s "$f" "$target"
+  printf "\033[32m  ok\033[0m %s\n" "$name"
+done
+
+# --- Config dirs (config.d/* → ~/.config/*) ---
+mkdir -p "$HOME/.config"
+
+if [ -d "$DOTFILES/config.d" ]; then
+  for f in "$DOTFILES/config.d"/*; do
+    [ -e "$f" ] || continue
+    name=$(basename "$f")
+    [ "$name" = "launchd" ] && continue
+    target="$HOME/.config/$name"
+
+    if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
+      continue
+    fi
+
+    rm -rf "$target"
+    ln -s "$f" "$target"
+    printf "\033[32m  ok\033[0m ~/.config/%s\n" "$name"
+  done
+fi
+
+# --- Gitconfig include ---
+[ -f "$HOME/.gitconfig" ] || touch "$HOME/.gitconfig"
+if ! grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null; then
+  printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
+  printf "\033[32m  ok\033[0m gitconfig include\n"
+fi
+
+# --- SSH config include ---
+mkdir -p "$HOME/.ssh"
+if [ ! -f "$HOME/.ssh/config" ]; then
+  touch "$HOME/.ssh/config"
+  chmod 600 "$HOME/.ssh/config"
+fi
+if ! grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null; then
+  printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
+  printf "\033[32m  ok\033[0m ssh config include\n"
+fi
+
+# --- Brewfile (macOS) ---
+if [ "$(uname)" = "Darwin" ] && [ -f "$DOTFILES/Brewfile" ]; then
+  target="$HOME/Brewfile"
+  if ! [ -L "$target" ] || [ "$(readlink "$target")" != "$DOTFILES/Brewfile" ]; then
+    ln -sf "$DOTFILES/Brewfile" "$target"
+    printf "\033[32m  ok\033[0m Brewfile\n"
+  fi
+fi
+
+# --- Launchd agents (macOS) ---
+if [ "$(uname)" = "Darwin" ] && [ -d "$DOTFILES/config.d/launchd" ]; then
+  agents="$HOME/Library/LaunchAgents"
+  mkdir -p "$agents"
+  for plist in "$DOTFILES/config.d/launchd"/*.plist; do
+    [ -f "$plist" ] || continue
+    name=$(basename "$plist")
+    dest="$agents/$name"
+    if [ -f "$dest" ] && cmp -s "$plist" "$dest"; then
+      continue
+    fi
+    cp "$plist" "$dest"
+    launchctl unload "$dest" 2>/dev/null || true
+    launchctl load "$dest" 2>/dev/null || true
+    printf "\033[32m  ok\033[0m launchd: %s\n" "$name"
+  done
+fi
+
+# --- Sheldon plugins ---
+if command -v sheldon >/dev/null 2>&1; then
+  sheldon source >/dev/null 2>&1 && printf "\033[32m  ok\033[0m sheldon\n" || true
+fi
+
+printf "\033[32m  ok\033[0m link complete\n"
+'''
+
+[tasks.install-claude]
+description = "Install or update Claude Code"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+if command -v claude >/dev/null 2>&1; then
+  printf "\033[32m  ok\033[0m claude code already installed\n"
+  claude --update 2>/dev/null || true
+else
+  printf "\033[33m  -> installing claude code...\033[0m\n"
+  curl -fsSL https://claude.ai/install.sh | bash
+  printf "\033[32m  ok\033[0m claude code installed\n"
+fi
+'''
+
 [tasks.reinstall-bins]
 description = "Build and install rust binaries from crates/"
 run = '''

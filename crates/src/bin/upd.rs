@@ -51,7 +51,16 @@ fn main() -> Result<()> {
     let has_mise = which("mise").is_ok();
     let has_claude = which("claude").is_ok();
 
-    dotfiles_tools::install::install_dotfiles().context("installing dotfiles failed")?;
+    // Link dotfiles via mise task (no cargo dependency for bootstrapping)
+    let link_status = Command::new("mise")
+        .args(["run", "link"])
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .status()
+        .context("failed to run mise run link")?;
+    if !link_status.success() {
+        bail!("mise run link failed");
+    }
 
     let auth_status = if is_macos {
         check_auth_status(&mp)?
