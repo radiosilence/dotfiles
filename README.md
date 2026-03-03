@@ -74,16 +74,17 @@ The config drives:
 - **ZSH completions** (`[[completions.tools]]`) — add a tool's completions by appending a few lines of TOML instead of editing Rust source. Supports custom commands, pre-built completions, and sourced scripts.
 - **Fonts** (`[[fonts]]`) — macOS font auto-installation. `upd` downloads and installs any fonts not already present.
 
-## Per-Directory Git Email
+## Per-Directory Git Config
 
-Set a different git email for all repos under a directory (e.g. work repos):
+Set git config overrides for all repos under a directory:
 
 ```sh
 cd ~/workspace/surgeventures/any-repo
-mise run set-git-email james.cleveland@fresha.com
+mise run git-conf-dir user.email james.cleveland@fresha.com
+mise run git-conf-dir user.name "James Cleveland (Fresha)"
 ```
 
-This creates `~/.local/git.d/<dirname>.conf` and adds an `includeIf` to `~/.gitconfig`. Idempotent — upserts both the email and path on re-run.
+Stores config in `~/.local/git.d/<path>.conf` (e.g. `workspace--surgeventures.conf`) and adds an `includeIf` to `~/.gitconfig`. Multiple keys accumulate in the same file. Idempotent.
 
 ## Architecture Notes
 
