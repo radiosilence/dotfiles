@@ -9,6 +9,7 @@ use std::time::Duration;
 
 #[derive(Deserialize)]
 struct Config {
+    #[serde(default)]
     tools: Vec<Tool>,
 }
 
@@ -39,9 +40,18 @@ pub fn regenerate_completions() -> Result<()> {
     fs::create_dir_all(&completions_dir)?;
 
     let config_path = dotfiles.join("completions.toml");
-    let config_str =
-        fs::read_to_string(&config_path).context("Failed to read completions.toml")?;
-    let config: Config = toml::from_str(&config_str).context("Failed to parse completions.toml")?;
+    let config: Config = match fs::read_to_string(&config_path) {
+        Ok(s) => toml::from_str(&s).context("Failed to parse completions.toml")?,
+        Err(_) => {
+            println!("No completions.toml found, skipping");
+            return Ok(());
+        }
+    };
+
+    if config.tools.is_empty() {
+        println!("No tools configured in completions.toml");
+        return Ok(());
+    }
 
     let mp = MultiProgress::new();
     let mut handles = Vec::new();
