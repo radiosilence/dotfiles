@@ -86,6 +86,7 @@ terraform-ls = "latest"  # Terraform LSP
 "npm:jest" = "latest"  # Test runner
 "github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
 "npm:mainlymcpfolk" = "latest"  # Fastmail MCP Server
+"npm:oh-my-claude-sisyphus" = "latest"  # OMC CLI (omc stats/agents/tui)
 # Rust things
 "github:radiosilence/codeowners-lsp" = "latest"
 "github:radiosilence/koan" = "latest"
