@@ -1,7 +1,7 @@
 # Dotfiles configuration
 #
-# Copy to dotfiles.toml to customize (gitignored).
-# setup-macos does this automatically; template is the tracked default.
+# This file is tracked in git. For local overrides, create dotfiles.local.toml
+# (gitignored). Arrays (completions, fonts) are concatenated; scalars are replaced.
 #
 # [completions.tools] — ZSH completion generation
 #   Default: runs `<name> completion zsh`, writes to `_<name>`
@@ -179,18 +179,13 @@ name = "vimv"
 
 [[fonts]]
 name = "Hack Ligatured"
-url = "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip"
+url = "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip"
 marker_file = "HackNerdFontJBMLigatured-Regular.ttf"
 
 [[fonts]]
 name = "Geist"
-url = "https://github.com/vercel/geist-font/releases/download/1.6.0/Geist-1.6.0.zip"
+url = "https://github.com/vercel/geist-font/releases/download/geist%401.7.0/geist-font-v1.7.0.zip"
 marker_file = "Geist-Regular.otf"
-
-[[fonts]]
-name = "Geist Mono"
-url = "https://github.com/vercel/geist-font/releases/download/1.6.0/GeistMono-1.6.0.zip"
-marker_file = "GeistMono-Regular.otf"
 
 [[fonts]]
 name = "Geist Mono Nerd Font"
