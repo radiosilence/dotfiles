@@ -74,6 +74,17 @@ The config drives:
 - **ZSH completions** (`[[completions.tools]]`) — add a tool's completions by appending a few lines of TOML instead of editing Rust source. Supports custom commands, pre-built completions, and sourced scripts.
 - **Fonts** (`[[fonts]]`) — macOS font auto-installation. `upd` downloads and installs any fonts not already present.
 
+## Per-Directory Git Email
+
+Set a different git email for all repos under a directory (e.g. work repos):
+
+```sh
+cd ~/workspace/surgeventures/any-repo
+mise run set-git-email james.cleveland@fresha.com
+```
+
+This creates `~/.local/git.d/<dirname>.conf` and adds an `includeIf` to `~/.gitconfig`. Idempotent — upserts both the email and path on re-run.
+
 ## Architecture Notes
 
 **Git signing** - Commit signing is configured globally (`git.d/sign.conf`) via 1Password SSH agent. Tag signing and `user.signingkey` are set in the local git config per-machine since keys are machine-specific.
