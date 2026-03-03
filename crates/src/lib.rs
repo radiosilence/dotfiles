@@ -1,6 +1,7 @@
 //! Shared utilities for dotfiles tools
 
 pub mod audio;
+pub mod config;
 pub mod install;
 pub mod parallel;
 pub mod regen_completions;

@@ -387,36 +387,19 @@ where
 }
 
 fn install_fonts(mp: &MultiProgress) -> Result<()> {
-    // (name, url, marker file to check if already installed)
-    let fonts: &[(&str, &str, &str)] = &[
-        (
-            "Hack Ligatured",
-            "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003+FC3.1+JBMv2.242.zip",
-            "HackNerdFontJBMLigatured-Regular.ttf",
-        ),
-        (
-            "Geist",
-            "https://github.com/vercel/geist-font/releases/download/1.6.0/Geist-1.6.0.zip",
-            "Geist-Regular.otf",
-        ),
-        (
-            "Geist Mono",
-            "https://github.com/vercel/geist-font/releases/download/1.6.0/GeistMono-1.6.0.zip",
-            "GeistMono-Regular.otf",
-        ),
-        (
-            "Geist Mono Nerd Font",
-            "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip",
-            "GeistMonoNerdFont-Regular.otf",
-        ),
-    ];
+    let config = dotfiles_tools::config::DotfilesConfig::load()?;
+
+    if config.fonts.is_empty() {
+        return Ok(());
+    }
 
     let fonts_dir = dotfiles_tools::home_dir()?.join("Library/Fonts");
     std::fs::create_dir_all(&fonts_dir)?;
 
-    let missing: Vec<_> = fonts
+    let missing: Vec<_> = config
+        .fonts
         .iter()
-        .filter(|(_, _, marker)| !fonts_dir.join(marker).exists())
+        .filter(|f| !fonts_dir.join(&f.marker_file).exists())
         .collect();
 
     if missing.is_empty() {
@@ -427,15 +410,15 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
         .timeout(std::time::Duration::from_secs(120))
         .build()?;
 
-    for (name, url, _) in missing {
-        mp.println(format!("{} installing {}...", "→".magenta(), name))?;
+    for font in &missing {
+        mp.println(format!("{} installing {}...", "→".magenta(), font.name))?;
 
-        match install_font(&client, url, &fonts_dir) {
+        match install_font(&client, &font.url, &fonts_dir) {
             Ok(count) => {
-                mp.println(format!("{} {} ({} files)", "✓".green(), name, count))?;
+                mp.println(format!("{} {} ({} files)", "✓".green(), font.name, count))?;
             }
             Err(e) => {
-                mp.println(format!("{} {} ({})", "⚠".yellow(), name, e))?;
+                mp.println(format!("{} {} ({})", "⚠".yellow(), font.name, e))?;
             }
         }
     }
