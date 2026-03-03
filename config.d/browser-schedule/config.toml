@@ -4,7 +4,7 @@ work = "Firefox"
 
 [urls]
 personal = [ "reddit.com", "news.ycombinator.com" ]
-work = [ "atlassian.net", "meet.google.com", "figma.com", "mail.google.com" ]
+work = [ "atlassian.net", "meet.google.com", "figma.com", "mail.google.com", "slack.com" ]
 
 [work_days]
 end = "Fri"
