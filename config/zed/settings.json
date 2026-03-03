@@ -19,13 +19,11 @@
   "agent_servers": {
     "claude": {
       "favorite_config_option_values": {
-        "model": [
-          "opus[1m]"
-        ]
+        "model": ["opus[1m]"],
       },
       "default_config_options": {
         "mode": "bypassPermissions",
-        "model": "default"
+        "model": "default",
       },
       "default_mode": "bypassPermissions",
     },
@@ -143,8 +141,8 @@
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "!tsgo",
-        "vtsls",
+        "tsgo",
+        "!vtsls",
         "!typescript-language-server",
         "...",
       ],
@@ -159,8 +157,8 @@
     "TSX": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "!tsgo",
-        "vtsls",
+        "tsgo",
+        "!vtsls",
         "!typescript-language-server",
         "...",
       ],
