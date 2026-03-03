@@ -14,8 +14,11 @@ if [ ! -f "$DOTFILES_DIR/dotfiles.toml" ]; then
   cp "$DOTFILES_DIR/dotfiles.toml.template" "$DOTFILES_DIR/dotfiles.toml"
   printf "\033[32m  ok dotfiles.toml created from template\033[0m\n"
   printf "\033[33m  -> edit %s/dotfiles.toml to customize fonts, completions, etc.\033[0m\n" "$DOTFILES_DIR"
-  printf "     press enter to continue or ctrl-c to edit first... "
-  read _
+  printf "     press enter to continue, or 'e' to edit now: "
+  read answer
+  if [ "$answer" = "e" ] || [ "$answer" = "E" ]; then
+    "${EDITOR:-vim}" "$DOTFILES_DIR/dotfiles.toml"
+  fi
 else
   printf "\033[32m  ok dotfiles.toml\033[0m\n"
 fi
