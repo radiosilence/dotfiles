@@ -52,8 +52,10 @@ fn main() -> Result<()> {
     let has_claude = which("claude").is_ok();
 
     // Link dotfiles via mise task (no cargo dependency for bootstrapping)
+    let dotfiles_dir = dotfiles_tools::home_dir()?.join(".dotfiles");
     let link_status = Command::new("mise")
         .args(["run", "link"])
+        .current_dir(&dotfiles_dir)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .status()
