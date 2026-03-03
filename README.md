@@ -12,12 +12,13 @@ git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 
 The `setup-macos` script handles the full bootstrap chain:
 
-1. Copies `dotfiles.toml.template` → `dotfiles.toml` (prompts to customize)
-2. Rosetta 2 (Apple Silicon only)
-3. Homebrew + `brew bundle`
-4. Rust via mise (no rustup needed)
-5. Builds all Rust binaries
-6. Runs `upd` — dotfile linking, auth checks, package updates, browser extension policies, zsh completions
+1. Sudo/TouchID, Rosetta 2 (Apple Silicon only)
+2. Homebrew + `brew bundle`
+3. GitHub CLI auth (for private mise tools)
+4. mise tool installation
+5. Symlinks dotfiles and configs (`mise run link`)
+6. Builds Rust binaries, runs `upd` for package updates + zsh completions
+7. Switches repo remote to SSH, prints manual steps (1Password SSH agent)
 
 After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`, 1Password CLI integration) is guided but manual — `upd` prints what's needed.
 
@@ -67,13 +68,11 @@ All binaries support `--help` and have shell completions.
 
 ## Configuration
 
-`dotfiles.toml.template` is the tracked default config. On first setup, it's copied to `dotfiles.toml` (gitignored) so you can customize without dirtying the repo.
+`dotfiles.toml` is the tracked config. For per-machine overrides, create `dotfiles.local.toml` (gitignored) — arrays are concatenated, scalars are replaced.
 
 The config drives:
 - **ZSH completions** (`[[completions.tools]]`) — add a tool's completions by appending a few lines of TOML instead of editing Rust source. Supports custom commands, pre-built completions, and sourced scripts.
 - **Fonts** (`[[fonts]]`) — macOS font auto-installation. `upd` downloads and installs any fonts not already present.
-
-The shared `config` module (`crates/src/config.rs`) loads the TOML at runtime, falling back to the template if no local copy exists.
 
 ## Architecture Notes
 

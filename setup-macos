@@ -9,19 +9,8 @@ DOTFILES_DIR="${0:A:h}"
 
 printf "\033[1m/// .DOTFILES BOOTSTRAP\033[0m\n\n"
 
-# --- dotfiles.toml (first, so config is available for everything else) ---
-if [[ ! -f "$DOTFILES_DIR/dotfiles.toml" ]]; then
-  cp "$DOTFILES_DIR/dotfiles.toml.template" "$DOTFILES_DIR/dotfiles.toml"
-  printf "\033[32m  ok dotfiles.toml created from template\033[0m\n"
-  printf "\033[33m  -> edit %s/dotfiles.toml to customize fonts, completions, etc.\033[0m\n" "$DOTFILES_DIR"
-  printf "     press enter to continue, or 'e' to edit now: "
-  read -r answer
-  if [[ "$answer" == [eE] ]]; then
-    "${EDITOR:-vim}" "$DOTFILES_DIR/dotfiles.toml"
-  fi
-else
-  printf "\033[32m  ok dotfiles.toml\033[0m\n"
-fi
+# --- dotfiles.toml hint ---
+printf "\033[32m  ok\033[0m dotfiles.toml (local overrides: dotfiles.local.toml)\n"
 
 # --- Sudo setup (first, so the session carries through the rest) ---
 SUDO_LOCAL="/etc/pam.d/sudo_local"
@@ -106,10 +95,22 @@ mise run link
 
 # Re-exec remaining setup in a fresh login shell so linked config is active
 exec zsh -l -c "
-  printf '\n\033[1m/// .CLAUDE CODE\033[0m\n\n'
-  mise run install-claude
+  # Install Claude Code if missing
+  if ! command -v claude &>/dev/null; then
+    printf '\n\033[1m/// .CLAUDE CODE\033[0m\n\n'
+    curl -fsSL https://claude.ai/install.sh | bash
+  fi
   printf '\n\033[1m/// .BUILD\033[0m\n\n'
   mise run reinstall-bins
   printf '\n'
   ~/.dotfiles/bin/upd
+
+  # Switch repo to SSH now that everything is set up
+  printf '\n\033[1m/// .FINALIZE\033[0m\n\n'
+  mise run use-ssh
+
+  printf '\n\033[1m/// .MANUAL STEPS\033[0m\n\n'
+  printf '\033[33m  -> open 1Password and enable the SSH agent:\033[0m\n'
+  printf '\033[36m     Settings -> Developer -> SSH Agent\033[0m\n'
+  printf '\n\033[32m  ok setup complete. restart your terminal.\033[0m\n\n'
 "

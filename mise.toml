@@ -101,20 +101,6 @@ fi
 printf "\033[32m  ok\033[0m link complete\n"
 '''
 
-[tasks.install-claude]
-description = "Install or update Claude Code"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-if command -v claude >/dev/null 2>&1; then
-  printf "\033[32m  ok\033[0m claude code already installed\n"
-  claude --update 2>/dev/null || true
-else
-  printf "\033[33m  -> installing claude code...\033[0m\n"
-  curl -fsSL https://claude.ai/install.sh | bash
-  printf "\033[32m  ok\033[0m claude code installed\n"
-fi
-'''
 
 [tasks.reinstall-bins]
 description = "Build and install rust binaries from crates/"
