@@ -64,6 +64,16 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 
 All binaries support `--help` and have shell completions.
 
+## Configuration
+
+`dotfiles.toml.template` is the tracked default config. On first setup, it's copied to `dotfiles.toml` (gitignored) so you can customize without dirtying the repo.
+
+The config drives:
+- **ZSH completions** (`[[completions.tools]]`) — add a tool's completions by appending a few lines of TOML instead of editing Rust source. Supports custom commands, pre-built completions, and sourced scripts.
+- **Fonts** (`[[fonts]]`) — macOS font auto-installation. `upd` downloads and installs any fonts not already present.
+
+The shared `config` module (`crates/src/config.rs`) loads the TOML at runtime, falling back to the template if no local copy exists.
+
 ## Architecture Notes
 
 **Git signing** - Commit signing is configured globally (`git.d/sign.conf`) via 1Password SSH agent. Tag signing and `user.signingkey` are set in the local git config per-machine since keys are machine-specific.

@@ -1,29 +1,12 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use serde::Deserialize;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
 
-#[derive(Deserialize)]
-struct Config {
-    #[serde(default)]
-    tools: Vec<Tool>,
-}
-
-#[derive(Deserialize, Clone)]
-struct Tool {
-    name: String,
-    command: Option<Vec<String>>,
-    #[serde(rename = "type")]
-    tool_type: Option<String>,
-    /// For "prebuilt": path relative to binary location
-    source: Option<String>,
-    /// For "sourced": output path relative to ~/.dotfiles
-    output: Option<String>,
-}
+use crate::config::DotfilesConfig;
 
 pub fn regenerate_completions() -> Result<()> {
     let home = crate::home_dir()?;
@@ -39,24 +22,23 @@ pub fn regenerate_completions() -> Result<()> {
     let _ = fs::remove_dir_all(&completions_dir);
     fs::create_dir_all(&completions_dir)?;
 
-    let config_path = dotfiles.join("completions.toml");
-    let config: Config = match fs::read_to_string(&config_path) {
-        Ok(s) => toml::from_str(&s).context("Failed to parse completions.toml")?,
+    let config = match DotfilesConfig::load() {
+        Ok(c) => c,
         Err(_) => {
-            println!("No completions.toml found, skipping");
+            println!("No dotfiles.toml found, skipping");
             return Ok(());
         }
     };
 
-    if config.tools.is_empty() {
-        println!("No tools configured in completions.toml");
+    if config.completions.tools.is_empty() {
+        println!("No tools configured in dotfiles.toml");
         return Ok(());
     }
 
     let mp = MultiProgress::new();
     let mut handles = Vec::new();
 
-    for tool in config.tools {
+    for tool in config.completions.tools {
         if which::which(&tool.name).is_err() {
             continue;
         }
