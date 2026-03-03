@@ -9,7 +9,7 @@
     <string>/bin/zsh</string>
     <string>-l</string>
     <string>-c</string>
-    <string>~/.dotfiles/bin/update-ffmpeg &amp;&amp; cd ~/.dotfiles &amp;&amp; git diff --quiet config/mise/config.toml || (git add config/mise/config.toml &amp;&amp; git commit -m "chore: update ffmpeg URLs" &amp;&amp; git push)</string>
+    <string>~/.dotfiles/bin/update-ffmpeg &amp;&amp; cd ~/.dotfiles &amp;&amp; git diff --quiet config.d/mise/config.toml || (git add config.d/mise/config.toml &amp;&amp; git commit -m "chore: update ffmpeg URLs" &amp;&amp; git push)</string>
   </array>
   <key>StartCalendarInterval</key>
   <dict>

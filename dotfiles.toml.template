@@ -107,7 +107,7 @@ source = "autocomplete/_lsd"
 [[completions.tools]]
 name = "npm"
 type = "sourced"
-output = "config/zsh/conf.d/npm-completion.zsh"
+output = "config.d/zsh/conf.d/npm-completion.zsh"
 command = ["npm", "completion"]
 
 # --- Our binaries ---
