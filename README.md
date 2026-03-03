@@ -5,13 +5,14 @@ Personal dev environment. macOS, zsh, Rust tooling.
 ## Setup
 
 ```sh
+xcode-select --install  # needed for git, compilers, etc.
 git clone https://github.com/radiosilence/dotfiles ~/.dotfiles
 ~/.dotfiles/setup-macos
 ```
 
 The `setup-macos` script handles the full bootstrap chain:
 
-1. Xcode Command Line Tools (headless install via softwareupdate)
+1. Copies `dotfiles.toml.template` → `dotfiles.toml` (prompts to customize)
 2. Rosetta 2 (Apple Silicon only)
 3. Homebrew + `brew bundle`
 4. Rust via mise (no rustup needed)
