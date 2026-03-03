@@ -130,6 +130,9 @@ reqwest = { version = "0.13", default-features = false, features = [
 tempfile = "3"
 # File/Path utilities
 walkdir = "2"
+# Serialization
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
 # Command detection
 which = "8"
 zip = "7"

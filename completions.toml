@@ -1,0 +1,170 @@
+# ZSH completions config
+#
+# Default: runs `<name> completion zsh`, writes to `_<name>`
+# Override `command` for tools with different invocations.
+# `type` controls special handling:
+#   - "prebuilt": copies from `source` (relative to binary location)
+#   - "sourced": runs command, writes to `output` (relative to ~/.dotfiles)
+
+# --- External tools ---
+
+[[tools]]
+name = "argocd"
+
+[[tools]]
+name = "docker"
+
+[[tools]]
+name = "helm"
+
+[[tools]]
+name = "k9s"
+
+[[tools]]
+name = "kubectl"
+
+[[tools]]
+name = "lefthook"
+
+[[tools]]
+name = "nano-web"
+
+[[tools]]
+name = "op"
+
+[[tools]]
+name = "orbctl"
+
+[[tools]]
+name = "pulumi"
+
+[[tools]]
+name = "tilt"
+
+[[tools]]
+name = "turso"
+
+[[tools]]
+name = "yq"
+
+[[tools]]
+name = "fcloud"
+
+[[tools]]
+name = "houston"
+
+[[tools]]
+name = "gh"
+command = ["gh", "completion", "-s", "zsh"]
+
+[[tools]]
+name = "idiotify"
+command = ["idiotify", "completions", "zsh"]
+
+[[tools]]
+name = "koan"
+command = ["koan", "completions", "zsh"]
+
+[[tools]]
+name = "fastmail-cli"
+command = ["fastmail-cli", "completions", "zsh"]
+
+[[tools]]
+name = "codeowners-cli"
+command = ["codeowners-cli", "completions", "zsh"]
+
+[[tools]]
+name = "task"
+command = ["task", "--completion", "zsh"]
+
+[[tools]]
+name = "just"
+command = ["just", "--completions", "zsh"]
+
+[[tools]]
+name = "aws-vault"
+command = ["aws-vault", "--completion-script-zsh"]
+
+[[tools]]
+name = "rg"
+command = ["rg", "--generate", "complete-zsh"]
+
+[[tools]]
+name = "pup"
+command = ["pup", "completions", "zsh"]
+
+[[tools]]
+name = "lsd"
+type = "prebuilt"
+source = "autocomplete/_lsd"
+
+[[tools]]
+name = "npm"
+type = "sourced"
+output = "config/zsh/conf.d/npm-completion.zsh"
+command = ["npm", "completion"]
+
+# --- Our binaries ---
+
+[[tools]]
+name = "clean-dls"
+
+[[tools]]
+name = "clean-exif"
+
+[[tools]]
+name = "echo-to-file"
+
+[[tools]]
+name = "embed-art"
+
+[[tools]]
+name = "extract-exif-from-flac"
+
+[[tools]]
+name = "gen-diff"
+
+[[tools]]
+name = "git-squash"
+
+[[tools]]
+name = "git-sync"
+
+[[tools]]
+name = "git-trigger"
+
+[[tools]]
+name = "imp"
+
+[[tools]]
+name = "install-font-macos"
+
+[[tools]]
+name = "install-terminfo"
+
+[[tools]]
+name = "kill-port"
+
+[[tools]]
+name = "parallel-dl-extract"
+
+[[tools]]
+name = "prune"
+
+[[tools]]
+name = "prune-gen"
+
+[[tools]]
+name = "to-audio"
+
+[[tools]]
+name = "unfuck-xcode"
+
+[[tools]]
+name = "upd"
+
+[[tools]]
+name = "url2base64"
+
+[[tools]]
+name = "vimv"
