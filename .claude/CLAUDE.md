@@ -179,6 +179,14 @@ Say "setup omc" or run `/oh-my-claudecode:omc-setup`. Announce major behavior ac
 
 USE THE FUCKING AGENTS FOR FUCKS SAKES I DONT WANT TO HAVE TO REPEAT MYSELF
 
+## Pre-push Lint Hooks
+
+When starting work on a project, check if `.claude/settings.json` has pre-push hooks for the project's language. If not configured, ask the user if they want them added. Hooks should auto-format and lint before every `git push`, blocking on lint failure.
+
+- **Rust**: `cargo fmt --all` + `cargo clippy --workspace -- -D warnings`
+- **TypeScript**: `npx prettier --write .` + `npx eslint .` (or project-specific equivalents like `bun run lint`)
+- **Elixir**: `mix format` + `mix credo --strict`
+
 ### Tooling
 
 - Always run the configured formatter (biome/prettier/mix format) after doing any work.
