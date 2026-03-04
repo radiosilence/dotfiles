@@ -96,6 +96,18 @@ Stores config in `~/.local/git.d/<path>.conf` (e.g. `workspace--surgeventures.co
 
 **Lefthook** - Uses `mise x --` to run tools. The `zsh -i -c` convention in CLAUDE.md is specifically for Claude Code agent sessions (full shell env), not for git hooks.
 
+## Syncthing
+
+Syncthing is installed via brew (`brewfiles.d/core.rb`). To start it as a background service that persists across reboots:
+
+```sh
+brew services start syncthing
+```
+
+The web UI is at `http://localhost:8384`. Configure shared folders and remote devices there.
+
+To stop the service: `brew services stop syncthing`. To run it one-off without a background service: `syncthing --no-browser --no-restart`.
+
 ## Related
 
 - [browser-schedule](https://github.com/radiosilence/browser-schedule) - Time-based browser switching for macOS
