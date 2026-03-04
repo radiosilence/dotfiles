@@ -2,4 +2,4 @@
 .omc/
 
 # Claude overrides
-./claude/*.local.*
+.claude/*.local.*
