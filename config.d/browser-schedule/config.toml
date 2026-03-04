@@ -1,10 +1,10 @@
 [browsers]
 personal = "Zen"
-work = "Firefox"
+work = "Google Chrome"
 
 [urls]
 personal = [ "reddit.com", "news.ycombinator.com" ]
-work = [ "atlassian.net", "meet.google.com", "figma.com", "mail.google.com", "slack.com" ]
+work = [ "atlassian.net", "meet.google.com", "figma.com", "mail.google.com", "slack.com", "datadoghq.com" ]
 
 [work_days]
 end = "Fri"
