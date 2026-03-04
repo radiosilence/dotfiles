@@ -17,3 +17,4 @@ roles:
   # - terminals    # ghostty
   # - ai           # claude, opencode
   # - tailscale    # tailscale
+  # - sharing      # fun things
