@@ -1,10 +1,8 @@
-[library]
-watch = true
+# koan — shareable defaults (safe to commit to dotfiles)
 
-[playback]
-exclusive_mode = false
-software_volume = false
-replaygain = "off"
+[library]
+folders = ["/Users/james.cleveland/Music"]
+watch = true
 
 [organize]
 default = "default"
@@ -12,6 +10,25 @@ default = "default"
 [organize.patterns]
 default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$left(%date%,4)')' ])%album% '['%codec%']'/[$num(%discnumber%,2)][%tracknumber%. ][%artist% - ]%title%"
 
+[playback]
+exclusive_mode = false
+replaygain = "off"
+show_fps = true
+software_volume = false
+target_fps = 60
+ticker_fps = 8
+
 [remote]
+download_workers = 5
 enabled = true
 transcode_quality = "original"
+url = ""
+username = ""
+
+[visualizer]
+amplitude_scale = "aweight"
+bar_decay_ms = 50
+enabled = true
+fps = 60
+peak_decay_ms = 180
+scale = "bark"
