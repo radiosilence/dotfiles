@@ -12,7 +12,7 @@ DOTFILES="{{config_root}}"
 for f in "$DOTFILES"/.*; do
   name=$(basename "$f")
   case "$name" in
-    .|..|.git|.gitignore|.github|.claude|.vscode|.sonarlint|\
+    .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
     .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json)
       continue ;;
   esac
