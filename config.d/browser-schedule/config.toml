@@ -1,6 +1,6 @@
 [browsers]
 personal = "Zen"
-work = "Google Chrome"
+work = "Firefox"
 
 [urls]
 personal = [ "reddit.com", "news.ycombinator.com" ]

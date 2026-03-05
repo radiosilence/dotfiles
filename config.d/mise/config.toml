@@ -88,7 +88,7 @@ terraform-ls = "latest"  # Terraform LSP
 "npm:oh-my-claude-sisyphus" = "latest"  # OMC CLI (omc stats/agents/tui)
 # Rust things
 "github:radiosilence/codeowners-lsp" = "latest"
-"github:radiosilence/koan" = "latest"
+"github:radiosilence/koan" = { version = "latest", os = ["macos"] }
 "github:datadog-labs/pup" = "latest"
 
 [tasks.git-conf-dir]
