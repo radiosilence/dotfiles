@@ -1,7 +1,6 @@
 # koan — shareable defaults (safe to commit to dotfiles)
 
 [library]
-folders = ["/Users/jc/Music"]
 watch = true
 
 [organize]
