@@ -90,6 +90,7 @@ terraform-ls = "latest"  # Terraform LSP
 "github:radiosilence/codeowners-lsp" = "latest"
 "github:radiosilence/koan" = { version = "latest", os = ["macos"] }
 "github:datadog-labs/pup" = "latest"
+"github:hatoo/oha" = "latest"
 
 [tasks.git-conf-dir]
 description = "Set git config per directory: mise run git-conf-dir user.email me@work.com"
