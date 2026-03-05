@@ -254,4 +254,5 @@ If the user references something that seems to need background context, check `~
 #### GitHub Workflow
 
 - Always use the gh client when handling github links/runs/etc
+- **NEVER push tags.** Tags and releases are always handled by the user. Only push commits.
 - **Push before slow checks:** When committing, push to CI immediately after commits pass lint-staged. Run typecheck/tests locally _after_ pushing (in background). CI will catch issues in parallel. If local checks find problems, fix and push again — the new push cancels the previous CI run.
