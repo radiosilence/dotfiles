@@ -12,6 +12,7 @@ default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$lef
 
 [playback]
 exclusive_mode = false
+pre_amp_db = 0.0
 replaygain = "off"
 show_fps = true
 software_volume = false
