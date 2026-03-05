@@ -50,7 +50,6 @@ kubectl = "latest"  # Kubernetes CLI
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
 # Ansible
 "pipx:ansible" = { version = "latest", uvx = false, pipx_args = "--include-deps" }  # Config management
-"pipx:ansible-lint" = "latest"  # Ansible linter
 # Music library
 "pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer" }  # Music organizer
 # Terminal
