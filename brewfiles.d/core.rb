@@ -32,7 +32,6 @@ brew 'mas'
 brew 'mdless'
 brew 'exiftool'
 brew 'tokei'
-brew 'oha'
 brew 'cmatrix'
 cask 'rar', args: { no_quarantine: true }, greedy: true
 
