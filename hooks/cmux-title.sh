@@ -9,8 +9,11 @@ prompt=$(echo "$event" | jq -r '.prompt // empty' 2>/dev/null)
 
 [ -z "$prompt" ] && exit 0
 
-# Truncate to first 60 chars for sidebar readability
-summary="${prompt:0:60}"
-[ ${#prompt} -gt 60 ] && summary="${summary}…"
+# Get repo name from git, fall back to directory name
+repo=$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")
 
-cmux notify --title "Working on" --body "$summary"
+# Truncate prompt to fit sidebar with repo prefix
+summary="${prompt:0:50}"
+[ ${#prompt} -gt 50 ] && summary="${summary}…"
+
+cmux notify --title "$repo" --body "$summary"
