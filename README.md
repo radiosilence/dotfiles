@@ -108,6 +108,19 @@ The web UI is at `http://localhost:8384`. Configure shared folders and remote de
 
 To stop the service: `brew services stop syncthing`. To run it one-off without a background service: `syncthing --no-browser --no-restart`.
 
+## cmux Integration
+
+cmux's workspace sidebar shows notification text per-pane. Wire Claude Code's Stop hook to `cmux notify` so you can see which agent needs attention:
+
+```sh
+# Add to ~/.claude/settings.json
+"hooks": {
+  "Stop": [{ "type": "command", "command": "~/.dotfiles/hooks/cmux-notify.sh" }]
+}
+```
+
+The hook script lives at `hooks/cmux-notify.sh`. It fires `cmux notify` when Claude Code stops, lighting up the workspace tab in the sidebar. Requires the cmux CLI symlink (`sudo ln -sf /Applications/cmux.app/Contents/Resources/bin/cmux /usr/local/bin/cmux`).
+
 ## Related
 
 - [browser-schedule](https://github.com/radiosilence/browser-schedule) - Time-based browser switching for macOS
