@@ -93,6 +93,26 @@ if [ "$(uname)" = "Darwin" ] && [ -d "$DOTFILES/config.d/launchd" ]; then
   done
 fi
 
+# --- Claude Code hooks (inject cmux hooks into ~/.claude/settings.json) ---
+claude_settings="$HOME/.claude/settings.json"
+if command -v jq >/dev/null 2>&1 && [ -f "$claude_settings" ]; then
+  cmux_hooks_needed=false
+  # Check if Stop hook for cmux-notify exists
+  if ! jq -e '.hooks.Stop[]?.hooks[]? | select(.command | contains("cmux-notify"))' "$claude_settings" >/dev/null 2>&1; then
+    cmux_hooks_needed=true
+  fi
+  if [ "$cmux_hooks_needed" = true ]; then
+    jq '
+      .hooks //= {} |
+      .hooks.Stop //= [] |
+      .hooks.Stop += [{"hooks": [{"type": "command", "command": "~/.dotfiles/hooks/cmux-notify.sh"}]}] |
+      .hooks.UserPromptSubmit //= [] |
+      .hooks.UserPromptSubmit += [{"hooks": [{"type": "command", "command": "~/.dotfiles/hooks/cmux-title.sh"}]}]
+    ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
+    printf "\033[32m  ok\033[0m claude cmux hooks\n"
+  fi
+fi
+
 # --- Sheldon plugins ---
 if command -v sheldon >/dev/null 2>&1; then
   sheldon source >/dev/null 2>&1 && printf "\033[32m  ok\033[0m sheldon\n" || true
