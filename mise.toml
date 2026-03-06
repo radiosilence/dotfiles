@@ -112,6 +112,17 @@ if command -v jq >/dev/null 2>&1 && [ -f "$claude_settings" ]; then
     hooks_changed=true
     printf "\033[32m  ok\033[0m claude hooks: cmux\n"
   fi
+
+  # gastown: notify Mayor on file changes (no-op outside gastown rigs)
+  if ! jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$claude_settings" >/dev/null 2>&1; then
+    jq '
+      .hooks //= {} |
+      .hooks.PostToolUse //= [] |
+      .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
+    ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
+    hooks_changed=true
+    printf "\033[32m  ok\033[0m claude hooks: gastown\n"
+  fi
 fi
 
 # --- Sheldon plugins ---

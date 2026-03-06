@@ -15,6 +15,9 @@
 # --- External tools ---
 
 [[completions.tools]]
+name = "gt"
+
+[[completions.tools]]
 name = "argocd"
 
 [[completions.tools]]
