@@ -43,7 +43,10 @@ kubectl = "latest"  # Kubernetes CLI
 "github:derailed/k9s" = "latest"  # Kubernetes TUI
 "github:kubecolor/kubecolor" = "latest"  # Colorized kubectl
 # GitHub & misc
-"github:radiosilence/nano-web" = "latest"  # Minimal web server
+"github:radiosilence/nano-web" = "1.3.0"
+"github:dolthub/dolt" = "latest"  # Dolt — Git for data (required by gastown)
+"github:steveyegge/beads" = "latest"  # Beads — git-backed issue tracker (bd CLI)
+"github:steveyegge/gastown" = "latest"  # Gastown — multi-agent workspace orchestrator (gt CLI)
 "github:tursodatabase/turso" = "latest"  # Turso CLI
 "github:withgraphite/homebrew-tap" = "latest"  # Graphite CLI
 # Git
