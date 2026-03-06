@@ -125,3 +125,4 @@ The `cmux` CLI also supports spawning workspaces/panes, a full browser automatio
 ## Related
 
 - [browser-schedule](https://github.com/radiosilence/browser-schedule) - Time-based browser switching for macOS
+- [gastown](https://github.com/steveyegge/gastown) - Multi-agent workspace orchestrator ([setup guide](GASTOWN.md))
