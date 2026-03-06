@@ -59,20 +59,9 @@ bd close 3
 
 ## Claude Code Integration
 
-Add to `.claude/settings.json` in a Rig's project root so Claude Code agents can write to gastown Hooks:
+`mise run link` auto-injects a global `PostToolUse` hook (`hooks/gastown-file-changed.sh`) into `~/.claude/settings.json`. It fires `gt hook fire file-changed` on every Write/Edit, but is a no-op outside gastown rigs — so it's safe to have globally.
 
-```json
-{
-  "hooks": {
-    "PostToolUse": [{
-      "matcher": "Write|Edit",
-      "hooks": [{"type": "command", "command": "gt hook fire file-changed \"$CLAUDE_TOOL_FILE\""}]
-    }]
-  }
-}
-```
-
-This lets the Mayor observe file changes made by Claude Code sessions and coordinate across agents.
+This lets the Mayor observe file changes made by Claude Code sessions and coordinate across agents without per-project config.
 
 ## Notes
 
