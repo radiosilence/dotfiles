@@ -48,7 +48,6 @@ kubectl = "latest"  # Kubernetes CLI
 "github:steveyegge/beads" = "latest"  # Beads — git-backed issue tracker (bd CLI)
 "github:steveyegge/gastown" = "latest"  # Gastown — multi-agent workspace orchestrator (gt CLI)
 "github:tursodatabase/turso" = "latest"  # Turso CLI
-"github:withgraphite/homebrew-tap" = "latest"  # Graphite CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
 # Ansible
