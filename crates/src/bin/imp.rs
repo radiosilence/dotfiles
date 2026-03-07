@@ -6,16 +6,12 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Shell};
 use colored::Colorize;
-use rayon::prelude::*;
 use reqwest::blocking::Client;
 use std::fs::File;
 use std::io::{self, Read, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
-use std::sync::atomic::{AtomicUsize, Ordering};
 use tempfile::TempDir;
-
-static DOWNLOAD_COUNTER: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Parser)]
 #[command(name = "imp")]
@@ -59,74 +55,64 @@ fn main() -> Result<()> {
     println!("  {} temp dir: {}", "→".bright_black(), dest.display());
     println!("  {} urls: {}", "→".bright_black(), args.urls.len());
 
-    // Download in parallel
-    println!("  {} Downloading archives...", "·".bright_black());
-
     let client = Client::builder()
         .timeout(std::time::Duration::from_secs(300))
         .build()?;
 
-    let downloaded_files: Vec<Result<std::path::PathBuf>> = args
-        .urls
-        .par_iter()
-        .map(|url| download_file(&client, url, dest))
-        .collect();
+    // Process each URL separately so beets imports each as its own album
+    for (i, url) in args.urls.iter().enumerate() {
+        let album_dir = dest.join(format!("album_{}", i));
+        std::fs::create_dir_all(&album_dir)?;
 
-    let successful_downloads: Vec<_> = downloaded_files
-        .into_iter()
-        .filter_map(|r| r.ok())
-        .collect();
+        println!(
+            "\n  {} [{}/{}] Downloading {}",
+            "·".bright_black(),
+            i + 1,
+            args.urls.len(),
+            url
+        );
 
-    if successful_downloads.is_empty() {
-        println!("  {} No files downloaded successfully", "✗".red());
-        anyhow::bail!("Download failed");
+        let downloaded = match download_file(&client, url, &album_dir) {
+            Ok(path) => path,
+            Err(e) => {
+                println!("  {} Download failed: {}", "✗".red(), e);
+                continue;
+            }
+        };
+
+        println!("  {} Downloaded", "✓".green());
+
+        // Extract if zip
+        if downloaded.extension().and_then(|s| s.to_str()) == Some("zip") {
+            println!("  {} Extracting...", "·".bright_black());
+            extract_zip(&downloaded, &album_dir)?;
+            std::fs::remove_file(&downloaded)?;
+            println!("  {} Extracted", "✓".green());
+        }
+
+        // Show files
+        println!("  {} Files:", "·".bright_black());
+        let _ = Command::new("lsd")
+            .args(["--tree"])
+            .arg(&album_dir)
+            .status()
+            .or_else(|_| Command::new("tree").arg(&album_dir).status());
+
+        // Import this album to beets
+        println!("  {} Importing to beets...", "·".bright_black());
+
+        let status = Command::new("beet")
+            .arg("import")
+            .arg(&album_dir)
+            .stdin(Stdio::inherit())
+            .status()?;
+
+        if !status.success() {
+            println!("  {} Beets import failed for this album", "✗".red());
+        } else {
+            println!("  {} Import complete", "✓".green());
+        }
     }
-
-    println!(
-        "  {} Downloaded {} files",
-        "✓".green(),
-        successful_downloads.len()
-    );
-
-    // Extract archives in parallel
-    println!("  {} Extracting archives...", "·".bright_black());
-
-    let extract_results: Vec<Result<()>> = successful_downloads
-        .par_iter()
-        .filter(|path| path.extension().and_then(|s| s.to_str()) == Some("zip"))
-        .map(|zip_path| {
-            extract_zip(zip_path, dest)?;
-            std::fs::remove_file(zip_path)?;
-            Ok(())
-        })
-        .collect();
-
-    let extract_success = extract_results.iter().filter(|r| r.is_ok()).count();
-    println!("  {} Extracted {} archives", "✓".green(), extract_success);
-
-    // Show extracted files
-    println!("  {} Files:", "·".bright_black());
-    let _ = Command::new("lsd")
-        .args(["--tree"])
-        .arg(dest)
-        .status()
-        .or_else(|_| Command::new("tree").arg(dest).status());
-
-    // Import to beets with stdin exposed for user input
-    println!("  {} Importing to beets...", "·".bright_black());
-
-    let status = Command::new("beet")
-        .arg("import")
-        .arg(dest)
-        .stdin(Stdio::inherit())
-        .status()?;
-
-    if !status.success() {
-        println!("  {} Beets import failed", "✗".red());
-        anyhow::bail!("Import failed");
-    }
-
-    println!("  {} Import complete", "✓".green());
 
     Ok(())
 }
@@ -138,10 +124,11 @@ fn download_file(client: &Client, url: &str, dest_dir: &Path) -> Result<std::pat
         anyhow::bail!("Failed to download {}: {}", url, response.status());
     }
 
-    let file_name = format!(
-        "download_{}.zip",
-        DOWNLOAD_COUNTER.fetch_add(1, Ordering::Relaxed)
-    );
+    let file_name = url
+        .rsplit('/')
+        .next()
+        .unwrap_or("download.zip")
+        .to_string();
     let dest_path = dest_dir.join(&file_name);
 
     let mut file = File::create(&dest_path)?;
