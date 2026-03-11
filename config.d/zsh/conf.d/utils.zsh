@@ -16,5 +16,11 @@ alias listening='lsof -iTCP -sTCP:LISTEN -P -n'
 psg() { procs --tree | grep -i $1 }
 
 # sesh session picker
-alias sp='sesh connect "$(sesh list --icons --hide-duplicates | fzf --ansi --reverse --header="sessions / dirs")"'
+alias sp='sesh connect "$(sesh list --icons --hide-duplicates | fzf --ansi --reverse --header="sessions / dirs" --preview "sesh preview {}")"'
+
+# glow markdown browser — fzf pick then TUI
+gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')" }
+
+# request claude code review on current PR
+alias ccr='gh pr comment --body "@claude review"'
 
