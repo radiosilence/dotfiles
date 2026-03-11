@@ -27,7 +27,7 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 - **Shell configs** - Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
 - **23 Rust binaries** - System maintenance, git workflow, media processing, file operations
 - **Tool management** - mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
-- **Terminal configs** - tmux, ghostty, cmux, starship prompt
+- **Terminal configs** - tmux, ghostty, starship prompt
 
 ## Documentation
 
@@ -35,6 +35,7 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 | ----------------------------------------------------- | ------------------------------------------------------------ |
 | [cheatsheet.md](docs/cheatsheet.md)                   | **Complete reference** - all commands, aliases, functions    |
 | [new-tools.md](docs/new-tools.md)                     | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
+| [tmux-cheatsheet.md](docs/tmux-cheatsheet.md)         | tmux keybindings and usage reference                         |
 | [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews                         |
 | [CHANGELOG.md](CHANGELOG.md)                          | Full history from 2018 to present (1421 commits)             |
 
@@ -107,20 +108,6 @@ brew services start syncthing
 The web UI is at `http://localhost:8384`. Configure shared folders and remote devices there.
 
 To stop the service: `brew services stop syncthing`. To run it one-off without a background service: `syncthing --no-browser --no-restart`.
-
-## cmux Integration
-
-`mise run link` auto-injects three Claude Code hooks into `~/.claude/settings.json` for cmux:
-
-| Hook | Script | What it does |
-|------|--------|-------------|
-| `SessionStart` | `cmux-session.sh` | Renames workspace to repo name, sets "ready" status pill |
-| `UserPromptSubmit` | `cmux-title.sh` | Sets "working" status pill, shows prompt summary in sidebar |
-| `Stop` | `cmux-notify.sh` | Fires `cmux claude-hook stop`, sets "waiting" status pill |
-
-All hooks are no-ops outside cmux. The cmux CLI ships with the app — no extra install needed.
-
-The `cmux` CLI also supports spawning workspaces/panes, a full browser automation API, screen reading, and more — run `cmux` for the full command list.
 
 ## Related
 

@@ -14,7 +14,7 @@ roles:
   # - social       # discord, signal, telegram, whatsapp
   # - work         # notion, notion calendar, slack
   # - gaming       # steam
-  # - terminals    # ghostty, cmux
+  # - terminals    # ghostty
   # - ai           # claude, opencode
   # - tailscale    # tailscale
   # - sharing      # fun things
