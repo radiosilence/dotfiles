@@ -15,3 +15,6 @@ alias listening='lsof -iTCP -sTCP:LISTEN -P -n'
 # Grep processes with tree view
 psg() { procs --tree | grep -i $1 }
 
+# sesh session picker
+alias sp='sesh connect "$(sesh list --icons --hide-duplicates | fzf --ansi --reverse --header="sessions / dirs")"'
+
