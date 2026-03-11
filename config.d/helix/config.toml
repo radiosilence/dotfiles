@@ -1,14 +1,21 @@
-
 theme = "monokai_pro"
 
 [editor]
 auto-format = true
 true-color = true
+color-modes = true
 bufferline = "always"
 cursorline = true
 rulers = [120]
 end-of-line-diagnostics = "hint"
 line-number = "relative"
+idle-timeout = 250
+popup-border = "all"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
 
 [editor.soft-wrap]
 enable = true
@@ -17,12 +24,14 @@ enable = true
 cursor-line = "error"
 
 [editor.indent-guides]
-render = false
+render = true
+character = "│"
+skip-levels = 1
 
 [editor.whitespace.render]
-space = "all"
+space = "trailing"
 tab = "all"
-nbsp = "none"
+nbsp = "all"
 nnbsp = "none"
 newline = "none"
 
@@ -32,9 +41,22 @@ hidden = false
 [editor.lsp]
 display-messages = true
 
+[editor.auto-save]
+focus-lost = true
+after-delay.enable = true
+after-delay.timeout = 3000
+
+[editor.search]
+smart-case = true
+wrap-around = true
+
+[editor.smart-tab]
+enable = true
 
 [editor.statusline]
-left = ["mode", "spinner", "version-control", "file-name"]
+left = ["mode", "spinner", "version-control", "file-name", "read-only-indicator", "file-modification-indicator"]
+center = []
+right = ["diagnostics", "selections", "register", "position", "file-type"]
 
 [keys.normal]
 A-w = ":bc"

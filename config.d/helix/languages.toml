@@ -1,57 +1,119 @@
+# -- Language Servers ----------------------------------------------------------
 
 [language-server.rust-analyzer]
 config = { checkOnSave = { command = "clippy" } }
 
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+
+[language-server.tsgo]
+command = "tsgo"
+args = ["lsp"]
+
+[language-server.yaml-language-server]
+config = { yaml = { validation = true, schemaStore = { enable = true } } }
+
+# -- Languages -----------------------------------------------------------------
 
 [[language]]
-auto-format = true
 name = "rust"
+auto-format = true
 
 [[language]]
-name = "html"
-formatter = { command = 'prettier', args = ["--parser", "html"] }
+name = "python"
+auto-format = true
+language-servers = ["pyright", "ruff"]
+formatter = { command = "ruff", args = ["format", "-"] }
+
+[[language]]
+name = "go"
+auto-format = true
+
+[[language]]
+name = "elixir"
+auto-format = true
+
+[[language]]
+name = "lua"
+auto-format = true
+formatter = { command = "stylua", args = ["-"] }
+
+[[language]]
+name = "toml"
+auto-format = true
+
+[[language]]
+name = "yaml"
+auto-format = true
 
 [[language]]
 name = "json"
-formatter = { command = 'prettier', args = ["--parser", "json"] }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "json"] }
+
+[[language]]
+name = "markdown"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "markdown"] }
+
+[[language]]
+name = "html"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "html"] }
 
 [[language]]
 name = "css"
-formatter = { command = 'prettier', args = ["--parser", "css"] }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "css"] }
+
+[[language]]
+name = "scss"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "scss"] }
 
 [[language]]
 name = "bash"
-formatter = { command = "shfmt" }
 auto-format = true
+formatter = { command = "shfmt" }
+
+[[language]]
+name = "javascript"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+language-servers = ["tsgo", "vscode-eslint-language-server"]
+
+[[language]]
+name = "typescript"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+language-servers = ["tsgo", "vscode-eslint-language-server"]
+
+[[language]]
+name = "tsx"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+language-servers = ["tsgo", "vscode-eslint-language-server"]
+
+[[language]]
+name = "jsx"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+language-servers = ["tsgo", "vscode-eslint-language-server"]
 
 [[language]]
 name = "jsonnet"
 auto-format = true
 
+[[language]]
+name = "dockerfile"
+auto-format = true
 
 [[language]]
-name = "javascript"
-formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+name = "hcl"
 auto-format = true
-language-servers = [
-  "vscode-eslint-language-server",
-  "typescript-language-server",
-]
 
 [[language]]
-name = "typescript"
-formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+name = "protobuf"
 auto-format = true
-language-servers = [
-  "vscode-eslint-language-server",
-  "typescript-language-server",
-]
-
-[[language]]
-name = "tsx"
-formatter = { command = 'prettier', args = ["--parser", "typescript"] }
-auto-format = true
-language-servers = [
-  "typescript-language-server",
-  "vscode-eslint-language-server",
-]
+formatter = { command = "buf", args = ["format"] }
