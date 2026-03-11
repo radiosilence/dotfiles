@@ -28,6 +28,7 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 - **23 Rust binaries** - System maintenance, git workflow, media processing, file operations
 - **Tool management** - mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
 - **Terminal configs** - tmux, ghostty, starship prompt
+- **Editor configs** - helix (LSP, tree-sitter, formatters for 15+ languages), zed
 
 ## Documentation
 
