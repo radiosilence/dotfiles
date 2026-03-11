@@ -98,21 +98,6 @@ claude_settings="$HOME/.claude/settings.json"
 if command -v jq >/dev/null 2>&1 && [ -f "$claude_settings" ]; then
   hooks_changed=false
 
-  # cmux: session start (rename workspace), prompt (status pill), stop (notification)
-  if ! jq -e '.hooks.Stop[]?.hooks[]? | select(.command | contains("cmux-notify"))' "$claude_settings" >/dev/null 2>&1; then
-    jq '
-      .hooks //= {} |
-      .hooks.SessionStart //= [] |
-      .hooks.SessionStart += [{"hooks": [{"type": "command", "command": "~/.dotfiles/hooks/cmux-session.sh"}]}] |
-      .hooks.Stop //= [] |
-      .hooks.Stop += [{"hooks": [{"type": "command", "command": "~/.dotfiles/hooks/cmux-notify.sh"}]}] |
-      .hooks.UserPromptSubmit //= [] |
-      .hooks.UserPromptSubmit += [{"hooks": [{"type": "command", "command": "~/.dotfiles/hooks/cmux-title.sh"}]}]
-    ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
-    hooks_changed=true
-    printf "\033[32m  ok\033[0m claude hooks: cmux\n"
-  fi
-
   # gastown: notify Mayor on file changes (no-op outside gastown rigs)
   if ! jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$claude_settings" >/dev/null 2>&1; then
     jq '

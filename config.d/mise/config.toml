@@ -56,6 +56,9 @@ kubectl = "latest"  # Kubernetes CLI
 "pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer" }  # Music organizer
 # Terminal
 "github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
+"github:joshmedeski/sesh" = "latest"  # Smart tmux session manager (zoxide + fzf)
+"github:arl/gitmux" = "latest"  # Git status in tmux status bar
+"github:charmbracelet/glow" = "latest"  # Terminal markdown renderer
 "github:sharkdp/bat" = "latest"  # Cat with wings
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
 "github:sharkdp/hyperfine" = "latest"  # Benchmarking
