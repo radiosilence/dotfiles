@@ -85,6 +85,7 @@
     "tailwind-css": true,
     "terraform": true,
     "tombi": true,
+    "tsgo": true,
     "zedokai": true,
     "codeowners": true,
   },
