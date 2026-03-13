@@ -19,6 +19,7 @@ fi
 DOTFILES_DIR="$HOME/.dotfiles"
 if [[ -d "$DOTFILES_DIR/.git" ]]; then
   printf "\033[32m  ok dotfiles repo\033[0m\n"
+  (cd "$DOTFILES_DIR"; git pull)
 else
   printf "\033[33m  -> cloning dotfiles...\033[0m\n"
   git clone https://github.com/radiosilence/dotfiles "$DOTFILES_DIR"

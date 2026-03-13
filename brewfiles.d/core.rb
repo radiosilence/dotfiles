@@ -31,7 +31,7 @@ brew 'mas'
 brew 'mdless'
 brew 'tokei'
 brew 'cmatrix'
-cask 'rar', args: { no_quarantine: true }, greedy: true
+cask 'rar', no_quarantine: true, greedy: true
 
 # Sync
 brew 'fswatch'
