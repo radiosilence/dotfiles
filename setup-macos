@@ -60,6 +60,14 @@ fi
 printf "\n\033[1m/// .BREW BUNDLE\033[0m\n\n"
 brew bundle --file="$DOTFILES_DIR/Brewfile" --quiet || true
 
+# --- 1Password setup (SSH agent needed for git/mise) ---
+printf "\n\033[1m/// .1PASSWORD\033[0m\n\n"
+printf "\033[33m  -> open 1Password, sign in, and enable the SSH agent:\033[0m\n"
+printf "\033[36m     Settings -> Developer -> SSH Agent\033[0m\n"
+printf "\033[33m  -> press enter when done...\033[0m"
+read -r
+printf "\033[32m  ok 1password\033[0m\n"
+
 # --- GitHub CLI auth (needed for mise to install private/github tools) ---
 if (( $+commands[gh] )); then
   if ! gh auth status &>/dev/null; then
@@ -109,8 +117,5 @@ exec zsh -l -c "
   printf '\n\033[1m/// .FINALIZE\033[0m\n\n'
   mise run use-ssh
 
-  printf '\n\033[1m/// .MANUAL STEPS\033[0m\n\n'
-  printf '\033[33m  -> open 1Password and enable the SSH agent:\033[0m\n'
-  printf '\033[36m     Settings -> Developer -> SSH Agent\033[0m\n'
   printf '\n\033[32m  ok setup complete. restart your terminal.\033[0m\n\n'
 "
