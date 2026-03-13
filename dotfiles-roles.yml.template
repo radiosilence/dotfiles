@@ -14,6 +14,5 @@ roles:
   # - social       # discord, signal, telegram, whatsapp
   # - work         # notion, notion calendar, slack
   # - gaming       # steam
-  # - ai           # claude, opencode
   # - tailscale    # tailscale
   # - sharing      # fun things
