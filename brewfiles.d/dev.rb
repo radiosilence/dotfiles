@@ -15,3 +15,7 @@ brew 'jsonnet'
 brew 'postgresql'
 brew 'libpq'
 brew 'tursodatabase/tap/turso'
+
+# Languages
+brew 'luarocks'
+brew 'uv'

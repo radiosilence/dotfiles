@@ -5,6 +5,9 @@ brew 'git'
 cask '1password', greedy: true
 cask '1password-cli', greedy: true
 
+cask 'ghostty', greedy: true
+
+
 brew 'curl'
 brew 'coreutils'
 brew 'findutils'
@@ -20,17 +23,12 @@ brew 'make'
 brew 'llvm'
 brew 'clang-format'
 
-# Languages
-brew 'luarocks'
-brew 'uv'
-
 # CLI utils
 brew 'fcp'
 brew 'htop'
 brew 'btop'
 brew 'mas'
 brew 'mdless'
-brew 'exiftool'
 brew 'tokei'
 brew 'cmatrix'
 cask 'rar', args: { no_quarantine: true }, greedy: true
@@ -39,7 +37,6 @@ cask 'rar', args: { no_quarantine: true }, greedy: true
 brew 'fswatch'
 brew 'parallel'
 brew 'rsync'
-brew 'syncthing'
 brew 'aria2'
 
 # Libs
