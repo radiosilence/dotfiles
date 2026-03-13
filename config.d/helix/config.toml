@@ -29,10 +29,9 @@ character = "│"
 skip-levels = 1
 
 [editor.whitespace.render]
-space = "trailing"
+space = "all"
 tab = "all"
 nbsp = "all"
-nnbsp = "none"
 newline = "none"
 
 [editor.file-picker]
