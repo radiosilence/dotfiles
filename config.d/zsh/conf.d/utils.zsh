@@ -23,4 +23,5 @@ gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')" }
 
 # request claude code review on current PR
 alias ccr='gh pr comment --body "@claude review"'
+alias ccrr='gh pr comment --body "@claude re-review"'
 
