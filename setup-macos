@@ -51,19 +51,8 @@ else
   printf "\033[32m  ok sudo timeout\033[0m\n"
 fi
 
-# --- Rosetta 2 (Apple Silicon only) ---
-if [[ "$(uname -m)" == "arm64" ]]; then
-  if /usr/bin/pgrep -q oahd 2>/dev/null; then
-    printf "\033[32m  ok rosetta 2\033[0m\n"
-  else
-    printf "\033[33m  -> installing rosetta 2...\033[0m\n"
-    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-    printf "\033[32m  ok rosetta 2 installed\033[0m\n"
-  fi
-fi
-
 # --- Homebrew ---
-if (( $+commands[brew] )); then
+if (($+commands[brew])); then
   printf "\033[32m  ok homebrew\033[0m\n"
 else
   printf "\033[33m  -> installing homebrew...\033[0m\n"
@@ -100,7 +89,7 @@ read -r </dev/tty
 printf "\033[32m  ok 1password\033[0m\n"
 
 # --- GitHub CLI auth (needed for mise to install private/github tools) ---
-if (( $+commands[gh] )); then
+if (($+commands[gh])); then
   if ! gh auth status &>/dev/null; then
     printf "\n\033[1m/// .GITHUB AUTH\033[0m\n\n"
     printf "\033[33m  -> gh is not authenticated. open a new tab and run:\033[0m\n"
@@ -117,7 +106,7 @@ if (( $+commands[gh] )); then
 fi
 
 # --- mise tools ---
-if (( $+commands[mise] )); then
+if (($+commands[mise])); then
   printf "\n\033[1m/// .MISE TOOLS\033[0m\n\n"
   export PATH="$HOME/.local/share/mise/shims:$PATH"
   printf "\033[33m  -> mise install...\033[0m\n"
@@ -131,6 +120,17 @@ fi
 # --- Link dotfiles (before anything that depends on shell config) ---
 printf "\n\033[1m/// .LINK\033[0m\n\n"
 mise run link
+
+# --- Rosetta 2 (Apple Silicon only) ---
+if [[ "$(uname -m)" == "arm64" ]]; then
+  if /usr/bin/pgrep -q oahd 2>/dev/null; then
+    printf "\033[32m  ok rosetta 2\033[0m\n"
+  else
+    printf "\033[33m  -> installing rosetta 2...\033[0m\n"
+    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+    printf "\033[32m  ok rosetta 2 installed\033[0m\n"
+  fi
+fi
 
 # Re-exec remaining setup in a fresh login shell so linked config is active
 exec zsh -l -c "
