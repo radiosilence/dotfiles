@@ -50,10 +50,6 @@ kubectl = "latest"  # Kubernetes CLI
 "github:tursodatabase/turso" = "latest"  # Turso CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
-# Ansible
-"pipx:ansible" = { version = "latest", uvx = false, pipx_args = "--include-deps" }  # Config management
-# Music library
-"pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer" }  # Music organizer
 # Terminal
 "github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
 "github:joshmedeski/sesh" = "latest"  # Smart tmux session manager (zoxide + fzf)
@@ -82,7 +78,6 @@ kubectl = "latest"  # Kubernetes CLI
 "npm:yaml-language-server" = "latest"  # YAML LSP
 "npm:vscode-langservers-extracted" = "latest"  # HTML/CSS/JSON LSPs
 "npm:@ansible/ansible-language-server" = "latest"  # Ansible LSP
-"pipx:nginx-language-server" = "latest"  # Nginx LSP
 terraform = "latest"  # IaC
 terraform-ls = "latest"  # Terraform LSP
 # JS tools
@@ -90,7 +85,6 @@ terraform-ls = "latest"  # Terraform LSP
 "npm:jest" = "latest"  # Test runner
 "github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
 "npm:mainlymcpfolk" = "latest"  # Fastmail MCP Server
-"npm:oh-my-claude-sisyphus" = "latest"  # OMC CLI (omc stats/agents/tui)
 # Rust things
 "github:radiosilence/codeowners-lsp" = "latest"
 "github:radiosilence/koan" = { version = "latest", os = ["macos"] }
