@@ -76,6 +76,17 @@ else
   printf "\033[32m  ok homebrew installed\033[0m\n"
 fi
 
+# --- Brewfile roles ---
+ROLES_FILE="$DOTFILES_DIR/dotfiles-roles.yml"
+if [[ -f "$ROLES_FILE" ]]; then
+  printf "\033[32m  ok dotfiles-roles.yml\033[0m\n"
+else
+  cp "$DOTFILES_DIR/dotfiles-roles.yml.template" "$ROLES_FILE"
+  printf "\033[33m  -> copied dotfiles-roles.yml.template to dotfiles-roles.yml\033[0m\n"
+  printf "\033[33m  -> edit dotfiles-roles.yml to enable brew roles, then press enter...\033[0m"
+  read -r </dev/tty
+fi
+
 # --- brew bundle ---
 printf "\n\033[1m/// .BREW BUNDLE\033[0m\n\n"
 brew bundle --file="$DOTFILES_DIR/Brewfile" --quiet || true
