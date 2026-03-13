@@ -1,11 +1,31 @@
 #!/usr/bin/env zsh
 # Bootstrap script - run this on a fresh system
-# Prerequisites: xcode-select --install
-# Usage: git clone https://github.com/radiosilence/dotfiles ~/.dotfiles && ~/.dotfiles/setup-macos
+# Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
 
 set -e
 
-DOTFILES_DIR="${0:A:h}"
+# --- Xcode Command Line Tools (needed for git, compilers, etc.) ---
+if xcode-select -p &>/dev/null; then
+  printf "\033[32m  ok xcode cli tools\033[0m\n"
+else
+  printf "\033[33m  -> installing xcode command line tools...\033[0m\n"
+  xcode-select --install
+  printf "\033[33m  -> waiting for xcode cli tools installation to complete...\033[0m\n"
+  printf "\033[33m  -> press enter when the installer finishes...\033[0m"
+  read -r </dev/tty
+fi
+
+# --- Clone dotfiles ---
+DOTFILES_DIR="$HOME/.dotfiles"
+if [[ -d "$DOTFILES_DIR/.git" ]]; then
+  printf "\033[32m  ok dotfiles repo\033[0m\n"
+else
+  printf "\033[33m  -> cloning dotfiles...\033[0m\n"
+  git clone https://github.com/radiosilence/dotfiles "$DOTFILES_DIR"
+  printf "\033[32m  ok dotfiles cloned\033[0m\n"
+fi
+
+cd "$DOTFILES_DIR"
 
 printf "\033[1m/// .DOTFILES BOOTSTRAP\033[0m\n\n"
 
@@ -65,7 +85,7 @@ printf "\n\033[1m/// .1PASSWORD\033[0m\n\n"
 printf "\033[33m  -> open 1Password, sign in, and enable the SSH agent:\033[0m\n"
 printf "\033[36m     Settings -> Developer -> SSH Agent\033[0m\n"
 printf "\033[33m  -> press enter when done...\033[0m"
-read -r
+read -r </dev/tty
 printf "\033[32m  ok 1password\033[0m\n"
 
 # --- GitHub CLI auth (needed for mise to install private/github tools) ---
@@ -75,7 +95,7 @@ if (( $+commands[gh] )); then
     printf "\033[33m  -> gh is not authenticated. open a new tab and run:\033[0m\n"
     printf "\033[36m     gh auth login\033[0m\n"
     printf "\033[33m  -> press enter when done...\033[0m"
-    read -r
+    read -r </dev/tty
   fi
   if gh auth status &>/dev/null; then
     printf "\033[32m  ok gh authenticated\033[0m\n"
