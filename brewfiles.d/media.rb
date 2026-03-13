@@ -7,3 +7,5 @@ brew 'atomicparsley'
 
 cask 'foobar2000', greedy: true
 cask 'stolendata-mpv', args: { no_quarantine: true }, greedy: true
+
+brew 'exiftool'
