@@ -17,16 +17,19 @@
   "ui_font_family": "Geist Mono",
   "auto_update": false,
   "agent_servers": {
-    "claude": {
-      "favorite_config_option_values": {
-        "model": ["opus[1m]"],
-      },
+    "claude-acp": {
+      "type": "registry",
+      "default_mode": "bypassPermissions",
       "default_config_options": {
         "mode": "bypassPermissions",
-        "model": "default",
+        "model": "default"
       },
-      "default_mode": "bypassPermissions",
-    },
+      "favorite_config_option_values": {
+        "model": [
+          "opus[1m]"
+        ]
+      }
+    }
   },
   "project_panel": {
     "dock": "left",
@@ -90,6 +93,9 @@
     "codeowners": true,
   },
   "agent": {
+    "tool_permissions": {
+      "default": "allow"
+    },
     "dock": "right",
     "play_sound_when_agent_done": false,
     "default_profile": "write",
@@ -97,7 +103,6 @@
       "provider": "zed.dev",
       "model": "claude-sonnet-4",
     },
-    "always_allow_tool_actions": true,
     "default_model": {
       "provider": "anthropic",
       "model": "claude-sonnet-4-thinking-latest",
