@@ -119,7 +119,7 @@ img-parts = "0.4"
 indicatif = { version = "0.18", features = ["rayon"] }
 # System info
 netstat2 = "0.11"
-nix = { version = "0.30", features = ["signal", "user"] }
+nix = { version = "0.31", features = ["signal", "user"] }
 # Parallelism
 rayon = "1"
 # Async
@@ -135,7 +135,7 @@ serde = { version = "1", features = ["derive"] }
 toml = "0.8"
 # Command detection
 which = "8"
-zip = "7"
+zip = "8"
 
 [dev-dependencies]
 assert_cmd = "2"
