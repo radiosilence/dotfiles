@@ -1,4 +1,48 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
 [
+  {
+    "context": "Workspace",
+    "bindings": {
+      // "shift shift": "file_finder::Toggle"
+    },
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      // "j k": ["workspace::SendKeystrokes", "escape"]
+      "cmd-k cmd-F": [
+        "task::Spawn",
+        {
+          "task_name": "tv.text",
+          "reveal_target": "center",
+        },
+      ],
+      "cmd-i": "agent::AddSelectionToThread",
+    },
+  },
+  {
+    "context": "vim_mode == visual",
+    "bindings": {
+      "alt-;": "vim::OtherEnd",
+    },
+  },
+  {
+    "context": "vim_mode == helix_normal && !menu",
+    "bindings": {
+      "alt-;": "vim::OtherEnd",
+      "space f": "file_finder::Toggle",
+      "shift-h": "pane::ActivatePreviousItem",
+      "shift-l": "pane::ActivateNextItem",
+      "g r": "editor::FindAllReferences",
+      "g space": "editor::OpenExcerpts",
+    },
+  },
   {
     "context": "Terminal",
     "bindings": {

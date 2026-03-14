@@ -21,10 +21,12 @@
       "type": "registry",
       "default_mode": "bypassPermissions",
       "default_config_options": {
-        "mode": "bypassPermissions",
         "model": "default"
       },
       "favorite_config_option_values": {
+        "mode": [
+          "bypassPermissions"
+        ],
         "model": [
           "opus[1m]"
         ]
