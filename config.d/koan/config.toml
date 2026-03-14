@@ -1,21 +1,6 @@
+# koan — shareable defaults (safe to commit to dotfiles)
+
 [library]
-folders = ["/Volumes/Turtlehead/music"]
-
-[playback]
-software_volume = false
-replaygain = "album"
-ticker_fps = 8
-target_fps = 60
-show_fps = true
-pre_amp_db = 0.0
-
-[remote]
-enabled = true
-url = "https://music.blit.cc"
-username = "admin"
-password = "eFbWy2MnWx23kDVx.2sy"
-transcode_quality = "original"
-download_workers = 5
 
 [organize]
 default = "default"
@@ -23,10 +8,26 @@ default = "default"
 [organize.patterns]
 default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$left(%date%,4)')' ])%album% '['%codec%']'/[$num(%discnumber%,2)][%tracknumber%. ][%artist% - ]%title%"
 
-[visualizer]
+[playback]
+pre_amp_db = 0.0
+replaygain = "album"
+show_fps = true
+software_volume = false
+target_fps = 60
+ticker_fps = 8
+
+[remote]
+download_workers = 5
 enabled = true
-fps = 60
-scale = "bark"
+password = "eFbWy2MnWx23kDVx.2sy"
+transcode_quality = "original"
+url = "https://music.blit.cc"
+username = "admin"
+
+[visualizer]
 amplitude_scale = "aweight"
 bar_decay_ms = 50
+enabled = true
+fps = 60
 peak_decay_ms = 180
+scale = "bark"
