@@ -80,6 +80,21 @@ fi
 printf "\n\033[1m/// .BREW BUNDLE\033[0m\n\n"
 brew bundle --file="$DOTFILES_DIR/Brewfile" --quiet || true
 
+# --- Remove quarantine from casks that need it ---
+printf "\n\033[1m/// .UNQUARANTINE\033[0m\n\n"
+UNQUARANTINE_CASKS=(
+  stolendata-mpv
+  rar
+)
+for cask in "${UNQUARANTINE_CASKS[@]}"; do
+  app_dir="$(brew --caskroom)/$cask"
+  if [[ -d "$app_dir" ]]; then
+    sudo xattr -rd com.apple.quarantine "$app_dir" 2>/dev/null && \
+      printf "\033[32m  ok unquarantined %s\033[0m\n" "$cask" || \
+      printf "\033[33m  -- %s (no quarantine attr)\033[0m\n" "$cask"
+  fi
+done
+
 # --- 1Password setup (SSH agent needed for git/mise) ---
 printf "\n\033[1m/// .1PASSWORD\033[0m\n\n"
 printf "\033[33m  -> open 1Password, sign in, and enable the SSH agent:\033[0m\n"
