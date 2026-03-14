@@ -174,6 +174,46 @@ fn main() -> Result<()> {
         }));
     }
 
+    // Tmux plugins — clone if missing, pull if present
+    {
+        let plugins: Vec<(&str, &str)> = vec![
+            (
+                "tmux-resurrect",
+                "https://github.com/tmux-plugins/tmux-resurrect.git",
+            ),
+            (
+                "tmux-fzf-url",
+                "https://github.com/wfxr/tmux-fzf-url.git",
+            ),
+        ];
+
+        handles.push(create_task("tmux-plugins", &mp, move |pb| {
+            let plugins_dir = dotfiles_tools::home_dir()?.join(".tmux/plugins");
+            std::fs::create_dir_all(&plugins_dir)?;
+
+            for (name, url) in &plugins {
+                let dest = plugins_dir.join(name);
+                if dest.exists() {
+                    run_cmd(
+                        &format!("tmux:{name}:pull"),
+                        pb,
+                        Command::new("git")
+                            .args(["pull", "--quiet"])
+                            .current_dir(&dest),
+                    )?;
+                } else {
+                    run_cmd(
+                        &format!("tmux:{name}:clone"),
+                        pb,
+                        Command::new("git")
+                            .args(["clone", "--quiet", url, &dest.to_string_lossy()]),
+                    )?;
+                }
+            }
+            Ok(())
+        }));
+    }
+
     // brew bundle may require sudo for casks, run it interactively before parallel tasks
     if has_brew {
         let home = dotfiles_tools::home_dir()?;
