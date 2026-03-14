@@ -1,4 +1,5 @@
 # Core — essential system tools, always installed
+tap 'buo/cask-upgrade'
 
 brew 'zsh'
 brew 'git'
@@ -32,7 +33,7 @@ brew 'mas'
 brew 'mdless'
 brew 'tokei'
 brew 'cmatrix'
-cask 'rar', no_quarantine: true, greedy: true
+cask 'rar', greedy: true
 
 # Sync
 brew 'fswatch'

@@ -17,10 +17,6 @@ end
 
 cask_args require_sha: true
 
-# Taps
-tap 'buo/cask-upgrade'
-tap 'radiosilence/browser-schedule'
-
 # Core — always loaded
 brewfiles_dir = File.join(dotfiles_dir, 'brewfiles.d')
 eval(File.read(File.join(brewfiles_dir, 'core.rb')))
