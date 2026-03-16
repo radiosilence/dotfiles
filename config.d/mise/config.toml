@@ -78,6 +78,7 @@ kubectl = "latest"  # Kubernetes CLI
 "npm:yaml-language-server" = "latest"  # YAML LSP
 "npm:vscode-langservers-extracted" = "latest"  # HTML/CSS/JSON LSPs
 "npm:@ansible/ansible-language-server" = "latest"  # Ansible LSP
+"pipx:nginx-language-server" = "latest"  # Nginx LSP
 terraform = "latest"  # IaC
 terraform-ls = "latest"  # Terraform LSP
 # JS tools
@@ -90,6 +91,12 @@ terraform-ls = "latest"  # Terraform LSP
 "github:radiosilence/koan" = { version = "latest", os = ["macos"] }
 "github:datadog-labs/pup" = "latest"
 "github:hatoo/oha" = "latest"
+
+
+# Ansible
+"pipx:ansible" = { version = "latest", uvx = false, pipx_args = "--include-deps" }  # Config management
+# Music library
+"pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer" }  # Music organizer
 
 [tasks.git-conf-dir]
 description = "Set git config per directory: mise run git-conf-dir user.email me@work.com"
