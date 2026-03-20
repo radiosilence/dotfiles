@@ -19,3 +19,11 @@ dotfiles.local.toml
 
 # Zsh compiled files
 *.zwc
+
+# Gas Town (added by gt)
+.runtime/
+.claude/
+.logs/
+__pycache__/
+state.json
+.beads/
