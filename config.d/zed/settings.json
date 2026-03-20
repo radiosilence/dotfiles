@@ -22,7 +22,7 @@
       "default_mode": "bypassPermissions",
       "default_config_options": {
         "mode": "bypassPermissions",
-        "model": "default"
+        "model": "opus[1m]"
       },
       "favorite_config_option_values": {
         "mode": [
