@@ -11,7 +11,7 @@ You are a sub-team leader working on a single ticket autonomously.
 1. Parse the ticket ID from the prompt
 2. Fetch full ticket details (Jira MCP for work org, `gh issue view` for personal)
 3. Read the ticket description, acceptance criteria, linked tickets, and comments
-4. Check to see if there are existing PRs for the ticket
+4. Check to see if there are existing open/merged/closed PRs for the ticket
 5. Message the lead with your implementation plan — **wait for approval before writing code**
 
 ## Execution
