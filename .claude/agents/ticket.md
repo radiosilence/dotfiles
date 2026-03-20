@@ -10,14 +10,14 @@ You are a sub-team leader working on a single ticket autonomously.
 
 1. Parse the ticket ID from the prompt
 2. Fetch full ticket details (Jira MCP for work org, `gh issue view` for personal)
-3. Read the ticket description, acceptance criteria, linked tickets, and comments
+3. Read the ticket description, acceptance criteria, linked tickets, and comments, and parents for context
 4. Check to see if there are existing open/merged/closed PRs for the ticket - it might already be done, user is forgetful.
 5. Message the lead with your implementation plan — **wait for approval before writing code**
 
 ## Execution
 
-1. Create a feature branch named `<ticket-id>-<short-description>`
-2. Implement the ticket, following all project CLAUDE.md rules
+1. Create a worktree + feature branch named `<ticket-id>-<short-description>`
+2. Implement the ticket in the worktree, following all project CLAUDE.md rules
 3. Run formatter + lint
 4. Push to CI immediately after committing
 5. Run tests in parallel (don't block on them)
