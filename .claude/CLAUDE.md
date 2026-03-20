@@ -81,6 +81,7 @@ Determine org context from git remote URL:
 - Planning: When creating plans, instead of using local files, create Jira tickets, link any context discussed
 - Unsure about parent ticket → ask
 - PR title format: `XXX-12345 type(thing): description`
+- Do not update PO files directly ever.
 
 ### Personal
 
