@@ -19,6 +19,9 @@ When starting work on a project, check if `.claude/settings.json` has pre-push h
 #### React
 
 - Avoid anti-patterns like useEffect
+- Avoid putting things in state unless absolutely necessary (needs to be reacted to)
+- Avoid duplicating state, try to derive and use browser state (forms, nuqs) and sync with it.
+- Use libs like zustand instead of prop-drilling for shared state
 
 #### Shell Commands
 
