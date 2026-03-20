@@ -67,7 +67,7 @@ Determine org context from git remote URL:
 - AWAYS resolve PR comments that we have actually resolved
 - Infer project/org from git remote + existing ticket refs
 - Infer user from `git config user.email` — only pick up tickets assigned to them
-- Update status: In Progress → In Review → Merged → Done
+- Update status: In Progress → In Review → Merged → Done (use a backgrounded agent to poll)
 - Groom tickets: team, platform, sprint
 - Comment tickets with findings and actions
 - When creating JIRA tickets, ALWAYS:
