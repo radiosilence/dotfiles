@@ -38,6 +38,8 @@ On first project interaction, check `.claude/settings.json` for pre-push hooks. 
 
 If it makes sense for a task to have a background agent (state polls, admin stuff etc) do it.
 
+**USE WORKTREES**. Especially with `/batch` skill. Also make sure to clean them up.
+
 ## Git & GitHub
 
 - `gh` CLI for all GitHub operations
