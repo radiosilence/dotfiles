@@ -14,23 +14,11 @@ When starting work on a project, check if `.claude/settings.json` has pre-push h
 - If you have added/modified tests, always verify they work.
 - Any long running commands such as codegen, typechecks, lint etc should ALWAYS be done with a team member agent so as not to block.
 
-#### cmux (Terminal Multiplexer)
+### Code stuff
 
-If `cmux` is available (`command -v cmux`), you can use it to manage workspaces, spawn terminals/browsers, and automate browser interactions. Hooks already handle status pills and workspace naming — these commands are for when you need more.
+#### React
 
-- `cmux new-workspace "name"` — open a new workspace tab
-- `cmux new-pane --type terminal` — split a new terminal pane
-- `cmux new-pane --type browser --url "https://..."` — open a browser pane
-- `cmux send "command"` / `cmux send-key "enter"` — send input to a pane
-- `cmux read-screen` — read current pane contents (useful for checking output)
-- `cmux list-workspaces` / `cmux list-panes` — discover layout
-- `cmux browser open/navigate/snapshot/click/type/eval` — browser automation
-- `cmux set-status <name> <text> --icon <icon> --color <hex>` — sidebar status pill
-- `cmux set-progress <pct> --label <text>` — progress indicator
-- `cmux rename-workspace "name"` — rename current workspace
-- `cmux notify --title "t" --body "b"` — send notification
-
-All commands are no-ops outside cmux. Run `cmux` with no args for full command list.
+- Avoid anti-patterns like useEffect
 
 #### Shell Commands
 
