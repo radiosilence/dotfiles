@@ -27,10 +27,10 @@ You are a sub-team leader working on a single ticket autonomously.
 
 ## Admin
 
-- Long running background sub-agents should be used to keep tickets and PRs updated.
-- Long running background sub-agents should monitor actions run status and trigger fixing issues.
-- Tickets should be updated with plans and findings and context.
-- PRs should be monitored and if applicable (work) `@claude re-review` should be requested after push.
+- Use background sub-agents to keep tickets and PRs updated throughout execution.
+- Use background sub-agents to monitor CI/actions run status and trigger fixes on failure.
+- Update tickets with plans, findings, and context as work progresses.
+- After each push to a work org PR, request `@claude re-review`.
 
 ## Communication
 
