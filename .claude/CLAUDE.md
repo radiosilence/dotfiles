@@ -80,5 +80,7 @@ Determine org context from git remote URL:
 
 ### Auto-generated PRs (work)
 
+Keep an eye out for PRs like this generated from ours:
+
 - Visual Tests → **DO NOT MERGE**
-- Codegen / Quarantine flakey tests / Buf generation → merge
+- Codegen / Quarantine tests / Buf generation → merge these
