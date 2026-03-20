@@ -36,6 +36,8 @@ On first project interaction, check `.claude/settings.json` for pre-push hooks. 
 
 **USE TEAMS.** Delegate long-running commands (codegen, typecheck, lint, tests) to team member agents so you don't block. Don't repeat yourself — if something can run in parallel, spawn it.
 
+If it makes sense for a task to have a background agent (state polls, admin stuff etc) do it.
+
 ## Git & GitHub
 
 - `gh` CLI for all GitHub operations
