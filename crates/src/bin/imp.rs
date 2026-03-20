@@ -124,11 +124,7 @@ fn download_file(client: &Client, url: &str, dest_dir: &Path) -> Result<std::pat
         anyhow::bail!("Failed to download {}: {}", url, response.status());
     }
 
-    let file_name = url
-        .rsplit('/')
-        .next()
-        .unwrap_or("download.zip")
-        .to_string();
+    let file_name = url.rsplit('/').next().unwrap_or("download.zip").to_string();
     let dest_path = dest_dir.join(&file_name);
 
     let mut file = File::create(&dest_path)?;

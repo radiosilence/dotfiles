@@ -165,11 +165,7 @@ fn main() -> Result<()> {
 
     if has_claude {
         handles.push(create_task("claude", &mp, |pb| {
-            run_cmd(
-                "claude:update",
-                pb,
-                Command::new("claude").arg("--update"),
-            )?;
+            run_cmd("claude:update", pb, Command::new("claude").arg("--update"))?;
             Ok(())
         }));
     }
@@ -181,10 +177,7 @@ fn main() -> Result<()> {
                 "tmux-resurrect",
                 "https://github.com/tmux-plugins/tmux-resurrect.git",
             ),
-            (
-                "tmux-fzf-url",
-                "https://github.com/wfxr/tmux-fzf-url.git",
-            ),
+            ("tmux-fzf-url", "https://github.com/wfxr/tmux-fzf-url.git"),
         ];
 
         handles.push(create_task("tmux-plugins", &mp, move |pb| {
@@ -205,8 +198,12 @@ fn main() -> Result<()> {
                     run_cmd(
                         &format!("tmux:{name}:clone"),
                         pb,
-                        Command::new("git")
-                            .args(["clone", "--quiet", url, &dest.to_string_lossy()]),
+                        Command::new("git").args([
+                            "clone",
+                            "--quiet",
+                            url,
+                            &dest.to_string_lossy(),
+                        ]),
                     )?;
                 }
             }

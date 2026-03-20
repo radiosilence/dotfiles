@@ -69,10 +69,7 @@ pub fn regenerate_completions() -> Result<()> {
                 let Ok(bin_path) = which::which(&tool.name) else {
                     continue;
                 };
-                let src = bin_path
-                    .parent()
-                    .unwrap_or(bin_path.as_path())
-                    .join(source);
+                let src = bin_path.parent().unwrap_or(bin_path.as_path()).join(source);
                 if src.exists() {
                     match fs::copy(&src, completions_dir.join(format!("_{}", tool.name))) {
                         Ok(_) => println!("  ✓ {} (pre-built)", tool.name),
@@ -117,13 +114,9 @@ pub fn regenerate_completions() -> Result<()> {
                 }
             }
             _ => {
-                let cmd: Vec<String> = tool.command.unwrap_or_else(|| {
-                    vec![
-                        tool.name.clone(),
-                        "completion".into(),
-                        "zsh".into(),
-                    ]
-                });
+                let cmd: Vec<String> = tool
+                    .command
+                    .unwrap_or_else(|| vec![tool.name.clone(), "completion".into(), "zsh".into()]);
                 let name = tool.name.clone();
                 let dir = completions_dir.clone();
                 let pb = mp.add(ProgressBar::new_spinner());

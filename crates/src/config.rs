@@ -46,8 +46,7 @@ impl DotfilesConfig {
         let local_path = dotfiles.join("dotfiles.local.toml");
 
         let mut base: toml::Value = toml::from_str(
-            &fs::read_to_string(&base_path)
-                .with_context(|| "Failed to read dotfiles.toml")?,
+            &fs::read_to_string(&base_path).with_context(|| "Failed to read dotfiles.toml")?,
         )
         .with_context(|| "Failed to parse dotfiles.toml")?;
 
