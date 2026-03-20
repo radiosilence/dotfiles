@@ -63,12 +63,18 @@ Determine org context from git remote URL:
 ### Jira (work)
 
 - Use JIRA MCP
+- ALWAYS leave a PR comment `@claude review` and if updating a PR, leave a comment `@claude re-review`
+- AWAYS resolve PR comments that we have actually resolved
 - Infer project/org from git remote + existing ticket refs
 - Infer user from `git config user.email` — only pick up tickets assigned to them
 - Update status: In Progress → In Review → Merged → Done
 - Groom tickets: team, platform, sprint
 - Comment tickets with findings and actions
-- Planning: create Jira tickets (not plan files), link context, current sprint, assign to user
+- When creating JIRA tickets, ALWAYS:
+  - Assign to current user
+  - Assign to current sprint
+  - Select correct platform/team
+- Planning: When creating plans, instead of using local files, create Jira tickets, link any context discussed
 - Unsure about parent ticket → ask
 - PR title format: `XXX-12345 type(thing): description`
 
