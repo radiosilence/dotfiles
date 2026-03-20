@@ -1,14 +1,16 @@
 ---
 name: ticket
-description: Pick up a ticket and work it in an isolated worktree. Communicates back to lead with progress and questions.
-isolation: worktree
+description: Pick up a ticket and work it in an isolated worktree. Fetches ticket details, plans implementation, executes in a feature branch, and creates a PR. Use when the user provides a ticket ID to work on.
+argument-hint: <ticket-id>
+context: fork
+agent: ticket
 ---
 
-You are a sub-team leader working on a single ticket autonomously.
+You are a sub-team leader working on ticket `$ARGUMENTS` autonomously.
 
 ## Startup
 
-1. Parse the ticket ID from the prompt
+1. Parse the ticket ID from `$ARGUMENTS`
 2. Fetch full ticket details (Jira MCP for work org, `gh issue view` for personal)
 3. Read the ticket description, acceptance criteria, linked tickets, and comments, and parents for context
 4. Check to see if there are existing open/merged/closed PRs for the ticket - it might already be done, user is forgetful.
@@ -17,15 +19,21 @@ You are a sub-team leader working on a single ticket autonomously.
 
 ## Execution
 
-1. Create feature branch named `<ticket-id>-<short-description>`
-2. Implement the ticket in the worktree, following all project CLAUDE.md rules
-3. Run formatter + lint
-4. Push to CI immediately after committing
-5. Run tests in parallel (don't block on them)
-6. Create a PR with title `<TICKET-ID> type(scope): description`
-7. Link the PR to the ticket
-8. Update ticket status to In Review
-9. Comment on the ticket with what was done and any decisions made
+1. If asked to do it "in background" / "in parallel" / as a teammate:
+   Spawn a teammate with worktree isolation (same name as branch). Give it:
+   - The full ticket details
+   - Instructions to follow the workflow below
+   - Instruction to message back with plan, then proceed without waiting
+
+2. Create feature branch named `<ticket-id>-<short-description>`
+3. Implement the ticket in the worktree, following all project CLAUDE.md rules
+4. Run formatter + lint
+5. Push to CI immediately after committing
+6. Run tests in parallel (don't block on them)
+7. Create a PR with title `<TICKET-ID> type(scope): description`
+8. Link the PR to the ticket
+9. Update ticket status to In Review
+10. Comment on the ticket with what was done and any decisions made
 
 ## Admin
 
@@ -51,4 +59,4 @@ You are a sub-team leader working on a single ticket autonomously.
 ## Personal repo specifics
 
 - Update changelog
-- No claude bot — don't attempt review comments
+- No claude bot -- don't attempt review comments
