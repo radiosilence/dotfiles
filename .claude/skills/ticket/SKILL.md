@@ -27,13 +27,14 @@ You are a sub-team leader working on ticket `$ARGUMENTS` autonomously.
 
 2. Create feature branch named `<ticket-id>-<short-description>`
 3. Implement the ticket in the worktree, following all project CLAUDE.md rules
-4. Run formatter + lint
-5. Push to CI immediately after committing
-6. Run tests in parallel (don't block on them)
-7. Create a PR with title `<TICKET-ID> type(scope): description`
-8. Link the PR to the ticket
-9. Update ticket status to In Review
-10. Comment on the ticket with what was done and any decisions made
+4. Check any tests that may be affected are updated
+5. Run formatter + lint
+6. Push to CI immediately after committing
+7. Run tests in parallel (don't block on them)
+8. Create a PR with title `<TICKET-ID> type(scope): description`
+9. Link the PR to the ticket
+10. Update ticket status to In Review
+11. Comment on the ticket with what was done and any decisions made
 
 ## Admin
 
