@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
-# PostToolUse hook: remind agent to format/lint after code edits.
-# Outputs additional context to the agent based on the edited file's language.
+# PostToolUse hook: remind agent to format/lint after source code edits.
+# Language-agnostic — just detects if a source file changed and nudges.
 
 event=$(cat)
 file=$(echo "$event" | jq -r '.tool_input.file_path // .tool_input.path // empty' 2>/dev/null)
 
 [ -z "$file" ] && exit 0
 
+# Skip non-source files (docs, config, etc.)
 case "$file" in
-  *.ex|*.exs)
-    echo "Elixir file changed. Run \`mise x -- mix format\` and \`mise x -- mix credo --strict\` before committing."
-    ;;
-  *.rs)
-    echo "Rust file changed. Run \`cargo fmt --all\` and \`cargo clippy --workspace -- -D warnings\` before committing."
-    ;;
-  *.ts|*.tsx|*.js|*.jsx)
-    echo "JS/TS file changed. Run the project's formatter (biome/prettier) and linter (eslint) before committing."
-    ;;
+  *.md|*.txt|*.json|*.yaml|*.yml|*.toml|*.lock|*.csv) exit 0 ;;
+  *.gitignore|*.env*|*.conf) exit 0 ;;
 esac
+
+echo "Source file changed. Remember to run the project's formatter and linter before committing."
