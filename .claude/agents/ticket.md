@@ -31,6 +31,7 @@ You are a sub-team leader working on a single ticket autonomously.
 - Use background sub-agents to monitor CI/actions run status and trigger fixes on failure.
 - Update tickets with plans, findings, and context as work progresses.
 - After each push to a work org PR, request `@claude re-review`.
+- Clean up your worktree once merged.
 
 ## Communication
 
