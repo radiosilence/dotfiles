@@ -49,7 +49,7 @@ If it makes sense for a task to have a background agent (state polls, admin stuf
 - Signed commits preferred, unsigned OK if 1Password times out
 - Never auto-merge unless explicitly requested
 - Don't rebase, just merge — we squash PRs
-- Request `@claude (re-)review` if applicable (work)
+- IMPORTANT: Request `@claude (re-)review` if applicable (work)
 
 ## Docs
 
