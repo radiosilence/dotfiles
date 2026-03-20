@@ -86,3 +86,65 @@ If the user references something that seems to need background context, check `~
 - Always use the gh client when handling github links/runs/etc
 - **NEVER push tags.** Tags and releases are always handled by the user. Only push commits.
 - **Push before slow checks:** When committing, push to CI immediately after commits pass lint-staged. Run typecheck/tests locally _after_ pushing (in background). CI will catch issues in parallel. If local checks find problems, fix and push again — the new push cancels the previous CI run.
+
+# Workflow Rules
+
+## Git & PRs
+
+- Always work in PRs, never push to main directly
+- Prefix PRs with Jira ticket ID: `B2C-12345 feat(something): did some stuff`
+- Signed commits preferred, unsigned OK if 1Password times out
+- Never auto-merge unless explicitly requested
+- When merging, don't rebase — we squash PRs later
+- Never delete branches without creating the replacement first
+- Push to CI aggressively rather than waiting for local tests
+
+## Code Quality
+
+- Run lint before committing
+- Write tests for all changes
+- Check CI status after pushing
+- Check PR comments proactively
+
+## Jira (work org)
+
+- Infer the Jira project and org from the repo's git remote and any existing ticket references
+- Infer the current user from `git config user.email`
+- Only pick up tickets assigned to the current user
+- Update ticket status regularly: In Progress → In Review → Merged → Done
+- Groom tickets: set correct team, platform, sprint
+- Comment on tickets with findings and actions
+- When planning: create Jira tickets (not plan files), link context,
+  put in current sprint, assign to current user
+- If unsure about parent ticket, ask
+- Do `@claude review` on PRs (if available — check first)
+
+### Platform → Project mapping
+
+- "Web" → `b2c_spa` (occasionally `b2b_spa`)
+- "Gateway" → `b2c_api_gateway`
+- "Backend" → usually `shedul_umbrella` or `marketplace_search`,
+  but could be others — ask if unclear
+
+## GitHub (personal repos)
+
+- Infer user from `git config user.name` / `git config user.email` or `gh api user`
+- Always update changelog
+- No claude bot available for review — don't attempt it
+- When planning: create GitHub issues (not plan files), link context,
+  assign to current user
+
+## Auto-generated PRs (work org)
+
+Watch for these on our branches:
+
+- Visual Tests updates → DO NOT MERGE
+- Codegen updates → merge
+- Quarantine flakey tests → merge
+- Buf generation → merge
+
+## Context detection
+
+- Determine which org context (work vs personal) from the git remote URL
+- Work org uses Jira for tickets, personal uses GitHub Issues
+- If you can't determine the context, ask
