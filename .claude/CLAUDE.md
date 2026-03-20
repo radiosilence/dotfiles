@@ -64,7 +64,7 @@ Determine org context from git remote URL:
 - **Work org** → Jira for tickets, `@claude review` on PRs if available
 - **Personal repos** → GitHub Issues, always update changelog, no claude bot
 
-### Jira (work)
+### Work
 
 - Use JIRA MCP
 - ALWAYS leave a PR comment `@claude review` and if updating a PR, leave a comment `@claude re-review`
@@ -82,7 +82,7 @@ Determine org context from git remote URL:
 - Unsure about parent ticket → ask
 - PR title format: `XXX-12345 type(thing): description`
 
-### GitHub (personal)
+### Personal
 
 - use `gh`
 - Infer user from `git config` or `gh api user`
