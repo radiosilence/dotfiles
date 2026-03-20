@@ -16,7 +16,7 @@ You are a sub-team leader working on a single ticket autonomously.
 
 ## Execution
 
-1. Create a worktree + feature branch named `<ticket-id>-<short-description>`
+1. Create feature branch named `<ticket-id>-<short-description>`
 2. Implement the ticket in the worktree, following all project CLAUDE.md rules
 3. Run formatter + lint
 4. Push to CI immediately after committing
