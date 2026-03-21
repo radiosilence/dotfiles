@@ -65,18 +65,18 @@ fn main() -> Result<()> {
     }
 
     if to_delete.is_empty() {
-        println!("  {} No garbage files found", "✓".green());
+        println!("  {} No garbage files found", "󰄬".green());
         return Ok(());
     }
 
-    println!("  {} Found {} garbage files", "!".yellow(), to_delete.len());
+    println!("  {} Found {} garbage files", "".yellow(), to_delete.len());
 
     for file in &to_delete {
         println!("  {}", file.display());
     }
 
     if args.dry_run {
-        println!("  {} Mode: dry-run", "→".bright_black());
+        println!("  {} Mode: dry-run", "→".cyan());
         return Ok(());
     }
 
@@ -87,7 +87,7 @@ fn main() -> Result<()> {
         .interact()?;
 
     if !confirmed {
-        println!("  {} Cancelled", "✗".red());
+        println!("  {} Cancelled", "󰅖".red());
         return Ok(());
     }
 
@@ -95,11 +95,11 @@ fn main() -> Result<()> {
     for file in &to_delete {
         match std::fs::remove_file(file) {
             Ok(()) => deleted += 1,
-            Err(e) => eprintln!("  {} {}: {}", "!".yellow(), file.display(), e),
+            Err(e) => eprintln!("  {} {}: {}", "".yellow(), file.display(), e),
         }
     }
 
-    println!("  {} Deleted {deleted} files", "✓".green());
+    println!("  {} Deleted {deleted} files", "󰄬".green());
 
     // Run prune if it exists to clean up empty directories
     let _ = Command::new("prune").args(&args.paths).status();

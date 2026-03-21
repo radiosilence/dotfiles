@@ -1,4 +1,5 @@
 use anyhow::Result;
+use colored::Colorize;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::fs;
 use std::path::Path;
@@ -14,7 +15,8 @@ pub fn regenerate_completions() -> Result<()> {
     let completions_dir = home.join(".config/zsh/completions");
 
     println!(
-        "Generating completions for zsh... to {}",
+        "  {} generating completions to {}",
+        "→".cyan(),
         completions_dir.display()
     );
 
@@ -33,20 +35,20 @@ pub fn regenerate_completions() -> Result<()> {
             }
         }
     } else if let Err(e) = fs::create_dir_all(&completions_dir) {
-        println!("  ✗ cannot create {}: {}", completions_dir.display(), e);
+        println!("  {} cannot create {}: {}", "󰅖".red(), completions_dir.display(), e);
         return Ok(());
     }
 
     let config = match DotfilesConfig::load() {
         Ok(c) => c,
         Err(e) => {
-            println!("  ✗ failed to load dotfiles.toml: {e}");
+            println!("  {} failed to load dotfiles.toml: {e}", "󰅖".red());
             return Ok(());
         }
     };
 
     if config.completions.tools.is_empty() {
-        println!("No tools configured in dotfiles.toml");
+        println!("  {} no tools configured in dotfiles.toml", "".yellow());
         return Ok(());
     }
 
@@ -63,7 +65,7 @@ pub fn regenerate_completions() -> Result<()> {
         match tool_type {
             "prebuilt" => {
                 let Some(source) = tool.source.as_ref() else {
-                    println!("  ✗ {}: prebuilt missing `source` field", tool.name);
+                    println!("  {} {}: prebuilt missing `source` field", "󰅖".red(), tool.name);
                     continue;
                 };
                 let Ok(bin_path) = which::which(&tool.name) else {
@@ -72,18 +74,18 @@ pub fn regenerate_completions() -> Result<()> {
                 let src = bin_path.parent().unwrap_or(bin_path.as_path()).join(source);
                 if src.exists() {
                     match fs::copy(&src, completions_dir.join(format!("_{}", tool.name))) {
-                        Ok(_) => println!("  ✓ {} (pre-built)", tool.name),
-                        Err(e) => println!("  ✗ {}: copy failed: {}", tool.name, e),
+                        Ok(_) => println!("  {} {} (pre-built)", "󰄬".green(), tool.name),
+                        Err(e) => println!("  {} {}: copy failed: {}", "󰅖".red(), tool.name, e),
                     }
                 }
             }
             "sourced" => {
                 let Some(cmd) = tool.command.as_ref() else {
-                    println!("  ✗ {}: sourced missing `command` field", tool.name);
+                    println!("  {} {}: sourced missing `command` field", "󰅖".red(), tool.name);
                     continue;
                 };
                 let Some(output_rel) = tool.output.as_ref() else {
-                    println!("  ✗ {}: sourced missing `output` field", tool.name);
+                    println!("  {} {}: sourced missing `output` field", "󰅖".red(), tool.name);
                     continue;
                 };
                 let output_path = dotfiles.join(output_rel);
@@ -97,8 +99,8 @@ pub fn regenerate_completions() -> Result<()> {
                 match Command::new(&cmd[0]).args(&cmd[1..]).output() {
                     Ok(out) if out.status.success() && !out.stdout.is_empty() => {
                         match fs::write(&output_path, &out.stdout) {
-                            Ok(()) => println!("  ✓ {} (sourced)", name),
-                            Err(e) => println!("  ✗ {}: write failed: {}", name, e),
+                            Ok(()) => println!("  {} {} (sourced)", "󰄬".green(), name),
+                            Err(e) => println!("  {} {}: write failed: {}", "󰅖".red(), name, e),
                         }
                     }
                     Ok(out) => {
@@ -108,9 +110,9 @@ pub fn regenerate_completions() -> Result<()> {
                             .next()
                             .filter(|s| !s.is_empty())
                             .unwrap_or("empty output");
-                        println!("  ✗ {}: {}", name, err);
+                        println!("  {} {}: {}", "󰅖".red(), name, err);
                     }
-                    Err(e) => println!("  ✗ {}: {}", name, e),
+                    Err(e) => println!("  {} {}: {}", "󰅖".red(), name, e),
                 }
             }
             _ => {
@@ -143,8 +145,8 @@ fn run_completion(cmd: &[String], name: &str, completions_dir: &Path, pb: &Progr
         Ok(output) => {
             if output.status.success() && !output.stdout.is_empty() {
                 match fs::write(completions_dir.join(format!("_{name}")), output.stdout) {
-                    Ok(()) => (true, format!("✓ {name}")),
-                    Err(e) => (false, format!("✗ {name}: write failed: {e}")),
+                    Ok(()) => (true, format!("󰄬 {name}")),
+                    Err(e) => (false, format!("󰅖 {name}: write failed: {e}")),
                 }
             } else {
                 let stderr = String::from_utf8_lossy(&output.stderr);
@@ -155,10 +157,10 @@ fn run_completion(cmd: &[String], name: &str, completions_dir: &Path, pb: &Progr
                 } else {
                     format!("exit code {}", output.status.code().unwrap_or(-1))
                 };
-                (false, format!("✗ {name}: {err}"))
+                (false, format!("󰅖 {name}: {err}"))
             }
         }
-        Err(e) => (false, format!("✗ {name}: {e}")),
+        Err(e) => (false, format!("󰅖 {name}: {e}")),
     };
 
     let template = if success {

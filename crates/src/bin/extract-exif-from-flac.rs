@@ -63,7 +63,7 @@ fn main() -> Result<()> {
     }
 
     println!("\n/// {}\n", "EXTRACT-EXIF-FROM-FLAC".bold());
-    println!("  {} file: {}", "→".bright_black(), flac_file);
+    println!("  {} file: {}", "→".cyan(), flac_file);
 
     // Get picture info
     let output = Command::new("metaflac")
@@ -117,17 +117,17 @@ fn main() -> Result<()> {
                 if has_sensitive_data(&exif_json) {
                     println!(
                         "  {} {} - Contains sensitive EXIF data",
-                        "!".yellow(),
+                        "".yellow(),
                         type_desc
                     );
                 } else {
-                    println!("  {} {} - Clean", "✓".green(), type_desc);
+                    println!("  {} {} - Clean", "󰄬".green(), type_desc);
                 }
             } else {
-                println!("  {} {} - Clean (no EXIF data)", "✓".green(), type_desc);
+                println!("  {} {} - Clean (no EXIF data)", "󰄬".green(), type_desc);
             }
         } else {
-            println!("  {} {} - Failed to extract", "✗".red(), type_desc);
+            println!("  {} {} - Failed to extract", "󰅖".red(), type_desc);
         }
     }
 

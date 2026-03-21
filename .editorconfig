@@ -3,8 +3,11 @@ root = true
 [*]
 indent_style = space
 indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
 
 [{install,bin/*}]
-binary_next_line   = true  # like -bn
-switch_case_indent = true  # like -ci
-space_redirects    = true  # like -sr
+binary_next_line = true
+switch_case_indent = true
+space_redirects = true

@@ -47,52 +47,52 @@ fn main() -> Result<()> {
     println!("\n/// {}\n", "XCODE UNFUCKER".bold());
 
     if std::env::var("USER").unwrap_or_default() == "root" {
-        println!("  {} Already running as root", "!".yellow());
+        println!("  {} Already running as root", "".yellow());
     } else {
         println!(
             "  {} Requires sudo - you'll be prompted",
-            "·".bright_black()
+            "→".cyan()
         );
     }
 
     if args.dry_run {
-        println!("  {} DRY RUN - no changes made", "·".bright_black());
+        println!("  {} DRY RUN - no changes made", "→".cyan());
         println!(
             "  {} Remove: /Library/Developer/CommandLineTools",
-            "→".bright_black()
+            "→".cyan()
         );
-        println!("  {} Reset: xcode-select", "→".bright_black());
+        println!("  {} Reset: xcode-select", "→".cyan());
         return Ok(());
     }
 
     // Remove CommandLineTools
     println!(
         "  {} Removing: /Library/Developer/CommandLineTools",
-        "→".bright_black()
+        "→".cyan()
     );
     let status = Command::new("sudo")
         .args(["rm", "-rf", "/Library/Developer/CommandLineTools"])
         .status()?;
 
     if !status.success() {
-        println!("  {} Failed to remove CommandLineTools", "✗".red());
+        println!("  {} Failed to remove CommandLineTools", "󰅖".red());
         anyhow::bail!("rm command failed");
     }
 
     // Reset xcode-select
-    println!("  {} Resetting: xcode-select", "→".bright_black());
+    println!("  {} Resetting: xcode-select", "→".cyan());
     let status = Command::new("sudo")
         .args(["xcode-select", "--reset"])
         .status()?;
 
     if !status.success() {
-        println!("  {} Failed to reset xcode-select", "✗".red());
+        println!("  {} Failed to reset xcode-select", "󰅖".red());
         anyhow::bail!("xcode-select command failed");
     }
 
     println!(
         "  {} Xcode unfucked - GUI installer will prompt for CLI Tools",
-        "✓".green()
+        "󰄬".green()
     );
 
     Ok(())

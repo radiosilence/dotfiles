@@ -59,9 +59,9 @@ fn main() -> Result<()> {
         anyhow::bail!("Image 2 not found: {}", image2);
     }
 
-    println!("  {} image1: {}", "→".bright_black(), image1);
-    println!("  {} image2: {}", "→".bright_black(), image2);
-    println!("  {} output: {}", "→".bright_black(), output);
+    println!("  {} image1: {}", "→".cyan(), image1);
+    println!("  {} image2: {}", "→".cyan(), image2);
+    println!("  {} output: {}", "→".cyan(), output);
 
     let status = Command::new("convert")
         .arg(&image1)
@@ -89,7 +89,7 @@ fn main() -> Result<()> {
         anyhow::bail!("ImageMagick convert failed");
     }
 
-    println!("  {} visual diff created", "✓".green());
+    println!("  {} {}", "󰄬".green(), "visual diff created");
 
     Ok(())
 }

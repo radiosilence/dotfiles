@@ -89,20 +89,20 @@ fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
     let files = parallel::find_files(paths, &extensions);
 
     if files.is_empty() {
-        println!("  {} No audio files found", "!".yellow());
+        println!("  {} No audio files found", "".yellow());
         return Ok(());
     }
 
-    println!("  {} Files: {}", "→".bright_black(), files.len());
-    println!("  {} Format: FLAC (lossless)", "→".bright_black());
+    println!("  {} Files: {}", "→".cyan(), files.len());
+    println!("  {} Format: FLAC (lossless)", "→".cyan());
     println!(
         "  {} Cores: {}",
-        "→".bright_black(),
+        "→".cyan(),
         dotfiles_tools::available_cores()
     );
 
     if !keep {
-        println!("  {} Original files will be deleted", "!".yellow());
+        println!("  {} Original files will be deleted", "".yellow());
     }
 
     if dry_run {
@@ -138,20 +138,20 @@ fn convert_opus(paths: &[PathBuf], bitrate: u32, keep: bool, dry_run: bool) -> R
     let files = parallel::find_files(paths, &extensions);
 
     if files.is_empty() {
-        println!("  {} No audio files found", "!".yellow());
+        println!("  {} No audio files found", "".yellow());
         return Ok(());
     }
 
-    println!("  {} Files: {}", "→".bright_black(), files.len());
-    println!("  {} Format: Opus @ {}kbps", "→".bright_black(), bitrate);
+    println!("  {} Files: {}", "→".cyan(), files.len());
+    println!("  {} Format: Opus @ {}kbps", "→".cyan(), bitrate);
     println!(
         "  {} Cores: {}",
-        "→".bright_black(),
+        "→".cyan(),
         dotfiles_tools::available_cores()
     );
 
     if !keep {
-        println!("  {} Original files will be deleted", "!".yellow());
+        println!("  {} Original files will be deleted", "".yellow());
     }
 
     if dry_run {

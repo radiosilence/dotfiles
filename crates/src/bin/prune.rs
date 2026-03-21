@@ -81,7 +81,7 @@ fn main() -> Result<()> {
     let min_size_bytes = args.min_size * 1024;
     println!(
         "  {} threshold: {}",
-        "→".bright_black(),
+        "→".cyan(),
         format_size(min_size_bytes)
     );
 
@@ -110,7 +110,7 @@ fn main() -> Result<()> {
     if candidates.is_empty() {
         println!(
             "  {} No directories found below {}",
-            "✓".green(),
+            "󰄬".green(),
             format_size(min_size_bytes)
         );
         return Ok(());
@@ -121,7 +121,7 @@ fn main() -> Result<()> {
 
     println!(
         "  {} Found {} candidates",
-        "·".bright_black(),
+        "→".cyan(),
         candidates.len()
     );
     println!();
@@ -146,7 +146,7 @@ fn main() -> Result<()> {
     println!();
     println!(
         "  {} total: {}",
-        "→".bright_black(),
+        "→".cyan(),
         format_size(candidates.iter().map(|(_, s)| s).sum())
     );
     println!();
@@ -161,7 +161,7 @@ fn main() -> Result<()> {
     };
 
     if !confirmed {
-        println!("  {} Operation cancelled", "!".yellow());
+        println!("  {} Operation cancelled", "".yellow());
         return Ok(());
     }
 
@@ -170,17 +170,17 @@ fn main() -> Result<()> {
     for (path, _) in &candidates {
         match std::fs::remove_dir_all(path) {
             Ok(_) => {
-                println!("  × {}", path.display());
+                println!("  {} {}", "󰄬".green(), path.display());
                 deleted += 1;
             }
             Err(e) => {
-                eprintln!("  ! {}: {}", path.display(), e);
+                eprintln!("  {} {}: {}", "󰅖".red(), path.display(), e);
             }
         }
     }
 
     println!();
-    println!("  {} Deleted {} directories", "✓".green(), deleted);
+    println!("  {} Deleted {} directories", "󰄬".green(), deleted);
 
     Ok(())
 }

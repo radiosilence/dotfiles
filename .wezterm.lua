@@ -1,7 +1,7 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
--- Unix domain multiplexer for session persistence (replaces tmux locally)
+-- Unix domain multiplexer for session persistence
 config.unix_domains = {
   { name = 'unix' },
 }
@@ -21,53 +21,38 @@ config.hide_tab_bar_if_only_one_tab = false
 config.use_fancy_tab_bar = true
 config.tab_bar_at_bottom = false
 
--- Font (matching ghostty: Geist Mono, size 11)
+-- Font: Geist Mono 11 (shared across all three terminals)
 config.font = wezterm.font('Geist Mono', { weight = "Regular" })
 config.font_size = 11
-config.font_rules = {
-  {
-    intensity = "Bold",
-    font = wezterm.font('Geist Mono', { bold = true }),
-  },
-  {
-    italic = true,
-    intensity = "Bold",
-    font = wezterm.font('Geist Mono', { bold = true, italic = true }),
-  },
-  {
-    italic = true,
-    font = wezterm.font('Geist Mono', { italic = true }),
-  },
-}
 
--- Alt key behavior (macOS option-as-alt, matching ghostty macos-option-as-alt)
+-- macOS option-as-alt
 config.send_composed_key_when_left_alt_is_pressed = true
 config.send_composed_key_when_right_alt_is_pressed = true
 
 -- Keybindings
 config.keys = {
-  -- Alt compose keys (matching ghostty alt keybinds)
+  -- UK keyboard alt compose
   { key = "3", mods = "ALT", action = wezterm.action.SendString("#") },
   { key = "2", mods = "ALT", action = wezterm.action.SendString("€") },
   { key = "0", mods = "ALT", action = wezterm.action.SendString("º") },
-  -- Alt+Backspace sends Ctrl+W (word delete, matching ghostty alt+backspace=text:\x17)
+  -- Alt+Backspace word delete
   { key = "Backspace", mods = "ALT", action = wezterm.action.SendString("\x17") },
-  -- Shift+Enter sends newline (matching ghostty shift+enter=text:\n)
+  -- Shift+Enter literal newline
   { key = "Enter", mods = "SHIFT", action = wezterm.action.SendString("\n") },
-  -- Clear terminal (Cmd+K)
+  -- Clear scrollback
   { key = "k", mods = "CMD", action = wezterm.action.ClearScrollback "ScrollbackAndViewport" },
   -- Pane management
   { key = "w", mods = "CMD", action = wezterm.action.CloseCurrentPane { confirm = false } },
   { key = "d", mods = "CMD", action = wezterm.action.SplitPane { direction = "Right" } },
   { key = "d", mods = "CMD|SHIFT", action = wezterm.action.SplitPane { direction = "Down" } },
-  -- Pane navigation (matching ghostty cmd+arrow=goto_split)
+  -- Pane navigation
   { key = "LeftArrow", mods = "CMD", action = wezterm.action.ActivatePaneDirection "Left" },
   { key = "RightArrow", mods = "CMD", action = wezterm.action.ActivatePaneDirection "Right" },
   { key = "UpArrow", mods = "CMD", action = wezterm.action.ActivatePaneDirection "Up" },
   { key = "DownArrow", mods = "CMD", action = wezterm.action.ActivatePaneDirection "Down" },
 }
 
--- Colors: Monokai Pro (matching ghostty theme exactly)
+-- Colors: Monokai Pro
 config.colors = {
   foreground = "#fcfcfa",
   background = "#2d2a2e",
@@ -79,7 +64,7 @@ config.colors = {
   scrollbar_thumb = "#222222",
   split = "#444444",
   ansi = {
-    "#3d3a3e", -- black (was #4d4a4e, now matches ghostty palette 0)
+    "#3d3a3e",
     "#ff6188",
     "#a9dc76",
     "#ffd866",

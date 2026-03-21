@@ -45,9 +45,9 @@ fn main() -> Result<()> {
     println!("\n/// {}\n", "GIT-TRIGGER".bold());
 
     if args.dry_run {
-        println!("  {} Dry run - would execute:", "·".bright_black());
-        println!("  {}   git commit --amend --no-edit", "·".bright_black());
-        println!("  {}   git push --force", "·".bright_black());
+        println!("  {} {}", "→".cyan(), "Dry run - would execute:");
+        println!("  {}   git commit --amend --no-edit", "→".cyan());
+        println!("  {}   git push --force", "→".cyan());
         return Ok(());
     }
 
@@ -71,7 +71,7 @@ fn main() -> Result<()> {
         bail!("git push --force failed");
     }
 
-    println!("  {} CI/CD triggered", "✓".green());
+    println!("  {} {}", "󰄬".green(), "CI/CD triggered");
 
     Ok(())
 }

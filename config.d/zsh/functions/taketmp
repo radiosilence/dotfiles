@@ -1,4 +1,4 @@
-# Create a temporary directory and set CWD
-taketmp() {
-    cd "$(mktemp -d)"
-}
+local dir
+dir=$(mktemp -d) || { printf "  \033[31m󰅖\033[0m %s\n" "mktemp failed" >&2; return 1; }
+printf "  \033[36m→\033[0m %s\n" "$dir"
+cd "$dir"

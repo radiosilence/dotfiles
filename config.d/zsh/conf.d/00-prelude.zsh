@@ -1,30 +1,24 @@
-# Performance optimizations for Zsh
 # Skip global compinit for faster startup
 skip_global_compinit=1
-
-#    ><(((º>   I loved Fish shell, but Zsh is my new home   <º)))><
-#              Thanks for all the fish-y memories! 🐟→🚀
 
 # Deduplicate PATH and FPATH
 typeset -U path fpath
 
-# Cache eval output for faster startup
-# Usage: _cached_eval "name" "command to generate init script"
-# Regenerate with: rm ~/.cache/zsh/eval/<name>.zsh
+# Cache eval output — regenerate with: rm ~/.cache/zsh/eval/<name>.zsh
+# Usage: _cached_eval "name" "command" [dependency_file]
 _cached_eval() {
-  local name=$1 cmd=$2
+  local name=$1 cmd=$2 dep=$3
   local cache_dir=~/.cache/zsh/eval
   local cache_file="$cache_dir/$name.zsh"
 
   [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
 
-  if [[ ! -f $cache_file ]]; then
+  if [[ ! -f $cache_file ]] || { [[ -n $dep ]] && [[ $dep -nt $cache_file ]]; }; then
     eval "$cmd" > "$cache_file"
   fi
   source "$cache_file"
 }
 
-# Zsh options for performance
 setopt NO_BEEP
 setopt AUTO_CD
 setopt GLOB_COMPLETE
@@ -72,13 +66,6 @@ else
   compinit -C
 fi
 
-# Force autoload of custom completions
-if [[ -d ~/.config/zsh/completions ]]; then
-  for completion in ~/.config/zsh/completions/_*; do
-    [[ -r $completion ]] && autoload -Uz "${completion:t}"
-  done
-fi
-
 # Completion styling
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
@@ -103,7 +90,7 @@ zstyle ':completion:*:kill:*' force-list always
 zstyle ':completion:*:(ssh|scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
-zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|-)eli-))'
+zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|-)eli-*)'
 
 # Man page sections
 zstyle ':completion:*:manuals' separate-sections true
