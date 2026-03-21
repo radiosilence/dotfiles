@@ -14,22 +14,22 @@ upd() {
   if (( rebuild )); then
     # Pull dotfiles
     if [ -d ~/.dotfiles/.git ]; then
-      printf "\033[36m→ pulling ~/.dotfiles...\033[0m\n"
-      (cd ~/.dotfiles && git pull) || { printf "\033[31m✗ git pull failed\033[0m\n"; return 1; }
+      printf "  \033[36m→\033[0m %s\n" "pulling ~/.dotfiles..."
+      (cd ~/.dotfiles && git pull) || { printf "  \033[31m󰅖\033[0m %s\n" "git pull failed"; return 1; }
     fi
 
     # Build and install binaries
-    printf "\033[35m→ building rust binaries...\033[0m\n"
-    cargo install --path ~/.dotfiles/crates --root ~/.dotfiles || { printf "\033[31m✗ cargo install failed\033[0m\n"; return 1; }
+    printf "  \033[35m󱁤\033[0m %s\n" "building rust binaries..."
+    cargo install --path ~/.dotfiles/crates --root ~/.dotfiles || { printf "  \033[31m󰅖\033[0m %s\n" "cargo install failed"; return 1; }
   fi
 
   # Run upd binary
-  ~/.dotfiles/bin/upd "${args[@]}" || { printf "\033[31m✗ upd binary failed\033[0m\n"; return 1; }
+  ~/.dotfiles/bin/upd "${args[@]}" || { printf "  \033[31m󰅖\033[0m %s\n" "upd binary failed"; return 1; }
 
   # Clear zsh caches so next shell rebuilds with updated tools
-  printf "\033[36m→ clearing zsh caches...\033[0m\n"
+  printf "  \033[36m→\033[0m %s\n" "clearing zsh caches..."
   rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
   rm -f ~/.config/zsh/conf.d/*.zwc
   rm -f ~/.zcompdump
-  printf "\033[32m✓\033[0m zsh caches cleared (next shell will rebuild)\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "zsh caches cleared (next shell will rebuild)"
 }
