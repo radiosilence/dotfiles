@@ -11,15 +11,15 @@ config.default_gui_startup_args = { 'connect', 'unix' }
 config.initial_rows = 64
 config.initial_cols = 160
 config.window_padding = { left = 2, right = 2, top = 2, bottom = 2 }
-config.window_decorations = "RESIZE|TITLE"
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.window_close_confirmation = "NeverPrompt"
 config.window_background_opacity = 0.85
 config.macos_window_background_blur = 20
 
 -- Tabs
-config.hide_tab_bar_if_only_one_tab = true
-config.use_fancy_tab_bar = false
-config.tab_bar_at_bottom = true
+config.hide_tab_bar_if_only_one_tab = false
+config.use_fancy_tab_bar = true
+config.tab_bar_at_bottom = false
 
 -- Font (matching ghostty: Geist Mono, size 11)
 config.font = wezterm.font('Geist Mono', { weight = "Regular" })
@@ -50,8 +50,12 @@ config.keys = {
   { key = "3", mods = "ALT", action = wezterm.action.SendString("#") },
   { key = "2", mods = "ALT", action = wezterm.action.SendString("€") },
   { key = "0", mods = "ALT", action = wezterm.action.SendString("º") },
+  -- Alt+Backspace sends Ctrl+W (word delete, matching ghostty alt+backspace=text:\x17)
+  { key = "Backspace", mods = "ALT", action = wezterm.action.SendString("\x17") },
   -- Shift+Enter sends newline (matching ghostty shift+enter=text:\n)
   { key = "Enter", mods = "SHIFT", action = wezterm.action.SendString("\n") },
+  -- Clear terminal (Cmd+K)
+  { key = "k", mods = "CMD", action = wezterm.action.ClearScrollback "ScrollbackAndViewport" },
   -- Pane management
   { key = "w", mods = "CMD", action = wezterm.action.CloseCurrentPane { confirm = false } },
   { key = "d", mods = "CMD", action = wezterm.action.SplitPane { direction = "Right" } },

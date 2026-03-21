@@ -1,8 +1,8 @@
-# Alacritty configuration that emulates WezTerm setup
+# Alacritty configuration (matching Ghostty as source of truth)
 
-# Font configuration
+# Font configuration (matching ghostty: Geist Mono, size 11)
 [font]
-size = 13.0
+size = 11.0
 
 [font.normal]
 family = "GeistMono Nerd Font"
@@ -22,9 +22,10 @@ style = "Bold Italic"
 
 # Window configuration
 [window]
+option_as_alt = "Both"
 opacity = 0.85
 blur = true
-decorations = "full"
+decorations = "Transparent"
 startup_mode = "Windowed"
 
 [window.dimensions]
@@ -35,26 +36,21 @@ lines = 64
 x = 2
 y = 2
 
-# Colors (matching WezTerm theme)
-[colors]
-# Primary colors
+# Colors: Monokai Pro (matching Ghostty theme exactly)
 [colors.primary]
 background = "#2d2a2e"
 foreground = "#fcfcfa"
 
-# Cursor colors
 [colors.cursor]
 text = "#000000"
 cursor = "#c1c0c0"
 
-# Selection colors
 [colors.selection]
 text = "#fcfcfa"
 background = "#5b595c"
 
-# Normal colors
 [colors.normal]
-black = "#4d4a4e"
+black = "#3d3a3e"
 red = "#ff6188"
 green = "#a9dc76"
 yellow = "#ffd866"
@@ -63,7 +59,6 @@ magenta = "#ab9df2"
 cyan = "#78dce8"
 white = "#fcfcfa"
 
-# Bright colors
 [colors.bright]
 black = "#727072"
 red = "#ff6188"
@@ -83,26 +78,38 @@ multiplier = 3
 [mouse]
 hide_when_typing = false
 
-
 # Shell
 [terminal.shell]
 program = "/opt/homebrew/bin/zsh"
 
-# Key bindings (emulating some WezTerm functionality)
+# Key bindings
+# Alt compose keys (matching ghostty alt keybinds for UK keyboard)
 [[keyboard.bindings]]
-key = "D"
-mods = "Command"
-action = "CreateNewWindow"
+key = "3"
+mods = "Alt"
+chars = "#"
 
 [[keyboard.bindings]]
-key = "T"
-mods = "Command"
-action = "CreateNewWindow"
+key = "2"
+mods = "Alt"
+chars = "€"
 
 [[keyboard.bindings]]
-key = "N"
-mods = "Command"
-action = "CreateNewWindow"
+key = "0"
+mods = "Alt"
+chars = "º"
+
+# Alt+Backspace sends Ctrl+W (word delete, matching ghostty)
+[[keyboard.bindings]]
+key = "Back"
+mods = "Alt"
+chars = "\u0017"
+
+# Shift+Enter sends newline (matching ghostty)
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\n"
 
 # Copy/Paste
 [[keyboard.bindings]]
@@ -130,5 +137,3 @@ action = "DecreaseFontSize"
 key = "Key0"
 mods = "Command"
 action = "ResetFontSize"
-
-[terminal]
