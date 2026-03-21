@@ -42,7 +42,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "GIT-SYNC".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "git-sync".bold());
 
     let repo = Repository::open(".").context("Not a git repository")?;
 

@@ -31,7 +31,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "PRUNE-GEN".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "prune-gen".bold());
     println!("  {} action: generating test structure", "→".cyan());
 
     let temp_dir = TempDir::new()?;

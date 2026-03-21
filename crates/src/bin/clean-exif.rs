@@ -74,7 +74,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "CLEAN-EXIF".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "clean-exif".bold());
 
     let extensions = ["jpg", "jpeg", "png"];
     let files = parallel::find_files(&args.paths, &extensions);

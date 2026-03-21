@@ -76,7 +76,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "PRUNE".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "prune".bold());
 
     let min_size_bytes = args.min_size * 1024;
     println!(

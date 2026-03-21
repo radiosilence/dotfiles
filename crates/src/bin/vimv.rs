@@ -35,7 +35,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "VIMV".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "vimv".bold());
 
     // Get list of files
     let files: Vec<String> = if args.files.is_empty() {

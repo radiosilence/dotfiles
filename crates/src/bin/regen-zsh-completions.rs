@@ -2,7 +2,7 @@ use anyhow::Result;
 use colored::Colorize;
 
 fn main() -> Result<()> {
-    println!("\n/// {}\n", "ZSH COMPLETIONS".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "zsh completions".bold());
     println!(
         "  {} generating: completions (parallel)",
         "→".cyan()

@@ -83,7 +83,7 @@ fn main() -> Result<()> {
 }
 
 fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
-    println!("\n/// {}\n", "FLAC CONVERSION".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "flac conversion".bold());
 
     let extensions = ["wav", "aiff", "m4a"];
     let files = parallel::find_files(paths, &extensions);
@@ -132,7 +132,7 @@ fn convert_flac(paths: &[PathBuf], keep: bool, dry_run: bool) -> Result<()> {
 }
 
 fn convert_opus(paths: &[PathBuf], bitrate: u32, keep: bool, dry_run: bool) -> Result<()> {
-    println!("\n/// {}\n", "OPUS CONVERSION".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "opus conversion".bold());
 
     let extensions = ["wav", "aiff", "flac", "m4a"];
     let files = parallel::find_files(paths, &extensions);

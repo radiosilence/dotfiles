@@ -44,7 +44,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "XCODE UNFUCKER".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "xcode unfucker".bold());
 
     if std::env::var("USER").unwrap_or_default() == "root" {
         println!("  {} Already running as root", "".yellow());

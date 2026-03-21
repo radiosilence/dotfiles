@@ -62,7 +62,7 @@ fn main() -> Result<()> {
         bail!("Not a FLAC file: {}", flac_file);
     }
 
-    println!("\n/// {}\n", "EXTRACT-EXIF-FROM-FLAC".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "extract-exif-from-flac".bold());
     println!("  {} file: {}", "→".cyan(), flac_file);
 
     // Get picture info
