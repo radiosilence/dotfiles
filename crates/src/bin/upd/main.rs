@@ -47,10 +47,31 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Phase 1: Pre-TUI (interactive stuff that needs raw stdout)
-    let (auth_status, has_sudo) = tasks::run_pre_tui()?;
+    let is_macos = cfg!(target_os = "macos");
+    let has_brew = which("brew").is_ok();
+    let has_apt = which("apt-get").is_ok();
+    let has_dnf = which("dnf").is_ok();
+    let has_mise = which("mise").is_ok();
+    let has_claude = which("claude").is_ok();
 
-    // Spawn sudo keepalive if needed
+    // Acquire sudo before TUI (needs real stdin for password)
+    let needs_sudo = has_apt || has_dnf || (is_macos && has_brew);
+    let has_sudo = if needs_sudo {
+        match std::process::Command::new("sudo").arg("-v").status() {
+            Ok(s) if s.success() => true,
+            _ => {
+                if has_apt || has_dnf {
+                    eprintln!("Failed to get sudo authentication");
+                    std::process::exit(1);
+                }
+                false
+            }
+        }
+    } else {
+        false
+    };
+
+    // Spawn sudo keepalive
     let sudo_keepalive = if has_sudo {
         let keepalive = Arc::new(std::sync::atomic::AtomicBool::new(true));
         let keepalive_clone = keepalive.clone();
@@ -67,65 +88,95 @@ fn main() -> Result<()> {
         None
     };
 
-    // Phase 2: TUI dashboard for parallel tasks
+    // Build state and spawn ALL tasks into the TUI
     let state = app::shared_state();
-
-    let has_brew = which("brew").is_ok();
-    let has_apt = which("apt-get").is_ok();
-    let has_dnf = which("dnf").is_ok();
-    let has_mise = which("mise").is_ok();
-    let has_claude = which("claude").is_ok();
-
-    // Register tasks and spawn them
     let mut handles: Vec<JoinHandle<()>> = Vec::new();
 
     {
         let mut s = state.lock().unwrap();
-        s.phase = app::Phase::Tasks;
 
+        // Link
+        let idx = s.add_task("link");
+        drop(s);
+        handles.push(tasks::spawn_link(state.clone(), idx));
+
+        // Auth checks (macOS)
+        if is_macos {
+            let mut s = state.lock().unwrap();
+            let idx = s.add_task("auth");
+            drop(s);
+            handles.push(tasks::spawn_auth(state.clone(), idx));
+        }
+
+        // Fonts (macOS)
+        if is_macos {
+            let mut s = state.lock().unwrap();
+            let idx = s.add_task("fonts");
+            drop(s);
+            handles.push(tasks::spawn_fonts(state.clone(), idx));
+        }
+
+        // Brew bundle (interactive but sudo already acquired)
+        if has_brew {
+            let mut s = state.lock().unwrap();
+            let idx = s.add_task("brew-bundle");
+            drop(s);
+            handles.push(tasks::spawn_brew_bundle(state.clone(), idx));
+        }
+
+        // Package managers
         if has_apt {
+            let mut s = state.lock().unwrap();
             let idx = s.add_task("apt");
             drop(s);
             handles.push(tasks::spawn_apt(state.clone(), idx));
-            s = state.lock().unwrap();
         }
 
         if has_dnf {
+            let mut s = state.lock().unwrap();
             let idx = s.add_task("dnf");
             drop(s);
             handles.push(tasks::spawn_dnf(state.clone(), idx));
-            s = state.lock().unwrap();
         }
 
         if has_brew {
+            let mut s = state.lock().unwrap();
             let idx = s.add_task("brew");
             drop(s);
             handles.push(tasks::spawn_brew(state.clone(), idx));
-            s = state.lock().unwrap();
         }
 
         if has_mise {
+            let mut s = state.lock().unwrap();
             let idx = s.add_task("mise");
             drop(s);
             handles.push(tasks::spawn_mise(state.clone(), idx));
-            s = state.lock().unwrap();
         }
 
         if has_claude {
+            let mut s = state.lock().unwrap();
             let idx = s.add_task("claude");
             drop(s);
             handles.push(tasks::spawn_claude(state.clone(), idx));
-            s = state.lock().unwrap();
         }
 
         {
+            let mut s = state.lock().unwrap();
             let idx = s.add_task("tmux-plugins");
             drop(s);
             handles.push(tasks::spawn_tmux_plugins(state.clone(), idx));
         }
+
+        // Zsh completions
+        {
+            let mut s = state.lock().unwrap();
+            let idx = s.add_task("zsh-completions");
+            drop(s);
+            handles.push(tasks::spawn_zsh_completions(state.clone(), idx));
+        }
     }
 
-    // Run TUI
+    // Run TUI — everything happens here
     run_tui(&state)?;
 
     // Wait for all task threads
@@ -139,10 +190,25 @@ fn main() -> Result<()> {
         let _ = handle.join();
     }
 
-    let any_failed = state.lock().unwrap().any_failed;
-
-    // Phase 3: Post-TUI
-    tasks::run_post_tui(&auth_status, any_failed)?;
+    // Print final summary after TUI exits
+    let s = state.lock().unwrap();
+    println!();
+    if s.any_failed {
+        println!(
+            "  {} {}",
+            colored::Colorize::yellow(""),
+            colored::Colorize::yellow(colored::Colorize::bold(
+                "system update complete (with errors)"
+            ))
+        );
+    } else {
+        println!(
+            "  {} {}",
+            colored::Colorize::green("󰄬"),
+            colored::Colorize::bold("system update complete")
+        );
+    }
+    println!();
 
     Ok(())
 }
@@ -157,6 +223,7 @@ fn run_tui(state: &SharedState) -> Result<()> {
     let tick_rate = Duration::from_millis(100);
     let mut last_tick = Instant::now();
     let mut tick_count: usize = 0;
+    let mut done_at: Option<Instant> = None;
 
     loop {
         // Draw
@@ -164,10 +231,14 @@ fn run_tui(state: &SharedState) -> Result<()> {
             let s = state.lock().unwrap();
             terminal.draw(|f| ui::draw(f, &s, tick_count))?;
 
-            if s.all_finished() {
-                // Show final state for a moment then exit
-                drop(s);
-                thread::sleep(Duration::from_millis(800));
+            if s.all_finished() && done_at.is_none() {
+                done_at = Some(Instant::now());
+            }
+        }
+
+        // Auto-exit after showing final state
+        if let Some(t) = done_at {
+            if t.elapsed() >= Duration::from_millis(800) {
                 break;
             }
         }

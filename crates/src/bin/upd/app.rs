@@ -40,32 +40,23 @@ impl TaskState {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Phase {
-    /// Running link, auth checks, fonts, brew bundle (pre-TUI)
-    PreTui,
-    /// Main parallel tasks running in TUI
-    Tasks,
-    /// Post-TUI: zsh completions, summary (reserved for future use)
-    #[allow(dead_code)]
-    PostTui,
-}
-
 #[derive(Debug)]
 pub struct AppState {
     pub tasks: Vec<TaskState>,
-    pub phase: Phase,
     pub status_message: String,
     pub any_failed: bool,
+    pub auth_gh_ok: bool,
+    pub auth_op_ok: bool,
 }
 
 impl AppState {
     pub fn new() -> Self {
         Self {
             tasks: Vec::new(),
-            phase: Phase::PreTui,
             status_message: String::new(),
             any_failed: false,
+            auth_gh_ok: false,
+            auth_op_ok: false,
         }
     }
 
