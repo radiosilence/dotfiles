@@ -6,6 +6,37 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### March
+
+**Terminal config sync:**
+
+- Synced Ghostty, WezTerm, and Alacritty configs — Monokai Pro theme, Geist Mono 11pt, matching keybinds (alt compose, alt+backspace, shift+enter), 0.85 opacity + blur across all three
+- WezTerm: integrated titlebar (no border), fancy top tab bar, Cmd+K clear scrollback
+- Alacritty: fixed font (GeistMono Nerd Font), corrected palette black (#3d3a3e), added option_as_alt
+- Ghostty: added background-blur, removed stale commented-out pane navigation
+
+**Unified output formatting:**
+
+- Replaced all `/// .SECTION` headers and mixed output styles across the entire repo with nerdfont icons and consistent ANSI colors
+- Icon system: `󰄬` success (green), `󰌷` link (green), `→` action (cyan), `󱁤` build (magenta), `󰛖` font (magenta), `󰅖` error (red), `` warning (yellow), `⟢` section header (magenta bold)
+- Affected: all 22 crate binaries, shared lib, setup-macos, mise tasks, zsh functions (upd, fonts!), hooks
+
+**Zsh cleanup:**
+
+- `sheldon.zsh`: collapsed 14-line hand-rolled cache to 3 lines using enhanced `_cached_eval`
+- `00-prelude.zsh`: added dependency file support to `_cached_eval` for cache invalidation
+- `npm-completion.zsh`: stripped dead bash/ancient-zsh codepaths
+- `utils.zsh`: added guard clauses for all tool-specific aliases
+- `claude.zsh`: added missing guard clause
+- `fm`/`fr`: fixed branch selection bugs, added relative dates and column-aligned output
+- `take`/`taketmp`: added error handling with nerdfont output
+- Moved bat+fzf alias to `fzf.zsh` where it belongs
+
+**Misc:**
+
+- Added Hammerspoon + WezTerm cask to brewfiles (Hammerspoon later removed — quake terminal via macOS window management too janky)
+- `.editorconfig`: added baseline quality settings (LF, final newline, trim trailing whitespace)
+
 ### February
 
 **Terminal & multiplexing:**
