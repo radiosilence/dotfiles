@@ -361,13 +361,13 @@ pub fn spawn_tmux_plugins(state: SharedState, idx: usize) -> JoinHandle<()> {
 
 pub fn spawn_zsh_completions(state: SharedState, idx: usize) -> JoinHandle<()> {
     spawn_task(state, idx, "generating", |state, idx| {
-        dotfiles_tools::regen_completions::regenerate_completions()
+        let lines = dotfiles_tools::regen_completions::regenerate_completions_quiet()
             .context("failed to regenerate zsh completions")?;
 
-        state
-            .lock()
-            .unwrap()
-            .push_output(idx, "completions regenerated".to_string());
+        let mut s = state.lock().unwrap();
+        for line in lines {
+            s.push_output(idx, line);
+        }
         Ok(())
     })
 }
