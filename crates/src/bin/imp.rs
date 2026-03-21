@@ -51,7 +51,7 @@ fn main() -> Result<()> {
     let temp_dir = TempDir::new()?;
     let dest = temp_dir.path();
 
-    println!("\n/// {}\n", "MUSIC IMPORTER".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "music importer".bold());
     println!("  {} temp dir: {}", "→".cyan(), dest.display());
     println!("  {} urls: {}", "→".cyan(), args.urls.len());
 

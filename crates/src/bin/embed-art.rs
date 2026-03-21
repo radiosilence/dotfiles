@@ -37,7 +37,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "EMBED-ART".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "embed-art".bold());
 
     dotfiles_tools::check_command("metaflac")?;
     dotfiles_tools::check_command("clean-exif")?;

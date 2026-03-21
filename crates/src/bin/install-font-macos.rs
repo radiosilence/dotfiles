@@ -48,7 +48,7 @@ fn main() -> Result<()> {
         .urls
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    println!("\n/// {}\n", "FONT INSTALLER".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "font installer".bold());
 
     dotfiles_tools::check_command("aria2c")?;
     dotfiles_tools::check_command("unzip")?;

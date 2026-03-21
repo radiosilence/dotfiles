@@ -42,7 +42,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "GIT-TRIGGER".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "git-trigger".bold());
 
     if args.dry_run {
         println!("  {} {}", "→".cyan(), "Dry run - would execute:");

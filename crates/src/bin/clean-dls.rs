@@ -46,7 +46,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "CLEAN-DLS".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "clean-dls".bold());
 
     let mut to_delete = Vec::new();
 

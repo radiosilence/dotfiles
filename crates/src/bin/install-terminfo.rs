@@ -43,7 +43,7 @@ fn main() -> Result<()> {
         .host
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    println!("\n/// {}\n", "INSTALL-TERMINFO".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "install-terminfo".bold());
     println!("  {} target: {}", "→".cyan(), host);
 
     let infocmp = Command::new("infocmp").arg("-x").output()?;

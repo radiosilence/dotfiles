@@ -41,7 +41,7 @@ fn main() -> Result<()> {
     let mp = MultiProgress::new();
 
     mp.println("")?;
-    mp.println(format!("{}", "/// .SYSTEM UPDATE".bold()))?;
+    mp.println(format!("  {} {}", "⟢".magenta().bold(), "system update".bold()))?;
     mp.println("")?;
 
     let is_macos = cfg!(target_os = "macos");
@@ -214,10 +214,7 @@ fn main() -> Result<()> {
     // brew bundle may require sudo for casks, run it interactively before parallel tasks
     if has_brew {
         let home = dotfiles_tools::home_dir()?;
-        mp.println(format!(
-            "{}",
-            "/// .BREW BUNDLE (may prompt for sudo)".blue()
-        ))?;
+        mp.println(format!("  {} {}", "⟢".magenta().bold(), "brew bundle".bold()))?;
         let bundle_result = mp.suspend(|| {
             Command::new("brew")
                 .args(["bundle", "--quiet"])
@@ -292,13 +289,13 @@ fn main() -> Result<()> {
     mp.clear()?;
 
     println!();
-    println!("{}", "/// .REGENERATING ZSH COMPLETIONS".bold());
+    println!("  {} {}", "⟢".magenta().bold(), "zsh completions".bold());
     println!();
     dotfiles_tools::regen_completions::regenerate_completions()?;
 
     // Summary
     println!();
-    println!("{}", "/// .STATUS".bold());
+    println!("  {} {}", "⟢".magenta().bold(), "status".bold());
     println!();
 
     let mut manual_steps: Vec<String> = vec![];
@@ -325,12 +322,9 @@ fn main() -> Result<()> {
 
     println!();
     if any_failed {
-        println!(
-            "{}",
-            "/// .SYSTEM UPDATE COMPLETE (with errors)".yellow().bold()
-        );
+        println!("  {} {}", "".yellow(), "system update complete (with errors)".bold().yellow());
     } else {
-        println!("{}", "/// .SYSTEM UPDATE COMPLETE".bold());
+        println!("  {} {}", "󰄬".green(), "system update complete".bold());
     }
     println!();
 
@@ -344,7 +338,7 @@ struct AuthStatus {
 }
 
 fn check_auth_status(mp: &MultiProgress) -> Result<AuthStatus> {
-    mp.println(format!("{}", "/// .AUTH STATUS".bold()))?;
+    mp.println(format!("  {} {}", "⟢".magenta().bold(), "auth status".bold()))?;
 
     let gh_ok = which("gh").is_ok()
         && Command::new("gh")

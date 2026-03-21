@@ -38,7 +38,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    println!("\n/// {}\n", "GEN-DIFF".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "gen-diff".bold());
 
     dotfiles_tools::check_command("convert")?;
 

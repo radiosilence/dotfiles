@@ -53,7 +53,7 @@ fn main() -> Result<()> {
         .port
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
-    println!("\n/// {}\n", "KILL-PORT".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "kill-port".bold());
 
     // Get all sockets
     let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;

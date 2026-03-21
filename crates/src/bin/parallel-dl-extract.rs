@@ -46,7 +46,7 @@ fn main() -> Result<()> {
         anyhow::bail!("No URLs provided");
     }
 
-    println!("\n/// {}\n", "PARALLEL DL+EXTRACT".bold());
+    println!("\n  {} {}\n", "⟢".magenta().bold(), "parallel dl+extract".bold());
 
     let temp_dir = TempDir::new()?;
     let dst = temp_dir.path();
