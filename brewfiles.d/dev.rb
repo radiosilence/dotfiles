@@ -19,3 +19,7 @@ brew 'tursodatabase/tap/turso'
 # Languages
 brew 'luarocks'
 brew 'uv'
+
+# Terminals coz fuck it
+cask 'wezterm', greedy: true
+cask 'alacritty', greedy: true
