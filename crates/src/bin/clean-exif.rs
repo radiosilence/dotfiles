@@ -94,10 +94,7 @@ fn main() -> Result<()> {
     println!();
 
     if args.dry_run {
-        println!(
-            "  {} Dry run - files that would be cleaned:",
-            "→".cyan()
-        );
+        println!("  {} Dry run - files that would be cleaned:", "→".cyan());
         for file in &files {
             println!("    {}", file.display());
         }

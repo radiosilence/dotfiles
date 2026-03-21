@@ -35,7 +35,12 @@ pub fn regenerate_completions() -> Result<()> {
             }
         }
     } else if let Err(e) = fs::create_dir_all(&completions_dir) {
-        println!("  {} cannot create {}: {}", "󰅖".red(), completions_dir.display(), e);
+        println!(
+            "  {} cannot create {}: {}",
+            "󰅖".red(),
+            completions_dir.display(),
+            e
+        );
         return Ok(());
     }
 
@@ -65,7 +70,11 @@ pub fn regenerate_completions() -> Result<()> {
         match tool_type {
             "prebuilt" => {
                 let Some(source) = tool.source.as_ref() else {
-                    println!("  {} {}: prebuilt missing `source` field", "󰅖".red(), tool.name);
+                    println!(
+                        "  {} {}: prebuilt missing `source` field",
+                        "󰅖".red(),
+                        tool.name
+                    );
                     continue;
                 };
                 let Ok(bin_path) = which::which(&tool.name) else {
@@ -81,11 +90,19 @@ pub fn regenerate_completions() -> Result<()> {
             }
             "sourced" => {
                 let Some(cmd) = tool.command.as_ref() else {
-                    println!("  {} {}: sourced missing `command` field", "󰅖".red(), tool.name);
+                    println!(
+                        "  {} {}: sourced missing `command` field",
+                        "󰅖".red(),
+                        tool.name
+                    );
                     continue;
                 };
                 let Some(output_rel) = tool.output.as_ref() else {
-                    println!("  {} {}: sourced missing `output` field", "󰅖".red(), tool.name);
+                    println!(
+                        "  {} {}: sourced missing `output` field",
+                        "󰅖".red(),
+                        tool.name
+                    );
                     continue;
                 };
                 let output_path = dotfiles.join(output_rel);

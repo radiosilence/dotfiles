@@ -49,10 +49,7 @@ fn main() -> Result<()> {
     if std::env::var("USER").unwrap_or_default() == "root" {
         println!("  {} Already running as root", "".yellow());
     } else {
-        println!(
-            "  {} Requires sudo - you'll be prompted",
-            "→".cyan()
-        );
+        println!("  {} Requires sudo - you'll be prompted", "→".cyan());
     }
 
     if args.dry_run {

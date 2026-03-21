@@ -334,11 +334,7 @@ pub fn run_pre_tui() -> Result<(AuthStatus, bool)> {
                 println!("    {} brew bundle failed (continuing)", "󰅖".red());
             }
             Err(e) => {
-                println!(
-                    "    {} brew bundle error: {} (continuing)",
-                    "󰅖".red(),
-                    e
-                );
+                println!("    {} brew bundle error: {} (continuing)", "󰅖".red(), e);
             }
         }
         println!();
@@ -387,11 +383,7 @@ pub fn run_post_tui(auth_status: &AuthStatus, any_failed: bool) -> Result<()> {
             "system update complete (with errors)".bold().yellow()
         );
     } else {
-        println!(
-            "  {} {}",
-            "󰄬".green(),
-            "system update complete".bold()
-        );
+        println!("  {} {}", "󰄬".green(), "system update complete".bold());
     }
     println!();
 
@@ -481,12 +473,7 @@ fn install_fonts() -> Result<()> {
 
         match install_font(&client, &font.url, &fonts_dir) {
             Ok(count) => {
-                println!(
-                    "    {} {} ({} files)",
-                    "󰄬".green(),
-                    font.name,
-                    count
-                );
+                println!("    {} {} ({} files)", "󰄬".green(), font.name, count);
             }
             Err(e) => {
                 println!("    {} {} ({})", "".yellow(), font.name, e);

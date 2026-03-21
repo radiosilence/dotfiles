@@ -47,7 +47,7 @@ fn main() -> Result<()> {
     let repo = Repository::open(".").context("Not a git repository")?;
 
     // Prune and fetch (shelling out for auth compatibility)
-    println!("  {} {}", "→".cyan(), "Pruning and fetching from origin");
+    println!("  {} Pruning and fetching from origin", "→".cyan());
 
     let fetch = Command::new("git")
         .args(["fetch", "--prune", "origin"])
@@ -62,7 +62,7 @@ fn main() -> Result<()> {
     let gone_branches = find_gone_branches(&repo)?;
 
     if gone_branches.is_empty() {
-        println!("  {} {}", "󰄬".green(), "No stale branches found");
+        println!("  {} No stale branches found", "󰄬".green());
         return Ok(());
     }
 
@@ -87,11 +87,11 @@ fn main() -> Result<()> {
     };
 
     if !confirmed {
-        println!("  {} {}", "".yellow(), "Cancelled");
+        println!("  {} Cancelled", "".yellow());
         return Ok(());
     }
 
-    println!("  {} {}", "→".cyan(), "Deleting branches");
+    println!("  {} Deleting branches", "→".cyan());
     for branch_name in &gone_branches {
         let mut branch = repo.find_branch(branch_name, BranchType::Local)?;
         branch.delete()?;
