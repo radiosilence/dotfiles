@@ -91,7 +91,7 @@ pub fn spawn_link(state: SharedState, idx: usize) -> JoinHandle<()> {
             state,
             idx,
             Command::new("mise")
-                .args(["run", "link"])
+                .args(["run", "--raw", "link"])
                 .current_dir(&dotfiles_dir),
         )?;
         Ok(())

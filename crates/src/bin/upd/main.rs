@@ -179,15 +179,13 @@ fn main() -> Result<()> {
     // Run TUI — everything happens here
     run_tui(&state)?;
 
-    // Wait for all task threads
-    for handle in handles {
-        let _ = handle.join();
-    }
+    // Don't join task threads — if TUI exited (auto or q/Esc), we're done.
+    // Threads will die when the process exits.
+    drop(handles);
 
     // Kill sudo keepalive
-    if let Some((handle, keepalive)) = sudo_keepalive {
+    if let Some((_handle, keepalive)) = sudo_keepalive {
         keepalive.store(false, std::sync::atomic::Ordering::Relaxed);
-        let _ = handle.join();
     }
 
     // Print final summary after TUI exits
