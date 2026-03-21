@@ -13,7 +13,11 @@ fn run_cmd(name: &str, state: &SharedState, task_idx: usize, cmd: &mut Command) 
         s.set_step(task_idx, name);
     }
 
-    let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
+    let mut child = cmd
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()?;
 
     let stdout_state = state.clone();
     let stdout_idx = task_idx;
