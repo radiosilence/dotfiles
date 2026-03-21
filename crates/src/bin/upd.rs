@@ -85,7 +85,7 @@ fn main() -> Result<()> {
                 }
                 // Brew can mostly work without sudo, just skip cask installs
                 mp.println(format!(
-                    "  {} sudo auth failed, brew bundle/casks may be skipped",
+                    "    {} sudo auth failed, brew bundle/casks may be skipped",
                     "".yellow()
                 ))?;
                 false
@@ -226,14 +226,14 @@ fn main() -> Result<()> {
         });
         match bundle_result {
             Ok(status) if status.success() => {
-                mp.println(format!("  {} brew bundle complete", "󰄬".green()))?;
+                mp.println(format!("    {} brew bundle complete", "󰄬".green()))?;
             }
             Ok(_) => {
-                mp.println(format!("  {} brew bundle failed (continuing)", "󰅖".red()))?;
+                mp.println(format!("    {} brew bundle failed (continuing)", "󰅖".red()))?;
             }
             Err(e) => {
                 mp.println(format!(
-                    "  {} brew bundle error: {} (continuing)",
+                    "    {} brew bundle error: {} (continuing)",
                     "󰅖".red(),
                     e
                 ))?;
@@ -312,11 +312,11 @@ fn main() -> Result<()> {
     }
 
     if manual_steps.is_empty() {
-        println!("  {} all good", "󰄬".green());
+        println!("    {} all good", "󰄬".green());
     } else {
-        println!("  {} remaining manual steps:", "".yellow());
+        println!("    {} remaining manual steps:", "".yellow());
         for step in &manual_steps {
-            println!("    {} {}", "·".bright_black(), step);
+            println!("      {} {}", "·".bright_black(), step);
         }
     }
 
@@ -351,10 +351,10 @@ fn check_auth_status(mp: &MultiProgress) -> Result<AuthStatus> {
 
     if which("gh").is_ok() {
         if gh_ok {
-            mp.println(format!("  {} gh", "󰄬".green()))?;
+            mp.println(format!("    {} gh", "󰄬".green()))?;
         } else {
-            mp.println(format!("  {} gh not authenticated", "".yellow()))?;
-            mp.println(format!("     run: {}", "gh auth login".cyan()))?;
+            mp.println(format!("    {} gh not authenticated", "".yellow()))?;
+            mp.println(format!("       run: {}", "gh auth login".cyan()))?;
         }
     }
 
@@ -369,11 +369,11 @@ fn check_auth_status(mp: &MultiProgress) -> Result<AuthStatus> {
 
     if which("op").is_ok() {
         if op_ok {
-            mp.println(format!("  {} 1password cli", "󰄬".green()))?;
+            mp.println(format!("    {} 1password cli", "󰄬".green()))?;
         } else {
-            mp.println(format!("  {} 1password cli not integrated", "".yellow()))?;
-            mp.println("     1. open 1Password -> Settings -> Developer -> CLI Integration")?;
-            mp.println(format!("     2. run: {}", "op plugin init".cyan()))?;
+            mp.println(format!("    {} 1password cli not integrated", "".yellow()))?;
+            mp.println("       1. open 1Password -> Settings -> Developer -> CLI Integration")?;
+            mp.println(format!("       2. run: {}", "op plugin init".cyan()))?;
         }
     }
 
@@ -385,7 +385,7 @@ fn handle_cmd_errs(name: &str, pb: &ProgressBar, child: &mut Child) -> Result<()
     if !child.wait()?.success() {
         if let Some(stderr) = child.stderr.take() {
             for line in BufReader::new(stderr).lines().map_while(Result::ok) {
-                pb.println(format!("  {} {}", format!("{}  ", name).bright_red(), line));
+                pb.println(format!("    {} {}", format!("{}  ", name).bright_red(), line));
             }
         }
         bail!("{} failed", name);
@@ -397,7 +397,7 @@ fn run_cmd(name: &str, pb: &ProgressBar, cmd: &mut Command) -> Result<()> {
     let mut child = cmd.stderr(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
     if let Some(stdout) = child.stdout.take() {
         for line in BufReader::new(stdout).lines().map_while(Result::ok) {
-            pb.println(format!("  {} {}", format!("{}  ", name).green(), line));
+            pb.println(format!("    {} {}", format!("{}  ", name).green(), line));
         }
     }
     handle_cmd_errs(name, pb, &mut child)?;
@@ -415,11 +415,11 @@ where
     thread::spawn(move || {
         let success = cb(&pb).is_ok();
         pb.set_style(if success {
-            ProgressStyle::with_template("{spinner:.green} {msg}")
+            ProgressStyle::with_template("    {spinner:.green} {msg}")
                 .unwrap()
                 .tick_strings(&["󰄬"])
         } else {
-            ProgressStyle::with_template("{spinner:.red} {msg}")
+            ProgressStyle::with_template("    {spinner:.red} {msg}")
                 .unwrap()
                 .tick_strings(&["󰅖"])
         });
@@ -453,14 +453,14 @@ fn install_fonts(mp: &MultiProgress) -> Result<()> {
         .build()?;
 
     for font in &missing {
-        mp.println(format!("  {} installing {}...", "→".cyan(), font.name))?;
+        mp.println(format!("    {} installing {}...", "→".cyan(), font.name))?;
 
         match install_font(&client, &font.url, &fonts_dir) {
             Ok(count) => {
-                mp.println(format!("  {} {} ({} files)", "󰄬".green(), font.name, count))?;
+                mp.println(format!("    {} {} ({} files)", "󰄬".green(), font.name, count))?;
             }
             Err(e) => {
-                mp.println(format!("  {} {} ({})", "".yellow(), font.name, e))?;
+                mp.println(format!("    {} {} ({})", "".yellow(), font.name, e))?;
             }
         }
     }
