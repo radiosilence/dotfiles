@@ -42,10 +42,10 @@ fn main() -> Result<()> {
     dotfiles_tools::check_command("metaflac")?;
     dotfiles_tools::check_command("clean-exif")?;
 
-    println!("  {} paths: {}", "→".bright_black(), args.paths.join(", "));
+    println!("  {} paths: {}", "→".cyan(), args.paths.join(", "));
     println!(
         "  {} cores: {}",
-        "→".bright_black(),
+        "→".cyan(),
         dotfiles_tools::available_cores()
     );
 
@@ -73,7 +73,7 @@ fn main() -> Result<()> {
         .map(|e| e.path().to_path_buf())
         .collect();
 
-    println!("  {} flac files: {}", "→".bright_black(), flac_files.len());
+    println!("  {} flac files: {}", "→".cyan(), flac_files.len());
 
     // Process in parallel
     let results: Vec<_> = flac_files
@@ -85,9 +85,9 @@ fn main() -> Result<()> {
     let failed = results.len() - success;
 
     println!();
-    println!("  {} embedded: {}", "→".bright_black(), success);
+    println!("  {} embedded: {}", "→".cyan(), success);
     if failed > 0 {
-        println!("  {} failed: {}", "→".bright_black(), failed);
+        println!("  {} failed: {}", "→".cyan(), failed);
     }
 
     Ok(())
@@ -122,7 +122,7 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
     if front_cover.is_none() && disc_art.is_none() && back_cover.is_none() && artist_art.is_none() {
         println!(
             "  {} no artwork found: {}",
-            "!".yellow(),
+            "".yellow(),
             flac_file.file_name().unwrap_or_default().to_string_lossy()
         );
         return Ok(());
@@ -166,14 +166,14 @@ fn embed_art_to_flac(flac_file: &Path) -> Result<()> {
         std::fs::rename(&temp_file, flac_file)?;
         println!(
             "  {} {}",
-            "✓".green(),
+            "󰄬".green(),
             flac_file.file_name().unwrap_or_default().to_string_lossy()
         );
     } else {
         std::fs::remove_file(&temp_file)?;
         println!(
             "  {} {}",
-            "✗".red(),
+            "󰅖".red(),
             flac_file.file_name().unwrap_or_default().to_string_lossy()
         );
     }

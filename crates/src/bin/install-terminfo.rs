@@ -44,12 +44,12 @@ fn main() -> Result<()> {
         .ok_or_else(|| anyhow::anyhow!(Args::command().render_help()))?;
 
     println!("\n/// {}\n", "INSTALL-TERMINFO".bold());
-    println!("  {} target: {}", "→".bright_black(), host);
+    println!("  {} target: {}", "→".cyan(), host);
 
     let infocmp = Command::new("infocmp").arg("-x").output()?;
 
     if !infocmp.status.success() {
-        println!("  {} infocmp failed", "✗".red());
+        println!("  {} infocmp failed", "󰅖".red());
         anyhow::bail!("infocmp failed");
     }
 
@@ -70,10 +70,10 @@ fn main() -> Result<()> {
     let status = child.wait()?;
 
     if !status.success() {
-        println!("  {} ssh tic failed", "✗".red());
+        println!("  {} ssh tic failed", "󰅖".red());
         anyhow::bail!("ssh tic failed");
     }
 
-    println!("  {} terminfo installed", "✓".green());
+    println!("  {} terminfo installed", "󰄬".green());
     Ok(())
 }

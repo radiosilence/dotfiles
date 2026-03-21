@@ -53,10 +53,10 @@ fn main() -> Result<()> {
 
     println!(
         "  {} temp dir: {}",
-        "→".bright_black(),
+        "→".cyan(),
         dst.to_string_lossy()
     );
-    println!("  {} urls: {}", "→".bright_black(), args.urls.len());
+    println!("  {} urls: {}", "→".cyan(), args.urls.len());
 
     // Create aria2c input file
     let urls_file = dst.join("urls.txt");
@@ -79,7 +79,7 @@ fn main() -> Result<()> {
         .status()?;
 
     if !status.success() {
-        println!("  {} aria2c download failed", "✗".red());
+        println!("  {} aria2c download failed", "󰅖".red());
         anyhow::bail!("aria2c download failed");
     }
 
@@ -112,7 +112,7 @@ fn main() -> Result<()> {
         fs::remove_file(zip_path)?;
     }
 
-    println!("  {} download & extract complete", "✓".green());
+    println!("  {} download & extract complete", "󰄬".green());
 
     println!("{}", dst.display());
 

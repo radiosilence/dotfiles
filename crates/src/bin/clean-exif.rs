@@ -80,23 +80,23 @@ fn main() -> Result<()> {
     let files = parallel::find_files(&args.paths, &extensions);
 
     if files.is_empty() {
-        println!("  {} No image files found", "!".yellow());
+        println!("  {} No image files found", "".yellow());
         return Ok(());
     }
 
-    println!("  {} Found: {} images", "→".bright_black(), files.len());
+    println!("  {} Found: {} images", "→".cyan(), files.len());
     println!(
         "  {} Cores: {}",
-        "→".bright_black(),
+        "→".cyan(),
         dotfiles_tools::available_cores()
     );
-    println!("  {} Stripping: all EXIF metadata", "→".bright_black());
+    println!("  {} Stripping: all EXIF metadata", "→".cyan());
     println!();
 
     if args.dry_run {
         println!(
             "  {} Dry run - files that would be cleaned:",
-            "·".bright_black()
+            "→".cyan()
         );
         for file in &files {
             println!("    {}", file.display());

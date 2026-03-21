@@ -1,6 +1,7 @@
-# Fuzzy rebase - select branch to rebase onto
-fr() {
-    local branch
-    branch=$(git --no-pager branch --all --sort=-committerdate | fzf | tr -d '[:space:]')
-    [[ -n "$branch" ]] && git rebase "$branch"
-}
+local branch
+branch=$(git for-each-ref --sort=-committerdate refs/heads/ refs/remotes/ \
+  --format='%(committerdate:relative)|%(refname:short)' |
+  column -t -s'|' |
+  fzf --no-sort --prompt="rebase → " |
+  awk '{ print $NF }') || return 0
+[[ -n "$branch" ]] && git rebase "$branch"

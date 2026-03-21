@@ -1,28 +1,31 @@
-# Utility aliases and functions for common tasks
+# Utility aliases and functions
 
-# Find what's using a port
-whatport() { lsof -i :$1; }
-
-# Show recently modified files (default: last hour)
-recent() { fd --type f --changed-within ${1:-1h} | head -20; }
-
-# Quick disk usage breakdown
-alias sizes='dust -d 2'
-
-# Show all listening ports
+whatport() { lsof -i :"$1"; }
 alias listening='lsof -iTCP -sTCP:LISTEN -P -n'
 
-# Grep processes with tree view
-psg() { procs --tree | grep -i $1; }
+if command -v fd >/dev/null; then
+  recent() { fd --type f --changed-within "${1:-1h}" | head -20; }
+fi
 
-# sesh session picker
-alias sp='sesh connect "$(sesh list --icons --hide-duplicates | fzf --ansi --reverse --header="sessions / dirs" --preview "sesh preview {}")"'
+if command -v dust >/dev/null; then
+  alias sizes='dust -d 2'
+fi
 
-# glow markdown browser — fzf pick then TUI
-gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')"; }
+if command -v procs >/dev/null; then
+  psg() { procs --tree | grep -i "$1"; }
+fi
 
-# request claude code review on current PR
-alias ccr='gh pr comment --body "@claude review"'
-alias ccrf='gh pr comment --body "@claude review and fix all issues"'
-alias ccrr='gh pr comment --body "@claude re-review"'
-alias ccrrf='gh pr comment --body "@claude re-review and fix all outstanding issues"'
+if command -v sesh >/dev/null && command -v fzf >/dev/null; then
+  alias sp='sesh connect "$(sesh list --icons --hide-duplicates | fzf --ansi --reverse --header="sessions / dirs" --preview "sesh preview {}")"'
+fi
+
+if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/dev/null; then
+  gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')"; }
+fi
+
+if command -v gh >/dev/null; then
+  alias ccr='gh pr comment --body "@claude review"'
+  alias ccrf='gh pr comment --body "@claude review and fix all issues"'
+  alias ccrr='gh pr comment --body "@claude re-review"'
+  alias ccrrf='gh pr comment --body "@claude re-review and fix all outstanding issues"'
+fi

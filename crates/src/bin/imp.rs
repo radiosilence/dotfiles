@@ -52,8 +52,8 @@ fn main() -> Result<()> {
     let dest = temp_dir.path();
 
     println!("\n/// {}\n", "MUSIC IMPORTER".bold());
-    println!("  {} temp dir: {}", "→".bright_black(), dest.display());
-    println!("  {} urls: {}", "→".bright_black(), args.urls.len());
+    println!("  {} temp dir: {}", "→".cyan(), dest.display());
+    println!("  {} urls: {}", "→".cyan(), args.urls.len());
 
     let client = Client::builder()
         .timeout(std::time::Duration::from_secs(300))
@@ -75,19 +75,19 @@ fn main() -> Result<()> {
         let downloaded = match download_file(&client, url, &album_dir) {
             Ok(path) => path,
             Err(e) => {
-                println!("  {} Download failed: {}", "✗".red(), e);
+                println!("  {} Download failed: {}", "󰅖".red(), e);
                 continue;
             }
         };
 
-        println!("  {} Downloaded", "✓".green());
+        println!("  {} Downloaded", "󰄬".green());
 
         // Extract if zip
         if downloaded.extension().and_then(|s| s.to_str()) == Some("zip") {
             println!("  {} Extracting...", "·".bright_black());
             extract_zip(&downloaded, &album_dir)?;
             std::fs::remove_file(&downloaded)?;
-            println!("  {} Extracted", "✓".green());
+            println!("  {} Extracted", "󰄬".green());
         }
 
         // Show files
@@ -108,9 +108,9 @@ fn main() -> Result<()> {
             .status()?;
 
         if !status.success() {
-            println!("  {} Beets import failed for this album", "✗".red());
+            println!("  {} Beets import failed for this album", "󰅖".red());
         } else {
-            println!("  {} Import complete", "✓".green());
+            println!("  {} Import complete", "󰄬".green());
         }
     }
 

@@ -84,7 +84,7 @@ fn main() -> Result<()> {
     for pid in &pids {
         println!(
             "  {} found: PID {} on port {}",
-            "→".bright_black(),
+            "→".cyan(),
             pid,
             port
         );
@@ -94,7 +94,7 @@ fn main() -> Result<()> {
         for pid in &pids {
             println!(
                 "  {} dry-run: would kill PID {} with signal {}",
-                "·".bright_black(),
+                "→".cyan(),
                 pid,
                 args.signal.as_deref().unwrap_or("TERM")
             );
@@ -108,7 +108,7 @@ fn main() -> Result<()> {
     for pid in &pids {
         let nix_pid = Pid::from_raw(*pid as i32);
         kill(nix_pid, signal)?;
-        println!("  {} killed PID {}", "✓".green(), pid);
+        println!("  {} killed PID {}", "󰄬".green(), pid);
     }
 
     Ok(())

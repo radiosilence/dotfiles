@@ -6,82 +6,82 @@ set -e
 
 # --- Xcode Command Line Tools (needed for git, compilers, etc.) ---
 if xcode-select -p &>/dev/null; then
-  printf "\033[32m  ok xcode cli tools\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "xcode cli tools"
 else
-  printf "\033[33m  -> installing xcode command line tools...\033[0m\n"
+  printf "  \033[36m→\033[0m %s\n" "installing xcode command line tools..."
   xcode-select --install
-  printf "\033[33m  -> waiting for xcode cli tools installation to complete...\033[0m\n"
-  printf "\033[33m  -> press enter when the installer finishes...\033[0m"
+  printf "  \033[36m→\033[0m %s\n" "waiting for xcode cli tools installation to complete..."
+  printf "  \033[36m→\033[0m %s" "press enter when the installer finishes..."
   read -r </dev/tty
 fi
 
 # --- Clone dotfiles ---
 DOTFILES_DIR="$HOME/.dotfiles"
 if [[ -d "$DOTFILES_DIR/.git" ]]; then
-  printf "\033[32m  ok dotfiles repo\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "dotfiles repo"
   (cd "$DOTFILES_DIR"; git pull)
 else
-  printf "\033[33m  -> cloning dotfiles...\033[0m\n"
+  printf "  \033[36m→\033[0m %s\n" "cloning dotfiles..."
   git clone https://github.com/radiosilence/dotfiles "$DOTFILES_DIR"
-  printf "\033[32m  ok dotfiles cloned\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "dotfiles cloned"
 fi
 
 cd "$DOTFILES_DIR"
 
-printf "\033[1m/// .DOTFILES BOOTSTRAP\033[0m\n\n"
+printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "dotfiles bootstrap"
 
 # --- dotfiles.toml hint ---
-printf "\033[32m  ok\033[0m dotfiles.toml (local overrides: dotfiles.local.toml)\n"
+printf "  \033[32m󰄬\033[0m %s\n" "dotfiles.toml (local overrides: dotfiles.local.toml)"
 
 # --- Sudo setup (first, so the session carries through the rest) ---
 SUDO_LOCAL="/etc/pam.d/sudo_local"
 if [[ -f "$SUDO_LOCAL" ]] && grep -q pam_tid "$SUDO_LOCAL"; then
-  printf "\033[32m  ok touchid sudo\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "touchid sudo"
 else
-  printf "\033[33m  -> enabling touchid for sudo...\033[0m\n"
+  printf "  \033[36m→\033[0m %s\n" "enabling touchid for sudo..."
   sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
-  printf "\033[32m  ok touchid sudo\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "touchid sudo"
 fi
 
 SUDO_TIMEOUT="/etc/sudoers.d/timeout"
 if [[ -f "$SUDO_TIMEOUT" ]]; then
-  printf "\033[32m  ok sudo timeout\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "sudo timeout"
 else
-  printf "\033[33m  -> setting sudo timeout to 30 min...\033[0m\n"
+  printf "  \033[36m→\033[0m %s\n" "setting sudo timeout to 30 min..."
   sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
-  printf "\033[32m  ok sudo timeout\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "sudo timeout"
 fi
 
 # --- Homebrew ---
 if (($+commands[brew])); then
-  printf "\033[32m  ok homebrew\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "homebrew"
 else
-  printf "\033[33m  -> installing homebrew...\033[0m\n"
+  printf "  \033[36m→\033[0m %s\n" "installing homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   if [[ -d /opt/homebrew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   else
     eval "$(/usr/local/bin/brew shellenv)"
   fi
-  printf "\033[32m  ok homebrew installed\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "homebrew installed"
 fi
 
 # --- Brewfile roles ---
 ROLES_FILE="$DOTFILES_DIR/dotfiles-roles.yml"
 if [[ -f "$ROLES_FILE" ]]; then
-  printf "\033[32m  ok dotfiles-roles.yml\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "dotfiles-roles.yml"
 else
   cp "$DOTFILES_DIR/dotfiles-roles.yml.template" "$ROLES_FILE"
-  printf "\033[33m  -> copied dotfiles-roles.yml.template to dotfiles-roles.yml\033[0m\n"
-  printf "\033[33m  -> edit dotfiles-roles.yml to enable brew roles...\033[0m"
+  printf "  \033[36m→\033[0m %s\n" "copied dotfiles-roles.yml.template to dotfiles-roles.yml"
+  printf "  \033[33m\033[0m %s\n" "edit dotfiles-roles.yml to enable brew roles..."
 fi
 
 # --- brew bundle ---
-printf "\n\033[1m/// .BREW BUNDLE\033[0m\n\n"
+printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "brew bundle"
 brew bundle --file="$DOTFILES_DIR/Brewfile" --quiet || true
 
 # --- Remove quarantine from casks that need it ---
-printf "\n\033[1m/// .UNQUARANTINE\033[0m\n\n"
+printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "unquarantine"
 UNQUARANTINE_CASKS=(
   stolendata-mpv
   rar
@@ -90,60 +90,60 @@ for cask in "${UNQUARANTINE_CASKS[@]}"; do
   app_dir="$(brew --caskroom)/$cask"
   if [[ -d "$app_dir" ]]; then
     sudo xattr -rd com.apple.quarantine "$app_dir" 2>/dev/null && \
-      printf "\033[32m  ok unquarantined %s\033[0m\n" "$cask" || \
-      printf "\033[33m  -- %s (no quarantine attr)\033[0m\n" "$cask"
+      printf "  \033[32m󰄬\033[0m %s\n" "unquarantined $cask" || \
+      printf "  \033[33m\033[0m %s\n" "$cask (no quarantine attr)"
   fi
 done
 
 # --- 1Password setup (SSH agent needed for git/mise) ---
-printf "\n\033[1m/// .1PASSWORD\033[0m\n\n"
-printf "\033[33m  -> open 1Password, sign in, and enable the SSH agent:\033[0m\n"
-printf "\033[36m     Settings -> Developer -> SSH Agent\033[0m\n"
-printf "\033[33m  -> press enter when done...\033[0m"
+printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "1password"
+printf "  \033[36m→\033[0m %s\n" "open 1Password, sign in, and enable the SSH agent:"
+printf "    \033[36mSettings -> Developer -> SSH Agent\033[0m\n"
+printf "  \033[36m→\033[0m %s" "press enter when done..."
 read -r </dev/tty
-printf "\033[32m  ok 1password\033[0m\n"
+printf "  \033[32m󰄬\033[0m %s\n" "1password"
 
 # --- GitHub CLI auth (needed for mise to install private/github tools) ---
 if (($+commands[gh])); then
   if ! gh auth status &>/dev/null; then
-    printf "\n\033[1m/// .GITHUB AUTH\033[0m\n\n"
-    printf "\033[33m  -> gh is not authenticated. open a new tab and run:\033[0m\n"
-    printf "\033[36m     gh auth login\033[0m\n"
-    printf "\033[33m  -> press enter when done...\033[0m"
+    printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "github auth"
+    printf "  \033[36m→\033[0m %s\n" "gh is not authenticated. open a new tab and run:"
+    printf "    \033[36mgh auth login\033[0m\n"
+    printf "  \033[36m→\033[0m %s" "press enter when done..."
     read -r </dev/tty
   fi
   if gh auth status &>/dev/null; then
-    printf "\033[32m  ok gh authenticated\033[0m\n"
+    printf "  \033[32m󰄬\033[0m %s\n" "gh authenticated"
     export GITHUB_TOKEN="$(gh auth token)"
   else
-    printf "\033[33m  !! gh still not authenticated, mise install may fail for github tools\033[0m\n"
+    printf "  \033[33m\033[0m %s\n" "gh still not authenticated, mise install may fail for github tools"
   fi
 fi
 
 # --- mise tools ---
 if (($+commands[mise])); then
-  printf "\n\033[1m/// .MISE TOOLS\033[0m\n\n"
+  printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "mise tools"
   export PATH="$HOME/.local/share/mise/shims:$PATH"
-  printf "\033[33m  -> mise install...\033[0m\n"
+  printf "  \033[36m→\033[0m %s\n" "mise install..."
   mise install
-  printf "\033[32m  ok mise tools\033[0m\n"
+  printf "  \033[32m󰄬\033[0m %s\n" "mise tools"
 else
-  printf "\033[31m  !! mise not found after brew bundle - check Brewfile\033[0m\n"
+  printf "  \033[31m󰅖\033[0m %s\n" "mise not found after brew bundle - check Brewfile"
   exit 1
 fi
 
 # --- Link dotfiles (before anything that depends on shell config) ---
-printf "\n\033[1m/// .LINK\033[0m\n\n"
+printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "link"
 mise run link
 
 # --- Rosetta 2 (Apple Silicon only) ---
 if [[ "$(uname -m)" == "arm64" ]]; then
   if /usr/bin/pgrep -q oahd 2>/dev/null; then
-    printf "\033[32m  ok rosetta 2\033[0m\n"
+    printf "  \033[32m󰄬\033[0m %s\n" "rosetta 2"
   else
-    printf "\033[33m  -> installing rosetta 2...\033[0m\n"
+    printf "  \033[36m→\033[0m %s\n" "installing rosetta 2..."
     /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-    printf "\033[32m  ok rosetta 2 installed\033[0m\n"
+    printf "  \033[32m󰄬\033[0m %s\n" "rosetta 2 installed"
   fi
 fi
 
@@ -151,17 +151,17 @@ fi
 exec zsh -l -c "
   # Install Claude Code if missing
   if ! command -v claude &>/dev/null; then
-    printf '\n\033[1m/// .CLAUDE CODE\033[0m\n\n'
+    printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'claude code'
     curl -fsSL https://claude.ai/install.sh | bash
   fi
-  printf '\n\033[1m/// .BUILD\033[0m\n\n'
+  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'build'
   mise run reinstall-bins
   printf '\n'
   ~/.dotfiles/bin/upd
 
   # Switch repo to SSH now that everything is set up
-  printf '\n\033[1m/// .FINALIZE\033[0m\n\n'
+  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'finalize'
   mise run use-ssh
 
-  printf '\n\033[32m  ok setup complete. restart your terminal.\033[0m\n\n'
+  printf '\n  \033[32m󰄬\033[0m %s\n\n' 'setup complete. restart your terminal.'
 "

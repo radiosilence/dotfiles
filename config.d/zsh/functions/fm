@@ -1,6 +1,7 @@
-# Fuzzy merge - select branch to merge
-fm() {
-    local branch
-    branch=$(git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:iso8601) %(refname:short)' | fzf | awk '{ print $NF }')
-    [[ -n "$branch" ]] && git merge "$branch"
-}
+local branch
+branch=$(git for-each-ref --sort=-committerdate refs/heads/ \
+  --format='%(committerdate:relative)|%(refname:short)' |
+  column -t -s'|' |
+  fzf --no-sort --prompt="merge ← " |
+  awk '{ print $NF }') || return 0
+[[ -n "$branch" ]] && git merge "$branch"

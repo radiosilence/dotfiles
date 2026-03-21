@@ -32,7 +32,7 @@ fn main() -> Result<()> {
     }
 
     println!("\n/// {}\n", "PRUNE-GEN".bold());
-    println!("  {} action: generating test structure", "→".bright_black());
+    println!("  {} action: generating test structure", "→".cyan());
 
     let temp_dir = TempDir::new()?;
     let test_dir = temp_dir.path();
@@ -66,8 +66,8 @@ fn main() -> Result<()> {
 
     let path_str = test_dir.to_string_lossy().to_string();
 
-    println!("  {} path: {}", "→".bright_black(), path_str);
-    println!("  {} test structure created", "✓".green());
+    println!("  {} path: {}", "→".cyan(), path_str);
+    println!("  {} test structure created", "󰄬".green());
 
     println!("{}", path_str);
 

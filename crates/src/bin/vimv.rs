@@ -49,11 +49,11 @@ fn main() -> Result<()> {
     };
 
     if files.is_empty() {
-        println!("  {} No files found", "!".yellow());
+        println!("  {} {}", "".yellow(), "No files found");
         return Ok(());
     }
 
-    println!("  {} files: {}", "→".bright_black(), files.len());
+    println!("  {} files: {}", "→".cyan(), files.len());
 
     // Create temp file with filenames
     let mut temp_file = NamedTempFile::new()?;
@@ -102,16 +102,16 @@ fn main() -> Result<()> {
 
             if is_git_tracked {
                 Command::new("git").args(["mv", "--", old, new]).status()?;
-                println!("  {} git mv {} → {}", "·".bright_black(), old, new);
+                println!("  {} git mv {} → {}", "→".cyan(), old, new);
             } else {
                 fs::rename(old, new)?;
-                println!("  {} mv {} → {}", "·".bright_black(), old, new);
+                println!("  {} mv {} → {}", "→".cyan(), old, new);
             }
             count += 1;
         }
     }
 
-    println!("  {} {} files renamed", "✓".green(), count);
+    println!("  {} {} files renamed", "󰄬".green(), count);
 
     Ok(())
 }

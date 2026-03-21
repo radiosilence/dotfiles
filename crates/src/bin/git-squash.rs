@@ -58,10 +58,10 @@ fn main() -> Result<()> {
 
     println!(
         "  {} Current branch: {}",
-        "→".bright_black(),
+        "→".cyan(),
         current_branch
     );
-    println!("  {} Parent branch: {}", "→".bright_black(), args.parent);
+    println!("  {} Parent branch: {}", "→".cyan(), args.parent);
 
     // Find merge base
     let current_commit = head
@@ -83,7 +83,7 @@ fn main() -> Result<()> {
 
     println!(
         "  {} Merge base: {}",
-        "→".bright_black(),
+        "→".cyan(),
         &merge_base.to_string()[..7]
     );
 
@@ -104,7 +104,7 @@ fn main() -> Result<()> {
     }
 
     if commits.is_empty() {
-        println!("  {} No commits to squash", "✓".green());
+        println!("  {} {}", "󰄬".green(), "No commits to squash");
         return Ok(());
     }
 
@@ -114,7 +114,7 @@ fn main() -> Result<()> {
     println!();
     println!(
         "  {} Found {} commits to squash:",
-        "·".bright_black(),
+        "→".cyan(),
         commits.len()
     );
     for (i, (oid, msg, author)) in commits.iter().enumerate() {
@@ -129,7 +129,7 @@ fn main() -> Result<()> {
     println!();
 
     if args.dry_run {
-        println!("  {} Dry run - no changes made", "·".bright_black());
+        println!("  {} {}", "→".cyan(), "Dry run - no changes made");
         return Ok(());
     }
 
@@ -147,7 +147,7 @@ fn main() -> Result<()> {
         .context("Failed to open editor")?
         .unwrap_or(combined_message);
 
-    println!("  {} Squashing commits...", "·".bright_black());
+    println!("  {} {}", "→".cyan(), "Squashing commits...");
 
     // Reset to merge base (soft)
     let merge_base_commit = repo.find_commit(merge_base)?;
@@ -173,10 +173,10 @@ fn main() -> Result<()> {
 
     println!(
         "  {} Squashed {} commits into one",
-        "✓".green(),
+        "󰄬".green(),
         commits.len()
     );
-    println!("  {} Force push required: git push --force", "!".yellow());
+    println!("  {} {}", "".yellow(), "Force push required: git push --force");
 
     Ok(())
 }

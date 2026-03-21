@@ -1,6 +1,4 @@
-# Alacritty configuration (matching Ghostty as source of truth)
-
-# Font configuration (matching ghostty: Geist Mono, size 11)
+# Font: Geist Mono 11 (shared across all three terminals)
 [font]
 size = 11.0
 
@@ -20,7 +18,7 @@ style = "Italic"
 family = "GeistMono Nerd Font"
 style = "Bold Italic"
 
-# Window configuration
+# Window
 [window]
 option_as_alt = "Both"
 opacity = 0.85
@@ -36,7 +34,7 @@ lines = 64
 x = 2
 y = 2
 
-# Colors: Monokai Pro (matching Ghostty theme exactly)
+# Colors: Monokai Pro
 [colors.primary]
 background = "#2d2a2e"
 foreground = "#fcfcfa"
@@ -82,8 +80,7 @@ hide_when_typing = false
 [terminal.shell]
 program = "/opt/homebrew/bin/zsh"
 
-# Key bindings
-# Alt compose keys (matching ghostty alt keybinds for UK keyboard)
+# UK keyboard alt compose
 [[keyboard.bindings]]
 key = "3"
 mods = "Alt"
@@ -99,41 +96,14 @@ key = "0"
 mods = "Alt"
 chars = "º"
 
-# Alt+Backspace sends Ctrl+W (word delete, matching ghostty)
+# Alt+Backspace word delete
 [[keyboard.bindings]]
 key = "Back"
 mods = "Alt"
 chars = "\u0017"
 
-# Shift+Enter sends newline (matching ghostty)
+# Shift+Enter literal newline
 [[keyboard.bindings]]
 key = "Return"
 mods = "Shift"
 chars = "\n"
-
-# Copy/Paste
-[[keyboard.bindings]]
-key = "C"
-mods = "Command"
-action = "Copy"
-
-[[keyboard.bindings]]
-key = "V"
-mods = "Command"
-action = "Paste"
-
-# Font size adjustment
-[[keyboard.bindings]]
-key = "Plus"
-mods = "Command"
-action = "IncreaseFontSize"
-
-[[keyboard.bindings]]
-key = "Minus"
-mods = "Command"
-action = "DecreaseFontSize"
-
-[[keyboard.bindings]]
-key = "Key0"
-mods = "Command"
-action = "ResetFontSize"

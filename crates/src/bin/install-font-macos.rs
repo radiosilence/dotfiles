@@ -56,11 +56,11 @@ fn main() -> Result<()> {
     let temp_dir = TempDir::new()?;
     let dest = temp_dir.path();
 
-    println!("  {} temp dir: {}", "→".bright_black(), dest.display());
+    println!("  {} temp dir: {}", "→".cyan(), dest.display());
 
     // Download
     for url in &urls {
-        println!("  {} downloading {}", "·".bright_black(), url);
+        println!("  {} downloading {}", "→".cyan(), url);
         let dest_str = dest.to_str().context("Invalid temp dir path")?;
         let status = Command::new("aria2c")
             .args(["-x", "8", "-d", dest_str, url])
@@ -72,7 +72,7 @@ fn main() -> Result<()> {
     }
 
     // Extract
-    println!("  {} extracting archives", "·".bright_black());
+    println!("  {} extracting archives", "→".cyan());
     for entry in std::fs::read_dir(dest)? {
         let entry = entry?;
         let path = entry.path();
@@ -88,7 +88,7 @@ fn main() -> Result<()> {
     }
 
     // Install fonts
-    println!("  {} installing fonts", "·".bright_black());
+    println!("  {} installing fonts", "→".cyan());
     let fonts_dir = dotfiles_tools::home_dir()?.join("Library/Fonts");
 
     std::fs::create_dir_all(&fonts_dir)?;
@@ -107,7 +107,7 @@ fn main() -> Result<()> {
         }
     }
 
-    println!("  {} installed {} fonts", "✓".green(), installed);
+    println!("  {} installed {} fonts", "󰄬".green(), installed);
 
     Ok(())
 }

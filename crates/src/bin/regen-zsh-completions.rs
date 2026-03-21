@@ -5,13 +5,13 @@ fn main() -> Result<()> {
     println!("\n/// {}\n", "ZSH COMPLETIONS".bold());
     println!(
         "  {} generating: completions (parallel)",
-        "→".bright_black()
+        "→".cyan()
     );
 
     dotfiles_tools::regen_completions::regenerate_completions()?;
 
-    println!("  {} completions regenerated", "✓".green());
-    println!("  {} restart shell: exec zsh", "·".bright_black());
+    println!("  {} completions regenerated", "󰄬".green());
+    println!("  {} restart shell: exec zsh", "→".cyan());
 
     Ok(())
 }

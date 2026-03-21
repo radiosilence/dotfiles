@@ -35,17 +35,17 @@ pub fn print_results(results: &[Result<PathBuf>], verb: &str) {
     if error_count > 0 {
         println!(
             "  {} {} {} files ({} failed)",
-            "!".yellow(),
+            "".yellow(),
             verb,
             success_count,
             error_count
         );
         for result in results.iter().filter(|r| r.is_err()) {
             if let Err(e) = result {
-                println!("  {} {}", "✗".red(), e);
+                println!("  {} {}", "󰅖".red(), e);
             }
         }
     } else {
-        println!("  {} {} {} files", "✓".green(), verb, success_count);
+        println!("  {} {} {} files", "󰄬".green(), verb, success_count);
     }
 }

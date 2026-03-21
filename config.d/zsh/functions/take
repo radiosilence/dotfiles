@@ -1,4 +1,5 @@
-# Create a directory and set CWD
-take() {
-    mkdir -p "$@" && cd "${@: -1}"
-}
+if [[ $# -eq 0 ]]; then
+  printf "  \033[31m󰅖\033[0m %s\n" "usage: take <dir> [...]" >&2
+  return 1
+fi
+mkdir -p "$@" && cd "${@: -1}"
