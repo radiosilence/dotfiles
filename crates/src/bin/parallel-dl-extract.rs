@@ -46,16 +46,16 @@ fn main() -> Result<()> {
         anyhow::bail!("No URLs provided");
     }
 
-    println!("\n  {} {}\n", "⟢".magenta().bold(), "parallel dl+extract".bold());
+    println!(
+        "\n  {} {}\n",
+        "⟢".magenta().bold(),
+        "parallel dl+extract".bold()
+    );
 
     let temp_dir = TempDir::new()?;
     let dst = temp_dir.path();
 
-    println!(
-        "  {} temp dir: {}",
-        "→".cyan(),
-        dst.to_string_lossy()
-    );
+    println!("  {} temp dir: {}", "→".cyan(), dst.to_string_lossy());
     println!("  {} urls: {}", "→".cyan(), args.urls.len());
 
     // Create aria2c input file

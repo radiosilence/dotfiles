@@ -56,11 +56,7 @@ fn main() -> Result<()> {
         bail!("Already on parent branch '{}'", args.parent);
     }
 
-    println!(
-        "  {} Current branch: {}",
-        "→".cyan(),
-        current_branch
-    );
+    println!("  {} Current branch: {}", "→".cyan(), current_branch);
     println!("  {} Parent branch: {}", "→".cyan(), args.parent);
 
     // Find merge base
@@ -104,7 +100,7 @@ fn main() -> Result<()> {
     }
 
     if commits.is_empty() {
-        println!("  {} {}", "󰄬".green(), "No commits to squash");
+        println!("  {} No commits to squash", "󰄬".green());
         return Ok(());
     }
 
@@ -129,7 +125,7 @@ fn main() -> Result<()> {
     println!();
 
     if args.dry_run {
-        println!("  {} {}", "→".cyan(), "Dry run - no changes made");
+        println!("  {} Dry run - no changes made", "→".cyan());
         return Ok(());
     }
 
@@ -147,7 +143,7 @@ fn main() -> Result<()> {
         .context("Failed to open editor")?
         .unwrap_or(combined_message);
 
-    println!("  {} {}", "→".cyan(), "Squashing commits...");
+    println!("  {} Squashing commits...", "→".cyan());
 
     // Reset to merge base (soft)
     let merge_base_commit = repo.find_commit(merge_base)?;
@@ -176,7 +172,7 @@ fn main() -> Result<()> {
         "󰄬".green(),
         commits.len()
     );
-    println!("  {} {}", "".yellow(), "Force push required: git push --force");
+    println!("  {} Force push required: git push --force", "".yellow());
 
     Ok(())
 }

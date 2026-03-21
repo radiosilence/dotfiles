@@ -8,6 +8,16 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
+**Ratatui TUI dashboard for `upd`:**
+
+- Replaced `indicatif` MultiProgress spinners with a ratatui-powered TUI dashboard showing live panels per task
+- Responsive grid layout (3-col on wide terminals, 2-col on medium, 1-col on narrow) with bordered panels per task
+- Each panel shows current step, scrolling output, spinner while running, and collapses to status icon on completion
+- Errors highlighted in red and stay visible; bottom status bar shows overall progress
+- Restructured `upd.rs` monolith into `src/bin/upd/` modules: `main.rs`, `app.rs` (state), `ui.rs` (rendering), `tasks.rs` (subprocess spawning)
+- Pre-TUI phase (link, auth, fonts, brew bundle) and post-TUI phase (completions, summary) remain interactive/non-TUI
+- Press `q` or `Esc` to exit early; TUI auto-exits 800ms after all tasks complete
+
 **Terminal config sync:**
 
 - Synced Ghostty, WezTerm, and Alacritty configs — Monokai Pro theme, Geist Mono 11pt, matching keybinds (alt compose, alt+backspace, shift+enter), 0.85 opacity + blur across all three

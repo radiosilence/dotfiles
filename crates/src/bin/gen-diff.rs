@@ -89,7 +89,7 @@ fn main() -> Result<()> {
         anyhow::bail!("ImageMagick convert failed");
     }
 
-    println!("  {} {}", "󰄬".green(), "visual diff created");
+    println!("  {} visual diff created", "󰄬".green());
 
     Ok(())
 }

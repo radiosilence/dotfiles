@@ -119,11 +119,7 @@ fn main() -> Result<()> {
     // Sort by size ascending
     candidates.sort_by_key(|(_, size)| *size);
 
-    println!(
-        "  {} Found {} candidates",
-        "→".cyan(),
-        candidates.len()
-    );
+    println!("  {} Found {} candidates", "→".cyan(), candidates.len());
     println!();
 
     // Display candidates in table

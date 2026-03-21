@@ -49,7 +49,7 @@ fn main() -> Result<()> {
     };
 
     if files.is_empty() {
-        println!("  {} {}", "".yellow(), "No files found");
+        println!("  {} No files found", "".yellow());
         return Ok(());
     }
 
