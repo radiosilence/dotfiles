@@ -25,7 +25,7 @@ for f in "$DOTFILES"/.*; do
 
   rm -rf "$target"
   ln -s "$f" "$target"
-  printf "\033[32m  ok\033[0m %s\n" "$name"
+  printf "  \033[32m󰌷\033[0m %s\n" "$name"
 done
 
 # --- Config dirs (config.d/* → ~/.config/*) ---
@@ -44,7 +44,7 @@ if [ -d "$DOTFILES/config.d" ]; then
 
     rm -rf "$target"
     ln -s "$f" "$target"
-    printf "\033[32m  ok\033[0m ~/.config/%s\n" "$name"
+    printf "  \033[32m󰌷\033[0m ~/.config/%s\n" "$name"
   done
 fi
 
@@ -52,7 +52,7 @@ fi
 [ -f "$HOME/.gitconfig" ] || touch "$HOME/.gitconfig"
 if ! grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null; then
   printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
-  printf "\033[32m  ok\033[0m gitconfig include\n"
+  printf "  \033[32m󰄬\033[0m gitconfig include\n"
 fi
 
 # --- SSH config include ---
@@ -63,7 +63,7 @@ if [ ! -f "$HOME/.ssh/config" ]; then
 fi
 if ! grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null; then
   printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
-  printf "\033[32m  ok\033[0m ssh config include\n"
+  printf "  \033[32m󰄬\033[0m ssh config include\n"
 fi
 
 # --- Brewfile (macOS) ---
@@ -71,7 +71,7 @@ if [ "$(uname)" = "Darwin" ] && [ -f "$DOTFILES/Brewfile" ]; then
   target="$HOME/Brewfile"
   if ! [ -L "$target" ] || [ "$(readlink "$target")" != "$DOTFILES/Brewfile" ]; then
     ln -sf "$DOTFILES/Brewfile" "$target"
-    printf "\033[32m  ok\033[0m Brewfile\n"
+    printf "  \033[32m󰄬\033[0m Brewfile\n"
   fi
 fi
 
@@ -89,7 +89,7 @@ if [ "$(uname)" = "Darwin" ] && [ -d "$DOTFILES/config.d/launchd" ]; then
     cp "$plist" "$dest"
     launchctl unload "$dest" 2>/dev/null || true
     launchctl load "$dest" 2>/dev/null || true
-    printf "\033[32m  ok\033[0m launchd: %s\n" "$name"
+    printf "  \033[32m󰄬\033[0m launchd: %s\n" "$name"
   done
 fi
 
@@ -106,16 +106,16 @@ if command -v jq >/dev/null 2>&1 && [ -f "$claude_settings" ]; then
       .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
     ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
     hooks_changed=true
-    printf "\033[32m  ok\033[0m claude hooks: gastown\n"
+    printf "  \033[32m󰄬\033[0m claude hooks: gastown\n"
   fi
 fi
 
 # --- Sheldon plugins ---
 if command -v sheldon >/dev/null 2>&1; then
-  sheldon source >/dev/null 2>&1 && printf "\033[32m  ok\033[0m sheldon\n" || true
+  sheldon source >/dev/null 2>&1 && printf "  \033[32m󰄬\033[0m sheldon\n" || true
 fi
 
-printf "\033[32m  ok\033[0m link complete\n"
+printf "  \033[32m󰄬\033[0m link complete\n"
 '''
 
 
@@ -125,12 +125,12 @@ run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 if ! command -v cargo >/dev/null 2>&1; then
-    printf "\033[31m  !! cargo not found\033[0m\n"
+    printf "  \033[31m󰅖\033[0m cargo not found\n"
     exit 1
 fi
-printf "\033[33m  -> building rust binaries...\033[0m\n"
+printf "  \033[35m󱁤\033[0m building rust binaries\n"
 cargo install --path "{{config_root}}/crates" --bins --root "{{config_root}}"
-printf "\033[32m  ok binaries -> ~/.dotfiles/bin\033[0m\n"
+printf "  \033[32m󰄬\033[0m binaries installed\n"
 '''
 
 [tasks.use-ssh]
@@ -141,10 +141,10 @@ set -euo pipefail
 cd "{{config_root}}"
 current=$(git remote get-url origin)
 if echo "$current" | grep -q "^git@"; then
-  printf "\033[32m  ok already using SSH\033[0m\n"
+  printf "  \033[32m󰄬\033[0m already using SSH\n"
   exit 0
 fi
 ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
 git remote set-url origin "$ssh_url"
-printf "\033[32m  ok remote switched to %s\033[0m\n" "$ssh_url"
+printf "  \033[32m󰄬\033[0m remote switched to %s\n" "$ssh_url"
 '''
