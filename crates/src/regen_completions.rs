@@ -1,58 +1,45 @@
 use anyhow::Result;
-use colored::Colorize;
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use std::fs;
-use std::path::Path;
 use std::process::Command;
 use std::thread;
-use std::time::Duration;
 
 use crate::config::DotfilesConfig;
 
-pub fn regenerate_completions() -> Result<()> {
+#[derive(Debug)]
+pub struct CompletionResult {
+    pub name: String,
+    pub ok: bool,
+    pub detail: String,
+}
+
+/// Regenerate all zsh completions. Returns results per tool — no printing, no spinners.
+pub fn regenerate_completions() -> Result<Vec<CompletionResult>> {
     let home = crate::home_dir()?;
     let dotfiles = home.join(".dotfiles");
     let completions_dir = home.join(".config/zsh/completions");
-
-    println!(
-        "  {} generating completions to {}",
-        "→".cyan(),
-        completions_dir.display()
-    );
+    let mut results = Vec::new();
 
     let _ = fs::remove_file(home.join(".zcompdump"));
 
-    // Ensure completions dir exists (create parents if needed, e.g. on fresh system)
     if completions_dir.is_symlink() && !completions_dir.exists() {
-        // Dangling symlink — remove it so create_dir_all works
         let _ = fs::remove_file(&completions_dir);
     }
     if completions_dir.exists() {
-        // Clear existing completions but keep the directory
         if let Ok(entries) = fs::read_dir(&completions_dir) {
             for entry in entries.flatten() {
                 let _ = fs::remove_file(entry.path());
             }
         }
-    } else if let Err(e) = fs::create_dir_all(&completions_dir) {
-        println!("  {} cannot create {}: {}", "󰅖".red(), completions_dir.display(), e);
-        return Ok(());
+    } else {
+        fs::create_dir_all(&completions_dir)?;
     }
 
-    let config = match DotfilesConfig::load() {
-        Ok(c) => c,
-        Err(e) => {
-            println!("  {} failed to load dotfiles.toml: {e}", "󰅖".red());
-            return Ok(());
-        }
-    };
+    let config = DotfilesConfig::load()?;
 
     if config.completions.tools.is_empty() {
-        println!("  {} no tools configured in dotfiles.toml", "".yellow());
-        return Ok(());
+        return Ok(results);
     }
 
-    let mp = MultiProgress::new();
     let mut handles = Vec::new();
 
     for tool in config.completions.tools {
@@ -65,7 +52,11 @@ pub fn regenerate_completions() -> Result<()> {
         match tool_type {
             "prebuilt" => {
                 let Some(source) = tool.source.as_ref() else {
-                    println!("  {} {}: prebuilt missing `source` field", "󰅖".red(), tool.name);
+                    results.push(CompletionResult {
+                        name: tool.name,
+                        ok: false,
+                        detail: "missing source field".into(),
+                    });
                     continue;
                 };
                 let Ok(bin_path) = which::which(&tool.name) else {
@@ -73,34 +64,55 @@ pub fn regenerate_completions() -> Result<()> {
                 };
                 let src = bin_path.parent().unwrap_or(bin_path.as_path()).join(source);
                 if src.exists() {
-                    match fs::copy(&src, completions_dir.join(format!("_{}", tool.name))) {
-                        Ok(_) => println!("  {} {} (pre-built)", "󰄬".green(), tool.name),
-                        Err(e) => println!("  {} {}: copy failed: {}", "󰅖".red(), tool.name, e),
+                    let dest = completions_dir.join(format!("_{}", tool.name));
+                    match fs::copy(&src, &dest) {
+                        Ok(_) => results.push(CompletionResult {
+                            name: tool.name,
+                            ok: true,
+                            detail: "pre-built".into(),
+                        }),
+                        Err(e) => results.push(CompletionResult {
+                            name: tool.name,
+                            ok: false,
+                            detail: format!("copy failed: {e}"),
+                        }),
                     }
                 }
             }
             "sourced" => {
                 let Some(cmd) = tool.command.as_ref() else {
-                    println!("  {} {}: sourced missing `command` field", "󰅖".red(), tool.name);
+                    results.push(CompletionResult {
+                        name: tool.name,
+                        ok: false,
+                        detail: "missing command field".into(),
+                    });
                     continue;
                 };
                 let Some(output_rel) = tool.output.as_ref() else {
-                    println!("  {} {}: sourced missing `output` field", "󰅖".red(), tool.name);
+                    results.push(CompletionResult {
+                        name: tool.name,
+                        ok: false,
+                        detail: "missing output field".into(),
+                    });
                     continue;
                 };
                 let output_path = dotfiles.join(output_rel);
-                let name = tool.name.clone();
-
-                // Ensure parent dir exists
                 if let Some(parent) = output_path.parent() {
                     let _ = fs::create_dir_all(parent);
                 }
-
                 match Command::new(&cmd[0]).args(&cmd[1..]).output() {
                     Ok(out) if out.status.success() && !out.stdout.is_empty() => {
                         match fs::write(&output_path, &out.stdout) {
-                            Ok(()) => println!("  {} {} (sourced)", "󰄬".green(), name),
-                            Err(e) => println!("  {} {}: write failed: {}", "󰅖".red(), name, e),
+                            Ok(()) => results.push(CompletionResult {
+                                name: tool.name,
+                                ok: true,
+                                detail: "sourced".into(),
+                            }),
+                            Err(e) => results.push(CompletionResult {
+                                name: tool.name,
+                                ok: false,
+                                detail: e.to_string(),
+                            }),
                         }
                     }
                     Ok(out) => {
@@ -110,9 +122,17 @@ pub fn regenerate_completions() -> Result<()> {
                             .next()
                             .filter(|s| !s.is_empty())
                             .unwrap_or("empty output");
-                        println!("  {} {}: {}", "󰅖".red(), name, err);
+                        results.push(CompletionResult {
+                            name: tool.name,
+                            ok: false,
+                            detail: err.to_string(),
+                        });
                     }
-                    Err(e) => println!("  {} {}: {}", "󰅖".red(), name, e),
+                    Err(e) => results.push(CompletionResult {
+                        name: tool.name,
+                        ok: false,
+                        detail: e.to_string(),
+                    }),
                 }
             }
             _ => {
@@ -121,55 +141,51 @@ pub fn regenerate_completions() -> Result<()> {
                     .unwrap_or_else(|| vec![tool.name.clone(), "completion".into(), "zsh".into()]);
                 let name = tool.name.clone();
                 let dir = completions_dir.clone();
-                let pb = mp.add(ProgressBar::new_spinner());
-                pb.set_style(ProgressStyle::default_spinner());
-                pb.enable_steady_tick(Duration::from_millis(80));
-                pb.set_message(name.clone());
-
-                handles.push(thread::spawn(move || {
-                    run_completion(&cmd, &name, &dir, &pb);
+                handles.push(thread::spawn(move || -> CompletionResult {
+                    match Command::new(&cmd[0]).args(&cmd[1..]).output() {
+                        Ok(output) if output.status.success() && !output.stdout.is_empty() => {
+                            match fs::write(dir.join(format!("_{name}")), output.stdout) {
+                                Ok(()) => CompletionResult {
+                                    name,
+                                    ok: true,
+                                    detail: String::new(),
+                                },
+                                Err(e) => CompletionResult {
+                                    name,
+                                    ok: false,
+                                    detail: e.to_string(),
+                                },
+                            }
+                        }
+                        Ok(output) => {
+                            let stderr = String::from_utf8_lossy(&output.stderr);
+                            let err = stderr.lines().next().unwrap_or("").to_string();
+                            CompletionResult {
+                                name,
+                                ok: false,
+                                detail: if err.is_empty() {
+                                    "empty output".into()
+                                } else {
+                                    err
+                                },
+                            }
+                        }
+                        Err(e) => CompletionResult {
+                            name,
+                            ok: false,
+                            detail: e.to_string(),
+                        },
+                    }
                 }));
             }
         }
     }
 
     for handle in handles {
-        let _ = handle.join();
-    }
-
-    Ok(())
-}
-
-fn run_completion(cmd: &[String], name: &str, completions_dir: &Path, pb: &ProgressBar) {
-    let (success, msg) = match Command::new(&cmd[0]).args(&cmd[1..]).output() {
-        Ok(output) => {
-            if output.status.success() && !output.stdout.is_empty() {
-                match fs::write(completions_dir.join(format!("_{name}")), output.stdout) {
-                    Ok(()) => (true, format!("󰄬 {name}")),
-                    Err(e) => (false, format!("󰅖 {name}: write failed: {e}")),
-                }
-            } else {
-                let stderr = String::from_utf8_lossy(&output.stderr);
-                let err = if !stderr.is_empty() {
-                    stderr.lines().next().unwrap_or("").to_string()
-                } else if output.stdout.is_empty() {
-                    "empty output".to_string()
-                } else {
-                    format!("exit code {}", output.status.code().unwrap_or(-1))
-                };
-                (false, format!("󰅖 {name}: {err}"))
-            }
+        if let Ok(result) = handle.join() {
+            results.push(result);
         }
-        Err(e) => (false, format!("󰅖 {name}: {e}")),
-    };
-
-    let template = if success {
-        "{msg:.green}"
-    } else {
-        "{msg:.red}"
-    };
-    if let Ok(style) = ProgressStyle::with_template(template) {
-        pb.set_style(style);
     }
-    pb.finish_with_message(msg);
+
+    Ok(results)
 }

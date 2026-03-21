@@ -82,12 +82,7 @@ fn main() -> Result<()> {
 
     // Display found processes
     for pid in &pids {
-        println!(
-            "  {} found: PID {} on port {}",
-            "→".cyan(),
-            pid,
-            port
-        );
+        println!("  {} found: PID {} on port {}", "→".cyan(), pid, port);
     }
 
     if args.dry_run {
