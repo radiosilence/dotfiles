@@ -88,7 +88,7 @@ terraform-ls = "latest"  # Terraform LSP
 "npm:mainlymcpfolk" = "latest"  # Fastmail MCP Server
 # Rust things
 "github:radiosilence/codeowners-lsp" = "latest"
-"github:radiosilence/koan" = { version = "latest", os = ["macos"] }
+"github:radiosilence/koan" = "latest"
 "github:datadog-labs/pup" = "latest"
 "github:hatoo/oha" = "latest"
 
