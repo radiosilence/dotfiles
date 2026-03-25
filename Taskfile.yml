@@ -158,9 +158,18 @@ tasks:
       - sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
       - printf "{{.OK}} sudo timeout\n"
 
+  mise:ensure:
+    desc: Ensure mise is installed
+    platforms: [darwin]
+    deps: [brew:install]
+    status: ["command -v mise"]
+    cmds:
+      - brew install mise
+      - printf "{{.OK}} mise installed\n"
+
   mise:install:
     desc: Install mise tools
-    deps: [brew:bundle, gh:auth]
+    deps: [mise:ensure, gh:auth]
     status: ["! command -v mise"]
     cmds:
       - |
