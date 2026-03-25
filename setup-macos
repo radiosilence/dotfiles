@@ -134,7 +134,7 @@ fi
 
 # --- Link dotfiles (before anything that depends on shell config) ---
 printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "link"
-mise x -- task --taskfile ~/.dotfiles/Taskfile.yml link
+mise x -- just --justfile ~/.dotfiles/justfile link
 
 # --- Rosetta 2 (Apple Silicon only) ---
 if [[ "$(uname -m)" == "arm64" ]]; then
@@ -155,5 +155,5 @@ exec zsh -l -c "
     curl -fsSL https://claude.ai/install.sh | bash
   fi
 
-  mise x -- task --taskfile ~/.dotfiles/Taskfile.yml setup
+  mise x -- just --justfile ~/.dotfiles/justfile setup
 "

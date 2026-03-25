@@ -8,13 +8,19 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
-**Migrate `upd` pipeline to go-task (Taskfile):**
+**Migrate `upd` pipeline to justfile:**
+
+- Replaced Taskfile.yml (go-task) with justfile — nicer syntax, native `[parallel]` attribute, `[macos]`/`[linux]` platform filtering, built-in dep deduplication
+- Brew chain: `brew-update → brew-bundle → brew-upgrade → brew-cleanup` (sequential via deps)
+- Everything else runs in parallel via `[parallel]` on the `upd` recipe
+- `upd` alias: `just --justfile ~/.dotfiles/justfile upd`
+
+**Migrate `upd` pipeline to go-task (superseded by justfile):**
 
 - Moved system update tasks from mise.toml to Taskfile.yml — proper `platforms` filtering (darwin/linux), `preconditions` for binary checks, prefixed parallel output
 - mise.toml retains project-specific tasks (link, reinstall-bins, use-ssh)
-- `upd` alias now calls `task --taskfile ~/.dotfiles/Taskfile.yml upd`
 
-**Replace `upd` TUI with mise task DAG (superseded by Taskfile):**
+**Replace `upd` TUI with mise task DAG (superseded by go-task):**
 
 - Ripped out the ratatui TUI dashboard — all update tasks now defined as mise tasks with `depends` for dependency ordering
 - `brew-bundle` → `brew` (serialized), `zsh-completions` depends on `brew`, `brew-bundle`, and `mise` (waits for new binaries)
