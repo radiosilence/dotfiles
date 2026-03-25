@@ -476,7 +476,7 @@ tasks:
     desc: Update Claude Code
     status: ["! command -v claude"]
     cmds:
-      - timeout 5 claude update || printf "{{.WARN}} claude update failed or timed out\n"
+      - timeout 2 claude update || printf "{{.WARN}} claude update failed or timed out\n"
 
   tmux:
     desc: Install/update tmux plugins
@@ -517,8 +517,6 @@ tasks:
   generate:completions:
     desc: Regenerate zsh completions
     deps:
-      # All gen tasks dep on setup, which deps on brew:cleanup + mise
-      # Default: <tool> completion zsh — runs in parallel via for-in-deps
       - for:
           - gt
           - argocd
@@ -581,7 +579,7 @@ tasks:
 
   generate:completions:setup:
     internal: true
-    deps: [brew:cleanup, mise:upgrade]
+    deps: [brew, mise:upgrade]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
