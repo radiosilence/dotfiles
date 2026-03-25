@@ -146,9 +146,6 @@ name = "imp"
 name = "install-font-macos"
 
 [[completions.tools]]
-name = "install-terminfo"
-
-[[completions.tools]]
 name = "kill-port"
 
 [[completions.tools]]

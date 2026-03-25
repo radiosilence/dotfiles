@@ -80,10 +80,6 @@ name = "gen-diff"
 path = "src/bin/gen-diff.rs"
 
 [[bin]]
-name = "install-terminfo"
-path = "src/bin/install-terminfo.rs"
-
-[[bin]]
 name = "prune-gen"
 path = "src/bin/prune-gen.rs"
 
