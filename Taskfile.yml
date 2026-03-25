@@ -91,7 +91,6 @@ tasks:
   1password:ssh-config:
     desc: Add 1Password SSH agent to ~/.ssh/config
     platforms: [darwin]
-    deps: [1password:setup]
     status: ["grep -q '2BUA8C4S2C.com.1password' ~/.ssh/config 2>/dev/null"]
     cmds:
       - |
