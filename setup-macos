@@ -157,7 +157,7 @@ exec zsh -l -c "
   printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'build'
   mise run reinstall-bins
   printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'system update'
-  mise run --cd ~/.dotfiles upd
+  task --taskfile ~/.dotfiles/Taskfile.yml upd
 
   # Switch repo to SSH now that everything is set up
   printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'finalize'
