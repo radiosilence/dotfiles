@@ -8,6 +8,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
+**Migrated `install-terminfo` to zsh function:**
+
+- Replaced Rust binary with a zsh autoload function — `infocmp -x | ssh host tic -x -` does the same job without a compiled binary
+- Removed from Cargo.toml, dotfiles.toml completions, and crates README
+
 **Migrated `echo-to-file` to zsh function:**
 
 - Replaced Rust binary with a zsh autoload function — `echo "$@" > $TMPDIR/echo-out-$(id -u)` does the same job without a compiled binary

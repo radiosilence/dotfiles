@@ -10,7 +10,7 @@ cargo build --release
 cargo install --path .
 ```
 
-## Tools (19 binaries)
+## Tools (18 binaries)
 
 ### Process / System
 
@@ -44,7 +44,6 @@ cargo install --path .
 - **url2base64** - URLs to base64
 - **parallel-dl-extract** - Parallel download and extract
 - **install-font-macos** - Install fonts from URLs
-- **install-terminfo** - Install terminfo entries
 
 ### Meta
 
@@ -69,6 +68,6 @@ crates/
 │   ├── parallel.rs           # Parallel processing
 │   ├── regen_completions.rs  # Completion generation
 │   ├── update_ffmpeg.rs      # ffmpeg update logic
-│   └── bin/                  # 19 binaries
+│   └── bin/                  # 18 binaries
 └── Cargo.toml
 ```

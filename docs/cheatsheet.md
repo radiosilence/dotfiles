@@ -15,7 +15,6 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | `prune [paths] [-s kb] [-y]` | Find and delete small directories (default 3MB threshold)              |
 | `regen-zsh-completions`      | Rebuild shell completions from installed tools                         |
 | `unfuck-xcode`               | Reset Xcode CLI tools when they're corrupted                           |
-| `install-terminfo <host>`    | Install terminfo entries (ghostty, etc) via SSH                        |
 
 ### Git Workflow
 
@@ -66,6 +65,7 @@ Located in `~/.config/zsh/functions/`.
 | `taketmp`            | Create temp directory and cd into it                           |
 | `using <cmd>`        | Check if command exists (returns 0/1)                          |
 | `fonts! [-f] <urls>` | Elegant font installer with progress (`-f` force overwrite)    |
+| `install-terminfo <host>` | Install terminfo entries (ghostty, etc) to remote host via SSH |
 | `upd`                | Wrapper that pulls dotfiles, builds bins, then runs upd binary |
 
 ---
