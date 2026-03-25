@@ -24,7 +24,7 @@ if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/de
 fi
 
 alias converge='task --taskfile ~/.dotfiles/Taskfile.yml converge'
-alias upd='printf "\033[33m\033[0m upd is deprecated, use converge\n" && converge'
+alias upd='converge'
 
 if command -v gh >/dev/null; then
   alias ccr='gh pr comment --body "@claude review"'
