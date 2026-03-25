@@ -12,8 +12,8 @@ tasks:
   #
   # DAG:
   #   link, auth, fonts, mise, claude, tmux-plugins — parallel
-  #   brew-bundle → brew                            — serialized
-  #   [brew, brew-bundle, mise] → zsh-completions   — last
+  #   brew (bundle + update + upgrade + cleanup)    — sequential
+  #   [brew, mise] → zsh-completions               — last
   # ===========================================================================
 
   setup:
@@ -226,23 +226,14 @@ tasks:
           printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
         done
 
-  upd:brew-bundle:
-    desc: Install Brewfile packages
-    platforms: [darwin]
-    preconditions:
-      - sh: command -v brew
-        msg: brew not installed
-    cmds:
-      - brew bundle --quiet
-
   upd:brew:
-    desc: Update/upgrade/cleanup brew
+    desc: Bundle, update, upgrade, cleanup brew
     platforms: [darwin]
     preconditions:
       - sh: command -v brew
         msg: brew not installed
     cmds:
-      - task: upd:brew-bundle
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
       - brew update --quiet
       - brew upgrade --greedy --quiet
       - brew cleanup --quiet
