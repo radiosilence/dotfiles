@@ -1,10 +1,10 @@
-version: '3'
+version: "3"
 
 output: prefixed
 silent: true
 
 vars:
-  DOTFILES: '{{.ROOT_DIR}}'
+  DOTFILES: "{{.ROOT_DIR}}"
 
 tasks:
   # ===========================================================================
@@ -32,6 +32,7 @@ tasks:
       - upd:auth
       - upd:fonts
       - upd:brew:cleanup
+      - upd:brew
       - upd:apt
       - upd:dnf
       - upd:mise
@@ -151,6 +152,8 @@ tasks:
 
   reinstall-bins:
     desc: Build and install rust binaries from crates/
+    deps:
+      - upd:mise
     preconditions:
       - sh: command -v cargo
         msg: cargo not found
@@ -161,7 +164,7 @@ tasks:
 
   use-ssh:
     desc: Switch dotfiles remote from HTTPS to SSH
-    dir: '{{.DOTFILES}}'
+    dir: "{{.DOTFILES}}"
     cmds:
       - |
         current=$(git remote get-url origin)
@@ -228,8 +231,13 @@ tasks:
           printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
         done
 
+  upd:brew:
+    desc: Brew upgrades
+    deps: [upd:brew:update upd:brew:bundle]
+
   upd:brew:update:
     desc: Update brew index
+    deps: [link]
     platforms: [darwin]
     preconditions:
       - sh: command -v brew
@@ -250,7 +258,7 @@ tasks:
   upd:brew:upgrade:
     desc: Upgrade brew packages
     platforms: [darwin]
-    deps: [upd:brew:bundle]
+    deps: [upd:brew:bundle upd:brew:update]
     preconditions:
       - sh: command -v brew
         msg: brew not installed
@@ -260,7 +268,7 @@ tasks:
   upd:brew:cleanup:
     desc: Cleanup brew
     platforms: [darwin]
-    deps: [upd:brew:upgrade]
+    deps: [upd:brew]
     preconditions:
       - sh: command -v brew
         msg: brew not installed
@@ -307,7 +315,7 @@ tasks:
   upd:tmux-plugins:
     desc: Install/update tmux plugins
     vars:
-      PLUGINS_DIR: '{{.HOME}}/.tmux/plugins'
+      PLUGINS_DIR: "{{.HOME}}/.tmux/plugins"
     cmds:
       - mkdir -p {{.PLUGINS_DIR}}
       - |
@@ -331,7 +339,7 @@ tasks:
 
   upd:zsh-completions:
     desc: Regenerate zsh completions
-    deps: [upd:brew:cleanup, upd:mise]
+    deps: [upd:brew, upd:brew, upd:mise]
     preconditions:
       - sh: command -v regen-zsh-completions
         msg: regen-zsh-completions not found (run mise run reinstall-bins)
