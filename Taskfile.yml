@@ -399,69 +399,67 @@ tasks:
   upd:zsh-completions:
     desc: Regenerate zsh completions
     deps: [upd:brew:cleanup, upd:mise]
-    preconditions:
-      - sh: command -v parallel
-        msg: GNU parallel not found
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
       - mkdir -p {{.COMP_DIR}}
-      - |
-        D="{{.COMP_DIR}}"
-
-        # Prebuilt: lsd
-        if command -v lsd >/dev/null 2>&1; then
+      - rm -f {{.COMP_DIR}}/_*
+      - for:
+          - gt
+          - argocd
+          - docker
+          - helm
+          - k9s
+          - kubectl
+          - lefthook
+          - nano-web
+          - op
+          - orbctl
+          - pulumi
+          - tilt
+          - turso
+          - yq
+          - fcloud
+          - houston
+          - koan
+          - clean-dls
+          - clean-exif
+          - embed-art
+          - extract-exif-from-flac
+          - git-squash
+          - git-sync
+          - imp
+          - install-font-macos
+          - kill-port
+          - parallel-dl-extract
+          - prune
+          - prune-gen
+          - to-audio
+          - unfuck-xcode
+          - url2base64
+          - vimv
+        cmd: |
+          command -v {{.ITEM}} >/dev/null 2>&1 || exit 0
+          if {{.ITEM}} completion zsh > "{{.COMP_DIR}}/_{{.ITEM}}" 2>/dev/null && [ -s "{{.COMP_DIR}}/_{{.ITEM}}" ]; then
+            printf "{{.OK}} %s\n" "{{.ITEM}}"
+          else
+            rm -f "{{.COMP_DIR}}/_{{.ITEM}}"
+          fi
+      # Custom completion commands
+      - cmd: command -v gh >/dev/null 2>&1 && gh completion -s zsh > "{{.COMP_DIR}}/_gh" 2>/dev/null && printf "{{.OK}} gh\n" || true
+      - cmd: command -v fastmail-cli >/dev/null 2>&1 && fastmail-cli completions zsh > "{{.COMP_DIR}}/_fastmail-cli" 2>/dev/null && printf "{{.OK}} fastmail-cli\n" || true
+      - cmd: command -v codeowners-cli >/dev/null 2>&1 && codeowners-cli completions zsh > "{{.COMP_DIR}}/_codeowners-cli" 2>/dev/null && printf "{{.OK}} codeowners-cli\n" || true
+      - cmd: command -v task >/dev/null 2>&1 && task --completion zsh > "{{.COMP_DIR}}/_task" 2>/dev/null && printf "{{.OK}} task\n" || true
+      - cmd: command -v just >/dev/null 2>&1 && just --completions zsh > "{{.COMP_DIR}}/_just" 2>/dev/null && printf "{{.OK}} just\n" || true
+      - cmd: command -v aws-vault >/dev/null 2>&1 && aws-vault --completion-script-zsh > "{{.COMP_DIR}}/_aws-vault" 2>/dev/null && printf "{{.OK}} aws-vault\n" || true
+      - cmd: command -v rg >/dev/null 2>&1 && rg --generate complete-zsh > "{{.COMP_DIR}}/_rg" 2>/dev/null && printf "{{.OK}} rg\n" || true
+      - cmd: command -v pup >/dev/null 2>&1 && pup completions zsh > "{{.COMP_DIR}}/_pup" 2>/dev/null && printf "{{.OK}} pup\n" || true
+      # Prebuilt: lsd
+      - cmd: |
+          command -v lsd >/dev/null 2>&1 || exit 0
           src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
-          [ -f "$src" ] && cp "$src" "$D/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
-        fi
-
-        # Sourced: npm
-        if command -v npm >/dev/null 2>&1; then
+          [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
+      # Sourced: npm
+      - cmd: |
+          command -v npm >/dev/null 2>&1 || exit 0
           npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
-        fi
-
-        # Generate all others in parallel
-        # Each line: name|command args
-        cat <<'TOOLS' | parallel --will-cite --colsep '\\|' -j+0 'command -v {1} >/dev/null 2>&1 || exit 0; if {2} > "'"$D"'/_{1}" 2>/dev/null && [ -s "'"$D"'/_{1}" ]; then printf "{{.OK}} %s\n" "{1}"; else rm -f "'"$D"'/_{1}"; fi'
-        gt|gt completion zsh
-        argocd|argocd completion zsh
-        docker|docker completion zsh
-        helm|helm completion zsh
-        k9s|k9s completion zsh
-        kubectl|kubectl completion zsh
-        lefthook|lefthook completion zsh
-        nano-web|nano-web completion zsh
-        op|op completion zsh
-        orbctl|orbctl completion zsh
-        pulumi|pulumi completion zsh
-        tilt|tilt completion zsh
-        turso|turso completion zsh
-        yq|yq completion zsh
-        fcloud|fcloud completion zsh
-        houston|houston completion zsh
-        koan|koan completion zsh
-        gh|gh completion -s zsh
-        fastmail-cli|fastmail-cli completions zsh
-        codeowners-cli|codeowners-cli completions zsh
-        task|task --completion zsh
-        just|just --completions zsh
-        aws-vault|aws-vault --completion-script-zsh
-        rg|rg --generate complete-zsh
-        pup|pup completions zsh
-        clean-dls|clean-dls completion zsh
-        clean-exif|clean-exif completion zsh
-        embed-art|embed-art completion zsh
-        extract-exif-from-flac|extract-exif-from-flac completion zsh
-        git-squash|git-squash completion zsh
-        git-sync|git-sync completion zsh
-        imp|imp completion zsh
-        install-font-macos|install-font-macos completion zsh
-        kill-port|kill-port completion zsh
-        parallel-dl-extract|parallel-dl-extract completion zsh
-        prune|prune completion zsh
-        prune-gen|prune-gen completion zsh
-        to-audio|to-audio completion zsh
-        unfuck-xcode|unfuck-xcode completion zsh
-        url2base64|url2base64 completion zsh
-        vimv|vimv completion zsh
-        TOOLS
