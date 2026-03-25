@@ -205,6 +205,17 @@ gtl() {
   git tag --sort=-v:refname -n -l "${1}*"
 }
 
+# Trigger CI (amend + force push)
+git-trigger() {
+  if [[ "$1" == "-n" || "$1" == "--dry-run" ]]; then
+    echo "  \e[36m→\e[0m Dry run - would execute:"
+    echo "  \e[36m→\e[0m   git commit --amend --no-edit"
+    echo "  \e[36m→\e[0m   git push --force"
+    return 0
+  fi
+  git commit --amend --no-edit && git push --force && echo "  \e[32m󰄬\e[0m CI/CD triggered"
+}
+
 # Misc
 alias gunignore='git update-index --no-assume-unchanged'
 alias gunwip='git log -n 1 | grep -q -c "\-\-wip\-\-" && git reset HEAD~1'

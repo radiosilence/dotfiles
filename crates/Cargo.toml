@@ -32,10 +32,6 @@ name = "git-squash"
 path = "src/bin/git-squash.rs"
 
 [[bin]]
-name = "git-trigger"
-path = "src/bin/git-trigger.rs"
-
-[[bin]]
 name = "to-audio"
 path = "src/bin/to-audio.rs"
 
@@ -72,24 +68,12 @@ name = "extract-exif-from-flac"
 path = "src/bin/extract-exif-from-flac.rs"
 
 [[bin]]
-name = "gen-diff"
-path = "src/bin/gen-diff.rs"
-
-[[bin]]
-name = "install-terminfo"
-path = "src/bin/install-terminfo.rs"
-
-[[bin]]
 name = "prune-gen"
 path = "src/bin/prune-gen.rs"
 
 [[bin]]
 name = "regen-zsh-completions"
 path = "src/bin/regen-zsh-completions.rs"
-
-[[bin]]
-name = "echo-to-file"
-path = "src/bin/echo-to-file.rs"
 
 [[bin]]
 name = "parallel-dl-extract"

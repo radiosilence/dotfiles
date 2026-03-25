@@ -1,0 +1,8 @@
+if [[ -z "$1" ]]; then
+  echo "  \e[1;35m⟢\e[0m \e[1minstall-terminfo\e[0m"
+  echo "  \e[36m→\e[0m usage: install-terminfo <host>"
+  return 1
+fi
+echo "  \e[1;35m⟢\e[0m \e[1minstall-terminfo\e[0m"
+echo "  \e[36m→\e[0m target: $1"
+infocmp -x | ssh "$1" -- tic -x - && echo "  \e[32m󰄬\e[0m terminfo installed" || { echo "  \e[31m󰅖\e[0m failed"; return 1 }

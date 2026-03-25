@@ -122,16 +122,10 @@ name = "clean-dls"
 name = "clean-exif"
 
 [[completions.tools]]
-name = "echo-to-file"
-
-[[completions.tools]]
 name = "embed-art"
 
 [[completions.tools]]
 name = "extract-exif-from-flac"
-
-[[completions.tools]]
-name = "gen-diff"
 
 [[completions.tools]]
 name = "git-squash"
@@ -140,16 +134,10 @@ name = "git-squash"
 name = "git-sync"
 
 [[completions.tools]]
-name = "git-trigger"
-
-[[completions.tools]]
 name = "imp"
 
 [[completions.tools]]
 name = "install-font-macos"
-
-[[completions.tools]]
-name = "install-terminfo"
 
 [[completions.tools]]
 name = "kill-port"

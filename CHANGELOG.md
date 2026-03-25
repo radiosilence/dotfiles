@@ -13,9 +13,17 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Ripped out the ratatui TUI dashboard — all update tasks now defined as mise tasks with `depends` for dependency ordering
 - `brew-bundle` → `brew` (serialized), `zsh-completions` depends on `brew`, `brew-bundle`, and `mise` (waits for new binaries)
 - Everything else (link, auth, fonts, claude, tmux-plugins) runs in parallel via mise's built-in task scheduler
-- `upd` binary is now a thin wrapper: acquires sudo, spawns keepalive thread, exec's into `mise run upd`
+- `upd` is now a zsh alias to `mise run --cd ~/.dotfiles upd` — no more Rust binary
 - Removed `ratatui` and `crossterm` dependencies from Cargo.toml
 - Deleted `app.rs`, `tasks.rs`, `ui.rs` modules (~400 lines of TUI code)
+
+**Migrated shell-wrapper crates to zsh functions:**
+
+- `install-terminfo` → zsh autoload function (`infocmp -x | ssh host tic -x -`)
+- `echo-to-file` → zsh autoload function (`echo "$@" > $TMPDIR/echo-out-$(id -u)`)
+- `gen-diff` → zsh autoload function (ImageMagick `magick` wrapper)
+- `git-trigger` → zsh function in `git.zsh` (supports `-n`/`--dry-run`)
+- All removed from Cargo.toml, dotfiles.toml completions, and crates source
 
 **Ratatui TUI dashboard for `upd` (superseded):**
 
@@ -225,7 +233,7 @@ The biggest month in the repo's history. ~140 commits. Everything got rewritten 
 - `prune` / `prune-gen` — directory cleanup with size thresholds
 - `git-sync`, `git-trigger`, `git-squash` — git workflow tools
 - `kill-port`, `vimv`, `imp`, `to-audio`, `embed-art`, `clean-exif`, `clean-dls`
-- `gen-diff`, `url2base64`, `echo-to-file`, `parallel-dl-extract`
+- `gen-diff`, `url2base64`, `parallel-dl-extract`
 - `install-font-macos`, `install-terminfo`, `unfuck-xcode`, `regen-zsh-completions`
 
 **PR #8: Replace CLI wrappers with native Rust** (`bc91818`, `0ce9cdf`)

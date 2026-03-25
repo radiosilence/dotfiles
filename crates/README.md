@@ -10,7 +10,7 @@ cargo build --release
 cargo install --path .
 ```
 
-## Tools (23 binaries)
+## Tools (18 binaries)
 
 ### Process / System
 
@@ -26,14 +26,11 @@ cargo install --path .
 - **clean-dls** - Remove scene release garbage
 - **clean-exif** - Strip EXIF from images
 - **vimv** - Batch rename with editor
-- **echo-to-file** - Write stdin to file
-- **gen-diff** - Generate image diffs
 
 ### Git
 
 - **git-sync** - Clean merged branches
 - **git-squash** - Squash commits
-- **git-trigger** - Amend + force push
 
 ### Audio / Media
 
@@ -47,7 +44,6 @@ cargo install --path .
 - **url2base64** - URLs to base64
 - **parallel-dl-extract** - Parallel download and extract
 - **install-font-macos** - Install fonts from URLs
-- **install-terminfo** - Install terminfo entries
 
 ### Meta
 
@@ -72,6 +68,6 @@ crates/
 │   ├── parallel.rs           # Parallel processing
 │   ├── regen_completions.rs  # Completion generation
 │   ├── update_ffmpeg.rs      # ffmpeg update logic
-│   └── bin/                  # 23 binaries
+│   └── bin/                  # 18 binaries
 └── Cargo.toml
 ```

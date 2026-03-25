@@ -15,7 +15,6 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | `prune [paths] [-s kb] [-y]` | Find and delete small directories (default 3MB threshold)              |
 | `regen-zsh-completions`      | Rebuild shell completions from installed tools                         |
 | `unfuck-xcode`               | Reset Xcode CLI tools when they're corrupted                           |
-| `install-terminfo <host>`    | Install terminfo entries (ghostty, etc) via SSH                        |
 
 ### Git Workflow
 
@@ -23,7 +22,6 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | -------------------------- | ---------------------------------------------------------- |
 | `git-sync [-y]`            | Delete local branches already merged to main               |
 | `git-squash [parent] [-n]` | Squash commits for clean PR history (default parent: main) |
-| `git-trigger [-n]`         | Amend + force push to re-trigger CI                        |
 
 ### Media & Audio
 
@@ -41,7 +39,7 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | ------------------------------ | --------------------------------------------------------- |
 | `vimv [files]`                 | Batch rename files in $EDITOR - edit names, save to apply |
 | `clean-dls [paths] [-n]`       | Remove scene release garbage (nfo, txt, samples)          |
-| `gen-diff <img1> <img2> <out>` | Generate visual diff between two images                   |
+| `gen-diff <img1> <img2> <out>` | Generate visual diff between two images (zsh function)    |
 | `url2base64 <url>`             | Fetch URL content and output as base64 data URL           |
 
 ### Downloads & Import
@@ -60,12 +58,14 @@ Located in `~/.config/zsh/functions/`.
 
 | Function             | Description                                                    |
 | -------------------- | -------------------------------------------------------------- |
+| `git-trigger [-n]`   | Amend + force push to re-trigger CI (`-n` dry run)             |
 | `fm`                 | **Fuzzy merge** - fzf select branch to merge                   |
 | `fr`                 | **Fuzzy rebase** - fzf select branch to rebase onto            |
 | `take <path>`        | Create directory and cd into it                                |
 | `taketmp`            | Create temp directory and cd into it                           |
 | `using <cmd>`        | Check if command exists (returns 0/1)                          |
 | `fonts! [-f] <urls>` | Elegant font installer with progress (`-f` force overwrite)    |
+| `install-terminfo <host>` | Install terminfo entries (ghostty, etc) to remote host via SSH |
 | `upd`                | Wrapper that pulls dotfiles, builds bins, then runs upd binary |
 
 ---
@@ -313,7 +313,7 @@ See `Brewfile` for full package list.
 
 **Squash before PR:** `git-squash`
 
-**Re-trigger CI:** `git-trigger`
+**Re-trigger CI:** `git-trigger` (zsh function)
 
 **Batch rename:** `vimv *.jpg`
 
