@@ -3,32 +3,16 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | bash
 set -e
 
-DOTFILES="$HOME/.dotfiles"
+tmpdir=$(mktemp -d)
+trap "rm -rf '$tmpdir'" EXIT
 
 printf "\n  \033[1m\033[35m⟢\033[0m \033[1mdotfiles bootstrap\033[0m\n\n"
 
-# Xcode CLI tools (need git)
-if ! xcode-select -p &>/dev/null; then
-  printf "  \033[36m→\033[0m installing xcode command line tools...\n"
-  xcode-select --install
-  printf "  \033[36m→\033[0m press enter when the installer finishes..."
-  read -r </dev/tty
-fi
-
-# Clone dotfiles
-if [ ! -d "$DOTFILES/.git" ]; then
-  printf "  \033[36m→\033[0m cloning dotfiles...\n"
-  git clone https://github.com/radiosilence/dotfiles "$DOTFILES"
-fi
-
-# Bootstrap go-task into a temp dir
-tmpdir=$(mktemp -d)
-trap "rm -rf '$tmpdir'" EXIT
-printf "  \033[36m→\033[0m installing go-task...\n"
+# Get go-task + Taskfile — no git, no xcode, just curl
 curl -fsSL https://taskfile.dev/install.sh | sh -s -- -b "$tmpdir" 2>/dev/null
-export PATH="$tmpdir:$PATH"
+curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/Taskfile.yml -o "$tmpdir/Taskfile.yml"
 
 printf "  \033[32m󰄬\033[0m bootstrap ready — handing off to Taskfile\n\n"
 
-# Let the DAG handle everything else
-task --taskfile "$DOTFILES/Taskfile.yml" setup
+# Let the DAG handle everything
+"$tmpdir/task" --taskfile "$tmpdir/Taskfile.yml" setup
