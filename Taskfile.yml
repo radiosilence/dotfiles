@@ -1,9 +1,6 @@
 version: "3"
 
-output:
-  group:
-    begin: "→ {{.TASK}}"
-    end: "󰄬 {{.TASK}}"
+output: prefixed
 silent: true
 run: once
 
