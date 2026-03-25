@@ -1,10 +1,14 @@
 set quiet
+set unstable
 set dotenv-load := false
 
 export CLICOLOR_FORCE := "1"
 export FORCE_COLOR := "1"
 
 dotfiles := justfile_directory()
+
+# Hard requirements — fail fast if missing
+_mise := require("mise")
 
 # ===========================================================================
 # System update pipeline
