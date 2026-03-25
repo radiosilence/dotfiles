@@ -51,7 +51,7 @@ tasks:
       - dnf:upgrade
       - mise:upgrade
       - claude:upgrade
-      - tmux:plugins
+      - tmux
       - generate:completions
     cmds:
       - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
