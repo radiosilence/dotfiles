@@ -92,10 +92,6 @@ name = "regen-zsh-completions"
 path = "src/bin/regen-zsh-completions.rs"
 
 [[bin]]
-name = "echo-to-file"
-path = "src/bin/echo-to-file.rs"
-
-[[bin]]
 name = "parallel-dl-extract"
 path = "src/bin/parallel-dl-extract.rs"
 

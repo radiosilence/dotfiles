@@ -122,9 +122,6 @@ name = "clean-dls"
 name = "clean-exif"
 
 [[completions.tools]]
-name = "echo-to-file"
-
-[[completions.tools]]
 name = "embed-art"
 
 [[completions.tools]]
