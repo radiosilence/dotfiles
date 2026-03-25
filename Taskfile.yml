@@ -32,32 +32,10 @@ tasks:
   # ===========================================================================
 
   setup:
-    desc: Full system setup (bootstrap + update)
+    desc: Full system setup (bootstrap + update + use-ssh)
+    deps: [upd, use-ssh]
     cmds:
-      # Interactive tasks — must be sequential
-      - task: bootstrap:clone
-      - task: bootstrap:brew
-      - task: bootstrap:brew-roles
-      - task: brew:bundle
-      - task: bootstrap:1password
-      - task: bootstrap:gh-auth
-      # Everything else in parallel via deps
-      - task: setup:finalize
       - printf "{{.OK}} {{.BOLD}}setup complete{{.RESET}} (restart your terminal)\n"
-
-  setup:finalize:
-    internal: true
-    deps:
-      - link
-      - bootstrap:rosetta
-      - bootstrap:claude
-      - bootstrap:unquarantine
-      - bootstrap:sudo-touchid
-      - bootstrap:sudo-timeout
-      - mise:install
-      - reinstall-bins
-      - upd
-      - use-ssh
 
   # ---------------------------------------------------------------------------
   # Bootstrap tasks (fresh system)
@@ -71,7 +49,7 @@ tasks:
       - xcode-select --install
       - |
         printf "{{.WARN}} waiting for Xcode CLI tools installer...\n"
-        while ! command -v git >/dev/null 2>&1; do sleep 2; done
+        while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
         printf "{{.OK}} xcode cli tools\n"
 
   bootstrap:clone:
@@ -107,35 +85,24 @@ tasks:
   bootstrap:1password:
     desc: Set up 1Password SSH agent
     platforms: [darwin]
-    interactive: true
     deps: [brew:bundle]
-    status:
-      [
-        "test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock",
-      ]
+    status: ["test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"]
     cmds:
-      - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent:\n"
-      - printf "    Settings -> Developer -> SSH Agent\n"
-      - printf "{{.WARN}} press enter when done..."
-      - read -r </dev/tty
-      - printf "{{.OK}} 1password\n"
+      - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent (Settings → Developer → SSH Agent)\n"
+      - |
+        sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+        while [ ! -S "$sock" ]; do sleep 0.5; done
+        printf "{{.OK}} 1password ssh agent\n"
 
   bootstrap:gh-auth:
     desc: Authenticate GitHub CLI
-    interactive: true
     deps: [bootstrap:1password]
     status: ["gh auth status 2>/dev/null"]
     cmds:
-      - printf "{{.WARN}} gh is not authenticated. open a new tab and run:\n"
-      - printf "    gh auth login\n"
-      - printf "{{.WARN}} press enter when done..."
-      - read -r </dev/tty
+      - printf "{{.WARN}} gh is not authenticated — run 'gh auth login' in another terminal\n"
       - |
-        if gh auth status &>/dev/null; then
-          printf "{{.OK}} gh authenticated\n"
-        else
-          printf "{{.WARN}} gh still not authenticated — mise install may fail for github tools\n"
-        fi
+        while ! gh auth status &>/dev/null; do sleep 0.5; done
+        printf "{{.OK}} gh authenticated\n"
 
   bootstrap:rosetta:
     desc: Install Rosetta 2 (Apple Silicon)
@@ -185,7 +152,7 @@ tasks:
 
   mise:install:
     desc: Install mise tools
-    deps: [brew:bundle]
+    deps: [brew:bundle, bootstrap:gh-auth]
     status: ["! command -v mise"]
     cmds:
       - |
@@ -448,6 +415,7 @@ tasks:
 
   mise:upgrade:
     desc: Update mise tools
+    deps: [bootstrap:gh-auth]
     status: ["! command -v mise"]
     cmds:
       - mise up
