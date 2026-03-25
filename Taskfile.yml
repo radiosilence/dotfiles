@@ -45,14 +45,14 @@ tasks:
       - link
       - check:auth
       - install:fonts
-      - upd:brew:cleanup
-      - upd:brew
-      - upd:apt
-      - upd:dnf
-      - upd:mise
-      - upd:claude
-      - upd:tmux
-      - upd:zsh-completions
+      - brew:cleanup
+      - brew
+      - apt:upgrade
+      - dnf:upgrade
+      - mise:upgrade
+      - claude:upgrade
+      - tmux:plugins
+      - generate:completions
     cmds:
       - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
       - rm -f ~/.config/zsh/conf.d/*.zwc
@@ -166,7 +166,7 @@ tasks:
 
   reinstall-bins:
     desc: Build and install rust binaries from crates/
-    deps: [upd:mise]
+    deps: [mise:upgrade]
     status: ["! command -v cargo"]
     cmds:
       - printf "{{.WORK}} building rust binaries\n"
@@ -277,11 +277,11 @@ tasks:
         rm -rf "$tmpdir"
         printf "{{.OK}} Geist Mono Nerd Font\n"
 
-  upd:brew:
+  brew:
     desc: Brew upgrades
-    deps: [upd:brew:upgrade, upd:brew:bundle]
+    deps: [brew:upgrade, brew:bundle]
 
-  upd:brew:update:
+  brew:update:
     desc: Update brew index
     deps: [link:brewfile]
     platforms: [darwin]
@@ -289,31 +289,31 @@ tasks:
     cmds:
       - brew update --quiet
 
-  upd:brew:bundle:
+  brew:bundle:
     desc: Install Brewfile packages
     platforms: [darwin]
-    deps: [upd:brew:update]
+    deps: [brew:update]
     status: ["! command -v brew"]
     cmds:
       - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
 
-  upd:brew:upgrade:
+  brew:upgrade:
     desc: Upgrade brew packages
     platforms: [darwin]
-    deps: [upd:brew:bundle, upd:brew:update]
+    deps: [brew:bundle, brew:update]
     status: ["! command -v brew"]
     cmds:
       - HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --greedy --quiet
 
-  upd:brew:cleanup:
+  brew:cleanup:
     desc: Cleanup brew
     platforms: [darwin]
-    deps: [upd:brew]
+    deps: [brew]
     status: ["! command -v brew"]
     cmds:
       - brew cleanup --quiet
 
-  upd:apt:
+  apt:upgrade:
     desc: Update apt packages
     platforms: [linux]
     status: ["! command -v apt-get"]
@@ -322,33 +322,33 @@ tasks:
       - sudo apt-get upgrade -y
       - sudo apt-get autoremove -y
 
-  upd:dnf:
+  dnf:upgrade:
     desc: Update dnf packages
     platforms: [linux]
     status: ["! command -v dnf"]
     cmds:
       - sudo dnf update -y
 
-  upd:mise:
+  mise:upgrade:
     desc: Update mise tools
     status: ["! command -v mise"]
     cmds:
       - mise up
       - mise reshim
 
-  upd:claude:
+  claude:upgrade:
     desc: Update Claude Code
     status: ["! command -v claude"]
     cmds:
       - claude --update
 
-  upd:tmux:
+  tmux:
     desc: Install/update tmux plugins
     deps:
-      - upd:tmux:resurrect
-      - upd:tmux:fzf-url
+      - tmux:resurrect
+      - tmux:fzf-url
 
-  upd:tmux:resurrect:
+  tmux:resurrect:
     desc: Install/update tmux-resurrect
     vars:
       DEST: "{{.HOME}}/.tmux/plugins/tmux-resurrect"
@@ -363,7 +363,7 @@ tasks:
           printf "{{.OK}} tmux-resurrect (installed)\n"
         fi
 
-  upd:tmux:fzf-url:
+  tmux:fzf-url:
     desc: Install/update tmux-fzf-url
     vars:
       DEST: "{{.HOME}}/.tmux/plugins/tmux-fzf-url"
@@ -378,7 +378,7 @@ tasks:
           printf "{{.OK}} tmux-fzf-url (installed)\n"
         fi
 
-  upd:zsh-completions:
+  generate:completions:
     desc: Regenerate zsh completions
     deps:
       # All gen tasks dep on setup, which deps on brew:cleanup + mise
@@ -417,45 +417,45 @@ tasks:
           - unfuck-xcode
           - url2base64
           - vimv
-        task: upd:zsh-completions:gen
+        task: generate:completions:gen
         vars:
           TOOL: "{{.ITEM}}"
           CMD: "{{.ITEM}} completion zsh"
       # Custom completion commands
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: gh, CMD: "gh completion -s zsh" }
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: fastmail-cli, CMD: "fastmail-cli completions zsh" }
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: codeowners-cli, CMD: "codeowners-cli completions zsh" }
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: task, CMD: "task --completion zsh" }
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: just, CMD: "just --completions zsh" }
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: aws-vault, CMD: "aws-vault --completion-script-zsh" }
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: rg, CMD: "rg --generate complete-zsh" }
-      - task: upd:zsh-completions:gen
+      - task: generate:completions:gen
         vars: { TOOL: pup, CMD: "pup completions zsh" }
       # Prebuilt: lsd
-      - task: upd:zsh-completions:lsd
+      - task: generate:completions:lsd
       # Sourced: npm
-      - task: upd:zsh-completions:npm
+      - task: generate:completions:npm
 
-  upd:zsh-completions:setup:
+  generate:completions:setup:
     internal: true
-    deps: [upd:brew:cleanup, upd:mise]
+    deps: [brew:cleanup, mise:upgrade]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
       - mkdir -p {{.COMP_DIR}}
       - rm -f {{.COMP_DIR}}/_*
 
-  upd:zsh-completions:gen:
+  generate:completions:gen:
     internal: true
     run: always
-    deps: [upd:zsh-completions:setup]
+    deps: [generate:completions:setup]
     status: ["! command -v {{.TOOL}}"]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
@@ -467,9 +467,9 @@ tasks:
           rm -f "{{.COMP_DIR}}/_{{.TOOL}}"
         fi
 
-  upd:zsh-completions:lsd:
+  generate:completions:lsd:
     internal: true
-    deps: [upd:zsh-completions:setup]
+    deps: [generate:completions:setup]
     status: ["! command -v lsd"]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
@@ -478,9 +478,9 @@ tasks:
         src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
         [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
 
-  upd:zsh-completions:npm:
+  generate:completions:npm:
     internal: true
-    deps: [upd:zsh-completions:setup]
+    deps: [generate:completions:setup]
     status: ["! command -v npm"]
     cmds:
       - npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
