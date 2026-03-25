@@ -323,7 +323,7 @@ tasks:
   reinstall-bins:
     desc: Build and install rust binaries from crates/
     deps: [mise:install]
-    status: ["! command -v cargo"]
+    status: ["test -f {{.DOTFILES}}/bin/clean-dls"]
     cmds:
       - printf "{{.WORK}} building rust binaries\n"
       - cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
