@@ -232,10 +232,23 @@ tasks:
         msg: yq not installed
     cmds:
       - |
-        command -v install-font-macos >/dev/null 2>&1 || { echo "skipped (no install-font-macos)"; exit 0; }
-        urls=$(yq -p toml -oy -r '.fonts[].url' "{{.DOTFILES}}/dotfiles.toml")
-        [ -n "$urls" ] || { echo "no fonts configured"; exit 0; }
-        install-font-macos $urls
+        FONTS_DIR="$HOME/Library/Fonts"
+        mkdir -p "$FONTS_DIR"
+        count=$(yq -p toml -oy '.fonts | length' "{{.DOTFILES}}/dotfiles.toml")
+        [ "$count" -gt 0 ] || { echo "no fonts configured"; exit 0; }
+        for i in $(seq 0 $((count - 1))); do
+          name=$(yq -p toml -oy -r ".fonts[$i].name" "{{.DOTFILES}}/dotfiles.toml")
+          url=$(yq -p toml -oy -r ".fonts[$i].url" "{{.DOTFILES}}/dotfiles.toml")
+          marker=$(yq -p toml -oy -r ".fonts[$i].marker_file" "{{.DOTFILES}}/dotfiles.toml")
+          [ -f "$FONTS_DIR/$marker" ] && { printf "{{.OK}} %s\n" "$name"; continue; }
+          printf "{{.WORK}} %s\n" "$name"
+          tmpdir=$(mktemp -d)
+          curl -fsSL "$url" -o "$tmpdir/font.zip"
+          unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
+          find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} "$FONTS_DIR/" \;
+          rm -rf "$tmpdir"
+          printf "{{.OK}} %s\n" "$name"
+        done
 
   upd:brew:
     desc: Brew upgrades
