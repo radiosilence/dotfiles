@@ -38,7 +38,131 @@ tasks:
   link:
     desc: Symlink dotfiles and configs
     cmds:
-      - mise run --cd {{.DOTFILES}} link
+      - |
+        DOTFILES="{{.DOTFILES}}"
+
+        # Dotfiles (.* → ~)
+        for f in "$DOTFILES"/.*; do
+          name=$(basename "$f")
+          case "$name" in
+            .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
+            .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json)
+              continue ;;
+          esac
+          target="$HOME/$name"
+          if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
+            continue
+          fi
+          rm -rf "$target"
+          ln -s "$f" "$target"
+          printf "  \033[32m󰌷\033[0m %s\n" "$name"
+        done
+
+        # Config dirs (config.d/* → ~/.config/*)
+        mkdir -p "$HOME/.config"
+        if [ -d "$DOTFILES/config.d" ]; then
+          for f in "$DOTFILES/config.d"/*; do
+            [ -e "$f" ] || continue
+            name=$(basename "$f")
+            [ "$name" = "launchd" ] && continue
+            target="$HOME/.config/$name"
+            if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
+              continue
+            fi
+            rm -rf "$target"
+            ln -s "$f" "$target"
+            printf "  \033[32m󰌷\033[0m ~/.config/%s\n" "$name"
+          done
+        fi
+
+        # Gitconfig include
+        [ -f "$HOME/.gitconfig" ] || touch "$HOME/.gitconfig"
+        if ! grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null; then
+          printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
+          printf "  \033[32m󰄬\033[0m gitconfig include\n"
+        fi
+
+        # SSH config include
+        mkdir -p "$HOME/.ssh"
+        if [ ! -f "$HOME/.ssh/config" ]; then
+          touch "$HOME/.ssh/config"
+          chmod 600 "$HOME/.ssh/config"
+        fi
+        if ! grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null; then
+          printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
+          printf "  \033[32m󰄬\033[0m ssh config include\n"
+        fi
+
+        # Brewfile symlink (macOS)
+        if [ "$(uname)" = "Darwin" ] && [ -f "$DOTFILES/Brewfile" ]; then
+          target="$HOME/Brewfile"
+          if ! [ -L "$target" ] || [ "$(readlink "$target")" != "$DOTFILES/Brewfile" ]; then
+            ln -sf "$DOTFILES/Brewfile" "$target"
+            printf "  \033[32m󰄬\033[0m Brewfile\n"
+          fi
+        fi
+
+        # Launchd agents (macOS)
+        if [ "$(uname)" = "Darwin" ] && [ -d "$DOTFILES/config.d/launchd" ]; then
+          agents="$HOME/Library/LaunchAgents"
+          mkdir -p "$agents"
+          for plist in "$DOTFILES/config.d/launchd"/*.plist; do
+            [ -f "$plist" ] || continue
+            name=$(basename "$plist")
+            dest="$agents/$name"
+            if [ -f "$dest" ] && cmp -s "$plist" "$dest"; then
+              continue
+            fi
+            cp "$plist" "$dest"
+            launchctl unload "$dest" 2>/dev/null || true
+            launchctl load "$dest" 2>/dev/null || true
+            printf "  \033[32m󰄬\033[0m launchd: %s\n" "$name"
+          done
+        fi
+
+        # Claude Code hooks
+        claude_settings="$HOME/.claude/settings.json"
+        if command -v jq >/dev/null 2>&1 && [ -f "$claude_settings" ]; then
+          if ! jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$claude_settings" >/dev/null 2>&1; then
+            jq '
+              .hooks //= {} |
+              .hooks.PostToolUse //= [] |
+              .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
+            ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
+            printf "  \033[32m󰄬\033[0m claude hooks: gastown\n"
+          fi
+        fi
+
+        # Sheldon plugins
+        if command -v sheldon >/dev/null 2>&1; then
+          sheldon source >/dev/null 2>&1 && printf "  \033[32m󰄬\033[0m sheldon\n" || true
+        fi
+
+        printf "  \033[32m󰄬\033[0m link complete\n"
+
+  reinstall-bins:
+    desc: Build and install rust binaries from crates/
+    preconditions:
+      - sh: command -v cargo
+        msg: cargo not found
+    cmds:
+      - printf "  \033[35m󱁤\033[0m building rust binaries\n"
+      - cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
+      - printf "  \033[32m󰄬\033[0m binaries installed\n"
+
+  use-ssh:
+    desc: Switch dotfiles remote from HTTPS to SSH
+    dir: '{{.DOTFILES}}'
+    cmds:
+      - |
+        current=$(git remote get-url origin)
+        if echo "$current" | grep -q "^git@"; then
+          printf "  \033[32m󰄬\033[0m already using SSH\n"
+          exit 0
+        fi
+        ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
+        git remote set-url origin "$ssh_url"
+        printf "  \033[32m󰄬\033[0m remote switched to %s\n" "$ssh_url"
 
   upd:auth:
     desc: Check gh/op authentication
@@ -106,11 +230,11 @@ tasks:
   upd:brew:
     desc: Update/upgrade/cleanup brew
     platforms: [darwin]
-    deps: [upd:brew-bundle]
     preconditions:
       - sh: command -v brew
         msg: brew not installed
     cmds:
+      - task: upd:brew-bundle
       - brew update --quiet
       - brew upgrade --greedy --quiet
       - brew cleanup --quiet
@@ -179,7 +303,7 @@ tasks:
 
   upd:zsh-completions:
     desc: Regenerate zsh completions
-    deps: [upd:brew, upd:brew-bundle, upd:mise]
+    deps: [upd:brew, upd:mise]
     preconditions:
       - sh: command -v regen-zsh-completions
         msg: regen-zsh-completions not found (run mise run reinstall-bins)
