@@ -88,6 +88,18 @@ tasks:
         while [ ! -S "$sock" ]; do sleep 0.5; done
         printf "{{.OK}} 1password ssh agent\n"
 
+  1password:ssh-config:
+    desc: Add 1Password SSH agent to ~/.ssh/config
+    platforms: [darwin]
+    deps: [1password:setup]
+    status: ["grep -q '2BUA8C4S2C.com.1password' ~/.ssh/config 2>/dev/null"]
+    cmds:
+      - |
+        mkdir -p ~/.ssh
+        [ -f ~/.ssh/config ] || touch ~/.ssh/config && chmod 600 ~/.ssh/config
+        printf '\nHost *\n  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"\n' >> ~/.ssh/config
+        printf "{{.OK}} 1password ssh agent added to ~/.ssh/config\n"
+
   gh:auth:
     desc: Authenticate GitHub CLI
     deps: [1password:setup]
@@ -166,6 +178,7 @@ tasks:
       - brew:unquarantine
       - sudo:touchid
       - sudo:timeout
+      - 1password:ssh-config
       - reinstall-bins
       - use-ssh
       # Regular update
