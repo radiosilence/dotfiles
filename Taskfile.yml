@@ -31,17 +31,11 @@ tasks:
   #   [brew, mise] → zsh-completions    — last
   # ===========================================================================
 
-  setup:
-    desc: Full system setup (bootstrap + update + use-ssh)
-    deps: [upd, use-ssh]
-    cmds:
-      - printf "{{.OK}} {{.BOLD}}setup complete{{.RESET}} (restart your terminal)\n"
-
   # ---------------------------------------------------------------------------
   # Bootstrap tasks (fresh system)
   # ---------------------------------------------------------------------------
 
-  bootstrap:xcode:
+  xcode:install:
     desc: Install Xcode Command Line Tools
     platforms: [darwin]
     status: ["command -v git"]
@@ -52,15 +46,15 @@ tasks:
         while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
         printf "{{.OK}} xcode cli tools\n"
 
-  bootstrap:clone:
+  dotfiles:clone:
     desc: Clone dotfiles repo
-    deps: [bootstrap:xcode]
+    deps: [xcode:install]
     status: ["test -d {{.DOTFILES}}/.git"]
     cmds:
       - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
       - printf "{{.OK}} dotfiles cloned\n"
 
-  bootstrap:brew:
+  brew:install:
     desc: Install Homebrew
     platforms: [darwin]
     status: ["command -v brew"]
@@ -74,15 +68,15 @@ tasks:
         fi
       - printf "{{.OK}} homebrew\n"
 
-  bootstrap:brew-roles:
+  brew:roles:
     desc: Copy Brewfile roles template
-    deps: [bootstrap:clone]
+    deps: [dotfiles:clone]
     status: ["test -f {{.DOTFILES}}/dotfiles-roles.yml"]
     cmds:
       - cp {{.DOTFILES}}/dotfiles-roles.yml.template {{.DOTFILES}}/dotfiles-roles.yml
       - printf "{{.WARN}} copied dotfiles-roles.yml — edit to enable brew roles\n"
 
-  bootstrap:1password:
+  1password:setup:
     desc: Set up 1Password SSH agent
     platforms: [darwin]
     deps: [brew:bundle]
@@ -94,9 +88,9 @@ tasks:
         while [ ! -S "$sock" ]; do sleep 0.5; done
         printf "{{.OK}} 1password ssh agent\n"
 
-  bootstrap:gh-auth:
+  gh:auth:
     desc: Authenticate GitHub CLI
-    deps: [bootstrap:1password]
+    deps: [1password:setup]
     status: ["gh auth status 2>/dev/null"]
     cmds:
       - printf "{{.WARN}} gh is not authenticated — run 'gh auth login' in another terminal\n"
@@ -104,7 +98,7 @@ tasks:
         while ! gh auth status &>/dev/null; do sleep 0.5; done
         printf "{{.OK}} gh authenticated\n"
 
-  bootstrap:rosetta:
+  rosetta:install:
     desc: Install Rosetta 2 (Apple Silicon)
     platforms: [darwin]
     status: ["test $(uname -m) != arm64 || /usr/bin/pgrep -q oahd 2>/dev/null"]
@@ -112,14 +106,14 @@ tasks:
       - /usr/sbin/softwareupdate --install-rosetta --agree-to-license
       - printf "{{.OK}} rosetta 2\n"
 
-  bootstrap:claude:
+  claude:install:
     desc: Install Claude Code
     status: ["command -v claude"]
     cmds:
       - curl -fsSL https://claude.ai/install.sh | bash
       - printf "{{.OK}} claude code\n"
 
-  bootstrap:unquarantine:
+  brew:unquarantine:
     desc: Remove quarantine from casks
     platforms: [darwin]
     deps: [brew:bundle]
@@ -134,7 +128,7 @@ tasks:
             printf "{{.WARN}} %s (no quarantine attr)\n" "$cask"
         done
 
-  bootstrap:sudo-touchid:
+  sudo:touchid:
     desc: Enable TouchID for sudo
     platforms: [darwin]
     status: ["grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null"]
@@ -142,7 +136,7 @@ tasks:
       - sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
       - printf "{{.OK}} touchid sudo\n"
 
-  bootstrap:sudo-timeout:
+  sudo:timeout:
     desc: Set sudo timeout to 30 min
     platforms: [darwin]
     status: ["test -f /etc/sudoers.d/timeout"]
@@ -152,7 +146,7 @@ tasks:
 
   mise:install:
     desc: Install mise tools
-    deps: [brew:bundle, bootstrap:gh-auth]
+    deps: [brew:bundle, gh:auth]
     status: ["! command -v mise"]
     cmds:
       - |
@@ -160,19 +154,20 @@ tasks:
         mise install
       - printf "{{.OK}} mise tools installed\n"
 
-  upd:
-    desc: Update the system
+  converge:
+    desc: Converge system to desired state
     deps:
       # Bootstrap (skipped on working systems via status:)
-      - bootstrap:clone
-      - bootstrap:brew
-      - bootstrap:brew-roles
-      - bootstrap:rosetta
-      - bootstrap:claude
-      - bootstrap:unquarantine
-      - bootstrap:sudo-touchid
-      - bootstrap:sudo-timeout
+      - dotfiles:clone
+      - brew:install
+      - brew:roles
+      - rosetta:install
+      - claude:install
+      - brew:unquarantine
+      - sudo:touchid
+      - sudo:timeout
       - reinstall-bins
+      - use-ssh
       # Regular update
       - link
       - check:auth
@@ -188,7 +183,7 @@ tasks:
       - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
       - rm -f ~/.config/zsh/conf.d/*.zwc
       - rm -f ~/.zcompdump
-      - printf "{{.OK}} {{.BOLD}}system update complete{{.RESET}} (restart shell for changes)\n"
+      - printf "{{.OK}} {{.BOLD}}converged{{.RESET}} (restart shell for changes)\n"
 
   # ---------------------------------------------------------------------------
   # Link tasks
@@ -415,7 +410,7 @@ tasks:
 
   mise:upgrade:
     desc: Update mise tools
-    deps: [bootstrap:gh-auth]
+    deps: [gh:auth]
     status: ["! command -v mise"]
     cmds:
       - mise up
