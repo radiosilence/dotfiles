@@ -8,7 +8,16 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
-**Ratatui TUI dashboard for `upd`:**
+**Replace `upd` TUI with mise task DAG:**
+
+- Ripped out the ratatui TUI dashboard — all update tasks now defined as mise tasks with `depends` for dependency ordering
+- `brew-bundle` → `brew` (serialized), `zsh-completions` depends on `brew`, `brew-bundle`, and `mise` (waits for new binaries)
+- Everything else (link, auth, fonts, claude, tmux-plugins) runs in parallel via mise's built-in task scheduler
+- `upd` binary is now a thin wrapper: acquires sudo, spawns keepalive thread, exec's into `mise run upd`
+- Removed `ratatui` and `crossterm` dependencies from Cargo.toml
+- Deleted `app.rs`, `tasks.rs`, `ui.rs` modules (~400 lines of TUI code)
+
+**Ratatui TUI dashboard for `upd` (superseded):**
 
 - Replaced `indicatif` MultiProgress spinners with a ratatui-powered TUI dashboard showing live panels per task
 - Responsive grid layout (3-col on wide terminals, 2-col on medium, 1-col on narrow) with bordered panels per task

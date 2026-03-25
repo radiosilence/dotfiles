@@ -148,3 +148,199 @@ ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|
 git remote set-url origin "$ssh_url"
 printf "  \033[32m󰄬\033[0m remote switched to %s\n" "$ssh_url"
 '''
+
+# =============================================================================
+# System update pipeline (replaces the old ratatui TUI binary)
+#
+# DAG:
+#   link, auth, fonts, mise, claude, tmux-plugins ── run in parallel
+#   brew-bundle ──→ brew                           ── brew serialized
+#   [brew, brew-bundle, mise] ──→ zsh-completions  ── completions last
+#   everything ──→ upd                             ── top-level entry
+# =============================================================================
+
+[tasks."upd:link"]
+description = "Symlink dotfiles"
+depends = ["link"]
+run = "true"
+
+[tasks."upd:auth"]
+description = "Check gh/op authentication (macOS)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+[[ "$(uname)" == "Darwin" ]] || { echo "skipped (not macOS)"; exit 0; }
+
+if command -v gh >/dev/null 2>&1; then
+  if gh auth status >/dev/null 2>&1; then
+    printf "  \033[32m󰄬\033[0m gh: authenticated\n"
+  else
+    printf "  \033[33m\033[0m gh: not authenticated (run gh auth login)\n"
+  fi
+fi
+
+if command -v op >/dev/null 2>&1; then
+  if op account list >/dev/null 2>&1; then
+    printf "  \033[32m󰄬\033[0m op: integrated\n"
+  else
+    printf "  \033[33m\033[0m op: not integrated (check 1Password CLI settings)\n"
+  fi
+fi
+'''
+
+[tasks."upd:fonts"]
+description = "Install missing fonts (macOS)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+[[ "$(uname)" == "Darwin" ]] || { echo "skipped (not macOS)"; exit 0; }
+
+FONTS_DIR="$HOME/Library/Fonts"
+mkdir -p "$FONTS_DIR"
+
+install_font() {
+  local name="$1" url="$2" marker="$3"
+  if [ -f "$FONTS_DIR/$marker" ]; then
+    printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
+    return 0
+  fi
+  printf "  \033[35m󱁤\033[0m %s (downloading)\n" "$name"
+  local tmpdir
+  tmpdir=$(mktemp -d)
+  trap "rm -rf '$tmpdir'" RETURN
+  curl -fsSL "$url" -o "$tmpdir/font.zip"
+  unzip -qo "$tmpdir/font.zip" -d "$tmpdir/extracted"
+  find "$tmpdir/extracted" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} "$FONTS_DIR/" \;
+  printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
+}
+
+# Fonts from dotfiles.toml — hardcoded here to avoid needing a TOML parser in bash.
+# Keep in sync with [[fonts]] entries in dotfiles.toml.
+install_font "Hack Ligatured" \
+  "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip" \
+  "HackNerdFontJBMLigatured-Regular.ttf"
+
+install_font "Geist" \
+  "https://github.com/vercel/geist-font/releases/download/geist%401.7.0/geist-font-v1.7.0.zip" \
+  "Geist-Regular.otf"
+
+install_font "Geist Mono Nerd Font" \
+  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip" \
+  "GeistMonoNerdFont-Regular.otf"
+'''
+
+[tasks."upd:brew-bundle"]
+description = "Install Brewfile packages"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
+brew bundle --quiet
+'''
+
+[tasks."upd:brew"]
+description = "Update/upgrade/cleanup brew"
+depends = ["upd:brew-bundle"]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
+brew update --quiet
+brew upgrade --greedy --quiet
+brew cleanup --quiet
+'''
+
+[tasks."upd:apt"]
+description = "Update apt packages"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v apt-get >/dev/null 2>&1 || { echo "skipped (no apt)"; exit 0; }
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get autoremove -y
+'''
+
+[tasks."upd:dnf"]
+description = "Update dnf packages"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v dnf >/dev/null 2>&1 || { echo "skipped (no dnf)"; exit 0; }
+sudo dnf update -y
+'''
+
+[tasks."upd:mise"]
+description = "Update mise tools"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v mise >/dev/null 2>&1 || { echo "skipped (no mise)"; exit 0; }
+mise up
+mise reshim
+'''
+
+[tasks."upd:claude"]
+description = "Update Claude Code"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v claude >/dev/null 2>&1 || { echo "skipped (no claude)"; exit 0; }
+claude --update
+'''
+
+[tasks."upd:tmux-plugins"]
+description = "Install/update tmux plugins"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+PLUGINS_DIR="$HOME/.tmux/plugins"
+mkdir -p "$PLUGINS_DIR"
+
+declare -A plugins=(
+  [tmux-resurrect]="https://github.com/tmux-plugins/tmux-resurrect.git"
+  [tmux-fzf-url]="https://github.com/wfxr/tmux-fzf-url.git"
+)
+
+for name in "${!plugins[@]}"; do
+  url="${plugins[$name]}"
+  dest="$PLUGINS_DIR/$name"
+  if [ -d "$dest" ]; then
+    git -C "$dest" pull --quiet
+    printf "  \033[32m󰄬\033[0m %s (updated)\n" "$name"
+  else
+    git clone --quiet "$url" "$dest"
+    printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
+  fi
+done
+'''
+
+[tasks."upd:zsh-completions"]
+description = "Regenerate zsh completions"
+depends = ["upd:brew", "upd:brew-bundle", "upd:mise"]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+command -v regen-zsh-completions >/dev/null 2>&1 || { echo "regen-zsh-completions not found, skipping"; exit 0; }
+regen-zsh-completions
+'''
+
+[tasks.upd]
+description = "Update the system"
+depends = [
+  "upd:link",
+  "upd:auth",
+  "upd:fonts",
+  "upd:brew",
+  "upd:apt",
+  "upd:dnf",
+  "upd:mise",
+  "upd:claude",
+  "upd:tmux-plugins",
+  "upd:zsh-completions",
+]
+run = '''
+#!/usr/bin/env bash
+printf "\n  \033[32m󰄬\033[0m \033[1msystem update complete\033[0m\n\n"
+'''
