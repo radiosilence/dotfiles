@@ -23,7 +23,8 @@ if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/de
   gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')"; }
 fi
 
-alias upd='task --taskfile ~/.dotfiles/Taskfile.yml upd'
+alias converge='task --taskfile ~/.dotfiles/Taskfile.yml converge'
+alias upd='printf "\033[33m\033[0m upd is deprecated, use converge\n" && converge'
 
 if command -v gh >/dev/null; then
   alias ccr='gh pr comment --body "@claude review"'
