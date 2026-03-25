@@ -331,7 +331,7 @@ tasks:
 
   upd:zsh-completions:
     desc: Regenerate zsh completions
-    deps: [upd:brew, upd:mise]
+    deps: [upd:brew:cleanup, upd:mise]
     preconditions:
       - sh: command -v regen-zsh-completions
         msg: regen-zsh-completions not found (run mise run reinstall-bins)
