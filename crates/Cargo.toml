@@ -56,10 +56,6 @@ name = "unfuck-xcode"
 path = "src/bin/unfuck-xcode.rs"
 
 [[bin]]
-name = "upd"
-path = "src/bin/upd/main.rs"
-
-[[bin]]
 name = "vimv"
 path = "src/bin/vimv.rs"
 
@@ -101,9 +97,6 @@ git2 = { version = "0.20", default-features = false }
 # Image processing
 img-parts = "0.4"
 indicatif = { version = "0.18", features = ["rayon"] }
-# TUI
-ratatui = "0.29"
-crossterm = "0.28"
 # System info
 netstat2 = "0.11"
 nix = { version = "0.31", features = ["signal", "user"] }
