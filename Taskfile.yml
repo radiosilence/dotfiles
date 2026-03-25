@@ -142,7 +142,7 @@ tasks:
   bootstrap:rosetta:
     desc: Install Rosetta 2 (Apple Silicon)
     platforms: [darwin]
-    status: ["/usr/bin/pgrep -q oahd 2>/dev/null", "test $(uname -m) != arm64"]
+    status: ["test $(uname -m) != arm64 || /usr/bin/pgrep -q oahd 2>/dev/null"]
     cmds:
       - /usr/sbin/softwareupdate --install-rosetta --agree-to-license
       - printf "{{.OK}} rosetta 2\n"
