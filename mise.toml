@@ -224,9 +224,8 @@ run = '''
 #!/usr/bin/env bash
 set -eo pipefail
 command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
-# --no-lock: skip generating Brewfile.lock.json
 # Allow failures (cask adoption mismatches etc.) — brew upgrade handles the rest
-brew bundle --quiet --no-lock || true
+brew bundle --quiet || true
 '''
 
 [tasks."upd:brew"]
