@@ -486,32 +486,36 @@ tasks:
 
   tmux:resurrect:
     desc: Install/update tmux-resurrect
-    vars:
-      DEST: "{{.HOME}}/.tmux/plugins/tmux-resurrect"
     cmds:
-      - mkdir -p {{.HOME}}/.tmux/plugins
-      - |
-        if [ -d "{{.DEST}}" ]; then
-          git -C "{{.DEST}}" pull --quiet
-          printf "{{.OK}} tmux-resurrect (updated)\n"
-        else
-          git clone --quiet https://github.com/tmux-plugins/tmux-resurrect.git "{{.DEST}}"
-          printf "{{.OK}} tmux-resurrect (installed)\n"
-        fi
+      - task: tmux:plugin
+        vars:
+          NAME: tmux-resurrect
+          URL: https://github.com/tmux-plugins/tmux-resurrect.git
 
   tmux:fzf-url:
     desc: Install/update tmux-fzf-url
+    cmds:
+      - task: tmux:plugin
+        vars:
+          NAME: tmux-fzf-url
+          URL: https://github.com/wfxr/tmux-fzf-url.git
+
+  tmux:plugin:
+    internal: true
+    run: always
     vars:
-      DEST: "{{.HOME}}/.tmux/plugins/tmux-fzf-url"
+      DEST: "{{.HOME}}/.tmux/plugins/{{.NAME}}"
     cmds:
       - mkdir -p {{.HOME}}/.tmux/plugins
       - |
         if [ -d "{{.DEST}}" ]; then
+          before=$(git -C "{{.DEST}}" rev-parse HEAD)
           git -C "{{.DEST}}" pull --quiet
-          printf "{{.OK}} tmux-fzf-url (updated)\n"
+          after=$(git -C "{{.DEST}}" rev-parse HEAD)
+          [ "$before" != "$after" ] && printf "{{.OK}} {{.NAME}} (updated)\n"
         else
-          git clone --quiet https://github.com/wfxr/tmux-fzf-url.git "{{.DEST}}"
-          printf "{{.OK}} tmux-fzf-url (installed)\n"
+          git clone --quiet {{.URL}} "{{.DEST}}"
+          printf "{{.OK}} {{.NAME}} (installed)\n"
         fi
 
   generate:completions:
