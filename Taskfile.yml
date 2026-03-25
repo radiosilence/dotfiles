@@ -225,57 +225,37 @@ tasks:
     desc: Install missing fonts
     platforms: [darwin]
     deps:
-      - install:fonts:hack
-      - install:fonts:geist
-      - install:fonts:geist-mono
+      - task: install:fonts:get
+        vars:
+          NAME: Hack Ligatured
+          URL: "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip"
+          MARKER: HackNerdFontJBMLigatured-Regular.ttf
+      - task: install:fonts:get
+        vars:
+          NAME: Geist
+          URL: "https://github.com/vercel/geist-font/releases/download/geist%401.7.0/geist-font-v1.7.0.zip"
+          MARKER: Geist-Regular.otf
+      - task: install:fonts:get
+        vars:
+          NAME: Geist Mono Nerd Font
+          URL: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip"
+          MARKER: GeistMonoNerdFont-Regular.otf
 
-  install:fonts:hack:
-    desc: Install Hack Ligatured
+  install:fonts:get:
+    internal: true
+    run: always
     platforms: [darwin]
-    status:
-      - test -f ~/Library/Fonts/HackNerdFontJBMLigatured-Regular.ttf
+    status: ["test -f ~/Library/Fonts/{{.MARKER}}"]
     cmds:
       - mkdir -p ~/Library/Fonts
       - |
-        printf "{{.WORK}} Hack Ligatured\n"
+        printf "{{.WORK}} {{.NAME}}\n"
         tmpdir=$(mktemp -d)
-        curl -fsSL "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip" -o "$tmpdir/font.zip"
+        curl -fsSL "{{.URL}}" -o "$tmpdir/font.zip"
         unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
         find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} ~/Library/Fonts/ \;
         rm -rf "$tmpdir"
-        printf "{{.OK}} Hack Ligatured\n"
-
-  install:fonts:geist:
-    desc: Install Geist
-    platforms: [darwin]
-    status:
-      - test -f ~/Library/Fonts/Geist-Regular.otf
-    cmds:
-      - mkdir -p ~/Library/Fonts
-      - |
-        printf "{{.WORK}} Geist\n"
-        tmpdir=$(mktemp -d)
-        curl -fsSL "https://github.com/vercel/geist-font/releases/download/geist%401.7.0/geist-font-v1.7.0.zip" -o "$tmpdir/font.zip"
-        unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
-        find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} ~/Library/Fonts/ \;
-        rm -rf "$tmpdir"
-        printf "{{.OK}} Geist\n"
-
-  install:fonts:geist-mono:
-    desc: Install Geist Mono Nerd Font
-    platforms: [darwin]
-    status:
-      - test -f ~/Library/Fonts/GeistMonoNerdFont-Regular.otf
-    cmds:
-      - mkdir -p ~/Library/Fonts
-      - |
-        printf "{{.WORK}} Geist Mono Nerd Font\n"
-        tmpdir=$(mktemp -d)
-        curl -fsSL "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip" -o "$tmpdir/font.zip"
-        unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
-        find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} ~/Library/Fonts/ \;
-        rm -rf "$tmpdir"
-        printf "{{.OK}} Geist Mono Nerd Font\n"
+        printf "{{.OK}} {{.NAME}}\n"
 
   brew:
     desc: Brew upgrades
