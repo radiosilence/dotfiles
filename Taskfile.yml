@@ -62,7 +62,6 @@ tasks:
       - link:gitconfig
       - link:ssh
       - link:brewfile
-      - link:launchd
       - link:claude-hooks
       - link:sheldon
 
@@ -131,24 +130,6 @@ tasks:
         [ -L "$target" ] && [ "$(readlink "$target")" = "{{.DOTFILES}}/Brewfile" ] && exit 0
         ln -sf "{{.DOTFILES}}/Brewfile" "$target"
         printf "  \033[32m󰄬\033[0m Brewfile\n"
-
-  link:launchd:
-    desc: Install launchd agents
-    platforms: [darwin]
-    cmds:
-      - |
-        agents="$HOME/Library/LaunchAgents"
-        mkdir -p "$agents"
-        for plist in "{{.DOTFILES}}/config.d/launchd"/*.plist; do
-          [ -f "$plist" ] || continue
-          name=$(basename "$plist")
-          dest="$agents/$name"
-          [ -f "$dest" ] && cmp -s "$plist" "$dest" && continue
-          cp "$plist" "$dest"
-          launchctl unload "$dest" 2>/dev/null || true
-          launchctl load "$dest" 2>/dev/null || true
-          printf "  \033[32m󰄬\033[0m launchd: %s\n" "$name"
-        done
 
   link:claude-hooks:
     desc: Inject Claude Code hooks into settings.json
