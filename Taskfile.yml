@@ -169,7 +169,7 @@ tasks:
 
   mise:install:
     desc: Install mise tools
-    deps: [mise:ensure, gh:auth]
+    deps: [mise:ensure, gh:auth, link:config]
     status: ["! command -v mise"]
     cmds:
       - |
