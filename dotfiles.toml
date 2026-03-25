@@ -134,9 +134,6 @@ name = "git-squash"
 name = "git-sync"
 
 [[completions.tools]]
-name = "git-trigger"
-
-[[completions.tools]]
 name = "imp"
 
 [[completions.tools]]

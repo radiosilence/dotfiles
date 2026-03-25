@@ -19,6 +19,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Uses `magick` command (ImageMagick 7) instead of deprecated `convert`
 - Removed from Cargo.toml, dotfiles.toml completions, and crates README
 
+**Migrated `git-trigger` to zsh function:**
+
+- Replaced Rust binary with a simple zsh function in `git.zsh` — the binary was just shelling out to `git commit --amend --no-edit && git push --force` anyway
+- Supports `-n`/`--dry-run` flag like the original
+- Removed from `Cargo.toml`, `dotfiles.toml` completions, and `crates/` source
+
 **Ratatui TUI dashboard for `upd`:**
 
 - Replaced `indicatif` MultiProgress spinners with a ratatui-powered TUI dashboard showing live panels per task
