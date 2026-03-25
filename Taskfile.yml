@@ -398,12 +398,11 @@ tasks:
 
   upd:zsh-completions:
     desc: Regenerate zsh completions
-    deps: [upd:brew:cleanup, upd:mise]
-    vars:
-      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
-    cmds:
-      - mkdir -p {{.COMP_DIR}}
-      - rm -f {{.COMP_DIR}}/_*
+    deps:
+      - upd:brew:cleanup
+      - upd:mise
+      - task: upd:zsh-completions:setup
+      # Default: <tool> completion zsh — runs in parallel via for-in-deps
       - for:
           - gt
           - argocd
@@ -438,28 +437,66 @@ tasks:
           - unfuck-xcode
           - url2base64
           - vimv
-        cmd: |
-          command -v {{.ITEM}} >/dev/null 2>&1 || exit 0
-          if {{.ITEM}} completion zsh > "{{.COMP_DIR}}/_{{.ITEM}}" 2>/dev/null && [ -s "{{.COMP_DIR}}/_{{.ITEM}}" ]; then
-            printf "{{.OK}} %s\n" "{{.ITEM}}"
-          else
-            rm -f "{{.COMP_DIR}}/_{{.ITEM}}"
-          fi
+        task: upd:zsh-completions:gen
+        vars:
+          TOOL: "{{.ITEM}}"
+          CMD: "{{.ITEM}} completion zsh"
       # Custom completion commands
-      - cmd: command -v gh >/dev/null 2>&1 && gh completion -s zsh > "{{.COMP_DIR}}/_gh" 2>/dev/null && printf "{{.OK}} gh\n" || true
-      - cmd: command -v fastmail-cli >/dev/null 2>&1 && fastmail-cli completions zsh > "{{.COMP_DIR}}/_fastmail-cli" 2>/dev/null && printf "{{.OK}} fastmail-cli\n" || true
-      - cmd: command -v codeowners-cli >/dev/null 2>&1 && codeowners-cli completions zsh > "{{.COMP_DIR}}/_codeowners-cli" 2>/dev/null && printf "{{.OK}} codeowners-cli\n" || true
-      - cmd: command -v task >/dev/null 2>&1 && task --completion zsh > "{{.COMP_DIR}}/_task" 2>/dev/null && printf "{{.OK}} task\n" || true
-      - cmd: command -v just >/dev/null 2>&1 && just --completions zsh > "{{.COMP_DIR}}/_just" 2>/dev/null && printf "{{.OK}} just\n" || true
-      - cmd: command -v aws-vault >/dev/null 2>&1 && aws-vault --completion-script-zsh > "{{.COMP_DIR}}/_aws-vault" 2>/dev/null && printf "{{.OK}} aws-vault\n" || true
-      - cmd: command -v rg >/dev/null 2>&1 && rg --generate complete-zsh > "{{.COMP_DIR}}/_rg" 2>/dev/null && printf "{{.OK}} rg\n" || true
-      - cmd: command -v pup >/dev/null 2>&1 && pup completions zsh > "{{.COMP_DIR}}/_pup" 2>/dev/null && printf "{{.OK}} pup\n" || true
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: gh, CMD: "gh completion -s zsh" }
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: fastmail-cli, CMD: "fastmail-cli completions zsh" }
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: codeowners-cli, CMD: "codeowners-cli completions zsh" }
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: task, CMD: "task --completion zsh" }
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: just, CMD: "just --completions zsh" }
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: aws-vault, CMD: "aws-vault --completion-script-zsh" }
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: rg, CMD: "rg --generate complete-zsh" }
+      - task: upd:zsh-completions:gen
+        vars: { TOOL: pup, CMD: "pup completions zsh" }
       # Prebuilt: lsd
-      - cmd: |
-          command -v lsd >/dev/null 2>&1 || exit 0
-          src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
-          [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
+      - task: upd:zsh-completions:lsd
       # Sourced: npm
-      - cmd: |
-          command -v npm >/dev/null 2>&1 || exit 0
-          npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
+      - task: upd:zsh-completions:npm
+
+  upd:zsh-completions:setup:
+    internal: true
+    vars:
+      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+    cmds:
+      - mkdir -p {{.COMP_DIR}}
+      - rm -f {{.COMP_DIR}}/_*
+
+  upd:zsh-completions:gen:
+    internal: true
+    vars:
+      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+    cmds:
+      - |
+        command -v {{.TOOL}} >/dev/null 2>&1 || exit 0
+        if {{.CMD}} > "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null && [ -s "{{.COMP_DIR}}/_{{.TOOL}}" ]; then
+          printf "{{.OK}} %s\n" "{{.TOOL}}"
+        else
+          rm -f "{{.COMP_DIR}}/_{{.TOOL}}"
+        fi
+
+  upd:zsh-completions:lsd:
+    internal: true
+    vars:
+      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+    cmds:
+      - |
+        command -v lsd >/dev/null 2>&1 || exit 0
+        src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
+        [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
+
+  upd:zsh-completions:npm:
+    internal: true
+    cmds:
+      - |
+        command -v npm >/dev/null 2>&1 || exit 0
+        npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
