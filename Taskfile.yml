@@ -80,7 +80,10 @@ tasks:
     desc: Set up 1Password SSH agent
     platforms: [darwin]
     deps: [brew:bundle]
-    status: ["test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"]
+    status:
+      [
+        "test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock",
+      ]
     cmds:
       - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent (Settings → Developer → SSH Agent)\n"
       - |
@@ -188,7 +191,6 @@ tasks:
       - apt:upgrade
       - dnf:upgrade
       - mise:upgrade
-      - claude:upgrade
       - tmux
       - generate:completions
     cmds:
@@ -427,12 +429,6 @@ tasks:
     cmds:
       - mise up
       - mise reshim
-
-  claude:upgrade:
-    desc: Update Claude Code
-    status: ["! command -v claude"]
-    cmds:
-      - timeout 2 claude update || printf "{{.WARN}} claude update failed or timed out\n"
 
   tmux:
     desc: Install/update tmux plugins
