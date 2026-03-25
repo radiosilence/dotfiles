@@ -194,13 +194,13 @@ DOTFILES="{{config_root}}"
 FONTS_DIR="$HOME/Library/Fonts"
 mkdir -p "$FONTS_DIR"
 
-count=$(yq -p toml '.fonts | length' "$DOTFILES/dotfiles.toml")
+count=$(yq -p toml -oy '.fonts | length' "$DOTFILES/dotfiles.toml")
 [[ "$count" -gt 0 ]] || { echo "no fonts configured"; exit 0; }
 
 for i in $(seq 0 $((count - 1))); do
-  name=$(yq -p toml -r ".fonts[$i].name" "$DOTFILES/dotfiles.toml")
-  url=$(yq -p toml -r ".fonts[$i].url" "$DOTFILES/dotfiles.toml")
-  marker=$(yq -p toml -r ".fonts[$i].marker_file" "$DOTFILES/dotfiles.toml")
+  name=$(yq -p toml -oy -r ".fonts[$i].name" "$DOTFILES/dotfiles.toml")
+  url=$(yq -p toml -oy -r ".fonts[$i].url" "$DOTFILES/dotfiles.toml")
+  marker=$(yq -p toml -oy -r ".fonts[$i].marker_file" "$DOTFILES/dotfiles.toml")
 
   if [ -f "$FONTS_DIR/$marker" ]; then
     printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
@@ -222,9 +222,11 @@ done
 description = "Install Brewfile packages"
 run = '''
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
-brew bundle --quiet
+# --no-lock: skip generating Brewfile.lock.json
+# Allow failures (cask adoption mismatches etc.) — brew upgrade handles the rest
+brew bundle --quiet --no-lock || true
 '''
 
 [tasks."upd:brew"]
@@ -282,19 +284,14 @@ claude --update
 description = "Install/update tmux plugins"
 run = '''
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 PLUGINS_DIR="$HOME/.tmux/plugins"
 mkdir -p "$PLUGINS_DIR"
 
-declare -A plugins=(
-  [tmux-resurrect]="https://github.com/tmux-plugins/tmux-resurrect.git"
-  [tmux-fzf-url]="https://github.com/wfxr/tmux-fzf-url.git"
-)
-
-for name in "${!plugins[@]}"; do
-  url="${plugins[$name]}"
-  dest="$PLUGINS_DIR/$name"
+install_plugin() {
+  local name="$1" url="$2"
+  local dest="$PLUGINS_DIR/$name"
   if [ -d "$dest" ]; then
     git -C "$dest" pull --quiet
     printf "  \033[32m󰄬\033[0m %s (updated)\n" "$name"
@@ -302,7 +299,10 @@ for name in "${!plugins[@]}"; do
     git clone --quiet "$url" "$dest"
     printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
   fi
-done
+}
+
+install_plugin tmux-resurrect https://github.com/tmux-plugins/tmux-resurrect.git
+install_plugin tmux-fzf-url   https://github.com/wfxr/tmux-fzf-url.git
 '''
 
 [tasks."upd:zsh-completions"]
