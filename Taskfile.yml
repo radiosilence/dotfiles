@@ -476,7 +476,7 @@ tasks:
     desc: Update Claude Code
     status: ["! command -v claude"]
     cmds:
-      - timeout 5 claude --update || printf "{{.WARN}} claude update timed out\n"
+      - timeout 5 claude update || printf "{{.WARN}} claude update failed or timed out\n"
 
   tmux:
     desc: Install/update tmux plugins
