@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
-output: prefixed
+output: group
 silent: true
 run: once
 
