@@ -10,7 +10,7 @@ cargo build --release
 cargo install --path .
 ```
 
-## Tools (22 binaries)
+## Tools (20 binaries)
 
 ### Process / System
 
@@ -26,7 +26,6 @@ cargo install --path .
 - **clean-dls** - Remove scene release garbage
 - **clean-exif** - Strip EXIF from images
 - **vimv** - Batch rename with editor
-- **gen-diff** - Generate image diffs
 
 ### Git
 
@@ -71,6 +70,6 @@ crates/
 │   ├── parallel.rs           # Parallel processing
 │   ├── regen_completions.rs  # Completion generation
 │   ├── update_ffmpeg.rs      # ffmpeg update logic
-│   └── bin/                  # 22 binaries
+│   └── bin/                  # 20 binaries
 └── Cargo.toml
 ```

@@ -13,6 +13,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Replaced Rust binary with a zsh autoload function — `echo "$@" > $TMPDIR/echo-out-$(id -u)` does the same job without a compiled binary
 - Removed from Cargo.toml, dotfiles.toml completions, and crates README
 
+**Migrate `gen-diff` to zsh function:**
+
+- Replaced Rust binary wrapper with a zsh autoload function — the binary was just shelling out to ImageMagick `convert` anyway
+- Uses `magick` command (ImageMagick 7) instead of deprecated `convert`
+- Removed from Cargo.toml, dotfiles.toml completions, and crates README
+
 **Ratatui TUI dashboard for `upd`:**
 
 - Replaced `indicatif` MultiProgress spinners with a ratatui-powered TUI dashboard showing live panels per task

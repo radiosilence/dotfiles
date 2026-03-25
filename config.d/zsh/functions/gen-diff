@@ -1,0 +1,29 @@
+if (( $# != 3 )); then
+  print -u2 "Usage: gen-diff <image1> <image2> <output>"
+  return 1
+fi
+
+if ! (( $+commands[magick] )); then
+  print -u2 "error: ImageMagick (magick) not found in PATH"
+  return 1
+fi
+
+local image1=$1 image2=$2 output=$3
+
+[[ -f $image1 ]] || { print -u2 "error: image not found: $image1"; return 1 }
+[[ -f $image2 ]] || { print -u2 "error: image not found: $image2"; return 1 }
+
+print "\n  \e[1;35m⟢\e[0m \e[1mgen-diff\e[0m\n"
+print "  \e[36m→\e[0m image1: $image1"
+print "  \e[36m→\e[0m image2: $image2"
+print "  \e[36m→\e[0m output: $output"
+
+magick "$image1" "$image2" \
+  -resize '1024x1024>' \
+  -gravity center \
+  '(' -clone 0-1 -compose difference -composite -threshold 0 ')' \
+  -delete 0-1 \
+  -negate \
+  "$output" || { print -u2 "error: ImageMagick failed"; return 1 }
+
+print "  \e[32m󰄬\e[0m visual diff created"

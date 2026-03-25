@@ -76,10 +76,6 @@ name = "extract-exif-from-flac"
 path = "src/bin/extract-exif-from-flac.rs"
 
 [[bin]]
-name = "gen-diff"
-path = "src/bin/gen-diff.rs"
-
-[[bin]]
 name = "install-terminfo"
 path = "src/bin/install-terminfo.rs"
 
