@@ -10,7 +10,7 @@ cargo build --release
 cargo install --path .
 ```
 
-## Tools (23 binaries)
+## Tools (22 binaries)
 
 ### Process / System
 
@@ -33,7 +33,6 @@ cargo install --path .
 
 - **git-sync** - Clean merged branches
 - **git-squash** - Squash commits
-- **git-trigger** - Amend + force push
 
 ### Audio / Media
 
@@ -72,6 +71,6 @@ crates/
 │   ├── parallel.rs           # Parallel processing
 │   ├── regen_completions.rs  # Completion generation
 │   ├── update_ffmpeg.rs      # ffmpeg update logic
-│   └── bin/                  # 23 binaries
+│   └── bin/                  # 22 binaries
 └── Cargo.toml
 ```
