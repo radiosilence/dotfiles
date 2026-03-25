@@ -78,6 +78,7 @@ tasks:
 
   bootstrap:clone:
     desc: Clone dotfiles repo
+    deps: [bootstrap:xcode]
     status: ["test -d {{.DOTFILES}}/.git"]
     cmds:
       - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
