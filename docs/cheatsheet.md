@@ -23,7 +23,6 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | -------------------------- | ---------------------------------------------------------- |
 | `git-sync [-y]`            | Delete local branches already merged to main               |
 | `git-squash [parent] [-n]` | Squash commits for clean PR history (default parent: main) |
-| `git-trigger [-n]`         | Amend + force push to re-trigger CI                        |
 
 ### Media & Audio
 
@@ -60,6 +59,7 @@ Located in `~/.config/zsh/functions/`.
 
 | Function             | Description                                                    |
 | -------------------- | -------------------------------------------------------------- |
+| `git-trigger [-n]`   | Amend + force push to re-trigger CI (`-n` dry run)             |
 | `fm`                 | **Fuzzy merge** - fzf select branch to merge                   |
 | `fr`                 | **Fuzzy rebase** - fzf select branch to rebase onto            |
 | `take <path>`        | Create directory and cd into it                                |
@@ -313,7 +313,7 @@ See `Brewfile` for full package list.
 
 **Squash before PR:** `git-squash`
 
-**Re-trigger CI:** `git-trigger`
+**Re-trigger CI:** `git-trigger` (zsh function)
 
 **Batch rename:** `vimv *.jpg`
 

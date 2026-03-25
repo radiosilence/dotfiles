@@ -32,10 +32,6 @@ name = "git-squash"
 path = "src/bin/git-squash.rs"
 
 [[bin]]
-name = "git-trigger"
-path = "src/bin/git-trigger.rs"
-
-[[bin]]
 name = "to-audio"
 path = "src/bin/to-audio.rs"
 

@@ -15,7 +15,7 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 ## What's Here
 
 - **Shell configs** - Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
-- **23 Rust binaries** - System maintenance, git workflow, media processing, file operations
+- **22 Rust binaries** - System maintenance, git workflow, media processing, file operations
 - **Tool management** - mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
 - **Terminal configs** - tmux, ghostty, starship prompt
 - **Editor configs** - helix (LSP, tree-sitter, formatters for 15+ languages), zed
@@ -42,7 +42,7 @@ After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`
 
 - `git-sync` - Delete merged local branches
 - `git-squash` - Squash commits for clean PRs
-- `git-trigger` - Re-trigger CI with empty amend
+- `git-trigger` - Re-trigger CI with amend + force push (zsh function)
 - `fm` / `fr` - Fuzzy merge/rebase with fzf
 
 **Media**
