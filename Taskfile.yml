@@ -11,9 +11,10 @@ tasks:
   # System update pipeline
   #
   # DAG:
-  #   link, auth, fonts, mise, claude, tmux-plugins — parallel
-  #   brew (bundle + update + upgrade + cleanup)    — sequential
-  #   [brew, mise] → zsh-completions               — last
+  #   link, auth, claude, tmux-plugins              — parallel
+  #   brew:update → brew:bundle → brew:upgrade → brew:cleanup  — chained
+  #   mise → fonts                                  — fonts needs yq
+  #   [brew:cleanup, mise] → zsh-completions        — last
   # ===========================================================================
 
   setup:
@@ -30,7 +31,7 @@ tasks:
       - link
       - upd:auth
       - upd:fonts
-      - upd:brew
+      - upd:brew:cleanup
       - upd:apt
       - upd:dnf
       - upd:mise
@@ -227,16 +228,43 @@ tasks:
           printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
         done
 
-  upd:brew:
-    desc: Bundle, update, upgrade, cleanup brew
+  upd:brew:update:
+    desc: Update brew index
     platforms: [darwin]
     preconditions:
       - sh: command -v brew
         msg: brew not installed
     cmds:
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
       - brew update --quiet
-      - brew upgrade --greedy --quiet
+
+  upd:brew:bundle:
+    desc: Install Brewfile packages
+    platforms: [darwin]
+    deps: [upd:brew:update]
+    preconditions:
+      - sh: command -v brew
+        msg: brew not installed
+    cmds:
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
+
+  upd:brew:upgrade:
+    desc: Upgrade brew packages
+    platforms: [darwin]
+    deps: [upd:brew:bundle]
+    preconditions:
+      - sh: command -v brew
+        msg: brew not installed
+    cmds:
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --greedy --quiet
+
+  upd:brew:cleanup:
+    desc: Cleanup brew
+    platforms: [darwin]
+    deps: [upd:brew:upgrade]
+    preconditions:
+      - sh: command -v brew
+        msg: brew not installed
+    cmds:
       - brew cleanup --quiet
 
   upd:apt:
