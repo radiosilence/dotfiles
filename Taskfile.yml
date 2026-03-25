@@ -447,7 +447,7 @@ tasks:
     deps: [brew]
     status: ["! command -v brew"]
     cmds:
-      - brew cleanup --quiet
+      - brew cleanup --quiet &
 
   apt:upgrade:
     desc: Update apt packages
