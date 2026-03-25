@@ -43,8 +43,8 @@ tasks:
     desc: Update the system
     deps:
       - link
-      - upd:auth
-      - upd:fonts
+      - check:auth
+      - install:fonts
       - upd:brew:cleanup
       - upd:brew
       - upd:apt
@@ -141,11 +141,10 @@ tasks:
 
   link:claude-hooks:
     desc: Inject Claude Code hooks into settings.json
+    status: ["! command -v jq || ! test -f $HOME/.claude/settings.json"]
     cmds:
       - |
         claude_settings="$HOME/.claude/settings.json"
-        command -v jq >/dev/null 2>&1 || exit 0
-        [ -f "$claude_settings" ] || exit 0
         jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$claude_settings" >/dev/null 2>&1 && exit 0
         jq '
           .hooks //= {} |
@@ -168,8 +167,7 @@ tasks:
   reinstall-bins:
     desc: Build and install rust binaries from crates/
     deps: [upd:mise]
-    status:
-      - "! command -v cargo"
+    status: ["! command -v cargo"]
     cmds:
       - printf "{{.WORK}} building rust binaries\n"
       - cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
@@ -193,45 +191,45 @@ tasks:
   # Update tasks
   # ---------------------------------------------------------------------------
 
-  upd:auth:
+  check:auth:
     desc: Check authentication status
     deps:
-      - upd:auth:gh
-      - upd:auth:op
+      - check:auth:gh
+      - check:auth:op
 
-  upd:auth:gh:
+  check:auth:gh:
     desc: Check GitHub CLI auth
     platforms: [darwin]
+    status: ["! command -v gh"]
     cmds:
       - |
-        command -v gh >/dev/null 2>&1 || exit 0
         if gh auth status >/dev/null 2>&1; then
           printf "{{.OK}} gh: authenticated\n"
         else
           printf "{{.WARN}} gh: not authenticated (run gh auth login)\n"
         fi
 
-  upd:auth:op:
+  check:auth:op:
     desc: Check 1Password CLI integration
     platforms: [darwin]
+    status: ["! command -v op"]
     cmds:
       - |
-        command -v op >/dev/null 2>&1 || exit 0
         if op account list >/dev/null 2>&1; then
           printf "{{.OK}} op: integrated\n"
         else
           printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"
         fi
 
-  upd:fonts:
+  install:fonts:
     desc: Install missing fonts
     platforms: [darwin]
     deps:
-      - upd:fonts:hack
-      - upd:fonts:geist
-      - upd:fonts:geist-mono
+      - install:fonts:hack
+      - install:fonts:geist
+      - install:fonts:geist-mono
 
-  upd:fonts:hack:
+  install:fonts:hack:
     desc: Install Hack Ligatured
     platforms: [darwin]
     status:
@@ -247,7 +245,7 @@ tasks:
         rm -rf "$tmpdir"
         printf "{{.OK}} Hack Ligatured\n"
 
-  upd:fonts:geist:
+  install:fonts:geist:
     desc: Install Geist
     platforms: [darwin]
     status:
@@ -263,7 +261,7 @@ tasks:
         rm -rf "$tmpdir"
         printf "{{.OK}} Geist\n"
 
-  upd:fonts:geist-mono:
+  install:fonts:geist-mono:
     desc: Install Geist Mono Nerd Font
     platforms: [darwin]
     status:
@@ -287,8 +285,7 @@ tasks:
     desc: Update brew index
     deps: [link:brewfile]
     platforms: [darwin]
-    status:
-      - "! command -v brew"
+    status: ["! command -v brew"]
     cmds:
       - brew update --quiet
 
@@ -296,8 +293,7 @@ tasks:
     desc: Install Brewfile packages
     platforms: [darwin]
     deps: [upd:brew:update]
-    status:
-      - "! command -v brew"
+    status: ["! command -v brew"]
     cmds:
       - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
 
@@ -305,8 +301,7 @@ tasks:
     desc: Upgrade brew packages
     platforms: [darwin]
     deps: [upd:brew:bundle, upd:brew:update]
-    status:
-      - "! command -v brew"
+    status: ["! command -v brew"]
     cmds:
       - HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --greedy --quiet
 
@@ -314,16 +309,14 @@ tasks:
     desc: Cleanup brew
     platforms: [darwin]
     deps: [upd:brew]
-    status:
-      - "! command -v brew"
+    status: ["! command -v brew"]
     cmds:
       - brew cleanup --quiet
 
   upd:apt:
     desc: Update apt packages
     platforms: [linux]
-    status:
-      - "! command -v apt-get"
+    status: ["! command -v apt-get"]
     cmds:
       - sudo apt-get update
       - sudo apt-get upgrade -y
@@ -332,23 +325,20 @@ tasks:
   upd:dnf:
     desc: Update dnf packages
     platforms: [linux]
-    status:
-      - "! command -v dnf"
+    status: ["! command -v dnf"]
     cmds:
       - sudo dnf update -y
 
   upd:mise:
     desc: Update mise tools
-    status:
-      - "! command -v mise"
+    status: ["! command -v mise"]
     cmds:
       - mise up
       - mise reshim
 
   upd:claude:
     desc: Update Claude Code
-    status:
-      - "! command -v claude"
+    status: ["! command -v claude"]
     cmds:
       - claude --update
 
@@ -466,8 +456,7 @@ tasks:
     internal: true
     run: always
     deps: [upd:zsh-completions:setup]
-    status:
-      - "! command -v {{.TOOL}}"
+    status: ["! command -v {{.TOOL}}"]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
@@ -481,18 +470,17 @@ tasks:
   upd:zsh-completions:lsd:
     internal: true
     deps: [upd:zsh-completions:setup]
+    status: ["! command -v lsd"]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
       - |
-        command -v lsd >/dev/null 2>&1 || exit 0
         src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
         [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
 
   upd:zsh-completions:npm:
     internal: true
     deps: [upd:zsh-completions:setup]
+    status: ["! command -v npm"]
     cmds:
-      - |
-        command -v npm >/dev/null 2>&1 || exit 0
-        npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
+      - npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
