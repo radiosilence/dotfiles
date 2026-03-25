@@ -195,6 +195,7 @@ tasks:
   upd:fonts:
     desc: Install missing fonts
     platforms: [darwin]
+    deps: [upd:mise]
     preconditions:
       - sh: command -v yq
         msg: yq not installed
