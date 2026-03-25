@@ -233,7 +233,7 @@ tasks:
 
   upd:brew:
     desc: Brew upgrades
-    deps: [upd:brew:update upd:brew:bundle]
+    deps: [upd:brew:update, upd:brew:bundle]
 
   upd:brew:update:
     desc: Update brew index
@@ -258,7 +258,7 @@ tasks:
   upd:brew:upgrade:
     desc: Upgrade brew packages
     platforms: [darwin]
-    deps: [upd:brew:bundle upd:brew:update]
+    deps: [upd:brew:bundle, upd:brew:update]
     preconditions:
       - sh: command -v brew
         msg: brew not installed
@@ -339,7 +339,7 @@ tasks:
 
   upd:zsh-completions:
     desc: Regenerate zsh completions
-    deps: [upd:brew, upd:brew, upd:mise]
+    deps: [upd:brew, upd:mise]
     preconditions:
       - sh: command -v regen-zsh-completions
         msg: regen-zsh-completions not found (run mise run reinstall-bins)
