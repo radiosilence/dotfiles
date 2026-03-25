@@ -23,7 +23,7 @@ if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/de
   gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')"; }
 fi
 
-alias upd='mise run --cd ~/.dotfiles upd'
+alias upd='task --taskfile ~/.dotfiles/Taskfile.yml upd'
 
 if command -v gh >/dev/null; then
   alias ccr='gh pr comment --body "@claude review"'

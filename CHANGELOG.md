@@ -8,7 +8,13 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
-**Replace `upd` TUI with mise task DAG:**
+**Migrate `upd` pipeline to go-task (Taskfile):**
+
+- Moved system update tasks from mise.toml to Taskfile.yml — proper `platforms` filtering (darwin/linux), `preconditions` for binary checks, prefixed parallel output
+- mise.toml retains project-specific tasks (link, reinstall-bins, use-ssh)
+- `upd` alias now calls `task --taskfile ~/.dotfiles/Taskfile.yml upd`
+
+**Replace `upd` TUI with mise task DAG (superseded by Taskfile):**
 
 - Ripped out the ratatui TUI dashboard — all update tasks now defined as mise tasks with `depends` for dependency ordering
 - `brew-bundle` → `brew` (serialized), `zsh-completions` depends on `brew`, `brew-bundle`, and `mise` (waits for new binaries)
