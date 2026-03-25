@@ -32,12 +32,164 @@ tasks:
   # ===========================================================================
 
   setup:
-    desc: Post-bootstrap setup (build bins, update system, switch to SSH)
+    desc: Full system setup (bootstrap + update)
     cmds:
-      - task: reinstall-bins
-      - task: upd
-      - task: use-ssh
+      # Interactive tasks — must be sequential
+      - task: bootstrap:xcode
+      - task: bootstrap:clone
+      - task: bootstrap:brew
+      - task: bootstrap:brew-roles
+      - task: brew:bundle
+      - task: bootstrap:1password
+      - task: bootstrap:gh-auth
+      # Everything else in parallel via deps
+      - task: setup:finalize
       - printf "{{.OK}} {{.BOLD}}setup complete{{.RESET}} (restart your terminal)\n"
+
+  setup:finalize:
+    internal: true
+    deps:
+      - link
+      - bootstrap:rosetta
+      - bootstrap:claude
+      - bootstrap:unquarantine
+      - bootstrap:sudo-touchid
+      - bootstrap:sudo-timeout
+      - mise:install
+      - reinstall-bins
+      - upd
+      - use-ssh
+
+  # ---------------------------------------------------------------------------
+  # Bootstrap tasks (fresh system)
+  # ---------------------------------------------------------------------------
+
+  bootstrap:xcode:
+    desc: Install Xcode Command Line Tools
+    platforms: [darwin]
+    interactive: true
+    status: ["xcode-select -p 2>/dev/null"]
+    cmds:
+      - xcode-select --install
+      - printf "{{.WARN}} waiting for Xcode CLI tools installer to complete...\n"
+      - printf "{{.WARN}} press enter when the installer finishes..."
+      - read -r </dev/tty
+      - printf "{{.OK}} xcode cli tools\n"
+
+  bootstrap:clone:
+    desc: Clone dotfiles repo
+    status: ["test -d {{.DOTFILES}}/.git"]
+    cmds:
+      - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
+      - printf "{{.OK}} dotfiles cloned\n"
+
+  bootstrap:brew:
+    desc: Install Homebrew
+    platforms: [darwin]
+    status: ["command -v brew"]
+    cmds:
+      - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - |
+        if [ -d /opt/homebrew ]; then
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+        else
+          eval "$(/usr/local/bin/brew shellenv)"
+        fi
+      - printf "{{.OK}} homebrew\n"
+
+  bootstrap:brew-roles:
+    desc: Copy Brewfile roles template
+    deps: [bootstrap:clone]
+    status: ["test -f {{.DOTFILES}}/dotfiles-roles.yml"]
+    cmds:
+      - cp {{.DOTFILES}}/dotfiles-roles.yml.template {{.DOTFILES}}/dotfiles-roles.yml
+      - printf "{{.WARN}} copied dotfiles-roles.yml — edit to enable brew roles\n"
+
+  bootstrap:1password:
+    desc: Set up 1Password SSH agent
+    platforms: [darwin]
+    interactive: true
+    deps: [brew:bundle]
+    status: ["test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"]
+    cmds:
+      - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent:\n"
+      - printf "    Settings -> Developer -> SSH Agent\n"
+      - printf "{{.WARN}} press enter when done..."
+      - read -r </dev/tty
+      - printf "{{.OK}} 1password\n"
+
+  bootstrap:gh-auth:
+    desc: Authenticate GitHub CLI
+    interactive: true
+    deps: [bootstrap:1password]
+    status: ["gh auth status 2>/dev/null"]
+    cmds:
+      - printf "{{.WARN}} gh is not authenticated. open a new tab and run:\n"
+      - printf "    gh auth login\n"
+      - printf "{{.WARN}} press enter when done..."
+      - read -r </dev/tty
+      - |
+        if gh auth status &>/dev/null; then
+          printf "{{.OK}} gh authenticated\n"
+        else
+          printf "{{.WARN}} gh still not authenticated — mise install may fail for github tools\n"
+        fi
+
+  bootstrap:rosetta:
+    desc: Install Rosetta 2 (Apple Silicon)
+    platforms: [darwin]
+    status: ["/usr/bin/pgrep -q oahd 2>/dev/null", "test $(uname -m) != arm64"]
+    cmds:
+      - /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+      - printf "{{.OK}} rosetta 2\n"
+
+  bootstrap:claude:
+    desc: Install Claude Code
+    status: ["command -v claude"]
+    cmds:
+      - curl -fsSL https://claude.ai/install.sh | bash
+      - printf "{{.OK}} claude code\n"
+
+  bootstrap:unquarantine:
+    desc: Remove quarantine from casks
+    platforms: [darwin]
+    deps: [brew:bundle]
+    cmds:
+      - |
+        caskroom="$(brew --caskroom 2>/dev/null)" || exit 0
+        for cask in stolendata-mpv rar; do
+          dir="$caskroom/$cask"
+          [ -d "$dir" ] || continue
+          sudo xattr -rd com.apple.quarantine "$dir" 2>/dev/null && \
+            printf "{{.OK}} unquarantined %s\n" "$cask" || \
+            printf "{{.WARN}} %s (no quarantine attr)\n" "$cask"
+        done
+
+  bootstrap:sudo-touchid:
+    desc: Enable TouchID for sudo
+    platforms: [darwin]
+    status: ["grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null"]
+    cmds:
+      - sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
+      - printf "{{.OK}} touchid sudo\n"
+
+  bootstrap:sudo-timeout:
+    desc: Set sudo timeout to 30 min
+    platforms: [darwin]
+    status: ["test -f /etc/sudoers.d/timeout"]
+    cmds:
+      - sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
+      - printf "{{.OK}} sudo timeout\n"
+
+  mise:install:
+    desc: Install mise tools
+    deps: [brew:bundle]
+    status: ["! command -v mise"]
+    cmds:
+      - |
+        export PATH="$HOME/.local/share/mise/shims:$PATH"
+        mise install
+      - printf "{{.OK}} mise tools installed\n"
 
   upd:
     desc: Update the system
