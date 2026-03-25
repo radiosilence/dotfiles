@@ -33,16 +33,8 @@ tasks:
   upd:
     desc: Update the system
     deps:
-      - link:dotfiles
-      - link:config
-      - link:gitconfig
-      - link:ssh
-      - link:brewfile
-      - link:launchd
-      - link:claude-hooks
-      - link:sheldon
-      - upd:auth:gh
-      - upd:auth:op
+      - link
+      - upd:auth
       - upd:fonts
       - upd:brew:cleanup
       - upd:brew
@@ -50,8 +42,7 @@ tasks:
       - upd:dnf
       - upd:mise
       - upd:claude
-      - upd:tmux:resurrect
-      - upd:tmux:fzf-url
+      - upd:tmux
       - upd:zsh-completions
     cmds:
       - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
@@ -62,6 +53,18 @@ tasks:
   # ---------------------------------------------------------------------------
   # Link tasks
   # ---------------------------------------------------------------------------
+
+  link:
+    desc: Symlink dotfiles and configs
+    deps:
+      - link:dotfiles
+      - link:config
+      - link:gitconfig
+      - link:ssh
+      - link:brewfile
+      - link:launchd
+      - link:claude-hooks
+      - link:sheldon
 
   link:dotfiles:
     desc: Symlink dotfiles (.* → ~)
@@ -86,7 +89,6 @@ tasks:
     cmds:
       - |
         mkdir -p "$HOME/.config"
-        [ -d "{{.DOTFILES}}/config.d" ] || exit 0
         for f in "{{.DOTFILES}}/config.d"/*; do
           [ -e "$f" ] || continue
           name=$(basename "$f")
@@ -125,7 +127,6 @@ tasks:
     platforms: [darwin]
     cmds:
       - |
-        [ -f "{{.DOTFILES}}/Brewfile" ] || exit 0
         target="$HOME/Brewfile"
         [ -L "$target" ] && [ "$(readlink "$target")" = "{{.DOTFILES}}/Brewfile" ] && exit 0
         ln -sf "{{.DOTFILES}}/Brewfile" "$target"
@@ -136,7 +137,6 @@ tasks:
     platforms: [darwin]
     cmds:
       - |
-        [ -d "{{.DOTFILES}}/config.d/launchd" ] || exit 0
         agents="$HOME/Library/LaunchAgents"
         mkdir -p "$agents"
         for plist in "{{.DOTFILES}}/config.d/launchd"/*.plist; do
@@ -204,6 +204,12 @@ tasks:
   # ---------------------------------------------------------------------------
   # Update tasks
   # ---------------------------------------------------------------------------
+
+  upd:auth:
+    desc: Check authentication status
+    deps:
+      - upd:auth:gh
+      - upd:auth:op
 
   upd:auth:gh:
     desc: Check GitHub CLI auth
@@ -323,6 +329,12 @@ tasks:
         msg: claude not installed
     cmds:
       - claude --update
+
+  upd:tmux:
+    desc: Install/update tmux plugins
+    deps:
+      - upd:tmux:resurrect
+      - upd:tmux:fzf-url
 
   upd:tmux:resurrect:
     desc: Install/update tmux-resurrect
