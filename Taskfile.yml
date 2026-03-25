@@ -408,53 +408,12 @@ tasks:
       - mkdir -p {{.COMP_DIR}}
       - rm -f {{.COMP_DIR}}/_*
       - |
-        gen() {
-          local name="$1" cmd="$2" dest="{{.COMP_DIR}}/_$name"
-          command -v "$name" >/dev/null 2>&1 || return 0
-          if eval "$cmd" > "$dest" 2>/dev/null && [ -s "$dest" ]; then
-            printf "{{.OK}} %s\n" "$name"
-          else
-            rm -f "$dest"
-          fi
-        }
-        export -f gen
-
-        # Default: <tool> completion zsh
-        default_tools=(
-          gt argocd docker helm k9s kubectl lefthook nano-web op orbctl
-          pulumi tilt turso yq fcloud houston koan
-          clean-dls clean-exif embed-art extract-exif-from-flac
-          git-squash git-sync imp install-font-macos kill-port
-          parallel-dl-extract prune prune-gen to-audio unfuck-xcode
-          url2base64 vimv
-        )
-
-        # Custom commands
-        declare -A custom=(
-          [gh]="gh completion -s zsh"
-          [fastmail-cli]="fastmail-cli completions zsh"
-          [codeowners-cli]="codeowners-cli completions zsh"
-          [task]="task --completion zsh"
-          [just]="just --completions zsh"
-          [aws-vault]="aws-vault --completion-script-zsh"
-          [rg]="rg --generate complete-zsh"
-          [pup]="pup completions zsh"
-        )
-
-        # Build job list
-        jobs=()
-        for t in "${default_tools[@]}"; do
-          jobs+=("gen $t '$t completion zsh'")
-        done
-        for t in "${!custom[@]}"; do
-          jobs+=("gen $t '${custom[$t]}'")
-        done
+        D="{{.COMP_DIR}}"
 
         # Prebuilt: lsd
         if command -v lsd >/dev/null 2>&1; then
-          bin_dir=$(dirname "$(command -v lsd)")
-          src="$bin_dir/autocomplete/_lsd"
-          [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
+          src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
+          [ -f "$src" ] && cp "$src" "$D/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
         fi
 
         # Sourced: npm
@@ -462,5 +421,55 @@ tasks:
           npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
         fi
 
-        # Run all gen jobs in parallel
-        printf '%s\n' "${jobs[@]}" | parallel --will-cite -j+0
+        # Generate all others in parallel
+        # Format: name<TAB>command
+        cat <<'TOOLS' | parallel --will-cite --colsep '\t' -j+0 '
+          command -v {1} >/dev/null 2>&1 || exit 0
+          if {2} > "'"$D"'/_{1}" 2>/dev/null && [ -s "'"$D"'/_{1}" ]; then
+            printf "{{.OK}} %s\n" "{1}"
+          else
+            rm -f "'"$D"'/_{1}"
+          fi
+        '
+        gt	gt completion zsh
+        argocd	argocd completion zsh
+        docker	docker completion zsh
+        helm	helm completion zsh
+        k9s	k9s completion zsh
+        kubectl	kubectl completion zsh
+        lefthook	lefthook completion zsh
+        nano-web	nano-web completion zsh
+        op	op completion zsh
+        orbctl	orbctl completion zsh
+        pulumi	pulumi completion zsh
+        tilt	tilt completion zsh
+        turso	turso completion zsh
+        yq	yq completion zsh
+        fcloud	fcloud completion zsh
+        houston	houston completion zsh
+        koan	koan completion zsh
+        gh	gh completion -s zsh
+        fastmail-cli	fastmail-cli completions zsh
+        codeowners-cli	codeowners-cli completions zsh
+        task	task --completion zsh
+        just	just --completions zsh
+        aws-vault	aws-vault --completion-script-zsh
+        rg	rg --generate complete-zsh
+        pup	pup completions zsh
+        clean-dls	clean-dls completion zsh
+        clean-exif	clean-exif completion zsh
+        embed-art	embed-art completion zsh
+        extract-exif-from-flac	extract-exif-from-flac completion zsh
+        git-squash	git-squash completion zsh
+        git-sync	git-sync completion zsh
+        imp	imp completion zsh
+        install-font-macos	install-font-macos completion zsh
+        kill-port	kill-port completion zsh
+        parallel-dl-extract	parallel-dl-extract completion zsh
+        prune	prune completion zsh
+        prune-gen	prune-gen completion zsh
+        to-audio	to-audio completion zsh
+        unfuck-xcode	unfuck-xcode completion zsh
+        url2base64	url2base64 completion zsh
+        vimv	vimv completion zsh
+        TOOLS
