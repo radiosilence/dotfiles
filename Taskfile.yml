@@ -399,9 +399,7 @@ tasks:
   upd:zsh-completions:
     desc: Regenerate zsh completions
     deps:
-      - upd:brew:cleanup
-      - upd:mise
-      - task: upd:zsh-completions:setup
+      # All gen tasks dep on setup, which deps on brew:cleanup + mise
       # Default: <tool> completion zsh — runs in parallel via for-in-deps
       - for:
           - gt
@@ -465,6 +463,7 @@ tasks:
 
   upd:zsh-completions:setup:
     internal: true
+    deps: [upd:brew:cleanup, upd:mise]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
@@ -474,6 +473,7 @@ tasks:
   upd:zsh-completions:gen:
     internal: true
     run: always
+    deps: [upd:zsh-completions:setup]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
@@ -487,6 +487,7 @@ tasks:
 
   upd:zsh-completions:lsd:
     internal: true
+    deps: [upd:zsh-completions:setup]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
@@ -497,6 +498,7 @@ tasks:
 
   upd:zsh-completions:npm:
     internal: true
+    deps: [upd:zsh-completions:setup]
     cmds:
       - |
         command -v npm >/dev/null 2>&1 || exit 0
