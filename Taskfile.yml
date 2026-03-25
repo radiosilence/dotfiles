@@ -35,7 +35,6 @@ tasks:
     desc: Full system setup (bootstrap + update)
     cmds:
       # Interactive tasks — must be sequential
-      - task: bootstrap:xcode
       - task: bootstrap:clone
       - task: bootstrap:brew
       - task: bootstrap:brew-roles
@@ -67,14 +66,13 @@ tasks:
   bootstrap:xcode:
     desc: Install Xcode Command Line Tools
     platforms: [darwin]
-    interactive: true
-    status: ["xcode-select -p 2>/dev/null"]
+    status: ["command -v git"]
     cmds:
       - xcode-select --install
-      - printf "{{.WARN}} waiting for Xcode CLI tools installer to complete...\n"
-      - printf "{{.WARN}} press enter when the installer finishes..."
-      - read -r </dev/tty
-      - printf "{{.OK}} xcode cli tools\n"
+      - |
+        printf "{{.WARN}} waiting for Xcode CLI tools installer...\n"
+        while ! command -v git >/dev/null 2>&1; do sleep 2; done
+        printf "{{.OK}} xcode cli tools\n"
 
   bootstrap:clone:
     desc: Clone dotfiles repo
