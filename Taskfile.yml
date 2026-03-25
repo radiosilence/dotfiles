@@ -423,6 +423,10 @@ tasks:
         default_tools=(
           gt argocd docker helm k9s kubectl lefthook nano-web op orbctl
           pulumi tilt turso yq fcloud houston koan
+          clean-dls clean-exif embed-art extract-exif-from-flac
+          git-squash git-sync imp install-font-macos kill-port
+          parallel-dl-extract prune prune-gen to-audio unfuck-xcode
+          url2base64 vimv
         )
 
         # Custom commands
@@ -438,14 +442,6 @@ tasks:
           [pup]="pup completions zsh"
         )
 
-        # Our own rust bins
-        own_bins=(
-          clean-dls clean-exif embed-art extract-exif-from-flac
-          git-squash git-sync imp install-font-macos kill-port
-          parallel-dl-extract prune prune-gen to-audio unfuck-xcode
-          url2base64 vimv
-        )
-
         # Build job list
         jobs=()
         for t in "${default_tools[@]}"; do
@@ -453,9 +449,6 @@ tasks:
         done
         for t in "${!custom[@]}"; do
           jobs+=("gen $t '${custom[$t]}'")
-        done
-        for t in "${own_bins[@]}"; do
-          jobs+=("gen $t '$t completion zsh'")
         done
 
         # Prebuilt: lsd
