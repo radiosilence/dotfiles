@@ -406,7 +406,6 @@ tasks:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
       - mkdir -p {{.COMP_DIR}}
-      - rm -f {{.COMP_DIR}}/_*
       - |
         D="{{.COMP_DIR}}"
 
@@ -422,54 +421,47 @@ tasks:
         fi
 
         # Generate all others in parallel
-        # Format: name<TAB>command
-        cat <<'TOOLS' | parallel --will-cite --colsep '\t' -j+0 '
-          command -v {1} >/dev/null 2>&1 || exit 0
-          if {2} > "'"$D"'/_{1}" 2>/dev/null && [ -s "'"$D"'/_{1}" ]; then
-            printf "{{.OK}} %s\n" "{1}"
-          else
-            rm -f "'"$D"'/_{1}"
-          fi
-        '
-        gt	gt completion zsh
-        argocd	argocd completion zsh
-        docker	docker completion zsh
-        helm	helm completion zsh
-        k9s	k9s completion zsh
-        kubectl	kubectl completion zsh
-        lefthook	lefthook completion zsh
-        nano-web	nano-web completion zsh
-        op	op completion zsh
-        orbctl	orbctl completion zsh
-        pulumi	pulumi completion zsh
-        tilt	tilt completion zsh
-        turso	turso completion zsh
-        yq	yq completion zsh
-        fcloud	fcloud completion zsh
-        houston	houston completion zsh
-        koan	koan completion zsh
-        gh	gh completion -s zsh
-        fastmail-cli	fastmail-cli completions zsh
-        codeowners-cli	codeowners-cli completions zsh
-        task	task --completion zsh
-        just	just --completions zsh
-        aws-vault	aws-vault --completion-script-zsh
-        rg	rg --generate complete-zsh
-        pup	pup completions zsh
-        clean-dls	clean-dls completion zsh
-        clean-exif	clean-exif completion zsh
-        embed-art	embed-art completion zsh
-        extract-exif-from-flac	extract-exif-from-flac completion zsh
-        git-squash	git-squash completion zsh
-        git-sync	git-sync completion zsh
-        imp	imp completion zsh
-        install-font-macos	install-font-macos completion zsh
-        kill-port	kill-port completion zsh
-        parallel-dl-extract	parallel-dl-extract completion zsh
-        prune	prune completion zsh
-        prune-gen	prune-gen completion zsh
-        to-audio	to-audio completion zsh
-        unfuck-xcode	unfuck-xcode completion zsh
-        url2base64	url2base64 completion zsh
-        vimv	vimv completion zsh
+        # Each line: name|command args
+        cat <<'TOOLS' | parallel --will-cite --colsep '\\|' -j+0 'command -v {1} >/dev/null 2>&1 || exit 0; if {2} > "'"$D"'/_{1}" 2>/dev/null && [ -s "'"$D"'/_{1}" ]; then printf "{{.OK}} %s\n" "{1}"; else rm -f "'"$D"'/_{1}"; fi'
+        gt|gt completion zsh
+        argocd|argocd completion zsh
+        docker|docker completion zsh
+        helm|helm completion zsh
+        k9s|k9s completion zsh
+        kubectl|kubectl completion zsh
+        lefthook|lefthook completion zsh
+        nano-web|nano-web completion zsh
+        op|op completion zsh
+        orbctl|orbctl completion zsh
+        pulumi|pulumi completion zsh
+        tilt|tilt completion zsh
+        turso|turso completion zsh
+        yq|yq completion zsh
+        fcloud|fcloud completion zsh
+        houston|houston completion zsh
+        koan|koan completion zsh
+        gh|gh completion -s zsh
+        fastmail-cli|fastmail-cli completions zsh
+        codeowners-cli|codeowners-cli completions zsh
+        task|task --completion zsh
+        just|just --completions zsh
+        aws-vault|aws-vault --completion-script-zsh
+        rg|rg --generate complete-zsh
+        pup|pup completions zsh
+        clean-dls|clean-dls completion zsh
+        clean-exif|clean-exif completion zsh
+        embed-art|embed-art completion zsh
+        extract-exif-from-flac|extract-exif-from-flac completion zsh
+        git-squash|git-squash completion zsh
+        git-sync|git-sync completion zsh
+        imp|imp completion zsh
+        install-font-macos|install-font-macos completion zsh
+        kill-port|kill-port completion zsh
+        parallel-dl-extract|parallel-dl-extract completion zsh
+        prune|prune completion zsh
+        prune-gen|prune-gen completion zsh
+        to-audio|to-audio completion zsh
+        unfuck-xcode|unfuck-xcode completion zsh
+        url2base64|url2base64 completion zsh
+        vimv|vimv completion zsh
         TOOLS
