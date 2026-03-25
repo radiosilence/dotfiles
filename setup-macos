@@ -134,7 +134,7 @@ fi
 
 # --- Link dotfiles (before anything that depends on shell config) ---
 printf "\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n" "link"
-mise run link
+mise x -- task --taskfile ~/.dotfiles/Taskfile.yml link
 
 # --- Rosetta 2 (Apple Silicon only) ---
 if [[ "$(uname -m)" == "arm64" ]]; then
@@ -154,14 +154,6 @@ exec zsh -l -c "
     printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'claude code'
     curl -fsSL https://claude.ai/install.sh | bash
   fi
-  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'build'
-  mise run reinstall-bins
-  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'system update'
-  mise run --cd ~/.dotfiles upd
 
-  # Switch repo to SSH now that everything is set up
-  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'finalize'
-  mise run use-ssh
-
-  printf '\n  \033[32m󰄬\033[0m %s\n\n' 'setup complete. restart your terminal.'
+  mise x -- task --taskfile ~/.dotfiles/Taskfile.yml setup
 "
