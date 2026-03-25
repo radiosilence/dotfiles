@@ -2,29 +2,21 @@ upd() {
   setopt LOCAL_OPTIONS ERR_RETURN
 
   local rebuild=0
-  local args=()
   for arg in "$@"; do
-    if [[ "$arg" == "--rebuild" ]]; then
-      rebuild=1
-    else
-      args+=("$arg")
-    fi
+    [[ "$arg" == "--rebuild" ]] && rebuild=1
   done
 
   if (( rebuild )); then
-    # Pull dotfiles
     if [ -d ~/.dotfiles/.git ]; then
       printf "  \033[36m→\033[0m %s\n" "pulling ~/.dotfiles..."
       (cd ~/.dotfiles && git pull) || { printf "  \033[31m󰅖\033[0m %s\n" "git pull failed"; return 1; }
     fi
 
-    # Build and install binaries
     printf "  \033[35m󱁤\033[0m %s\n" "building rust binaries..."
     cargo install --path ~/.dotfiles/crates --root ~/.dotfiles || { printf "  \033[31m󰅖\033[0m %s\n" "cargo install failed"; return 1; }
   fi
 
-  # Run upd binary
-  ~/.dotfiles/bin/upd "${args[@]}" || { printf "  \033[31m󰅖\033[0m %s\n" "upd binary failed"; return 1; }
+  mise run --cd ~/.dotfiles upd || { printf "  \033[31m󰅖\033[0m %s\n" "mise run upd failed"; return 1; }
 
   # Clear zsh caches so next shell rebuilds with updated tools
   printf "  \033[36m→\033[0m %s\n" "clearing zsh caches..."

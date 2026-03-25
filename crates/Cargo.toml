@@ -60,10 +60,6 @@ name = "unfuck-xcode"
 path = "src/bin/unfuck-xcode.rs"
 
 [[bin]]
-name = "upd"
-path = "src/bin/upd/main.rs"
-
-[[bin]]
 name = "vimv"
 path = "src/bin/vimv.rs"
 
