@@ -80,11 +80,11 @@ tasks:
     desc: Set up 1Password SSH agent
     platforms: [darwin]
     deps: [brew:bundle]
-    status: ["ssh-add -l 2>/dev/null | grep -q ."]
+    status: ["ssh-add -l 2>&1 | grep -qv 'no identities'"]
     cmds:
       - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent (Settings → Developer → SSH Agent)\n"
       - |
-        while ! ssh-add -l &>/dev/null; do sleep 0.5; done
+        while ! ssh-add -l 2>&1 | grep -qv 'no identities'; do sleep 0.5; done
         printf "{{.OK}} 1password ssh agent\n"
 
   gh:auth:
