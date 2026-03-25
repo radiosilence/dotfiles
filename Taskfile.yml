@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
 output: prefixed
@@ -167,9 +168,8 @@ tasks:
   reinstall-bins:
     desc: Build and install rust binaries from crates/
     deps: [upd:mise]
-    preconditions:
-      - sh: command -v cargo
-        msg: cargo not found
+    status:
+      - "! command -v cargo"
     cmds:
       - printf "{{.WORK}} building rust binaries\n"
       - cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
@@ -287,9 +287,8 @@ tasks:
     desc: Update brew index
     deps: [link:brewfile]
     platforms: [darwin]
-    preconditions:
-      - sh: command -v brew
-        msg: brew not installed
+    status:
+      - "! command -v brew"
     cmds:
       - brew update --quiet
 
@@ -297,9 +296,8 @@ tasks:
     desc: Install Brewfile packages
     platforms: [darwin]
     deps: [upd:brew:update]
-    preconditions:
-      - sh: command -v brew
-        msg: brew not installed
+    status:
+      - "! command -v brew"
     cmds:
       - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
 
@@ -307,9 +305,8 @@ tasks:
     desc: Upgrade brew packages
     platforms: [darwin]
     deps: [upd:brew:bundle, upd:brew:update]
-    preconditions:
-      - sh: command -v brew
-        msg: brew not installed
+    status:
+      - "! command -v brew"
     cmds:
       - HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --greedy --quiet
 
@@ -317,18 +314,16 @@ tasks:
     desc: Cleanup brew
     platforms: [darwin]
     deps: [upd:brew]
-    preconditions:
-      - sh: command -v brew
-        msg: brew not installed
+    status:
+      - "! command -v brew"
     cmds:
       - brew cleanup --quiet
 
   upd:apt:
     desc: Update apt packages
     platforms: [linux]
-    preconditions:
-      - sh: command -v apt-get
-        msg: apt-get not installed
+    status:
+      - "! command -v apt-get"
     cmds:
       - sudo apt-get update
       - sudo apt-get upgrade -y
@@ -337,26 +332,23 @@ tasks:
   upd:dnf:
     desc: Update dnf packages
     platforms: [linux]
-    preconditions:
-      - sh: command -v dnf
-        msg: dnf not installed
+    status:
+      - "! command -v dnf"
     cmds:
       - sudo dnf update -y
 
   upd:mise:
     desc: Update mise tools
-    preconditions:
-      - sh: command -v mise
-        msg: mise not installed
+    status:
+      - "! command -v mise"
     cmds:
       - mise up
       - mise reshim
 
   upd:claude:
     desc: Update Claude Code
-    preconditions:
-      - sh: command -v claude
-        msg: claude not installed
+    status:
+      - "! command -v claude"
     cmds:
       - claude --update
 
@@ -474,11 +466,12 @@ tasks:
     internal: true
     run: always
     deps: [upd:zsh-completions:setup]
+    status:
+      - "! command -v {{.TOOL}}"
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
       - |
-        command -v {{.TOOL}} >/dev/null 2>&1 || exit 0
         if {{.CMD}} > "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null && [ -s "{{.COMP_DIR}}/_{{.TOOL}}" ]; then
           printf "{{.OK}} %s\n" "{{.TOOL}}"
         else
