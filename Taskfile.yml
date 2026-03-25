@@ -26,27 +26,193 @@ tasks:
   #
   # DAG:
   #   link:*, auth:*, claude, tmux:*            — parallel
-  #   brew:update → brew:bundle → brew:upgrade → brew:cleanup  — chained
+  #   brew:bundle:update → brew → brew:upgrade → brew  — chained
   #   mise → fonts                              — fonts needs yq
-  #   [brew:cleanup, mise] → zsh-completions    — last
+  #   [brew, mise] → zsh-completions    — last
   # ===========================================================================
 
   setup:
-    desc: Post-bootstrap setup (build bins, update system, switch to SSH)
+    desc: Full system setup (bootstrap + update)
     cmds:
-      - task: reinstall-bins
-      - task: upd
-      - task: use-ssh
+      # Interactive tasks — must be sequential
+      - task: bootstrap:xcode
+      - task: bootstrap:clone
+      - task: bootstrap:brew
+      - task: bootstrap:brew-roles
+      - task: brew:bundle
+      - task: bootstrap:1password
+      - task: bootstrap:gh-auth
+      # Everything else in parallel via deps
+      - task: setup:finalize
       - printf "{{.OK}} {{.BOLD}}setup complete{{.RESET}} (restart your terminal)\n"
+
+  setup:finalize:
+    internal: true
+    deps:
+      - link
+      - bootstrap:rosetta
+      - bootstrap:claude
+      - bootstrap:unquarantine
+      - bootstrap:sudo-touchid
+      - bootstrap:sudo-timeout
+      - mise:install
+      - reinstall-bins
+      - upd
+      - use-ssh
+
+  # ---------------------------------------------------------------------------
+  # Bootstrap tasks (fresh system)
+  # ---------------------------------------------------------------------------
+
+  bootstrap:xcode:
+    desc: Install Xcode Command Line Tools
+    platforms: [darwin]
+    interactive: true
+    status: ["xcode-select -p 2>/dev/null"]
+    cmds:
+      - xcode-select --install
+      - printf "{{.WARN}} waiting for Xcode CLI tools installer to complete...\n"
+      - printf "{{.WARN}} press enter when the installer finishes..."
+      - read -r </dev/tty
+      - printf "{{.OK}} xcode cli tools\n"
+
+  bootstrap:clone:
+    desc: Clone dotfiles repo
+    deps: [bootstrap:xcode]
+    status: ["test -d {{.DOTFILES}}/.git"]
+    cmds:
+      - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
+      - printf "{{.OK}} dotfiles cloned\n"
+
+  bootstrap:brew:
+    desc: Install Homebrew
+    platforms: [darwin]
+    status: ["command -v brew"]
+    cmds:
+      - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - |
+        if [ -d /opt/homebrew ]; then
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+        else
+          eval "$(/usr/local/bin/brew shellenv)"
+        fi
+      - printf "{{.OK}} homebrew\n"
+
+  bootstrap:brew-roles:
+    desc: Copy Brewfile roles template
+    deps: [bootstrap:clone]
+    status: ["test -f {{.DOTFILES}}/dotfiles-roles.yml"]
+    cmds:
+      - cp {{.DOTFILES}}/dotfiles-roles.yml.template {{.DOTFILES}}/dotfiles-roles.yml
+      - printf "{{.WARN}} copied dotfiles-roles.yml — edit to enable brew roles\n"
+
+  bootstrap:1password:
+    desc: Set up 1Password SSH agent
+    platforms: [darwin]
+    interactive: true
+    deps: [brew:bundle]
+    status:
+      [
+        "test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock",
+      ]
+    cmds:
+      - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent:\n"
+      - printf "    Settings -> Developer -> SSH Agent\n"
+      - printf "{{.WARN}} press enter when done..."
+      - read -r </dev/tty
+      - printf "{{.OK}} 1password\n"
+
+  bootstrap:gh-auth:
+    desc: Authenticate GitHub CLI
+    interactive: true
+    deps: [bootstrap:1password]
+    status: ["gh auth status 2>/dev/null"]
+    cmds:
+      - printf "{{.WARN}} gh is not authenticated. open a new tab and run:\n"
+      - printf "    gh auth login\n"
+      - printf "{{.WARN}} press enter when done..."
+      - read -r </dev/tty
+      - |
+        if gh auth status &>/dev/null; then
+          printf "{{.OK}} gh authenticated\n"
+        else
+          printf "{{.WARN}} gh still not authenticated — mise install may fail for github tools\n"
+        fi
+
+  bootstrap:rosetta:
+    desc: Install Rosetta 2 (Apple Silicon)
+    platforms: [darwin]
+    status: ["test $(uname -m) != arm64 || /usr/bin/pgrep -q oahd 2>/dev/null"]
+    cmds:
+      - /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+      - printf "{{.OK}} rosetta 2\n"
+
+  bootstrap:claude:
+    desc: Install Claude Code
+    status: ["command -v claude"]
+    cmds:
+      - curl -fsSL https://claude.ai/install.sh | bash
+      - printf "{{.OK}} claude code\n"
+
+  bootstrap:unquarantine:
+    desc: Remove quarantine from casks
+    platforms: [darwin]
+    deps: [brew:bundle]
+    cmds:
+      - |
+        caskroom="$(brew --caskroom 2>/dev/null)" || exit 0
+        for cask in stolendata-mpv rar; do
+          dir="$caskroom/$cask"
+          [ -d "$dir" ] || continue
+          sudo xattr -rd com.apple.quarantine "$dir" 2>/dev/null && \
+            printf "{{.OK}} unquarantined %s\n" "$cask" || \
+            printf "{{.WARN}} %s (no quarantine attr)\n" "$cask"
+        done
+
+  bootstrap:sudo-touchid:
+    desc: Enable TouchID for sudo
+    platforms: [darwin]
+    status: ["grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null"]
+    cmds:
+      - sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
+      - printf "{{.OK}} touchid sudo\n"
+
+  bootstrap:sudo-timeout:
+    desc: Set sudo timeout to 30 min
+    platforms: [darwin]
+    status: ["test -f /etc/sudoers.d/timeout"]
+    cmds:
+      - sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
+      - printf "{{.OK}} sudo timeout\n"
+
+  mise:install:
+    desc: Install mise tools
+    deps: [brew:bundle]
+    status: ["! command -v mise"]
+    cmds:
+      - |
+        export PATH="$HOME/.local/share/mise/shims:$PATH"
+        mise install
+      - printf "{{.OK}} mise tools installed\n"
 
   upd:
     desc: Update the system
     deps:
+      # Bootstrap (skipped on working systems via status:)
+      - bootstrap:clone
+      - bootstrap:brew
+      - bootstrap:brew-roles
+      - bootstrap:rosetta
+      - bootstrap:claude
+      - bootstrap:unquarantine
+      - bootstrap:sudo-touchid
+      - bootstrap:sudo-timeout
+      - reinstall-bins
+      # Regular update
       - link
       - check:auth
       - install:fonts
-      - brew:cleanup
-      - brew
+      - brew:bundle
       - apt:upgrade
       - dnf:upgrade
       - mise:upgrade
@@ -166,8 +332,8 @@ tasks:
 
   reinstall-bins:
     desc: Build and install rust binaries from crates/
-    deps: [mise:upgrade]
-    status: ["! command -v cargo"]
+    deps: [mise:install]
+    status: ["test -f {{.DOTFILES}}/bin/clean-dls"]
     cmds:
       - printf "{{.WORK}} building rust binaries\n"
       - cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
@@ -257,41 +423,14 @@ tasks:
         rm -rf "$tmpdir"
         printf "{{.OK}} {{.NAME}}\n"
 
-  brew:
-    desc: Brew upgrades
-    deps: [brew:upgrade, brew:bundle]
-
-  brew:update:
-    desc: Update brew index
+  brew:bundle:
+    desc: Install/upgrade brew packages
     deps: [link:brewfile]
     platforms: [darwin]
     status: ["! command -v brew"]
     cmds:
-      - brew update --quiet
-
-  brew:bundle:
-    desc: Install Brewfile packages
-    platforms: [darwin]
-    deps: [brew:update]
-    status: ["! command -v brew"]
-    cmds:
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
-
-  brew:upgrade:
-    desc: Upgrade brew packages
-    platforms: [darwin]
-    deps: [brew:bundle, brew:update]
-    status: ["! command -v brew"]
-    cmds:
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --greedy --quiet
-
-  brew:cleanup:
-    desc: Cleanup brew
-    platforms: [darwin]
-    deps: [brew]
-    status: ["! command -v brew"]
-    cmds:
-      - brew cleanup --quiet
+      - brew bundle --quiet
+      - brew cleanup --quiet &
 
   apt:upgrade:
     desc: Update apt packages
@@ -320,7 +459,7 @@ tasks:
     desc: Update Claude Code
     status: ["! command -v claude"]
     cmds:
-      - claude --update
+      - timeout 2 claude update || printf "{{.WARN}} claude update failed or timed out\n"
 
   tmux:
     desc: Install/update tmux plugins
@@ -330,39 +469,41 @@ tasks:
 
   tmux:resurrect:
     desc: Install/update tmux-resurrect
-    vars:
-      DEST: "{{.HOME}}/.tmux/plugins/tmux-resurrect"
     cmds:
-      - mkdir -p {{.HOME}}/.tmux/plugins
-      - |
-        if [ -d "{{.DEST}}" ]; then
-          git -C "{{.DEST}}" pull --quiet
-          printf "{{.OK}} tmux-resurrect (updated)\n"
-        else
-          git clone --quiet https://github.com/tmux-plugins/tmux-resurrect.git "{{.DEST}}"
-          printf "{{.OK}} tmux-resurrect (installed)\n"
-        fi
+      - task: tmux:plugin
+        vars:
+          NAME: tmux-resurrect
+          URL: https://github.com/tmux-plugins/tmux-resurrect.git
 
   tmux:fzf-url:
     desc: Install/update tmux-fzf-url
+    cmds:
+      - task: tmux:plugin
+        vars:
+          NAME: tmux-fzf-url
+          URL: https://github.com/wfxr/tmux-fzf-url.git
+
+  tmux:plugin:
+    internal: true
+    run: always
     vars:
-      DEST: "{{.HOME}}/.tmux/plugins/tmux-fzf-url"
+      DEST: "{{.HOME}}/.tmux/plugins/{{.NAME}}"
     cmds:
       - mkdir -p {{.HOME}}/.tmux/plugins
       - |
         if [ -d "{{.DEST}}" ]; then
+          before=$(git -C "{{.DEST}}" rev-parse HEAD)
           git -C "{{.DEST}}" pull --quiet
-          printf "{{.OK}} tmux-fzf-url (updated)\n"
+          after=$(git -C "{{.DEST}}" rev-parse HEAD)
+          [ "$before" != "$after" ] && printf "{{.OK}} {{.NAME}} (updated)\n" || true
         else
-          git clone --quiet https://github.com/wfxr/tmux-fzf-url.git "{{.DEST}}"
-          printf "{{.OK}} tmux-fzf-url (installed)\n"
+          git clone --quiet {{.URL}} "{{.DEST}}"
+          printf "{{.OK}} {{.NAME}} (installed)\n"
         fi
 
   generate:completions:
     desc: Regenerate zsh completions
     deps:
-      # All gen tasks dep on setup, which deps on brew:cleanup + mise
-      # Default: <tool> completion zsh — runs in parallel via for-in-deps
       - for:
           - gt
           - argocd
@@ -425,7 +566,7 @@ tasks:
 
   generate:completions:setup:
     internal: true
-    deps: [brew:cleanup, mise:upgrade]
+    deps: [brew:bundle, mise:upgrade]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:

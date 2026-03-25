@@ -8,6 +8,14 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
+**Move setup-macos into Taskfile DAG:**
+
+- Setup script reduced to ~20 lines: clone dotfiles, bootstrap go-task, `task setup`
+- All bootstrap steps are now Taskfile tasks with `status:` checks (idempotent)
+- Interactive tasks (xcode, 1password, gh-auth) run sequentially first
+- Everything else (rosetta, claude, link, mise, upd) runs in parallel via DAG
+- New tasks: `bootstrap:*`, `mise:install`, `bootstrap:sudo-*`, `bootstrap:unquarantine`
+
 **Migrate `upd` pipeline to go-task (Taskfile):**
 
 - Moved system update tasks from mise.toml to Taskfile.yml — proper `platforms` filtering (darwin/linux), `preconditions` for binary checks, prefixed parallel output
