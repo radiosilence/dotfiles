@@ -158,9 +158,6 @@ name = "to-audio"
 name = "unfuck-xcode"
 
 [[completions.tools]]
-name = "upd"
-
-[[completions.tools]]
 name = "url2base64"
 
 [[completions.tools]]

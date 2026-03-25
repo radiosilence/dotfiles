@@ -8,29 +8,24 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
-**Migrated `install-terminfo` to zsh function:**
+**Replace `upd` TUI with mise task DAG:**
 
-- Replaced Rust binary with a zsh autoload function — `infocmp -x | ssh host tic -x -` does the same job without a compiled binary
-- Removed from Cargo.toml, dotfiles.toml completions, and crates README
+- Ripped out the ratatui TUI dashboard — all update tasks now defined as mise tasks with `depends` for dependency ordering
+- `brew-bundle` → `brew` (serialized), `zsh-completions` depends on `brew`, `brew-bundle`, and `mise` (waits for new binaries)
+- Everything else (link, auth, fonts, claude, tmux-plugins) runs in parallel via mise's built-in task scheduler
+- `upd` is now a zsh alias to `mise run --cd ~/.dotfiles upd` — no more Rust binary
+- Removed `ratatui` and `crossterm` dependencies from Cargo.toml
+- Deleted `app.rs`, `tasks.rs`, `ui.rs` modules (~400 lines of TUI code)
 
-**Migrated `echo-to-file` to zsh function:**
+**Migrated shell-wrapper crates to zsh functions:**
 
-- Replaced Rust binary with a zsh autoload function — `echo "$@" > $TMPDIR/echo-out-$(id -u)` does the same job without a compiled binary
-- Removed from Cargo.toml, dotfiles.toml completions, and crates README
+- `install-terminfo` → zsh autoload function (`infocmp -x | ssh host tic -x -`)
+- `echo-to-file` → zsh autoload function (`echo "$@" > $TMPDIR/echo-out-$(id -u)`)
+- `gen-diff` → zsh autoload function (ImageMagick `magick` wrapper)
+- `git-trigger` → zsh function in `git.zsh` (supports `-n`/`--dry-run`)
+- All removed from Cargo.toml, dotfiles.toml completions, and crates source
 
-**Migrate `gen-diff` to zsh function:**
-
-- Replaced Rust binary wrapper with a zsh autoload function — the binary was just shelling out to ImageMagick `convert` anyway
-- Uses `magick` command (ImageMagick 7) instead of deprecated `convert`
-- Removed from Cargo.toml, dotfiles.toml completions, and crates README
-
-**Migrated `git-trigger` to zsh function:**
-
-- Replaced Rust binary with a simple zsh function in `git.zsh` — the binary was just shelling out to `git commit --amend --no-edit && git push --force` anyway
-- Supports `-n`/`--dry-run` flag like the original
-- Removed from `Cargo.toml`, `dotfiles.toml` completions, and `crates/` source
-
-**Ratatui TUI dashboard for `upd`:**
+**Ratatui TUI dashboard for `upd` (superseded):**
 
 - Replaced `indicatif` MultiProgress spinners with a ratatui-powered TUI dashboard showing live panels per task
 - Responsive grid layout (3-col on wide terminals, 2-col on medium, 1-col on narrow) with bordered panels per task
