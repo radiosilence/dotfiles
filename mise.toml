@@ -150,19 +150,13 @@ printf "  \033[32m󰄬\033[0m remote switched to %s\n" "$ssh_url"
 '''
 
 # =============================================================================
-# System update pipeline (replaces the old ratatui TUI binary)
+# System update pipeline
 #
 # DAG:
-#   link, auth, fonts, mise, claude, tmux-plugins ── run in parallel
-#   brew-bundle ──→ brew                           ── brew serialized
-#   [brew, brew-bundle, mise] ──→ zsh-completions  ── completions last
-#   everything ──→ upd                             ── top-level entry
+#   link, auth, fonts, mise, claude, tmux-plugins ── parallel
+#   brew-bundle ──→ brew                           ── serialized
+#   [brew, brew-bundle, mise] ──→ zsh-completions  ── last
 # =============================================================================
-
-[tasks."upd:link"]
-description = "Symlink dotfiles"
-depends = ["link"]
-run = "true"
 
 [tasks."upd:auth"]
 description = "Check gh/op authentication (macOS)"
@@ -194,39 +188,34 @@ run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 [[ "$(uname)" == "Darwin" ]] || { echo "skipped (not macOS)"; exit 0; }
+command -v yq >/dev/null 2>&1 || { echo "skipped (no yq)"; exit 0; }
 
+DOTFILES="{{config_root}}"
 FONTS_DIR="$HOME/Library/Fonts"
 mkdir -p "$FONTS_DIR"
 
-install_font() {
-  local name="$1" url="$2" marker="$3"
+count=$(yq -p toml '.fonts | length' "$DOTFILES/dotfiles.toml")
+[[ "$count" -gt 0 ]] || { echo "no fonts configured"; exit 0; }
+
+for i in $(seq 0 $((count - 1))); do
+  name=$(yq -p toml -r ".fonts[$i].name" "$DOTFILES/dotfiles.toml")
+  url=$(yq -p toml -r ".fonts[$i].url" "$DOTFILES/dotfiles.toml")
+  marker=$(yq -p toml -r ".fonts[$i].marker_file" "$DOTFILES/dotfiles.toml")
+
   if [ -f "$FONTS_DIR/$marker" ]; then
     printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
-    return 0
+    continue
   fi
+
   printf "  \033[35m󱁤\033[0m %s (downloading)\n" "$name"
-  local tmpdir
   tmpdir=$(mktemp -d)
-  trap "rm -rf '$tmpdir'" RETURN
+  trap "rm -rf '$tmpdir'" EXIT
   curl -fsSL "$url" -o "$tmpdir/font.zip"
   unzip -qo "$tmpdir/font.zip" -d "$tmpdir/extracted"
   find "$tmpdir/extracted" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} "$FONTS_DIR/" \;
+  rm -rf "$tmpdir"
   printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
-}
-
-# Fonts from dotfiles.toml — hardcoded here to avoid needing a TOML parser in bash.
-# Keep in sync with [[fonts]] entries in dotfiles.toml.
-install_font "Hack Ligatured" \
-  "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip" \
-  "HackNerdFontJBMLigatured-Regular.ttf"
-
-install_font "Geist" \
-  "https://github.com/vercel/geist-font/releases/download/geist%401.7.0/geist-font-v1.7.0.zip" \
-  "Geist-Regular.otf"
-
-install_font "Geist Mono Nerd Font" \
-  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip" \
-  "GeistMonoNerdFont-Regular.otf"
+done
 '''
 
 [tasks."upd:brew-bundle"]
@@ -329,7 +318,7 @@ regen-zsh-completions
 [tasks.upd]
 description = "Update the system"
 depends = [
-  "upd:link",
+  "link",
   "upd:auth",
   "upd:fonts",
   "upd:brew",
@@ -342,5 +331,9 @@ depends = [
 ]
 run = '''
 #!/usr/bin/env bash
-printf "\n  \033[32m󰄬\033[0m \033[1msystem update complete\033[0m\n\n"
+# Clear zsh caches so next shell picks up new tools/completions
+rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
+rm -f ~/.config/zsh/conf.d/*.zwc
+rm -f ~/.zcompdump
+printf "\n  \033[32m󰄬\033[0m \033[1msystem update complete\033[0m (restart shell for changes)\n\n"
 '''
