@@ -154,14 +154,6 @@ exec zsh -l -c "
     printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'claude code'
     curl -fsSL https://claude.ai/install.sh | bash
   fi
-  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'build'
-  mise x -- task --taskfile ~/.dotfiles/Taskfile.yml reinstall-bins
-  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'system update'
-  mise x -- task --taskfile ~/.dotfiles/Taskfile.yml upd
 
-  # Switch repo to SSH now that everything is set up
-  printf '\n  \033[1m\033[35m⟢\033[0m \033[1m%s\033[0m\n\n' 'finalize'
-  mise x -- task --taskfile ~/.dotfiles/Taskfile.yml use-ssh
-
-  printf '\n  \033[32m󰄬\033[0m %s\n\n' 'setup complete. restart your terminal.'
+  mise x -- task --taskfile ~/.dotfiles/Taskfile.yml setup
 "

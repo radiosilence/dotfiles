@@ -16,6 +16,14 @@ tasks:
   #   [brew, brew-bundle, mise] → zsh-completions   — last
   # ===========================================================================
 
+  setup:
+    desc: Post-bootstrap setup (build bins, update system, switch to SSH)
+    cmds:
+      - task: reinstall-bins
+      - task: upd
+      - task: use-ssh
+      - printf "\n  \033[32m󰄬\033[0m \033[1msetup complete\033[0m (restart your terminal)\n\n"
+
   upd:
     desc: Update the system
     deps:
