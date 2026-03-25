@@ -6,6 +6,14 @@ run: once
 
 vars:
   DOTFILES: "{{.ROOT_DIR}}"
+  # Icons
+  OK: '\033[32m󰄬\033[0m'
+  WARN: '\033[33m\033[0m'
+  FAIL: '\033[31m󰅖\033[0m'
+  LINK: '\033[32m󰌷\033[0m'
+  WORK: '\033[35m󱁤\033[0m'
+  BOLD: '\033[1m'
+  RESET: '\033[0m'
 
 env:
   CLICOLOR_FORCE: "1"
@@ -28,7 +36,7 @@ tasks:
       - task: reinstall-bins
       - task: upd
       - task: use-ssh
-      - printf "\n  \033[32m󰄬\033[0m \033[1msetup complete\033[0m (restart your terminal)\n\n"
+      - printf "{{.OK}} {{.BOLD}}setup complete{{.RESET}} (restart your terminal)\n"
 
   upd:
     desc: Update the system
@@ -48,7 +56,7 @@ tasks:
       - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
       - rm -f ~/.config/zsh/conf.d/*.zwc
       - rm -f ~/.zcompdump
-      - printf "\033[32m󰄬\033[0m \033[1msystem update complete\033[0m (restart shell for changes)\n"
+      - printf "{{.OK}} {{.BOLD}}system update complete{{.RESET}} (restart shell for changes)\n"
 
   # ---------------------------------------------------------------------------
   # Link tasks
@@ -80,7 +88,7 @@ tasks:
           [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
           rm -rf "$target"
           ln -s "$f" "$target"
-          printf "  \033[32m󰌷\033[0m %s\n" "$name"
+          printf "{{.LINK}} %s\n" "$name"
         done
 
   link:config:
@@ -91,12 +99,11 @@ tasks:
         for f in "{{.DOTFILES}}/config.d"/*; do
           [ -e "$f" ] || continue
           name=$(basename "$f")
-          [ "$name" = "launchd" ] && continue
           target="$HOME/.config/$name"
           [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
           rm -rf "$target"
           ln -s "$f" "$target"
-          printf "  \033[32m󰌷\033[0m ~/.config/%s\n" "$name"
+          printf "{{.LINK}} ~/.config/%s\n" "$name"
         done
 
   link:gitconfig:
@@ -106,7 +113,7 @@ tasks:
         [ -f "$HOME/.gitconfig" ] || touch "$HOME/.gitconfig"
         grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null && exit 0
         printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
-        printf "  \033[32m󰄬\033[0m gitconfig include\n"
+        printf "{{.OK}} gitconfig include\n"
 
   link:ssh:
     desc: Ensure SSH config includes dotfiles
@@ -119,7 +126,7 @@ tasks:
         fi
         grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null && exit 0
         printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
-        printf "  \033[32m󰄬\033[0m ssh config include\n"
+        printf "{{.OK}} ssh config include\n"
 
   link:brewfile:
     desc: Symlink Brewfile
@@ -129,7 +136,7 @@ tasks:
         target="$HOME/Brewfile"
         [ -L "$target" ] && [ "$(readlink "$target")" = "{{.DOTFILES}}/Brewfile" ] && exit 0
         ln -sf "{{.DOTFILES}}/Brewfile" "$target"
-        printf "  \033[32m󰄬\033[0m Brewfile\n"
+        printf "{{.OK}} Brewfile\n"
 
   link:claude-hooks:
     desc: Inject Claude Code hooks into settings.json
@@ -144,14 +151,14 @@ tasks:
           .hooks.PostToolUse //= [] |
           .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
         ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
-        printf "  \033[32m󰄬\033[0m claude hooks: gastown\n"
+        printf "{{.OK}} claude hooks: gastown\n"
 
   link:sheldon:
     desc: Sheldon plugin manager
     cmds:
       - |
         command -v sheldon >/dev/null 2>&1 || exit 0
-        sheldon source >/dev/null 2>&1 && printf "  \033[32m󰄬\033[0m sheldon\n" || true
+        sheldon source >/dev/null 2>&1 && printf "{{.OK}} sheldon\n" || true
 
   # ---------------------------------------------------------------------------
   # Build / utility tasks
@@ -164,9 +171,9 @@ tasks:
       - sh: command -v cargo
         msg: cargo not found
     cmds:
-      - printf "  \033[35m󱁤\033[0m building rust binaries\n"
+      - printf "{{.WORK}} building rust binaries\n"
       - cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
-      - printf "  \033[32m󰄬\033[0m binaries installed\n"
+      - printf "{{.OK}} binaries installed\n"
 
   use-ssh:
     desc: Switch dotfiles remote from HTTPS to SSH
@@ -175,12 +182,12 @@ tasks:
       - |
         current=$(git remote get-url origin)
         if echo "$current" | grep -q "^git@"; then
-          printf "  \033[32m󰄬\033[0m already using SSH\n"
+          printf "{{.OK}} already using SSH\n"
           exit 0
         fi
         ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
         git remote set-url origin "$ssh_url"
-        printf "  \033[32m󰄬\033[0m remote switched to %s\n" "$ssh_url"
+        printf "{{.OK}} remote switched to %s\n" "$ssh_url"
 
   # ---------------------------------------------------------------------------
   # Update tasks
@@ -199,9 +206,9 @@ tasks:
       - |
         command -v gh >/dev/null 2>&1 || exit 0
         if gh auth status >/dev/null 2>&1; then
-          printf "  \033[32m󰄬\033[0m gh: authenticated\n"
+          printf "{{.OK}} gh: authenticated\n"
         else
-          printf "  \033[33m\033[0m gh: not authenticated (run gh auth login)\n"
+          printf "{{.WARN}} gh: not authenticated (run gh auth login)\n"
         fi
 
   upd:auth:op:
@@ -211,13 +218,13 @@ tasks:
       - |
         command -v op >/dev/null 2>&1 || exit 0
         if op account list >/dev/null 2>&1; then
-          printf "  \033[32m󰄬\033[0m op: integrated\n"
+          printf "{{.OK}} op: integrated\n"
         else
-          printf "  \033[33m\033[0m op: not integrated (check 1Password CLI settings)\n"
+          printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"
         fi
 
   upd:fonts:
-    desc: Install missing fonts using install-font-macos
+    desc: Install missing fonts
     platforms: [darwin]
     deps: [upd:mise]
     preconditions:
@@ -326,10 +333,10 @@ tasks:
       - |
         if [ -d "{{.DEST}}" ]; then
           git -C "{{.DEST}}" pull --quiet
-          printf "  \033[32m󰄬\033[0m tmux-resurrect (updated)\n"
+          printf "{{.OK}} tmux-resurrect (updated)\n"
         else
           git clone --quiet https://github.com/tmux-plugins/tmux-resurrect.git "{{.DEST}}"
-          printf "  \033[32m󰄬\033[0m tmux-resurrect (installed)\n"
+          printf "{{.OK}} tmux-resurrect (installed)\n"
         fi
 
   upd:tmux:fzf-url:
@@ -341,10 +348,10 @@ tasks:
       - |
         if [ -d "{{.DEST}}" ]; then
           git -C "{{.DEST}}" pull --quiet
-          printf "  \033[32m󰄬\033[0m tmux-fzf-url (updated)\n"
+          printf "{{.OK}} tmux-fzf-url (updated)\n"
         else
           git clone --quiet https://github.com/wfxr/tmux-fzf-url.git "{{.DEST}}"
-          printf "  \033[32m󰄬\033[0m tmux-fzf-url (installed)\n"
+          printf "{{.OK}} tmux-fzf-url (installed)\n"
         fi
 
   upd:zsh-completions:
