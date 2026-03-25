@@ -111,7 +111,10 @@ tasks:
     platforms: [darwin]
     interactive: true
     deps: [brew:bundle]
-    status: ["test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"]
+    status:
+      [
+        "test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock",
+      ]
     cmds:
       - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent:\n"
       - printf "    Settings -> Developer -> SSH Agent\n"
@@ -319,7 +322,7 @@ tasks:
 
   reinstall-bins:
     desc: Build and install rust binaries from crates/
-    deps: [mise:upgrade]
+    deps: [mise:install]
     status: ["! command -v cargo"]
     cmds:
       - printf "{{.WORK}} building rust binaries\n"
