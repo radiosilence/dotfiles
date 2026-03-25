@@ -26,9 +26,9 @@ tasks:
   #
   # DAG:
   #   link:*, auth:*, claude, tmux:*            — parallel
-  #   brew:update → brew:bundle → brew:upgrade → brew:cleanup  — chained
+  #   brew:bundle:update → brew → brew:upgrade → brew  — chained
   #   mise → fonts                              — fonts needs yq
-  #   [brew:cleanup, mise] → zsh-completions    — last
+  #   [brew, mise] → zsh-completions    — last
   # ===========================================================================
 
   setup:
@@ -198,11 +198,21 @@ tasks:
   upd:
     desc: Update the system
     deps:
+      # Bootstrap (skipped on working systems via status:)
+      - bootstrap:clone
+      - bootstrap:brew
+      - bootstrap:brew-roles
+      - bootstrap:rosetta
+      - bootstrap:claude
+      - bootstrap:unquarantine
+      - bootstrap:sudo-touchid
+      - bootstrap:sudo-timeout
+      - reinstall-bins
+      # Regular update
       - link
       - check:auth
       - install:fonts
-      - brew:cleanup
-      - brew
+      - brew:bundle
       - apt:upgrade
       - dnf:upgrade
       - mise:upgrade
@@ -413,40 +423,13 @@ tasks:
         rm -rf "$tmpdir"
         printf "{{.OK}} {{.NAME}}\n"
 
-  brew:
-    desc: Brew upgrades
-    deps: [brew:upgrade, brew:bundle]
-
-  brew:update:
-    desc: Update brew index
+  brew:bundle:
+    desc: Install/upgrade brew packages
     deps: [link:brewfile]
     platforms: [darwin]
     status: ["! command -v brew"]
     cmds:
-      - brew update --quiet
-
-  brew:bundle:
-    desc: Install Brewfile packages
-    platforms: [darwin]
-    deps: [brew:update]
-    status: ["! command -v brew"]
-    cmds:
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
-
-  brew:upgrade:
-    desc: Upgrade brew packages
-    platforms: [darwin]
-    deps: [brew:bundle, brew:update]
-    status: ["! command -v brew"]
-    cmds:
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --greedy --quiet
-
-  brew:cleanup:
-    desc: Cleanup brew
-    platforms: [darwin]
-    deps: [brew]
-    status: ["! command -v brew"]
-    cmds:
+      - brew bundle --quiet
       - brew cleanup --quiet &
 
   apt:upgrade:
@@ -583,7 +566,7 @@ tasks:
 
   generate:completions:setup:
     internal: true
-    deps: [brew, mise:upgrade]
+    deps: [brew:bundle, mise:upgrade]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
