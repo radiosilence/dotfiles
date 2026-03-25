@@ -128,9 +128,6 @@ name = "embed-art"
 name = "extract-exif-from-flac"
 
 [[completions.tools]]
-name = "gen-diff"
-
-[[completions.tools]]
 name = "git-squash"
 
 [[completions.tools]]

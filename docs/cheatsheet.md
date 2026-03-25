@@ -41,7 +41,7 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | ------------------------------ | --------------------------------------------------------- |
 | `vimv [files]`                 | Batch rename files in $EDITOR - edit names, save to apply |
 | `clean-dls [paths] [-n]`       | Remove scene release garbage (nfo, txt, samples)          |
-| `gen-diff <img1> <img2> <out>` | Generate visual diff between two images                   |
+| `gen-diff <img1> <img2> <out>` | Generate visual diff between two images (zsh function)    |
 | `url2base64 <url>`             | Fetch URL content and output as base64 data URL           |
 
 ### Downloads & Import
