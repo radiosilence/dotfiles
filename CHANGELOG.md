@@ -8,6 +8,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
+**Migrated `echo-to-file` to zsh function:**
+
+- Replaced Rust binary with a zsh autoload function — `echo "$@" > $TMPDIR/echo-out-$(id -u)` does the same job without a compiled binary
+- Removed from Cargo.toml, dotfiles.toml completions, and crates README
+
 **Ratatui TUI dashboard for `upd`:**
 
 - Replaced `indicatif` MultiProgress spinners with a ratatui-powered TUI dashboard showing live panels per task
@@ -216,7 +221,7 @@ The biggest month in the repo's history. ~140 commits. Everything got rewritten 
 - `prune` / `prune-gen` — directory cleanup with size thresholds
 - `git-sync`, `git-trigger`, `git-squash` — git workflow tools
 - `kill-port`, `vimv`, `imp`, `to-audio`, `embed-art`, `clean-exif`, `clean-dls`
-- `gen-diff`, `url2base64`, `echo-to-file`, `parallel-dl-extract`
+- `gen-diff`, `url2base64`, `parallel-dl-extract`
 - `install-font-macos`, `install-terminfo`, `unfuck-xcode`, `regen-zsh-completions`
 
 **PR #8: Replace CLI wrappers with native Rust** (`bc91818`, `0ce9cdf`)

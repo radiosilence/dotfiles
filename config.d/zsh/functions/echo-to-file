@@ -1,0 +1,1 @@
+echo "$@" > "${TMPDIR:-/tmp}/echo-out-$(id -u)"
