@@ -226,29 +226,58 @@ tasks:
   upd:fonts:
     desc: Install missing fonts
     platforms: [darwin]
-    deps: [upd:mise]
-    preconditions:
-      - sh: command -v yq
-        msg: yq not installed
+    deps:
+      - upd:fonts:hack
+      - upd:fonts:geist
+      - upd:fonts:geist-mono
+
+  upd:fonts:hack:
+    desc: Install Hack Ligatured
+    platforms: [darwin]
+    status:
+      - test -f ~/Library/Fonts/HackNerdFontJBMLigatured-Regular.ttf
     cmds:
+      - mkdir -p ~/Library/Fonts
       - |
-        FONTS_DIR="$HOME/Library/Fonts"
-        mkdir -p "$FONTS_DIR"
-        count=$(yq -p toml -oy '.fonts | length' "{{.DOTFILES}}/dotfiles.toml")
-        [ "$count" -gt 0 ] || { echo "no fonts configured"; exit 0; }
-        for i in $(seq 0 $((count - 1))); do
-          name=$(yq -p toml -oy -r ".fonts[$i].name" "{{.DOTFILES}}/dotfiles.toml")
-          url=$(yq -p toml -oy -r ".fonts[$i].url" "{{.DOTFILES}}/dotfiles.toml")
-          marker=$(yq -p toml -oy -r ".fonts[$i].marker_file" "{{.DOTFILES}}/dotfiles.toml")
-          [ -f "$FONTS_DIR/$marker" ] && { printf "{{.OK}} %s\n" "$name"; continue; }
-          printf "{{.WORK}} %s\n" "$name"
-          tmpdir=$(mktemp -d)
-          curl -fsSL "$url" -o "$tmpdir/font.zip"
-          unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
-          find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} "$FONTS_DIR/" \;
-          rm -rf "$tmpdir"
-          printf "{{.OK}} %s\n" "$name"
-        done
+        printf "{{.WORK}} Hack Ligatured\n"
+        tmpdir=$(mktemp -d)
+        curl -fsSL "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip" -o "$tmpdir/font.zip"
+        unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
+        find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} ~/Library/Fonts/ \;
+        rm -rf "$tmpdir"
+        printf "{{.OK}} Hack Ligatured\n"
+
+  upd:fonts:geist:
+    desc: Install Geist
+    platforms: [darwin]
+    status:
+      - test -f ~/Library/Fonts/Geist-Regular.otf
+    cmds:
+      - mkdir -p ~/Library/Fonts
+      - |
+        printf "{{.WORK}} Geist\n"
+        tmpdir=$(mktemp -d)
+        curl -fsSL "https://github.com/vercel/geist-font/releases/download/geist%401.7.0/geist-font-v1.7.0.zip" -o "$tmpdir/font.zip"
+        unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
+        find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} ~/Library/Fonts/ \;
+        rm -rf "$tmpdir"
+        printf "{{.OK}} Geist\n"
+
+  upd:fonts:geist-mono:
+    desc: Install Geist Mono Nerd Font
+    platforms: [darwin]
+    status:
+      - test -f ~/Library/Fonts/GeistMonoNerdFont-Regular.otf
+    cmds:
+      - mkdir -p ~/Library/Fonts
+      - |
+        printf "{{.WORK}} Geist Mono Nerd Font\n"
+        tmpdir=$(mktemp -d)
+        curl -fsSL "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip" -o "$tmpdir/font.zip"
+        unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
+        find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} ~/Library/Fonts/ \;
+        rm -rf "$tmpdir"
+        printf "{{.OK}} Geist Mono Nerd Font\n"
 
   upd:brew:
     desc: Brew upgrades
@@ -371,7 +400,75 @@ tasks:
     desc: Regenerate zsh completions
     deps: [upd:brew:cleanup, upd:mise]
     preconditions:
-      - sh: command -v regen-zsh-completions
-        msg: regen-zsh-completions not found (run task reinstall-bins)
+      - sh: command -v parallel
+        msg: GNU parallel not found
+    vars:
+      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
-      - regen-zsh-completions
+      - mkdir -p {{.COMP_DIR}}
+      - rm -f {{.COMP_DIR}}/_*
+      - |
+        gen() {
+          local name="$1" cmd="$2" dest="{{.COMP_DIR}}/_$name"
+          command -v "$name" >/dev/null 2>&1 || return 0
+          if eval "$cmd" > "$dest" 2>/dev/null && [ -s "$dest" ]; then
+            printf "{{.OK}} %s\n" "$name"
+          else
+            rm -f "$dest"
+          fi
+        }
+        export -f gen
+
+        # Default: <tool> completion zsh
+        default_tools=(
+          gt argocd docker helm k9s kubectl lefthook nano-web op orbctl
+          pulumi tilt turso yq fcloud houston koan
+        )
+
+        # Custom commands
+        declare -A custom=(
+          [gh]="gh completion -s zsh"
+          [idiotify]="idiotify completions zsh"
+          [fastmail-cli]="fastmail-cli completions zsh"
+          [codeowners-cli]="codeowners-cli completions zsh"
+          [task]="task --completion zsh"
+          [just]="just --completions zsh"
+          [aws-vault]="aws-vault --completion-script-zsh"
+          [rg]="rg --generate complete-zsh"
+          [pup]="pup completions zsh"
+        )
+
+        # Our own rust bins
+        own_bins=(
+          clean-dls clean-exif embed-art extract-exif-from-flac
+          git-squash git-sync imp install-font-macos kill-port
+          parallel-dl-extract prune prune-gen to-audio unfuck-xcode
+          url2base64 vimv
+        )
+
+        # Build job list
+        jobs=()
+        for t in "${default_tools[@]}"; do
+          jobs+=("gen $t '$t completion zsh'")
+        done
+        for t in "${!custom[@]}"; do
+          jobs+=("gen $t '${custom[$t]}'")
+        done
+        for t in "${own_bins[@]}"; do
+          jobs+=("gen $t '$t completion zsh'")
+        done
+
+        # Prebuilt: lsd
+        if command -v lsd >/dev/null 2>&1; then
+          bin_dir=$(dirname "$(command -v lsd)")
+          src="$bin_dir/autocomplete/_lsd"
+          [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
+        fi
+
+        # Sourced: npm
+        if command -v npm >/dev/null 2>&1; then
+          npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
+        fi
+
+        # Run all gen jobs in parallel
+        printf '%s\n' "${jobs[@]}" | parallel --will-cite -j+0
