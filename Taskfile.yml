@@ -473,6 +473,7 @@ tasks:
 
   upd:zsh-completions:gen:
     internal: true
+    run: always
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
