@@ -512,7 +512,7 @@ tasks:
           before=$(git -C "{{.DEST}}" rev-parse HEAD)
           git -C "{{.DEST}}" pull --quiet
           after=$(git -C "{{.DEST}}" rev-parse HEAD)
-          [ "$before" != "$after" ] && printf "{{.OK}} {{.NAME}} (updated)\n"
+          [ "$before" != "$after" ] && printf "{{.OK}} {{.NAME}} (updated)\n" || true
         else
           git clone --quiet {{.URL}} "{{.DEST}}"
           printf "{{.OK}} {{.NAME}} (installed)\n"
