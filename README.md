@@ -5,66 +5,61 @@ Personal dev environment. macOS, zsh, Rust tooling.
 ## Setup
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
+curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | bash
 ```
 
-The script handles everything from xcode CLI tools through to a working environment — xcode CLT, dotfiles clone, sudo/TouchID, Rosetta, Homebrew, brew bundle, 1Password SSH agent, GitHub CLI auth, mise tools, symlinks, Rust binaries, and switching the repo remote to SSH. Interactive prompts pause for manual steps (1Password, `gh auth login`).
+12 lines of shell that bootstraps go-task into a tmpdir, curls the Taskfile, and runs `task converge`. The Taskfile DAG handles everything — xcode, brew, mise, 1Password, gh auth, symlinks, Rust binaries, completions, fonts. Idempotent — re-running skips what's already done.
 
-After setup, run `upd` anytime to update everything. Auth setup (`gh auth login`, 1Password CLI integration) is guided but manual — `upd` prints what's needed.
+Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Password or gh auth poll silently until ready — no interactive prompts.
 
 ## What's Here
 
-- **Shell configs** - Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
-- **22 Rust binaries** - System maintenance, git workflow, media processing, file operations
-- **Tool management** - mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
-- **Terminal configs** - tmux, ghostty, starship prompt
-- **Editor configs** - helix (LSP, tree-sitter, formatters for 15+ languages), zed
+- **Shell configs** — Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
+- **Rust binaries** — System maintenance, git workflow, media processing, file operations
+- **Taskfile.yml** — DAG-based system management (bootstrap, update, completions, fonts)
+- **Tool management** — mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
+- **Terminal configs** — tmux, ghostty, starship prompt
+- **Editor configs** — helix (LSP, tree-sitter, formatters for 15+ languages), zed
 
 ## Documentation
 
-| Doc                                                   | Description                                                  |
-| ----------------------------------------------------- | ------------------------------------------------------------ |
-| [cheatsheet.md](docs/cheatsheet.md)                   | **Complete reference** - all commands, aliases, functions    |
-| [new-tools.md](docs/new-tools.md)                     | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
-| [tmux-cheatsheet.md](docs/tmux-cheatsheet.md)         | tmux keybindings and usage reference                         |
-| [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews                         |
-| [CHANGELOG.md](CHANGELOG.md)                          | Full history from 2018 to present (1421 commits)             |
+| Doc | Description |
+|-----|-------------|
+| [cheatsheet.md](docs/cheatsheet.md) | Complete reference — all commands, aliases, functions |
+| [new-tools.md](docs/new-tools.md) | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
+| [tmux-cheatsheet.md](docs/tmux-cheatsheet.md) | tmux keybindings and usage reference |
+| [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews |
+| [CHANGELOG.md](CHANGELOG.md) | Full history from 2018 to present |
 
 ## Highlights
 
 **System**
 
-- `upd` - Update everything (dotfiles, brew, mise, rust bins)
-- `kill-port <port>` - Kill process on port
-- `prune` - Find and delete small directories
+- `upd` / `converge` — Converge system to desired state (bootstrap + update in one command)
+- `task --list` — See all available tasks
+- `kill-port <port>` — Kill process on port
+- `prune` — Find and delete small directories
 
 **Git workflow**
 
-- `git-sync` - Delete merged local branches
-- `git-squash` - Squash commits for clean PRs
-- `git-trigger` - Re-trigger CI with amend + force push (zsh function)
-- `fm` / `fr` - Fuzzy merge/rebase with fzf
+- `git sync` — Delete merged local branches
+- `git squash` — Squash commits for clean PRs
+- `git trigger` — Re-trigger CI with amend + force push
+- `git conf-dir` — Set per-directory git config (email, signing, etc.)
+- `fm` / `fr` — Fuzzy merge/rebase with fzf
 
 **Media**
 
-- `to-audio opus|flac` - Parallel audio conversion
-- `embed-art` - Embed cover art into FLACs
-- `imp` - Download + extract + beets import
+- `to-audio opus|flac` — Parallel audio conversion
+- `embed-art` — Embed cover art into FLACs
+- `imp` — Download + extract + beets import
 
 **Files**
 
-- `vimv` - Batch rename in $EDITOR
-- `clean-dls` - Remove scene release garbage
+- `vimv` — Batch rename in $EDITOR
+- `clean-dls` — Remove scene release garbage
 
 All binaries support `--help` and have shell completions.
-
-## Configuration
-
-`dotfiles.toml` is the tracked config. For per-machine overrides, create `dotfiles.local.toml` (gitignored) — arrays are concatenated, scalars are replaced.
-
-The config drives:
-- **ZSH completions** (`[[completions.tools]]`) — add a tool's completions by appending a few lines of TOML instead of editing Rust source. Supports custom commands, pre-built completions, and sourced scripts.
-- **Fonts** (`[[fonts]]`) — macOS font auto-installation. `upd` downloads and installs any fonts not already present.
 
 ## Per-Directory Git Config
 
@@ -72,35 +67,29 @@ Set git config overrides for all repos under a directory:
 
 ```sh
 cd ~/workspace/surgeventures/any-repo
-mise run git-conf-dir user.email james.cleveland@fresha.com
-mise run git-conf-dir user.name "James Cleveland (Fresha)"
+git conf-dir user.email james.cleveland@fresha.com
+git conf-dir user.name "James Cleveland (Fresha)"
 ```
 
-Stores config in `~/.local/git.d/<path>.conf` (e.g. `workspace--surgeventures.conf`) and adds an `includeIf` to `~/.gitconfig`. Multiple keys accumulate in the same file. Idempotent.
+Stores config in `~/.local/git.d/<path>.conf` and adds an `includeIf` to `~/.gitconfig`. Idempotent.
 
 ## Architecture Notes
 
-**Git signing** - Commit signing is configured globally (`git.d/sign.conf`) via 1Password SSH agent. Tag signing and `user.signingkey` are set in the local git config per-machine since keys are machine-specific.
+**Git signing** — Commit signing via 1Password SSH agent. `user.signingkey` is per-machine (local git config).
 
-**Tool duplication** - Some tools exist in both brew and mise intentionally:
-- `sheldon` — brew for Intel (no arm64 binary on their releases), mise for Apple Silicon
-- `uv` — brew only (system-wide Python tooling, not per-project)
-
-**Lefthook** - Uses `mise x --` to run tools. The `zsh -i -c` convention in CLAUDE.md is specifically for Claude Code agent sessions (full shell env), not for git hooks.
+**Tool duplication** — Some tools exist in both brew and mise intentionally:
+- `sheldon` — brew for Intel (no arm64 binary), mise for Apple Silicon
+- `uv` — brew only (system-wide Python tooling)
 
 ## Syncthing
-
-Syncthing is installed via brew (`brewfiles.d/core.rb`). To start it as a background service that persists across reboots:
 
 ```sh
 brew services start syncthing
 ```
 
-The web UI is at `http://localhost:8384`. Configure shared folders and remote devices there.
-
-To stop the service: `brew services stop syncthing`. To run it one-off without a background service: `syncthing --no-browser --no-restart`.
+Web UI at `http://localhost:8384`. Stop: `brew services stop syncthing`.
 
 ## Related
 
-- [browser-schedule](https://github.com/radiosilence/browser-schedule) - Time-based browser switching for macOS
-- [gastown](https://github.com/steveyegge/gastown) - Multi-agent workspace orchestrator ([setup guide](GASTOWN.md))
+- [browser-schedule](https://github.com/radiosilence/browser-schedule) — Time-based browser switching for macOS
+- [gastown](https://github.com/steveyegge/gastown) — Multi-agent workspace orchestrator ([setup guide](GASTOWN.md))
