@@ -7,39 +7,59 @@ export FORCE_COLOR := "1"
 
 dotfiles := justfile_directory()
 
-# Hard requirements — fail fast if missing
+# Hard requirements
 _mise := require("mise")
+
+# Colors
+green := '\033[32m'
+yellow := '\033[33m'
+magenta := '\033[35m'
+cyan := '\033[36m'
+red := '\033[31m'
+bold := '\033[1m'
+reset := '\033[0m'
+ok := green + '󰄬' + reset
+warn := yellow + '' + reset
+fail := red + '󰅖' + reset
+link_icon := green + '󰌷' + reset
+working := magenta + '󱁤' + reset
 
 # ===========================================================================
 # System update pipeline
 #
 # DAG:
-#   link, auth, claude, tmux-plugins              — parallel
+#   link-*, auth-*, claude, tmux-plugins    — parallel
 #   brew-update → brew-bundle → brew-upgrade → brew-cleanup  — chained
-#   mise → fonts                                  — fonts needs yq
-#   [brew-cleanup, mise] → zsh-completions        — last
+#   mise → fonts                            — fonts needs yq
+#   [brew-cleanup, mise] → zsh-completions  — last
 # ===========================================================================
 
 # Update the system
 [parallel]
-upd: link upd-auth upd-fonts upd-brew-cleanup upd-apt upd-dnf upd-mise upd-claude upd-tmux-plugins upd-zsh-completions
+upd: \
+    link-dotfiles link-config link-gitconfig link-ssh link-brewfile \
+    link-launchd link-claude-hooks link-sheldon \
+    upd-auth-gh upd-auth-op \
+    upd-fonts upd-brew-cleanup upd-apt upd-dnf \
+    upd-mise upd-claude upd-tmux-plugins upd-zsh-completions
     rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
     rm -f ~/.config/zsh/conf.d/*.zwc
     rm -f ~/.zcompdump
-    printf "󰄬\033[0m \033[1msystem update complete\033[0m (restart shell for changes)"
+    printf "{{ ok }} {{ bold }}system update complete{{ reset }} (restart shell for changes)\n"
 
 # Post-bootstrap setup (build bins, update system, switch to SSH)
 setup: reinstall-bins upd use-ssh
-    printf "\n  \033[32m󰄬\033[0m \033[1msetup complete\033[0m (restart your terminal)\n\n"
+    printf "\n  {{ ok }} {{ bold }}setup complete{{ reset }} (restart your terminal)\n\n"
 
-# Symlink dotfiles and configs
-link:
+# ---------------------------------------------------------------------------
+# Link tasks
+# ---------------------------------------------------------------------------
+
+# Symlink dotfiles (.* → ~)
+link-dotfiles:
     #!/usr/bin/env bash
     set -euo pipefail
-    DOTFILES="{{ dotfiles }}"
-
-    # Dotfiles (.* → ~)
-    for f in "$DOTFILES"/.*; do
+    for f in "{{ dotfiles }}"/.* ; do
       name=$(basename "$f")
       case "$name" in
         .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
@@ -47,104 +67,122 @@ link:
           continue ;;
       esac
       target="$HOME/$name"
-      if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
-        continue
-      fi
+      [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
       rm -rf "$target"
       ln -s "$f" "$target"
-      printf "  \033[32m󰌷\033[0m %s\n" "$name"
+      printf "  {{ link_icon }} %s\n" "$name"
     done
 
-    # Config dirs (config.d/* → ~/.config/*)
+# Symlink config dirs (config.d/* → ~/.config/*)
+link-config:
+    #!/usr/bin/env bash
+    set -euo pipefail
     mkdir -p "$HOME/.config"
-    if [ -d "$DOTFILES/config.d" ]; then
-      for f in "$DOTFILES/config.d"/*; do
-        [ -e "$f" ] || continue
-        name=$(basename "$f")
-        [ "$name" = "launchd" ] && continue
-        target="$HOME/.config/$name"
-        if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
-          continue
-        fi
-        rm -rf "$target"
-        ln -s "$f" "$target"
-        printf "  \033[32m󰌷\033[0m ~/.config/%s\n" "$name"
-      done
-    fi
+    [ -d "{{ dotfiles }}/config.d" ] || exit 0
+    for f in "{{ dotfiles }}/config.d"/*; do
+      [ -e "$f" ] || continue
+      name=$(basename "$f")
+      [ "$name" = "launchd" ] && continue
+      target="$HOME/.config/$name"
+      [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
+      rm -rf "$target"
+      ln -s "$f" "$target"
+      printf "  {{ link_icon }} ~/.config/%s\n" "$name"
+    done
 
-    # Gitconfig include
+# Ensure gitconfig includes dotfiles
+link-gitconfig:
+    #!/usr/bin/env bash
+    set -euo pipefail
     [ -f "$HOME/.gitconfig" ] || touch "$HOME/.gitconfig"
-    if ! grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null; then
-      printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
-      printf "  \033[32m󰄬\033[0m gitconfig include\n"
-    fi
+    grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null && exit 0
+    printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
+    printf "  {{ ok }} gitconfig include\n"
 
-    # SSH config include
+# Ensure SSH config includes dotfiles
+link-ssh:
+    #!/usr/bin/env bash
+    set -euo pipefail
     mkdir -p "$HOME/.ssh"
     if [ ! -f "$HOME/.ssh/config" ]; then
       touch "$HOME/.ssh/config"
       chmod 600 "$HOME/.ssh/config"
     fi
-    if ! grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null; then
-      printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
-      printf "  \033[32m󰄬\033[0m ssh config include\n"
-    fi
+    grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null && exit 0
+    printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
+    printf "  {{ ok }} ssh config include\n"
 
-    # Brewfile symlink (macOS)
-    if [ "$(uname)" = "Darwin" ] && [ -f "$DOTFILES/Brewfile" ]; then
-      target="$HOME/Brewfile"
-      if ! [ -L "$target" ] || [ "$(readlink "$target")" != "$DOTFILES/Brewfile" ]; then
-        ln -sf "$DOTFILES/Brewfile" "$target"
-        printf "  \033[32m󰄬\033[0m Brewfile\n"
-      fi
-    fi
+# Symlink Brewfile
+[macos]
+link-brewfile:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -f "{{ dotfiles }}/Brewfile" ] || exit 0
+    target="$HOME/Brewfile"
+    [ -L "$target" ] && [ "$(readlink "$target")" = "{{ dotfiles }}/Brewfile" ] && exit 0
+    ln -sf "{{ dotfiles }}/Brewfile" "$target"
+    printf "  {{ ok }} Brewfile\n"
 
-    # Launchd agents (macOS)
-    if [ "$(uname)" = "Darwin" ] && [ -d "$DOTFILES/config.d/launchd" ]; then
-      agents="$HOME/Library/LaunchAgents"
-      mkdir -p "$agents"
-      for plist in "$DOTFILES/config.d/launchd"/*.plist; do
-        [ -f "$plist" ] || continue
-        name=$(basename "$plist")
-        dest="$agents/$name"
-        if [ -f "$dest" ] && cmp -s "$plist" "$dest"; then
-          continue
-        fi
-        cp "$plist" "$dest"
-        launchctl unload "$dest" 2>/dev/null || true
-        launchctl load "$dest" 2>/dev/null || true
-        printf "  \033[32m󰄬\033[0m launchd: %s\n" "$name"
-      done
-    fi
+[linux, private]
+link-brewfile:
+    @true
 
-    # Claude Code hooks
+# Install launchd agents
+[macos]
+link-launchd:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -d "{{ dotfiles }}/config.d/launchd" ] || exit 0
+    agents="$HOME/Library/LaunchAgents"
+    mkdir -p "$agents"
+    for plist in "{{ dotfiles }}/config.d/launchd"/*.plist; do
+      [ -f "$plist" ] || continue
+      name=$(basename "$plist")
+      dest="$agents/$name"
+      [ -f "$dest" ] && cmp -s "$plist" "$dest" && continue
+      cp "$plist" "$dest"
+      launchctl unload "$dest" 2>/dev/null || true
+      launchctl load "$dest" 2>/dev/null || true
+      printf "  {{ ok }} launchd: %s\n" "$name"
+    done
+
+[linux, private]
+link-launchd:
+    @true
+
+# Inject Claude Code hooks into settings.json
+link-claude-hooks:
+    #!/usr/bin/env bash
+    set -euo pipefail
     claude_settings="$HOME/.claude/settings.json"
-    if command -v jq >/dev/null 2>&1 && [ -f "$claude_settings" ]; then
-      if ! jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$claude_settings" >/dev/null 2>&1; then
-        jq '
-          .hooks //= {} |
-          .hooks.PostToolUse //= [] |
-          .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
-        ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
-        printf "  \033[32m󰄬\033[0m claude hooks: gastown\n"
-      fi
-    fi
+    command -v jq >/dev/null 2>&1 || exit 0
+    [ -f "$claude_settings" ] || exit 0
+    jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$claude_settings" >/dev/null 2>&1 && exit 0
+    jq '
+      .hooks //= {} |
+      .hooks.PostToolUse //= [] |
+      .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
+    ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
+    printf "  {{ ok }} claude hooks: gastown\n"
 
-    # Sheldon plugins
-    if command -v sheldon >/dev/null 2>&1; then
-      sheldon source >/dev/null 2>&1 && printf "  \033[32m󰄬\033[0m sheldon\n" || true
-    fi
+# Sheldon plugin manager
+link-sheldon:
+    #!/usr/bin/env bash
+    command -v sheldon >/dev/null 2>&1 || exit 0
+    sheldon source >/dev/null 2>&1 && printf "  {{ ok }} sheldon\n" || true
 
-    printf "  \033[32m󰄬\033[0m link complete\n"
+# ---------------------------------------------------------------------------
+# Build / utility tasks
+# ---------------------------------------------------------------------------
 
 # Build and install rust binaries from crates/
 reinstall-bins: upd-mise
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v cargo >/dev/null 2>&1 || { printf "  \033[31m󰅖\033[0m cargo not found\n"; exit 1; }
-    printf "  \033[35m󱁤\033[0m building rust binaries\n"
+    command -v cargo >/dev/null 2>&1 || { printf "  {{ fail }} cargo not found\n"; exit 1; }
+    printf "  {{ working }} building rust binaries\n"
     cargo install --path {{ dotfiles }}/crates --bins --root {{ dotfiles }}
-    printf "  \033[32m󰄬\033[0m binaries installed\n"
+    printf "  {{ ok }} binaries installed\n"
 
 # Switch dotfiles remote from HTTPS to SSH
 use-ssh:
@@ -153,80 +191,68 @@ use-ssh:
     cd "{{ dotfiles }}"
     current=$(git remote get-url origin)
     if echo "$current" | grep -q "^git@"; then
-      printf "  \033[32m󰄬\033[0m already using SSH\n"
+      printf "  {{ ok }} already using SSH\n"
       exit 0
     fi
     ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
     git remote set-url origin "$ssh_url"
-    printf "  \033[32m󰄬\033[0m remote switched to %s\n" "$ssh_url"
+    printf "  {{ ok }} remote switched to %s\n" "$ssh_url"
 
-# Check gh/op authentication
+# ---------------------------------------------------------------------------
+# Update tasks
+# ---------------------------------------------------------------------------
+
+# Check GitHub CLI auth
 [macos]
-upd-auth:
+upd-auth-gh:
     #!/usr/bin/env bash
-    set -euo pipefail
-    if command -v gh >/dev/null 2>&1; then
-      if gh auth status >/dev/null 2>&1; then
-        printf "  \033[32m󰄬\033[0m gh: authenticated\n"
-      else
-        printf "  \033[33m\033[0m gh: not authenticated (run gh auth login)\n"
-      fi
-    fi
-    if command -v op >/dev/null 2>&1; then
-      if op account list >/dev/null 2>&1; then
-        printf "  \033[32m󰄬\033[0m op: integrated\n"
-      else
-        printf "  \033[33m\033[0m op: not integrated (check 1Password CLI settings)\n"
-      fi
+    command -v gh >/dev/null 2>&1 || exit 0
+    if gh auth status >/dev/null 2>&1; then
+      printf "  {{ ok }} gh: authenticated\n"
+    else
+      printf "  {{ warn }} gh: not authenticated (run gh auth login)\n"
     fi
 
-[linux]
-upd-auth:
+[linux, private]
+upd-auth-gh:
     @true
 
-# Install missing fonts
+# Check 1Password CLI integration
+[macos]
+upd-auth-op:
+    #!/usr/bin/env bash
+    command -v op >/dev/null 2>&1 || exit 0
+    if op account list >/dev/null 2>&1; then
+      printf "  {{ ok }} op: integrated\n"
+    else
+      printf "  {{ warn }} op: not integrated (check 1Password CLI settings)\n"
+    fi
+
+[linux, private]
+upd-auth-op:
+    @true
+
+# Install missing fonts using the Rust binary
 [macos, parallel]
 upd-fonts: upd-mise
     #!/usr/bin/env bash
     set -euo pipefail
     command -v yq >/dev/null 2>&1 || { echo "skipped (no yq)"; exit 0; }
+    command -v install-font-macos >/dev/null 2>&1 || { echo "skipped (no install-font-macos)"; exit 0; }
+    urls=$(yq -p toml -oy -r '.fonts[].url' "{{ dotfiles }}/dotfiles.toml")
+    [ -n "$urls" ] || { echo "no fonts configured"; exit 0; }
+    install-font-macos $urls
 
-    FONTS_DIR="$HOME/Library/Fonts"
-    mkdir -p "$FONTS_DIR"
-
-    count=$(yq -p toml -oy '.fonts | length' "{{ dotfiles }}/dotfiles.toml")
-    [[ "$count" -gt 0 ]] || { echo "no fonts configured"; exit 0; }
-
-    for i in $(seq 0 $((count - 1))); do
-      name=$(yq -p toml -oy -r ".fonts[$i].name" "{{ dotfiles }}/dotfiles.toml")
-      url=$(yq -p toml -oy -r ".fonts[$i].url" "{{ dotfiles }}/dotfiles.toml")
-      marker=$(yq -p toml -oy -r ".fonts[$i].marker_file" "{{ dotfiles }}/dotfiles.toml")
-
-      if [ -f "$FONTS_DIR/$marker" ]; then
-        printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
-        continue
-      fi
-
-      printf "  \033[35m󱁤\033[0m %s (downloading)\n" "$name"
-      tmpdir=$(mktemp -d)
-      trap "rm -rf '$tmpdir'" EXIT
-      curl -fsSL "$url" -o "$tmpdir/font.zip"
-      unzip -qo "$tmpdir/font.zip" -d "$tmpdir/extracted"
-      find "$tmpdir/extracted" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} "$FONTS_DIR/" \;
-      rm -rf "$tmpdir"
-      printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
-    done
-
-[linux]
+[linux, private]
 upd-fonts:
     @true
 
 # Update brew index
 [macos]
-upd-brew-update: link
+upd-brew-update: link-brewfile
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
+    command -v brew >/dev/null 2>&1 || exit 0
     brew update --quiet
 
 # Install Brewfile packages
@@ -234,7 +260,7 @@ upd-brew-update: link
 upd-brew-bundle: upd-brew-update
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
+    command -v brew >/dev/null 2>&1 || exit 0
     HOMEBREW_NO_AUTO_UPDATE=1 brew bundle --quiet
 
 # Upgrade brew packages
@@ -242,7 +268,7 @@ upd-brew-bundle: upd-brew-update
 upd-brew-upgrade: upd-brew-bundle
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
+    command -v brew >/dev/null 2>&1 || exit 0
     HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --greedy --quiet
 
 # Cleanup brew
@@ -250,22 +276,22 @@ upd-brew-upgrade: upd-brew-bundle
 upd-brew-cleanup: upd-brew-upgrade
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v brew >/dev/null 2>&1 || { echo "skipped (no brew)"; exit 0; }
+    command -v brew >/dev/null 2>&1 || exit 0
     brew cleanup --quiet
 
-[linux]
+[linux, private]
 upd-brew-update:
     @true
 
-[linux]
+[linux, private]
 upd-brew-bundle:
     @true
 
-[linux]
+[linux, private]
 upd-brew-upgrade:
     @true
 
-[linux]
+[linux, private]
 upd-brew-cleanup:
     @true
 
@@ -279,7 +305,7 @@ upd-apt:
     sudo apt-get upgrade -y
     sudo apt-get autoremove -y
 
-[macos]
+[macos, private]
 upd-apt:
     @true
 
@@ -291,7 +317,7 @@ upd-dnf:
     command -v dnf >/dev/null 2>&1 || exit 0
     sudo dnf update -y
 
-[macos]
+[macos, private]
 upd-dnf:
     @true
 
@@ -299,7 +325,6 @@ upd-dnf:
 upd-mise:
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v mise >/dev/null 2>&1 || { echo "skipped (no mise)"; exit 0; }
     mise up
     mise reshim
 
@@ -307,30 +332,40 @@ upd-mise:
 upd-claude:
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v claude >/dev/null 2>&1 || { echo "skipped (no claude)"; exit 0; }
+    command -v claude >/dev/null 2>&1 || exit 0
     claude --update
 
 # Install/update tmux plugins
-upd-tmux-plugins:
+[parallel]
+upd-tmux-plugins: upd-tmux-resurrect upd-tmux-fzf-url
+
+[private]
+upd-tmux-resurrect:
     #!/usr/bin/env bash
     set -euo pipefail
-    PLUGINS_DIR="$HOME/.tmux/plugins"
-    mkdir -p "$PLUGINS_DIR"
+    dest="$HOME/.tmux/plugins/tmux-resurrect"
+    mkdir -p "$(dirname "$dest")"
+    if [ -d "$dest" ]; then
+      git -C "$dest" pull --quiet
+      printf "  {{ ok }} tmux-resurrect (updated)\n"
+    else
+      git clone --quiet https://github.com/tmux-plugins/tmux-resurrect.git "$dest"
+      printf "  {{ ok }} tmux-resurrect (installed)\n"
+    fi
 
-    install_plugin() {
-      local name="$1" url="$2"
-      local dest="$PLUGINS_DIR/$name"
-      if [ -d "$dest" ]; then
-        git -C "$dest" pull --quiet
-        printf "  \033[32m󰄬\033[0m %s (updated)\n" "$name"
-      else
-        git clone --quiet "$url" "$dest"
-        printf "  \033[32m󰄬\033[0m %s (installed)\n" "$name"
-      fi
-    }
-
-    install_plugin tmux-resurrect https://github.com/tmux-plugins/tmux-resurrect.git
-    install_plugin tmux-fzf-url   https://github.com/wfxr/tmux-fzf-url.git
+[private]
+upd-tmux-fzf-url:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    dest="$HOME/.tmux/plugins/tmux-fzf-url"
+    mkdir -p "$(dirname "$dest")"
+    if [ -d "$dest" ]; then
+      git -C "$dest" pull --quiet
+      printf "  {{ ok }} tmux-fzf-url (updated)\n"
+    else
+      git clone --quiet https://github.com/wfxr/tmux-fzf-url.git "$dest"
+      printf "  {{ ok }} tmux-fzf-url (installed)\n"
+    fi
 
 # Regenerate zsh completions
 [parallel]
