@@ -2,6 +2,7 @@ version: "3"
 
 output: prefixed
 silent: true
+run: once
 
 vars:
   DOTFILES: "{{.ROOT_DIR}}"
@@ -233,7 +234,7 @@ tasks:
 
   upd:brew:
     desc: Brew upgrades
-    deps: [upd:brew:update, upd:brew:bundle]
+    deps: [upd:brew:upgrade, upd:brew:bundle]
 
   upd:brew:update:
     desc: Update brew index
