@@ -156,10 +156,10 @@ tasks:
 
   link:sheldon:
     desc: Sheldon plugin manager
+    status:
+      - "! command -v sheldon"
     cmds:
-      - |
-        command -v sheldon >/dev/null 2>&1 || exit 0
-        sheldon source >/dev/null 2>&1 && printf "{{.OK}} sheldon\n" || true
+      - sheldon source >/dev/null 2>&1 && printf "{{.OK}} sheldon\n"
 
   # ---------------------------------------------------------------------------
   # Build / utility tasks
