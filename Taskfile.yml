@@ -432,7 +432,6 @@ tasks:
         # Custom commands
         declare -A custom=(
           [gh]="gh completion -s zsh"
-          [idiotify]="idiotify completions zsh"
           [fastmail-cli]="fastmail-cli completions zsh"
           [codeowners-cli]="codeowners-cli completions zsh"
           [task]="task --completion zsh"
