@@ -93,5 +93,5 @@ Determine org context from git remote URL:
 
 Keep an eye out for PRs like this generated from ours:
 
-- Visual Tests → **DO NOT MERGE**
-- Codegen / Quarantine tests / Buf generation → merge these
+- Codegen / Quarantine tests / Buf generation / Lint / React Lint → merge these
+- Visual Tests → **DO NOT AUTOMERGE**
