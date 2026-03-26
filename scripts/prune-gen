@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '\n  \033[35;1m%s\033[0m \033[1m%s\033[0m\n\n' '⟢' 'prune-gen'
+printf '  \033[36m→\033[0m action: generating test structure\n'
+
+tmpdir=$(mktemp -d)
+
+# Nested directories
+mkdir -p "$tmpdir/dir1/subdir1"
+mkdir -p "$tmpdir/largdir1"
+mkdir -p "$tmpdir/largedir2/subdir1"
+mkdir -p "$tmpdir/dir with spaces1/subdir2"
+mkdir -p "$tmpdir/dir1/subdir2 with spaces"
+mkdir -p "$tmpdir/dir2/subdir1/2/3/4"
+mkdir -p "$tmpdir/emptydir"
+mkdir -p "$tmpdir/.stfolder"
+mkdir -p "$tmpdir/.git"
+
+# Small files
+echo "Small file 1" > "$tmpdir/dir1/small1.txt"
+echo "Small file 2" > "$tmpdir/dir1/subdir1/small2.txt"
+echo "Small file 3" > "$tmpdir/dir2/small3.txt"
+
+# Large files (sparse)
+truncate -s 210m "$tmpdir/largdir1/large1.wav"
+truncate -s 1m   "$tmpdir/dir1/small1.jpg"
+truncate -s 2m   "$tmpdir/dir1/subdir1/small2.jpg"
+truncate -s 50m  "$tmpdir/largedir2/subdir1/large2.aiff"
+
+# Files with special characters
+touch "$tmpdir/dir1/file with spaces.txt"
+touch "$tmpdir/dir1/file_with_underscore.txt"
+touch "$tmpdir/dir1/file-with-dashes.txt"
+
+printf '  \033[36m→\033[0m path: %s\n' "$tmpdir"
+printf '  \033[32m󰄬\033[0m test structure created\n'
+echo "$tmpdir"

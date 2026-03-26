@@ -15,7 +15,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Passwor
 ## What's Here
 
 - **Shell configs** — Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
-- **Rust binaries** — System maintenance, git workflow, media processing, file operations
+- **Rust binaries** — 10 tools that earn Rust (parallelism, binary format parsing, git2). 7 former crates demoted to `scripts/` shell scripts
 - **Taskfile.yml** — DAG-based system management (bootstrap, update, completions, fonts)
 - **Tool management** — mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
 - **Terminal configs** — tmux, ghostty, starship prompt
@@ -52,11 +52,11 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Passwor
 
 - `to-audio opus|flac` — Parallel audio conversion
 - `embed-art` — Embed cover art into FLACs
-- `imp` — Download + extract + beets import
+- `imp` — Download + extract + beets import (shell script)
 
 **Files**
 
-- `vimv` — Batch rename in $EDITOR
+- `vimv` — Batch rename in $EDITOR (shell script)
 - `clean-dls` — Remove scene release garbage
 
 All binaries support `--help` and have shell completions.

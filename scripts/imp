@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+  echo "Usage: imp URL [URL...]"
+  echo "Download music archives, extract, and import to beets"
+  exit "${1:+1}"
+fi
+
+command -v beet >/dev/null || { echo "beet not found - please install beets" >&2; exit 1; }
+
+printf '\n  \033[35;1m%s\033[0m \033[1m%s\033[0m\n\n' '⟢' 'music importer'
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
+printf '  \033[36m→\033[0m temp dir: %s\n' "$tmpdir"
+printf '  \033[36m→\033[0m urls: %d\n' "$#"
+
+total=$#
+i=0
+for url in "$@"; do
+  ((i++))
+  album_dir="$tmpdir/album_$((i-1))"
+  mkdir -p "$album_dir"
+
+  printf '\n  \033[90m·\033[0m [%d/%d] Downloading %s\n' "$i" "$total" "$url"
+
+  filename="${url##*/}"
+  [[ -z "$filename" ]] && filename="download.zip"
+
+  if ! curl -fSL --max-time 300 -o "$album_dir/$filename" "$url"; then
+    printf '  \033[31m󰅖\033[0m Download failed\n'
+    continue
+  fi
+  printf '  \033[32m󰄬\033[0m Downloaded\n'
+
+  # Extract if zip
+  if [[ "$filename" == *.zip ]]; then
+    printf '  \033[90m·\033[0m Extracting...\n'
+    unzip -qo "$album_dir/$filename" -d "$album_dir"
+    rm -f "$album_dir/$filename"
+    printf '  \033[32m󰄬\033[0m Extracted\n'
+  fi
+
+  # Show files
+  printf '  \033[90m·\033[0m Files:\n'
+  if command -v lsd >/dev/null; then
+    lsd --tree "$album_dir"
+  elif command -v tree >/dev/null; then
+    tree "$album_dir"
+  else
+    ls -R "$album_dir"
+  fi
+
+  # Import to beets
+  printf '  \033[90m·\033[0m Importing to beets...\n'
+  if beet import "$album_dir"; then
+    printf '  \033[32m󰄬\033[0m Import complete\n'
+  else
+    printf '  \033[31m󰅖\033[0m Beets import failed for this album\n'
+  fi
+done

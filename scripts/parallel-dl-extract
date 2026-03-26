@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+  echo "Usage: parallel-dl-extract URL [URL...]"
+  echo "Download URLs in parallel with aria2c and extract zip archives"
+  exit "${1:+1}"
+fi
+
+command -v aria2c >/dev/null || { echo "aria2c not found" >&2; exit 1; }
+
+printf '\n  \033[35;1m%s\033[0m \033[1m%s\033[0m\n\n' '⟢' 'parallel dl+extract'
+
+tmpdir=$(mktemp -d)
+printf '  \033[36m→\033[0m temp dir: %s\n' "$tmpdir"
+printf '  \033[36m→\033[0m urls: %d\n' "$#"
+
+# Build aria2c input file — each URL gets its own hashed subdir
+urls_file="$tmpdir/urls.txt"
+for url in "$@"; do
+  hash=$(printf '%s' "$url" | md5 -q 2>/dev/null || printf '%s' "$url" | md5sum | cut -d' ' -f1)
+  printf '%s\n  dir=%s\n  out=dl.zip\n' "$url" "$hash" >> "$urls_file"
+done
+
+printf '  \033[90m·\033[0m downloading with aria2c\n'
+aria2c -i "$urls_file" -j 8 -x 8 -d "$tmpdir" || { echo "aria2c download failed" >&2; exit 1; }
+
+printf '  \033[90m·\033[0m extracting archives\n'
+while IFS= read -r -d '' zip; do
+  parent=$(dirname "$zip")
+  unzip -qo "$zip" -d "$parent"
+  rm -f "$zip"
+done < <(find "$tmpdir" -type f -iname '*.zip' -print0)
+
+printf '  \033[32m󰄬\033[0m download & extract complete\n'
+echo "$tmpdir"

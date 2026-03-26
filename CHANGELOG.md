@@ -8,6 +8,14 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
+**Demote 7 over-engineered Rust crates to shell scripts (#44):**
+
+- `unfuck-xcode`, `url2base64`, `install-font-macos`, `parallel-dl-extract`, `prune-gen`, `vimv`, `imp` moved from Rust binaries to `scripts/` shell scripts
+- These were 90+ lines of clap boilerplate wrapping simple CLI commands (curl, aria2c, unzip, sudo rm)
+- Dropped `reqwest`, `zip`, `base64` dependencies from Cargo.toml
+- 10 Rust binaries remain (the ones that actually use Rust features: rayon parallelism, img-parts binary parsing, git2, netstat2)
+- ~980 LOC of Rust removed, faster compile times, fewer deps to audit
+
 **Move setup-macos into Taskfile DAG:**
 
 - Setup script reduced to ~20 lines: clone dotfiles, bootstrap go-task, `task setup`

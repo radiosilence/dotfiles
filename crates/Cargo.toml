@@ -20,10 +20,6 @@ name = "prune"
 path = "src/bin/prune.rs"
 
 [[bin]]
-name = "url2base64"
-path = "src/bin/url2base64.rs"
-
-[[bin]]
 name = "git-sync"
 path = "src/bin/git-sync.rs"
 
@@ -44,22 +40,6 @@ name = "clean-dls"
 path = "src/bin/clean-dls.rs"
 
 [[bin]]
-name = "imp"
-path = "src/bin/imp.rs"
-
-[[bin]]
-name = "install-font-macos"
-path = "src/bin/install-font-macos.rs"
-
-[[bin]]
-name = "unfuck-xcode"
-path = "src/bin/unfuck-xcode.rs"
-
-[[bin]]
-name = "vimv"
-path = "src/bin/vimv.rs"
-
-[[bin]]
 name = "embed-art"
 path = "src/bin/embed-art.rs"
 
@@ -68,22 +48,12 @@ name = "extract-exif-from-flac"
 path = "src/bin/extract-exif-from-flac.rs"
 
 [[bin]]
-name = "prune-gen"
-path = "src/bin/prune-gen.rs"
-
-[[bin]]
 name = "regen-zsh-completions"
 path = "src/bin/regen-zsh-completions.rs"
-
-[[bin]]
-name = "parallel-dl-extract"
-path = "src/bin/parallel-dl-extract.rs"
 
 [dependencies]
 # Error handling
 anyhow = "1"
-# Encoding
-base64 = "0.22"
 # CLI
 clap = { version = "4", features = ["cargo", "derive", "env"] }
 clap_complete = "4"
@@ -102,11 +72,6 @@ netstat2 = "0.11"
 nix = { version = "0.31", features = ["signal", "user"] }
 # Parallelism
 rayon = "1"
-# Async
-reqwest = { version = "0.13", default-features = false, features = [
-  "blocking",
-  "rustls"
-] }
 tempfile = "3"
 # File/Path utilities
 walkdir = "2"
@@ -115,7 +80,6 @@ serde = { version = "1", features = ["derive"] }
 toml = "0.8"
 # Command detection
 which = "8"
-zip = "8"
 
 [dev-dependencies]
 assert_cmd = "2"

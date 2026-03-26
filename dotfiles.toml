@@ -134,34 +134,13 @@ name = "git-squash"
 name = "git-sync"
 
 [[completions.tools]]
-name = "imp"
-
-[[completions.tools]]
-name = "install-font-macos"
-
-[[completions.tools]]
 name = "kill-port"
-
-[[completions.tools]]
-name = "parallel-dl-extract"
 
 [[completions.tools]]
 name = "prune"
 
 [[completions.tools]]
-name = "prune-gen"
-
-[[completions.tools]]
 name = "to-audio"
-
-[[completions.tools]]
-name = "unfuck-xcode"
-
-[[completions.tools]]
-name = "url2base64"
-
-[[completions.tools]]
-name = "vimv"
 
 # --- Fonts (macOS) ---
 

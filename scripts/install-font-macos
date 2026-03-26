@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+  echo "Usage: install-font-macos URL [URL...]"
+  echo "Download font archives and install .otf/.ttf to ~/Library/Fonts"
+  exit "${1:+1}"
+fi
+
+command -v aria2c >/dev/null || { echo "aria2c not found - please install it" >&2; exit 1; }
+command -v unzip  >/dev/null || { echo "unzip not found - please install it"  >&2; exit 1; }
+
+printf '\n  \033[35;1m%s\033[0m \033[1m%s\033[0m\n\n' '⟢' 'font installer'
+
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
+printf '  \033[36m→\033[0m temp dir: %s\n' "$tmpdir"
+
+for url in "$@"; do
+  printf '  \033[36m→\033[0m downloading %s\n' "$url"
+  aria2c -x 8 -d "$tmpdir" "$url" || { echo "Failed to download $url" >&2; exit 1; }
+done
+
+printf '  \033[36m→\033[0m extracting archives\n'
+for zip in "$tmpdir"/*.zip; do
+  [[ -f "$zip" ]] || continue
+  unzip -qo "$zip" -d "$tmpdir"
+  rm -f "$zip"
+done
+
+printf '  \033[36m→\033[0m installing fonts\n'
+fonts_dir="$HOME/Library/Fonts"
+mkdir -p "$fonts_dir"
+
+installed=0
+while IFS= read -r -d '' font; do
+  cp "$font" "$fonts_dir/"
+  ((installed++))
+done < <(find "$tmpdir" -type f \( -iname '*.otf' -o -iname '*.ttf' \) -print0)
+
+printf '  \033[32m󰄬\033[0m installed %d fonts\n' "$installed"

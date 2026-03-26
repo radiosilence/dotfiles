@@ -1,6 +1,6 @@
 # Rust Tooling
 
-Rewrites of bash scripts. Faster, handles errors better, proper parallelism.
+Tools that genuinely benefit from Rust: parallelism, binary format parsing, git2 library, cross-protocol socket introspection.
 
 ## Building
 
@@ -10,44 +10,38 @@ cargo build --release
 cargo install --path .
 ```
 
-## Tools (18 binaries)
+## Tools (10 binaries)
 
 ### Process / System
 
-- **kill-port** - Kill process on port
-- **upd** - System update orchestrator
-- **unfuck-xcode** - Reset Xcode CLI tools
-- **update-ffmpeg** - Update ffmpeg from evermeet
+- **kill-port** - Kill process on port (netstat2 + nix signal handling)
 
 ### Files
 
-- **prune** - Delete small directories
-- **prune-gen** - Generate prune configs
-- **clean-dls** - Remove scene release garbage
-- **clean-exif** - Strip EXIF from images
-- **vimv** - Batch rename with editor
+- **prune** - Delete small directories (walkdir + dialoguer)
+- **clean-dls** - Remove scene release garbage (word-boundary matching)
+- **clean-exif** - Strip EXIF from images (img-parts binary rewriting)
 
 ### Git
 
-- **git-sync** - Clean merged branches
-- **git-squash** - Squash commits
+- **git-sync** - Clean merged branches (git2 branch tracking)
+- **git-squash** - Squash commits (git2 merge-base + revwalk)
 
 ### Audio / Media
 
-- **to-audio** - Convert to FLAC/Opus with parallel processing
-- **embed-art** - Embed album art in FLAC
-- **extract-exif-from-flac** - Extract EXIF data from FLAC
-- **imp** - Import music from URLs to beets
-
-### Network / Install
-
-- **url2base64** - URLs to base64
-- **parallel-dl-extract** - Parallel download and extract
-- **install-font-macos** - Install fonts from URLs
+- **to-audio** - Convert to FLAC/Opus with parallel processing (rayon + indicatif)
+- **embed-art** - Embed album art in FLAC (img-parts EXIF stripping)
+- **extract-exif-from-flac** - Extract EXIF data from FLAC (binary format verification)
 
 ### Meta
 
 - **regen-zsh-completions** - Regenerate shell completions for all tools
+
+## Demoted to shell scripts
+
+These were over-engineered Rust wrappers around CLI tools. Now live in `scripts/`:
+
+`unfuck-xcode`, `url2base64`, `install-font-macos`, `parallel-dl-extract`, `prune-gen`, `vimv`, `imp`
 
 ## Dev
 
@@ -64,10 +58,9 @@ crates/
 ├── src/
 │   ├── lib.rs               # Shared code
 │   ├── audio.rs              # Audio utils
-│   ├── install.rs            # Install helpers
 │   ├── parallel.rs           # Parallel processing
+│   ├── config.rs             # Config loading
 │   ├── regen_completions.rs  # Completion generation
-│   ├── update_ffmpeg.rs      # ffmpeg update logic
-│   └── bin/                  # 18 binaries
+│   └── bin/                  # 10 binaries
 └── Cargo.toml
 ```

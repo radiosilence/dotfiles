@@ -494,8 +494,6 @@ tasks:
           - gt
           - helm
           - houston
-          - imp
-          - install-font-macos
           - k9s
           - kill-port
           - koan
@@ -504,16 +502,11 @@ tasks:
           - nano-web
           - op
           - orbctl
-          - parallel-dl-extract
           - prune
-          - prune-gen
           - pulumi
           - tilt
           - to-audio
           - turso
-          - unfuck-xcode
-          - url2base64
-          - vimv
           - yq
         task: generate:completions:gen
         vars:

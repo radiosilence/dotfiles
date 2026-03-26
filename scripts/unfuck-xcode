@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '\n  \033[35;1m%s\033[0m \033[1m%s\033[0m\n\n' '⟢' 'xcode unfucker'
+
+if [[ "${1:-}" == "-n" || "${1:-}" == "--dry-run" ]]; then
+  printf '  \033[36m→\033[0m DRY RUN - no changes made\n'
+  printf '  \033[36m→\033[0m Remove: /Library/Developer/CommandLineTools\n'
+  printf '  \033[36m→\033[0m Reset: xcode-select\n'
+  exit 0
+fi
+
+printf '  \033[36m→\033[0m Removing: /Library/Developer/CommandLineTools\n'
+sudo rm -rf /Library/Developer/CommandLineTools
+
+printf '  \033[36m→\033[0m Resetting: xcode-select\n'
+sudo xcode-select --reset
+
+printf '  \033[32m󰄬\033[0m Xcode unfucked - GUI installer will prompt for CLI Tools\n'

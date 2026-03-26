@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '\n  \033[35;1m%s\033[0m \033[1m%s\033[0m\n\n' '⟢' 'vimv'
+
+# Collect files — args or all files in cwd
+if [[ $# -gt 0 ]]; then
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    echo "Usage: vimv [FILE...]"
+    echo "Batch rename files using \$EDITOR (defaults to all files in cwd)"
+    exit 0
+  fi
+  files=("$@")
+else
+  files=()
+  while IFS= read -r -d '' f; do
+    files+=("$(basename "$f")")
+  done < <(find . -maxdepth 1 -type f -print0 | sort -z)
+fi
+
+if [[ ${#files[@]} -eq 0 ]]; then
+  printf '  \033[33m\033[0m No files found\n'
+  exit 0
+fi
+
+printf '  \033[36m→\033[0m files: %d\n' "${#files[@]}"
+
+# Write filenames to temp file
+tmpfile=$(mktemp)
+trap 'rm -f "$tmpfile"' EXIT
+printf '%s\n' "${files[@]}" > "$tmpfile"
+
+# Open in editor
+editor="${EDITOR:-vi}"
+"$editor" "$tmpfile"
+
+# Read edited filenames
+mapfile -t new_files < "$tmpfile"
+
+if [[ ${#files[@]} -ne ${#new_files[@]} ]]; then
+  printf 'Number of files changed (%d -> %d). Did you delete a line by accident?\n' "${#files[@]}" "${#new_files[@]}" >&2
+  exit 1
+fi
+
+# Perform renames
+count=0
+for i in "${!files[@]}"; do
+  old="${files[$i]}"
+  new="${new_files[$i]}"
+  [[ "$old" == "$new" ]] && continue
+
+  # Create parent dir if needed
+  parent=$(dirname "$new")
+  [[ "$parent" != "." ]] && mkdir -p "$parent"
+
+  # Use git mv if tracked
+  if git ls-files --error-unmatch "$old" &>/dev/null; then
+    git mv -- "$old" "$new"
+    printf '  \033[36m→\033[0m git mv %s -> %s\n' "$old" "$new"
+  else
+    mv -- "$old" "$new"
+    printf '  \033[36m→\033[0m mv %s -> %s\n' "$old" "$new"
+  fi
+  ((count++))
+done
+
+printf '  \033[32m󰄬\033[0m %d files renamed\n' "$count"
