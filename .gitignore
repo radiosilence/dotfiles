@@ -14,8 +14,5 @@
 dotfiles-roles.yml
 Brewfile.local
 
-# Local config overrides (per-machine)
-dotfiles.local.toml
-
 # Zsh compiled files
 *.zwc

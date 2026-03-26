@@ -495,7 +495,6 @@ tasks:
           - helm
           - houston
           - imp
-          - install-font-macos
           - k9s
           - kill-port
           - koan
