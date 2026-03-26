@@ -48,10 +48,6 @@ name = "imp"
 path = "src/bin/imp.rs"
 
 [[bin]]
-name = "install-font-macos"
-path = "src/bin/install-font-macos.rs"
-
-[[bin]]
 name = "unfuck-xcode"
 path = "src/bin/unfuck-xcode.rs"
 
@@ -70,10 +66,6 @@ path = "src/bin/extract-exif-from-flac.rs"
 [[bin]]
 name = "prune-gen"
 path = "src/bin/prune-gen.rs"
-
-[[bin]]
-name = "regen-zsh-completions"
-path = "src/bin/regen-zsh-completions.rs"
 
 [[bin]]
 name = "parallel-dl-extract"
@@ -110,9 +102,6 @@ reqwest = { version = "0.13", default-features = false, features = [
 tempfile = "3"
 # File/Path utilities
 walkdir = "2"
-# Serialization
-serde = { version = "1", features = ["derive"] }
-toml = "0.8"
 # Command detection
 which = "8"
 zip = "8"

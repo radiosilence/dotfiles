@@ -10,7 +10,7 @@ cargo build --release
 cargo install --path .
 ```
 
-## Tools (18 binaries)
+## Tools (16 binaries)
 
 ### Process / System
 
@@ -43,11 +43,6 @@ cargo install --path .
 
 - **url2base64** - URLs to base64
 - **parallel-dl-extract** - Parallel download and extract
-- **install-font-macos** - Install fonts from URLs
-
-### Meta
-
-- **regen-zsh-completions** - Regenerate shell completions for all tools
 
 ## Dev
 
@@ -66,8 +61,7 @@ crates/
 │   ├── audio.rs              # Audio utils
 │   ├── install.rs            # Install helpers
 │   ├── parallel.rs           # Parallel processing
-│   ├── regen_completions.rs  # Completion generation
 │   ├── update_ffmpeg.rs      # ffmpeg update logic
-│   └── bin/                  # 18 binaries
+│   └── bin/                  # 16 binaries
 └── Cargo.toml
 ```

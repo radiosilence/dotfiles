@@ -13,7 +13,6 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | `upd [-v]`                   | Update everything - pulls dotfiles, rebuilds rust bins, runs brew/mise |
 | `kill-port <port> [-n]`      | Kill process on port (`-n` dry-run, `-s` signal)                       |
 | `prune [paths] [-s kb] [-y]` | Find and delete small directories (default 3MB threshold)              |
-| `regen-zsh-completions`      | Rebuild shell completions from installed tools                         |
 | `unfuck-xcode`               | Reset Xcode CLI tools when they're corrupted                           |
 
 ### Git Workflow
@@ -48,7 +47,6 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | ---------------------------- | --------------------------------------------------------- |
 | `imp <urls>`                 | Download + extract + beets music import (aria2c parallel) |
 | `parallel-dl-extract <urls>` | Parallel download and extract archives                    |
-| `install-font-macos <urls>`  | Download and install fonts to ~/Library/Fonts             |
 
 ---
 

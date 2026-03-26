@@ -1,9 +1,7 @@
 //! Shared utilities for dotfiles tools
 
 pub mod audio;
-pub mod config;
 pub mod parallel;
-pub mod regen_completions;
 
 pub use anyhow::{Context, Result};
 pub use audio::check_command;
