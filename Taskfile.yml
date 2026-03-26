@@ -482,39 +482,39 @@ tasks:
     desc: Regenerate zsh completions
     deps:
       - for:
-          - gt
           - argocd
+          - clean-dls
+          - clean-exif
           - docker
+          - embed-art
+          - extract-exif-from-flac
+          - fcloud
+          - git-squash
+          - git-sync
+          - gt
           - helm
+          - houston
+          - imp
+          - install-font-macos
           - k9s
+          - kill-port
+          - koan
           - kubectl
           - lefthook
           - nano-web
           - op
           - orbctl
-          - pulumi
-          - tilt
-          - turso
-          - yq
-          - fcloud
-          - houston
-          - koan
-          - clean-dls
-          - clean-exif
-          - embed-art
-          - extract-exif-from-flac
-          - git-squash
-          - git-sync
-          - imp
-          - install-font-macos
-          - kill-port
           - parallel-dl-extract
           - prune
           - prune-gen
+          - pulumi
+          - tilt
           - to-audio
+          - turso
           - unfuck-xcode
           - url2base64
           - vimv
+          - yq
         task: generate:completions:gen
         vars:
           TOOL: "{{.ITEM}}"
