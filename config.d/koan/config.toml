@@ -43,3 +43,7 @@ discovery_weight = 0.3
 [graphql]
 port = 4000
 playground = false
+
+[discovery]
+analysis_on_scan = false
+acoustic_weight = 0.5
