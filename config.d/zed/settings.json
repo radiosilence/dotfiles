@@ -22,17 +22,13 @@
       "default_mode": "bypassPermissions",
       "default_config_options": {
         "mode": "bypassPermissions",
-        "model": "opus[1m]"
+        "model": "opus[1m]",
       },
       "favorite_config_option_values": {
-        "mode": [
-          "bypassPermissions"
-        ],
-        "model": [
-          "opus[1m]"
-        ]
-      }
-    }
+        "mode": ["bypassPermissions"],
+        "model": ["opus[1m]"],
+      },
+    },
   },
   "project_panel": {
     "dock": "left",
@@ -97,7 +93,7 @@
   },
   "agent": {
     "tool_permissions": {
-      "default": "allow"
+      "default": "allow",
     },
     "dock": "right",
     "play_sound_when_agent_done": false,
@@ -203,7 +199,7 @@
         },
       },
       "language_servers": [
-        "!expert",
+        "expert",
         "!elixir-ls",
         "!next-ls",
         "!lexical",
