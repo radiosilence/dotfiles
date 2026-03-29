@@ -497,7 +497,6 @@ tasks:
           - imp
           - k9s
           - kill-port
-          - koan
           - kubectl
           - lefthook
           - nano-web
@@ -523,6 +522,8 @@ tasks:
         vars: { TOOL: gh, CMD: "gh completion -s zsh" }
       - task: generate:completions:gen
         vars: { TOOL: fastmail-cli, CMD: "fastmail-cli completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: koan, CMD: "koan completions zsh" }
       - task: generate:completions:gen
         vars: { TOOL: codeowners-cli, CMD: "codeowners-cli completions zsh" }
       - task: generate:completions:gen
