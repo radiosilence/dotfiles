@@ -54,5 +54,5 @@ kkp() {
   pods=$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null | \
     fzf --multi --preview 'kubecolor get pod {} -o wide --force-colors 2>/dev/null' \
         --header 'TAB to select multiple, ENTER to delete')
-  [[ -n "$pods" ]] && echo "$pods" | xargs kubectl delete pod
+  [[ -n "$pods" ]] && echo "$pods" | xargs kubectl delete pod --wait=false
 }
