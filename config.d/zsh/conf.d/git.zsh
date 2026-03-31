@@ -121,6 +121,12 @@ alias ghh='git help'
 alias gignore='git update-index --assume-unchanged'
 alias gignored='git ls-files -v | grep "^[[:lower:]]"'
 
+# Stop git-lfs rewriting .husky hooks (printf vs echo churn across versions).
+# Run once per repo, or call automatically via chpwd/hook.
+gignore-husky() {
+  git ls-files .husky/ 2>/dev/null | xargs -r git update-index --assume-unchanged
+}
+
 # Gitk
 alias gk='\gitk --all --branches'
 alias gke='\gitk --all $(git log -g --pretty=%h)'
