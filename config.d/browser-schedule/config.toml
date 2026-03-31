@@ -3,8 +3,15 @@ personal = "Zen"
 work = "Firefox"
 
 [urls]
-personal = [ "reddit.com", "news.ycombinator.com", "youtube.com" ]
-work = [ "atlassian.net", "meet.google.com", "figma.com", "mail.google.com", "slack.com", "datadoghq.com" ]
+personal = ["reddit.com", "news.ycombinator.com", "youtube.com"]
+work = [
+  "atlassian.net",
+  "meet.google.com",
+  "figma.com",
+  "mail.google.com",
+  "slack.com",
+  "datadoghq.com"
+]
 
 [work_days]
 end = "Fri"
