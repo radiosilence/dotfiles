@@ -5,6 +5,11 @@ ARG USERNAME=dev
 ARG USER_UID=1000
 ARG USER_GID=1000
 
+# Bootstrap curl + certs (needed for GH CLI repo setup)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
 # GitHub CLI repo
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
       | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null \
@@ -90,8 +95,11 @@ RUN --mount=type=secret,id=gh_pat \
 ENV PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
 # Install all language toolchains via mise
+# MISE_SIGSTORE_VERIFY=0: Sigstore Rekor key parsing fails on some CI runners
+# (tools are still checksum-verified by mise)
 RUN --mount=type=secret,id=gh_pat \
     GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
+    MISE_SIGSTORE_VERIFY=0 \
     mise use --global \
         node@lts \
         bun@latest \
