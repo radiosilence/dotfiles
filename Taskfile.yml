@@ -216,11 +216,13 @@ tasks:
     deps:
       - link:dotfiles
       - link:config
-      - link:gitconfig
-      - link:ssh
+      - patch:gitconfig
+      - patch:ssh
       - link:brewfile
       - link:claude-hooks
       - link:sheldon
+      - patch:npmrc
+      - link:cargo
 
   link:dotfiles:
     desc: Symlink dotfiles (.* → ~)
@@ -255,7 +257,7 @@ tasks:
           printf "{{.LINK}} ~/.config/%s\n" "$name"
         done
 
-  link:gitconfig:
+  patch:gitconfig:
     desc: Ensure gitconfig includes dotfiles
     cmds:
       - |
@@ -264,7 +266,7 @@ tasks:
         printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
         printf "{{.OK}} gitconfig include\n"
 
-  link:ssh:
+  patch:ssh:
     desc: Ensure SSH config includes dotfiles
     cmds:
       - |
@@ -300,6 +302,37 @@ tasks:
           .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
         ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
         printf "{{.OK}} claude hooks: gastown\n"
+
+  patch:npmrc:
+    desc: Ensure npmrc has security defaults
+    cmds:
+      - |
+        npmrc="$HOME/.npmrc"
+        [ -f "$npmrc" ] || touch "$npmrc"
+        chmod 600 "$npmrc"
+        changed=0
+        while IFS= read -r line || [ -n "$line" ]; do
+          case "$line" in \#*|"") continue ;; esac
+          key="${line%%=*}"
+          grep -q "^${key}=" "$npmrc" || { echo "$line" >> "$npmrc"; changed=1; }
+        done < "{{.DOTFILES}}/packager.d/npmrc-security"
+        [ "$changed" = 1 ] && printf "{{.OK}} npmrc security defaults\n"
+        exit 0
+
+  link:cargo:
+    desc: Symlink cargo security config
+    cmds:
+      - |
+        mkdir -p "$HOME/.cargo"
+        target="$HOME/.cargo/config.toml"
+        src="{{.DOTFILES}}/packager.d/cargo-config.toml"
+        [ -L "$target" ] && [ "$(readlink "$target")" = "$src" ] && exit 0
+        if [ -f "$target" ] && [ ! -L "$target" ]; then
+          printf "{{.WARN}} ~/.cargo/config.toml exists — merge %s manually\n" "$src"
+          exit 0
+        fi
+        ln -sf "$src" "$target"
+        printf "{{.LINK}} cargo config\n"
 
   link:sheldon:
     desc: Sheldon plugin manager
