@@ -208,8 +208,8 @@ tasks:
     deps:
       - link:dotfiles
       - link:config
-      - link:gitconfig
-      - link:ssh
+      - patch:gitconfig
+      - patch:ssh
       - link:brewfile
       - link:claude-hooks
       - link:sheldon
@@ -249,7 +249,7 @@ tasks:
           printf "{{.LINK}} ~/.config/%s\n" "$name"
         done
 
-  link:gitconfig:
+  patch:gitconfig:
     desc: Ensure gitconfig includes dotfiles
     cmds:
       - |
@@ -258,7 +258,7 @@ tasks:
         printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
         printf "{{.OK}} gitconfig include\n"
 
-  link:ssh:
+  patch:ssh:
     desc: Ensure SSH config includes dotfiles
     cmds:
       - |
