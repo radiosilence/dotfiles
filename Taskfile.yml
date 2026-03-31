@@ -213,7 +213,7 @@ tasks:
       - link:brewfile
       - link:claude-hooks
       - link:sheldon
-      - link:npmrc
+      - patch:npmrc
       - link:cargo
 
   link:dotfiles:
@@ -295,7 +295,7 @@ tasks:
         ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
         printf "{{.OK}} claude hooks: gastown\n"
 
-  link:npmrc:
+  patch:npmrc:
     desc: Ensure npmrc has security defaults
     cmds:
       - |
