@@ -2,7 +2,7 @@
 KERL_BUILD_DOCS = "yes"
 GITHUB_TOKEN = "{{exec(command='unset GITHUB_TOKEN; gh auth token 2>/dev/null || echo')}}"
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
-# CLAUDE_CODE_EFFORT_LEVEL = "max"
+CLAUDE_CODE_EFFORT_LEVEL = "max"
 # More secure, annoying option:
 # GITHUB_TOKEN = "{{exec(command='op plugin run -- gh auth token')}}"
 

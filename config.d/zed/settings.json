@@ -77,6 +77,7 @@
     "harper": true,
     "helm": true,
     "html": true,
+    "oxc": true,
     "ruby": true,
     "kotlin": true,
     "lua": true,
@@ -152,6 +153,7 @@
         "...",
       ],
       "colorize_brackets": true,
+      "format_on_save": "on",
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
@@ -168,6 +170,7 @@
         "...",
       ],
       "colorize_brackets": true,
+      "format_on_save": "on",
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.biome" },
