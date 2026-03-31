@@ -65,7 +65,6 @@
     "ansible": true,
     "astro": true,
     "basher": true,
-    "biome": true,
     "catppuccin": true,
     "csv": true,
     "docker-compose": true,
@@ -154,11 +153,11 @@
       ],
       "colorize_brackets": true,
       "format_on_save": "on",
+      "prettier": { "allowed": false },
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
-        { "code_action": "source.fixAll.biome" },
-        { "code_action": "source.organizeImports.biome" },
-        { "language_server": { "name": "biome" } },
+        { "code_action": "source.fixAll.oxc" },
+        { "language_server": { "name": "oxfmt" } },
       ],
     },
     "TSX": {
@@ -171,28 +170,34 @@
       ],
       "colorize_brackets": true,
       "format_on_save": "on",
+      "prettier": { "allowed": false },
       "formatter": [
         { "code_action": "source.fixAll.eslint" },
-        { "code_action": "source.fixAll.biome" },
-        { "code_action": "source.organizeImports.biome" },
-        { "language_server": { "name": "biome" } },
+        { "code_action": "source.fixAll.oxc" },
+        { "language_server": { "name": "oxfmt" } },
       ],
     },
     "Proto": {
       "language_servers": ["buf", "codeowners-lsp"],
     },
     "CSS": {
+      "prettier": { "allowed": false },
       "code_actions_on_format": {
         "source.fixAll.stylelint": true,
-        "source.organizeImports.biome": true,
       },
+      "formatter": { "language_server": { "name": "oxfmt" } },
     },
     "SCSS": {
+      "prettier": { "allowed": false },
       "code_actions_on_format": {
         "source.fixAll.stylelint": true,
       },
+      "formatter": { "language_server": { "name": "oxfmt" } },
     },
-    "GraphQL": { "formatter": { "language_server": { "name": "biome" } } },
+    "GraphQL": {
+      "prettier": { "allowed": false },
+      "formatter": { "language_server": { "name": "oxfmt" } },
+    },
     "Elixir": {
       "colorize_brackets": true,
       "formatter": {
@@ -233,7 +238,8 @@
       ],
     },
     "YAML": {
-      "formatter": "prettier",
+      "prettier": { "allowed": false },
+      "formatter": { "language_server": { "name": "oxfmt" } },
     },
     "Rust": {
       "colorize_brackets": true,
@@ -243,6 +249,8 @@
     },
     "JSON": {
       "colorize_brackets": true,
+      "prettier": { "allowed": false },
+      "formatter": { "language_server": { "name": "oxfmt" } },
     },
     "TOML": {
       "language_servers": ["tombi", "..."],
@@ -332,9 +340,19 @@
         },
       },
     },
-    "biome": {
-      "settings": {
-        "require_config_file": true,
+    "oxlint": {
+      "initialization_options": {
+        "settings": {
+          "run": "onType",
+          "fixKind": "safe_fix",
+        },
+      },
+    },
+    "oxfmt": {
+      "initialization_options": {
+        "settings": {
+          "run": "onSave",
+        },
       },
     },
     "ruff": {},
