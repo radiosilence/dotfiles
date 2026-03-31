@@ -119,13 +119,6 @@ tasks:
       - /usr/sbin/softwareupdate --install-rosetta --agree-to-license
       - printf "{{.OK}} rosetta 2\n"
 
-  claude:install:
-    desc: Install Claude Code
-    status: ["command -v claude"]
-    cmds:
-      - curl -fsSL https://claude.ai/install.sh | bash
-      - printf "{{.OK}} claude code\n"
-
   brew:unquarantine:
     desc: Remove quarantine from casks
     platforms: [darwin]
@@ -184,7 +177,6 @@ tasks:
       - brew:install
       - brew:roles
       - rosetta:install
-      - claude:install
       - brew:unquarantine
       - sudo:touchid
       - sudo:timeout
