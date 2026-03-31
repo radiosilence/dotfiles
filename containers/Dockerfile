@@ -61,7 +61,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user with sudo (needed for `task converge` apt:upgrade)
-RUN groupadd --gid $USER_GID $USERNAME \
+RUN groupadd --gid $USER_GID --force $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/zsh $USERNAME \
     && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
