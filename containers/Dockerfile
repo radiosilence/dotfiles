@@ -61,7 +61,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user with sudo (needed for `task converge` apt:upgrade)
-RUN groupadd --gid $USER_GID --force $USERNAME \
+# Ubuntu 24.04 ships with uid/gid 1000 as 'ubuntu' — remove it first
+RUN userdel -r ubuntu 2>/dev/null; \
+    groupdel ubuntu 2>/dev/null; \
+    groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/zsh $USERNAME \
     && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
