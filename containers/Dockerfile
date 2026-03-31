@@ -11,32 +11,49 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
       > /etc/apt/sources.list.d/github-cli.list
 
-# System packages + Erlang build deps
+# System packages — mirrors core.rb + dev.rb brew setup for Linux
+# Erlang/OTP build deps included (libwx, libssl, etc.)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     autoconf \
     build-essential \
     ca-certificates \
+    cmake \
+    clang-format \
     curl \
     fop \
     gh \
     git \
     gnupg \
+    htop \
+    btop \
     inotify-tools \
     jq \
+    jsonnet \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
+    libgmp-dev \
+    liblzma-dev \
     libncurses5-dev \
     libpng-dev \
+    libpq-dev \
+    libreadline-dev \
     libssh-dev \
     libssl-dev \
     libwxgtk3.2-dev \
     libwxgtk-webview3.2-dev \
+    libyaml-dev \
+    llvm \
+    luarocks \
     openssh-client \
+    parallel \
     pkg-config \
+    postgresql-client \
+    rsync \
     sudo \
     tmux \
     unixodbc-dev \
     unzip \
+    uuid-dev \
     wget \
     xsltproc \
     zsh \
@@ -77,7 +94,8 @@ RUN --mount=type=secret,id=gh_pat \
         erlang@27 \
         elixir@1.18 \
         rust@stable \
-        go@latest
+        go@latest \
+        uv@latest
 
 # Node: corepack for pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
@@ -94,8 +112,8 @@ RUN --mount=type=secret,id=gh_pat \
 # Container-specific: safe npm defaults (overrides any .npmrc from converge)
 COPY --chown=$USERNAME:$USERNAME containers/config/.npmrc $HOME/.npmrc
 
-# Supply chain security tools
-RUN cargo install cargo-audit cargo-deny
+# Rust-installed CLI tools (brew equivalents + supply chain security)
+RUN cargo install cargo-audit cargo-deny sheldon tokei
 RUN go install golang.org/x/vuln/cmd/govulncheck@latest
 
 # Go safe defaults
