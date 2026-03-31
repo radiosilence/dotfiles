@@ -20,6 +20,11 @@ env:
   CLICOLOR_FORCE: "1"
   FORCE_COLOR: "1"
 
+includes:
+  dev:
+    taskfile: ./containers/Taskfile.yml
+    dir: ./containers
+
 tasks:
   # ===========================================================================
   # System update pipeline
@@ -582,3 +587,4 @@ tasks:
     status: ["! command -v npm"]
     cmds:
       - npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
+
