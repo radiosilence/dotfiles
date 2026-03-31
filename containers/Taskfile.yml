@@ -1,0 +1,162 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+output: prefixed
+silent: true
+
+vars:
+  IMAGE: 'ghcr.io/radiosilence/devbox:latest'
+  OP_SSH_SOCK: '{{.HOME}}/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock'
+  OK: '\033[32m󰄬\033[0m'
+  WARN: '\033[33m\033[0m'
+  FAIL: '\033[31m󰅖\033[0m'
+  WORK: '\033[35m󱁤\033[0m'
+
+tasks:
+  start:
+    desc: Start or attach to an isolated dev container
+    aliases: [s]
+    vars:
+      PROJECT: '{{.CLI_ARGS}}'
+      CONTAINER: 'devbox-{{.PROJECT}}'
+      VOLUME: 'devbox-{{.PROJECT}}'
+    preconditions:
+      - sh: '[ -n "{{.PROJECT}}" ]'
+        msg: "usage: dev <project-name> [-p port] [-r repo]"
+    cmds:
+      - |
+        # Reattach if already running
+        if docker ps --format '{{`{{.Names}}`}}' | grep -q "^{{.CONTAINER}}$"; then
+          printf "{{.OK}} attaching to {{.CONTAINER}}\n"
+          docker exec -it "{{.CONTAINER}}" tmux new-session -A -s main
+          exit 0
+        fi
+
+        # Clean up stopped container (upsert — new container, same volume)
+        docker rm "{{.CONTAINER}}" >/dev/null 2>&1 || true
+
+        # Pull latest image if not present
+        docker image inspect "{{.IMAGE}}" >/dev/null 2>&1 || docker pull "{{.IMAGE}}"
+
+        # Fetch credentials (1Password → gh fallback → empty)
+        gh_token=$(op read 'op://Dev/gh-devbox-pat/credential' 2>/dev/null || gh auth token 2>/dev/null || true)
+        npm_token=$(op read 'op://Dev/npm-token/credential' 2>/dev/null || true)
+        anthropic_key=$(op read 'op://Dev/anthropic-key/credential' 2>/dev/null || true)
+        hex_key=$(op read 'op://Dev/hex-key/credential' 2>/dev/null || true)
+
+        printf "{{.WORK}} starting {{.CONTAINER}}\n"
+
+        docker run -dit \
+          --name "{{.CONTAINER}}" \
+          --hostname "{{.PROJECT}}" \
+          --security-opt=no-new-privileges \
+          --cap-drop=ALL \
+          --cap-add=NET_BIND_SERVICE \
+          --memory=8g \
+          --cpus=4 \
+          -v "{{.VOLUME}}:/workspace" \
+          -v "{{.OP_SSH_SOCK}}:/run/ssh-agent.sock:ro" \
+          -e SSH_AUTH_SOCK=/run/ssh-agent.sock \
+          ${REPO:+-e DEVBOX_REPO="$REPO"} \
+          ${gh_token:+-e GITHUB_TOKEN="$gh_token"} \
+          ${npm_token:+-e NPM_TOKEN="$npm_token"} \
+          ${anthropic_key:+-e ANTHROPIC_API_KEY="$anthropic_key"} \
+          ${hex_key:+-e HEX_API_KEY="$hex_key"} \
+          ${PORTS} \
+          "{{.IMAGE}}" \
+          >/dev/null
+
+        printf "{{.OK}} {{.CONTAINER}} started\n"
+        docker exec -it "{{.CONTAINER}}" tmux new-session -A -s main
+
+  stop:
+    desc: Stop and remove a dev container (volume preserved)
+    vars:
+      PROJECT: '{{.CLI_ARGS}}'
+      CONTAINER: 'devbox-{{.PROJECT}}'
+    preconditions:
+      - sh: '[ -n "{{.PROJECT}}" ]'
+        msg: "usage: dev-stop <project-name>"
+    cmds:
+      - docker stop "{{.CONTAINER}}" >/dev/null 2>&1 && docker rm "{{.CONTAINER}}" >/dev/null 2>&1 && printf "{{.OK}} {{.CONTAINER}} stopped (volume preserved)\n" || printf "{{.WARN}} {{.CONTAINER}} not running\n"
+
+  nuke:
+    desc: Stop container AND delete its volume
+    vars:
+      PROJECT: '{{.CLI_ARGS}}'
+      CONTAINER: 'devbox-{{.PROJECT}}'
+      VOLUME: 'devbox-{{.PROJECT}}'
+    preconditions:
+      - sh: '[ -n "{{.PROJECT}}" ]'
+        msg: "usage: dev-nuke <project-name>"
+    cmds:
+      - |
+        docker rm -f "{{.CONTAINER}}" >/dev/null 2>&1 || true
+        docker volume rm "{{.VOLUME}}" >/dev/null 2>&1 \
+          && printf "{{.OK}} {{.CONTAINER}} + volume nuked\n" \
+          || printf "{{.WARN}} volume {{.VOLUME}} not found\n"
+
+  update:
+    desc: Pull latest image and recreate all running devboxes
+    cmds:
+      - |
+        printf "{{.WORK}} pulling latest image\n"
+        docker pull "{{.IMAGE}}"
+        printf "{{.OK}} image updated\n"
+
+        containers=$(docker ps --filter "name=devbox-" --format '{{`{{.Names}}`}}')
+        if [ -z "$containers" ]; then
+          printf "{{.OK}} no running devboxes to recreate\n"
+          exit 0
+        fi
+
+        for name in $containers; do
+          volume="${name}"  # container and volume share the same name
+          printf "{{.WORK}} recreating %s\n" "$name"
+          docker stop "$name" >/dev/null 2>&1
+          docker rm "$name" >/dev/null 2>&1
+          printf "{{.OK}} %s stopped — run 'dev %s' to start with new image\n" "$name" "${name#devbox-}"
+        done
+
+  exec:
+    desc: Run a command in a dev container
+    aliases: [x]
+    vars:
+      CONTAINER: 'devbox-{{.PROJECT}}'
+    requires:
+      vars: [PROJECT]
+    cmds:
+      - docker exec -it "{{.CONTAINER}}" {{.CLI_ARGS}}
+
+  list:
+    desc: List running dev containers
+    aliases: [ls]
+    cmds:
+      - docker ps --filter "name=devbox-" --format "table {{`{{.Names}}`}}\t{{`{{.Status}}`}}\t{{`{{.Image}}`}}\t{{`{{.Ports}}`}}"
+
+  build:
+    desc: Build devbox image locally
+    vars:
+      GH_TOKEN:
+        sh: op read 'op://Dev/gh-devbox-pat/credential' 2>/dev/null || gh auth token 2>/dev/null || true
+    cmds:
+      - |
+        export DOCKER_BUILDKIT=1
+        docker build \
+          --secret id=gh_pat,env=GH_TOKEN \
+          -t "{{.IMAGE}}" \
+          -f "{{.ROOT_DIR}}/Dockerfile" \
+          "{{.ROOT_DIR}}/.."
+        printf "{{.OK}} devbox built locally\n"
+
+  nuke-all:
+    desc: Stop and remove ALL dev containers (volumes preserved)
+    cmds:
+      - |
+        containers=$(docker ps -a --filter "name=devbox-" --format "{{`{{.Names}}`}}")
+        if [ -z "$containers" ]; then
+          printf "{{.OK}} no dev containers running\n"
+          exit 0
+        fi
+        echo "$containers" | xargs -r docker rm -f >/dev/null 2>&1
+        printf "{{.OK}} nuked all dev containers\n"
