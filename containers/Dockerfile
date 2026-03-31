@@ -14,6 +14,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
 # System packages — mirrors core.rb + dev.rb brew setup for Linux
 # Erlang/OTP build deps included (libwx, libssl, etc.)
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    aria2 \
     autoconf \
     build-essential \
     ca-certificates \
@@ -95,7 +96,9 @@ RUN --mount=type=secret,id=gh_pat \
         elixir@1.18 \
         rust@stable \
         go@latest \
-        uv@latest
+        uv@latest \
+        awscli@latest \
+        terraform@latest
 
 # Node: corepack for pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
