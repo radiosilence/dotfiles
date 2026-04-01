@@ -102,13 +102,10 @@ ENV MISE_ERLANG_COMPILE=0
 
 RUN --mount=type=secret,id=gh_pat \
     GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
-    MISE_VERBOSE=1 \
-    mise use --global erlang@27 \
-    && which erl && erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell
+    mise use --global erlang@28
 
 RUN --mount=type=secret,id=gh_pat \
     GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
-    MISE_VERBOSE=1 \
     mise use --global \
         node@lts \
         bun@latest \
