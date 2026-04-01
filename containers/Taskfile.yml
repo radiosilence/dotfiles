@@ -57,7 +57,6 @@ tasks:
           -v "{{.VOLUME}}:/workspace" \
           -v "{{.OP_SSH_SOCK}}:/run/ssh-agent.sock:ro" \
           -e SSH_AUTH_SOCK=/run/ssh-agent.sock \
-          ${REPO:+-e DEVBOX_REPO="$REPO"} \
           ${gh_token:+-e GITHUB_TOKEN="$gh_token"} \
           ${npm_token:+-e NPM_TOKEN="$npm_token"} \
           ${anthropic_key:+-e ANTHROPIC_API_KEY="$anthropic_key"} \
@@ -65,6 +64,11 @@ tasks:
           ${PORTS} \
           "{{.IMAGE}}" \
           >/dev/null
+
+        # Auto-clone if REPO set and workspace is empty
+        if [ -n "$REPO" ]; then
+          docker exec "{{.CONTAINER}}" sh -c '[ -d /workspace/.git ] || git clone '"$REPO"' /workspace' 2>/dev/null
+        fi
 
         printf "{{.OK}} {{.CONTAINER}} started\n"
         docker exec -it "{{.CONTAINER}}" tmux new-session -A -s main
