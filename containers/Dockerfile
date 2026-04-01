@@ -41,10 +41,6 @@ RUN userdel -r ubuntu 2>/dev/null; \
     && useradd --uid $USER_UID --gid $USER_GID -m -s /bin/zsh $USERNAME \
     && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Container entrypoint
-COPY containers/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 # Copy dotfiles repo
 COPY --chown=$USERNAME:$USERNAME . /home/$USERNAME/.dotfiles
 
@@ -74,5 +70,4 @@ ENV GONOSUMCHECK=""
 ENV GONOSUMDB=""
 
 WORKDIR /workspace
-ENTRYPOINT ["entrypoint.sh"]
 CMD ["zsh"]
