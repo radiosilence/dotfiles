@@ -1,10 +1,6 @@
-# Build artifacts
+.git
 target/
 node_modules/
-
-# Compiled zsh
 *.zwc
-
-# Local-only
 docs-local/
 dotfiles-roles.yml
