@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:24.04
+FROM ubuntu:latest
 
 ARG USERNAME=dev
 ARG USER_UID=1000
@@ -21,8 +21,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev \
     libssh-dev \
     libssl-dev \
-    libwxgtk3.2-dev \
-    libwxgtk-webview3.2-dev \
     openssh-client \
     pkg-config \
     sudo \
@@ -49,9 +47,7 @@ ENV HOME=/home/$USERNAME
 WORKDIR $HOME
 
 # Install mise
-RUN --mount=type=secret,id=gh_pat \
-    GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
-    curl https://mise.run | sh
+RUN curl https://mise.run | sh
 
 ENV PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
@@ -64,10 +60,6 @@ RUN --mount=type=secret,id=gh_pat \
 # Container-specific: safe npm defaults
 COPY --chown=$USERNAME:$USERNAME containers/config/.npmrc $HOME/.npmrc
 
-# Go safe defaults
-ENV GOPROXY=https://proxy.golang.org,direct
-ENV GONOSUMCHECK=""
-ENV GONOSUMDB=""
+WORKDIR /home/$USERNAME
 
-WORKDIR /workspace
 CMD ["zsh"]
