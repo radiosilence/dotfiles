@@ -47,15 +47,17 @@ ENV HOME=/home/$USERNAME
 WORKDIR $HOME
 
 # Install mise
-RUN curl https://mise.run | sh
+RUN curl -fsSL https://mise.run | sh
 
 ENV PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
-# Converge — mise installs all tools from config.d/mise/config.toml,
-# links dotfiles, installs tmux plugins, sheldon, completions, etc.
+# Bootstrap task into temp dir, run converge, mise installs the real task
 RUN --mount=type=secret,id=gh_pat \
     export GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
-    && cd ~/.dotfiles && task converge
+    && tmpdir=$(mktemp -d) \
+    && curl -fsSL https://taskfile.dev/install.sh | sh -s -- -b "$tmpdir" 2>/dev/null \
+    && cd ~/.dotfiles && "$tmpdir/task" converge \
+    && rm -rf "$tmpdir"
 
 # Container-specific: safe npm defaults
 COPY --chown=$USERNAME:$USERNAME containers/config/.npmrc $HOME/.npmrc
