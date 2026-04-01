@@ -131,12 +131,15 @@ RUN --mount=type=secret,id=gh_pat \
 # Container-specific: safe npm defaults (overrides any .npmrc from converge)
 COPY --chown=$USERNAME:$USERNAME containers/config/.npmrc $HOME/.npmrc
 
-# CLI tools — prebuilt binaries via cargo-binstall (not compiling from source)
-RUN curl -fsSL https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash \
-    && cargo binstall -y --no-symlinks cargo-audit cargo-deny sheldon tokei
-
-# Go tools — prebuilt
-RUN go install golang.org/x/vuln/cmd/govulncheck@latest
+# CLI tools — all via mise (prebuilt binaries)
+RUN --mount=type=secret,id=gh_pat \
+    GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
+    mise use --global \
+        cargo-audit@latest \
+        cargo-deny@latest \
+        sheldon@latest \
+        tokei@latest \
+        govulncheck@latest
 
 # Go safe defaults
 ENV GOPROXY=https://proxy.golang.org,direct
