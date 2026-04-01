@@ -48,7 +48,11 @@ tasks:
       - xcode-select --install
       - |
         printf "{{.WARN}} waiting for Xcode CLI tools installer...\n"
-        while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
+        timeout=120; elapsed=0
+        while ! command -v git >/dev/null 2>&1; do
+          sleep 1; elapsed=$((elapsed + 1))
+          [ $elapsed -ge $timeout ] && printf "{{.FAIL}} xcode cli tools timed out after %ds\n" "$timeout" && exit 1
+        done
         printf "{{.OK}} xcode cli tools\n"
 
   dotfiles:clone:
@@ -92,7 +96,11 @@ tasks:
       - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent (Settings → Developer → SSH Agent)\n"
       - |
         sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-        while [ ! -S "$sock" ]; do sleep 0.5; done
+        timeout=60; elapsed=0
+        while [ ! -S "$sock" ]; do
+          sleep 1; elapsed=$((elapsed + 1))
+          [ $elapsed -ge $timeout ] && printf "{{.FAIL}} 1password ssh agent timed out after %ds\n" "$timeout" && exit 1
+        done
         printf "{{.OK}} 1password ssh agent\n"
 
   1password:ssh-config:
@@ -113,7 +121,11 @@ tasks:
     cmds:
       - printf "{{.WARN}} gh is not authenticated — run 'gh auth login' in another terminal\n"
       - |
-        while ! gh auth status &>/dev/null; do sleep 0.5; done
+        timeout=60; elapsed=0
+        while ! gh auth status &>/dev/null; do
+          sleep 1; elapsed=$((elapsed + 1))
+          [ $elapsed -ge $timeout ] && printf "{{.FAIL}} gh auth timed out after %ds\n" "$timeout" && exit 1
+        done
         printf "{{.OK}} gh authenticated\n"
 
   rosetta:install:
