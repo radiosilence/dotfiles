@@ -98,6 +98,7 @@ ENV PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 # Split into stages: Erlang first (Elixir depends on it), then everything else
 # MISE_SIGSTORE_VERIFY=0: Rekor key parsing fails on some CI runners
 ENV MISE_SIGSTORE_VERIFY=0
+ENV MISE_ERLANG_COMPILE=0
 
 RUN --mount=type=secret,id=gh_pat \
     GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
