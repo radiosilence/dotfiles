@@ -36,19 +36,3 @@ discovery_weight = 0.3
 history_window = 200
 seed_window = 5
 use_subsonic = true
-
-[remote]
-download_workers = 5
-enabled = true
-password = "eFbWy2MnWx23kDVx.2sy"
-transcode_quality = "original"
-url = "https://music.blit.cc"
-username = "admin"
-
-[visualizer]
-amplitude_scale = "aweight"
-bar_decay_ms = 50
-enabled = true
-fps = 60
-peak_decay_ms = 180
-scale = "bark"
