@@ -8,6 +8,14 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### March
 
+**Package manager supply chain hardening:**
+
+- New `packager.d/` directory for security configs (mirrors `git.d/`, `ssh.d/` pattern)
+- `link:npmrc` converge task: ensures `ignore-scripts=true` and `min-release-age=7` exist in `~/.npmrc`, enforces `chmod 600` (file contains auth tokens)
+- `link:cargo` task: symlinks `~/.cargo/config.toml` with `git-fetch-with-cli = true` (inherits system git's SSH/credential config from `git.d/`)
+- `.bunfig.toml`: disable lifecycle scripts (`postinstall`, `preinstall`, `prepare`), existing 7-day release age retained
+- Both tasks run as part of `task converge` via `link:` dependency chain
+
 **Move setup-macos into Taskfile DAG:**
 
 - Setup script reduced to ~20 lines: clone dotfiles, bootstrap go-task, `task setup`

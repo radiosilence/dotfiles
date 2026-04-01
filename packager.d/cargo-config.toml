@@ -1,0 +1,4 @@
+# Supply chain defaults — symlinked from dotfiles
+[net]
+# Use system git (respects SSH agent, credential helpers, git.d/ hardening)
+git-fetch-with-cli = true
