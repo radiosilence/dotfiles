@@ -54,7 +54,7 @@ tasks:
   dotfiles:clone:
     desc: Clone dotfiles repo
     deps: [xcode:install]
-    status: ["test -d {{.DOTFILES}}/.git"]
+    status: ["test -d {{.DOTFILES}}/.zshrc"]
     cmds:
       - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
       - printf "{{.OK}} dotfiles cloned\n"
@@ -620,4 +620,3 @@ tasks:
     status: ["! command -v npm"]
     cmds:
       - npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
-
