@@ -94,16 +94,20 @@ RUN --mount=type=secret,id=gh_pat \
 
 ENV PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
-# Install all language toolchains via mise
-# MISE_SIGSTORE_VERIFY=0: Sigstore Rekor key parsing fails on some CI runners
-# (tools are still checksum-verified by mise)
+# Install language toolchains via mise
+# Split into stages: Erlang first (Elixir depends on it), then everything else
+# MISE_SIGSTORE_VERIFY=0: Rekor key parsing fails on some CI runners
+ENV MISE_SIGSTORE_VERIFY=0
+
 RUN --mount=type=secret,id=gh_pat \
     GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
-    MISE_SIGSTORE_VERIFY=0 \
+    mise use --global erlang@27
+
+RUN --mount=type=secret,id=gh_pat \
+    GITHUB_TOKEN=$(cat /run/secrets/gh_pat 2>/dev/null || true) \
     mise use --global \
         node@lts \
         bun@latest \
-        erlang@27 \
         elixir@1.18 \
         rust@stable \
         go@latest \
