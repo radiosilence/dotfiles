@@ -1,5 +1,3 @@
-# koan — shareable defaults (safe to commit to dotfiles)
-
 [playback]
 software_volume = false
 replaygain = "album"
@@ -7,7 +5,6 @@ ticker_fps = 8
 target_fps = 60
 show_fps = false
 pre_amp_db = 0.0
-output_device = "Scarlett 4i4 USB"
 
 [remote]
 enabled = true
@@ -36,19 +33,3 @@ discovery_weight = 0.3
 history_window = 200
 seed_window = 5
 use_subsonic = true
-
-[remote]
-download_workers = 5
-enabled = true
-password = "eFbWy2MnWx23kDVx.2sy"
-transcode_quality = "original"
-url = "https://music.blit.cc"
-username = "admin"
-
-[visualizer]
-amplitude_scale = "aweight"
-bar_decay_ms = 50
-enabled = true
-fps = 60
-peak_decay_ms = 180
-scale = "bark"
