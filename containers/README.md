@@ -4,6 +4,10 @@ Isolated dev containers for supply chain attack mitigation. Base image is built 
 
 See [radiosilence/dotfiles#48](https://github.com/radiosilence/dotfiles/issues/48) for the full design doc.
 
+## How the build works
+
+The Dockerfile COPYs the dotfiles repo (minus `.git` via `.dockerignore`) into the container, installs mise, then runs `task converge`. The converge task handles everything: linking configs, installing tools via mise, generating completions, etc. macOS-only tasks (brew, 1password, fonts) are skipped via `platforms: [darwin]` constraints.
+
 ## Usage
 
 ```bash
