@@ -49,7 +49,7 @@ tasks:
   dotfiles:clone:
     desc: Clone dotfiles repo
     deps: [xcode:install]
-    status: ["test -d {{.DOTFILES}}/.git"]
+    status: ["test -d {{.DOTFILES}}"]
     cmds:
       - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
       - printf "{{.OK}} dotfiles cloned\n"
