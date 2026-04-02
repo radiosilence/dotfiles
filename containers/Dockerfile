@@ -53,7 +53,7 @@ RUN curl -fsSL https://mise.run | sh
 ENV PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
 # Bootstrap task into temp dir, run converge, mise installs the real task
-RUN --mount=type=secret,id=gh_pat \
+RUN --mount=type=secret,id=gh_pat,uid=1000 \
     if [ -f /run/secrets/gh_pat ]; then export GITHUB_TOKEN=$(cat /run/secrets/gh_pat); fi \
     && tmpdir=$(mktemp -d) \
     && curl -fsSL https://taskfile.dev/install.sh | sh -s -- -b "$tmpdir" 2>/dev/null \
