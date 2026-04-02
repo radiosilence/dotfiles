@@ -58,7 +58,7 @@ tasks:
   dotfiles:clone:
     desc: Clone dotfiles repo
     deps: [xcode:install]
-    status: ["test -d {{.DOTFILES}}/.zshrc"]
+    status: ["test -f {{.DOTFILES}}/.zshrc"]
     cmds:
       - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
       - printf "{{.OK}} dotfiles cloned\n"
@@ -117,7 +117,7 @@ tasks:
   gh:auth:
     desc: Authenticate GitHub CLI
     deps: [1password:setup]
-    status: ["gh auth status 2>/dev/null"]
+    status: ["gh auth status 2>/dev/null || test -n \"$GITHUB_TOKEN\""]
     cmds:
       - printf "{{.WARN}} gh is not authenticated — run 'gh auth login' in another terminal\n"
       - |
@@ -374,13 +374,10 @@ tasks:
   use-ssh:
     desc: Switch dotfiles remote from HTTPS to SSH
     dir: "{{.DOTFILES}}"
+    status: ["! test -d {{.DOTFILES}}/.git || git -C {{.DOTFILES}} remote get-url origin 2>/dev/null | grep -q '^git@'"]
     cmds:
       - |
         current=$(git remote get-url origin)
-        if echo "$current" | grep -q "^git@"; then
-          printf "{{.OK}} already using SSH\n"
-          exit 0
-        fi
         ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
         git remote set-url origin "$ssh_url"
         printf "{{.OK}} remote switched to %s\n" "$ssh_url"
