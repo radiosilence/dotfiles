@@ -116,6 +116,15 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
+    // Remove children whose parent is already a candidate (deleting parent nukes children)
+    candidates.sort_by(|(a, _), (b, _)| a.cmp(b));
+    let all_paths: Vec<PathBuf> = candidates.iter().map(|(p, _)| p.clone()).collect();
+    candidates.retain(|(path, _)| {
+        !all_paths
+            .iter()
+            .any(|other| other != path && path.starts_with(other))
+    });
+
     // Sort by size ascending
     candidates.sort_by_key(|(_, size)| *size);
 
@@ -252,5 +261,28 @@ mod tests {
 
         let size = get_dir_size(temp_dir.path()).unwrap();
         assert_eq!(size, 6); // 3 + 3 bytes
+    }
+
+    #[test]
+    fn test_nested_candidates_deduped() {
+        // Simulate the candidate dedup logic: child paths should be removed
+        // when their parent is already a candidate
+        let mut candidates: Vec<(PathBuf, u64)> = vec![
+            (PathBuf::from("./foo"), 0),
+            (PathBuf::from("./foo/bar"), 0),
+            (PathBuf::from("./baz"), 0),
+        ];
+
+        candidates.sort_by(|(a, _), (b, _)| a.cmp(b));
+        let all_paths: Vec<PathBuf> = candidates.iter().map(|(p, _)| p.clone()).collect();
+        candidates.retain(|(path, _)| {
+            !all_paths
+                .iter()
+                .any(|other| other != path && path.starts_with(other))
+        });
+
+        assert_eq!(candidates.len(), 2);
+        assert_eq!(candidates[0].0, PathBuf::from("./baz"));
+        assert_eq!(candidates[1].0, PathBuf::from("./foo"));
     }
 }
