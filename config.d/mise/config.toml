@@ -48,7 +48,6 @@ kubectl = "latest"  # Kubernetes CLI
 "github:radiosilence/nano-web" = "latest"
 "github:dolthub/dolt" = "latest"  # Dolt — Git for data (required by gastown)
 "github:steveyegge/beads" = "latest"  # Beads — git-backed issue tracker (bd CLI)
-"github:steveyegge/gastown" = "latest"  # Gastown — multi-agent workspace orchestrator (gt CLI)
 "github:tursodatabase/turso" = "latest"  # Turso CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
