@@ -1,17 +1,21 @@
+[library]
+folders = ["/Users/james.cleveland/Music"]
+
 [playback]
 software_volume = false
 replaygain = "album"
 ticker_fps = 8
 target_fps = 60
-show_fps = false
+show_fps = true
 pre_amp_db = 0.0
+art_size = 24
 
 [remote]
 enabled = true
-playground = false
-port = 4000
-
-[library]
+url = ""
+username = ""
+transcode_quality = "original"
+download_workers = 5
 
 [organize]
 default = "default"
@@ -22,14 +26,27 @@ default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$lef
 [visualizer]
 enabled = true
 fps = 60
+mode = "radial"
 scale = "bark"
 amplitude_scale = "aweight"
-bar_decay_ms = 50
-peak_decay_ms = 180
+bar_decay_ms = 25
+peak_decay_ms = 120
+palette = "spectrum"
 
 [radio]
+lookahead = 5
 batch_size = 5
-discovery_weight = 0.3
+use_subsonic = true
 history_window = 200
 seed_window = 5
-use_subsonic = true
+discovery_weight = 0.3
+
+[graphql]
+enabled = true
+port = 4000
+bind = "127.0.0.1"
+playground = false
+
+[discovery]
+analysis_on_scan = false
+acoustic_weight = 0.5
