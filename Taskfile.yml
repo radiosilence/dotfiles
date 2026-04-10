@@ -141,13 +141,30 @@ tasks:
             printf "{{.WARN}} %s (no quarantine attr)\n" "$cask"
         done
 
+  brew:pam-reattach:
+    desc: Install pam-reattach for tmux Touch ID support
+    platforms: [darwin]
+    status: ["test -f /opt/homebrew/lib/pam/pam_reattach.so"]
+    cmds:
+      - brew install pam-reattach
+      - printf "{{.OK}} pam-reattach\n"
+
   sudo:touchid:
     desc: Enable TouchID for sudo
     platforms: [darwin]
     status: ["grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null"]
     cmds:
-      - sudo sh -c 'echo "auth       sufficient     pam_tid.so" > /etc/pam.d/sudo_local'
+      - sudo sh -c 'printf "auth       sufficient     pam_tid.so\n" > /etc/pam.d/sudo_local'
       - printf "{{.OK}} touchid sudo\n"
+
+  sudo:reattach:
+    desc: Enable Touch ID inside tmux via pam_reattach
+    platforms: [darwin]
+    deps: [brew:pam-reattach, sudo:touchid]
+    status: ["grep -q pam_reattach /etc/pam.d/sudo_local 2>/dev/null"]
+    cmds:
+      - sudo sh -c '{ printf "auth       optional       /opt/homebrew/lib/pam/pam_reattach.so\n"; cat /etc/pam.d/sudo_local; } > /etc/pam.d/sudo_local.tmp && mv /etc/pam.d/sudo_local.tmp /etc/pam.d/sudo_local'
+      - printf "{{.OK}} sudo reattach (tmux touchid)\n"
 
   sudo:timeout:
     desc: Set sudo timeout to 30 min
@@ -187,6 +204,7 @@ tasks:
       - claude:install
       - brew:unquarantine
       - sudo:touchid
+      - sudo:reattach
       - sudo:timeout
       - 1password:ssh-config
       - reinstall-bins
@@ -440,7 +458,7 @@ tasks:
 
   brew:bundle:
     desc: Install/upgrade brew packages
-    deps: [link:brewfile]
+    deps: [link:brewfile, brew:pam-reattach]
     platforms: [darwin]
     status: ["! command -v brew"]
     cmds:

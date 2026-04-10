@@ -17,6 +17,7 @@ brew 'gnupg'
 brew 'openssl@3'
 brew 'mise'
 brew 'gh'
+brew 'pam-reattach'
 brew 'sheldon' if Hardware::CPU.intel?
 
 # Build tools
