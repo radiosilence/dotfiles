@@ -6,12 +6,19 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### April
+
+- New `sudo:reattach` task — prepends `pam_reattach.so` to `sudo_local` so Touch ID works inside tmux. Depends on `brew:pam-reattach` + `sudo:touchid`
+- New `brew:pam-reattach` task — installs formula, status checks `.so` presence. `brew:bundle` depends on it to avoid lock races
+- `pam-reattach` added to `brewfiles.d/core.rb`
+- Removed `min-release-age=7` from `packager.d/npmrc-security` — was causing unwanted writes to `~/.npmrc`
+
 ### March
 
 **Package manager supply chain hardening:**
 
 - New `packager.d/` directory for security configs (mirrors `git.d/`, `ssh.d/` pattern)
-- `link:npmrc` converge task: ensures `ignore-scripts=true` and `min-release-age=7` exist in `~/.npmrc`, enforces `chmod 600` (file contains auth tokens)
+- `link:npmrc` converge task: ensures `ignore-scripts=true` exists in `~/.npmrc`, enforces `chmod 600` (file contains auth tokens)
 - `link:cargo` task: symlinks `~/.cargo/config.toml` with `git-fetch-with-cli = true` (inherits system git's SSH/credential config from `git.d/`)
 - `.bunfig.toml`: disable lifecycle scripts (`postinstall`, `preinstall`, `prepare`), existing 7-day release age retained
 - Both tasks run as part of `task converge` via `link:` dependency chain
