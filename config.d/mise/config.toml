@@ -76,17 +76,13 @@ kubectl = "latest"  # Kubernetes CLI
 "github:mvdan/sh" = { version = "latest", bin = "shfmt" }  # Shell formatter
 # Language servers
 "github:LuaLS/lua-language-server" = "latest"  # Lua LSP
-"npm:yaml-language-server" = "latest"  # YAML LSP
-"npm:vscode-langservers-extracted" = "latest"  # HTML/CSS/JSON LSPs
-"npm:@ansible/ansible-language-server" = "latest"  # Ansible LSP
+
 "pipx:nginx-language-server" = "latest"  # Nginx LSP
 terraform = "latest"  # IaC
 terraform-ls = "latest"  # Terraform LSP
-# JS tools
-"npm:prettier" = "latest"  # Code formatter
-"npm:jest" = "latest"  # Test runner
+
 "github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
-"npm:mainlymcpfolk" = "latest"  # Fastmail MCP Server
+
 # Rust things
 "github:radiosilence/codeowners-lsp" = "latest"
 "github:radiosilence/koan" = "latest"
