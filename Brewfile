@@ -32,5 +32,6 @@ roles.each do |role|
 end
 
 # Machine-local overrides (not committed)
-local_brewfile = File.join(dotfiles_dir, 'Brewfile.local')
-eval(File.read(local_brewfile)) if File.exist?(local_brewfile)
+[File.join(dotfiles_dir, 'Brewfile.local'), File.join(Dir.home, 'Brewfile.local')].each do |local_brewfile|
+  eval(File.read(local_brewfile)) if File.exist?(local_brewfile)
+end
