@@ -55,14 +55,14 @@ _hist_expansion_preview() {
   # Let zsh expand history in-place
   zle expand-history
 
-  if [[ "$BUFFER" != "$orig_buffer" ]]; then
+  if [ "$BUFFER" != "$orig_buffer" ]; then
     local expanded="$BUFFER"
     # Restore original buffer
     BUFFER="$orig_buffer"
     CURSOR=$orig_cursor
 
     # Inline preview — replaces autosuggestion (more useful in this context)
-    _hist_preview_suffix=" \u2192 ${expanded}"
+    _hist_preview_suffix="    \u2192  ${expanded}"
     POSTDISPLAY="${_hist_preview_suffix}"
 
     # Dim our suffix — use absolute offsets (compatible with autosuggestions approach)
