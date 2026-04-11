@@ -9,15 +9,14 @@ _hist_expansion_preview() {
   (( _hist_preview_active )) && return
   typeset -gi _hist_preview_active=1
 
-  # Strip any previous preview we appended (everything after our marker)
+  # Strip previous preview suffix and its highlight entry
   if [[ -n "$_hist_preview_suffix" ]]; then
     POSTDISPLAY="${POSTDISPLAY%"$_hist_preview_suffix"}"
     _hist_preview_suffix=""
-    # Clean up region_highlight entries we added
-    if (( _hist_preview_hl_idx > 0 )); then
-      region_highlight[$_hist_preview_hl_idx]=()
-      _hist_preview_hl_idx=0
-    fi
+  fi
+  if [[ -n "$_hist_preview_hl" ]]; then
+    region_highlight=("${(@)region_highlight:#${_hist_preview_hl}}")
+    _hist_preview_hl=""
   fi
 
   # Bail fast — no expansion characters present
@@ -66,13 +65,12 @@ _hist_expansion_preview() {
     _hist_preview_suffix=$'\n'"  \u2192 ${expanded}"
     POSTDISPLAY="${POSTDISPLAY}${_hist_preview_suffix}"
 
-    # Dim our appended portion via region_highlight
-    # POSTDISPLAY region starts at offset #BUFFER (end of editable buffer)
-    # We need to highlight from where our suffix starts within POSTDISPLAY
-    local total_len=$(( $#BUFFER + $#POSTDISPLAY ))
-    local suffix_start=$(( total_len - $#_hist_preview_suffix ))
-    region_highlight+=("P${suffix_start} P${total_len} fg=8")
-    _hist_preview_hl_idx=$#region_highlight
+    # Dim our suffix — use absolute offsets (compatible with autosuggestions approach)
+    # POSTDISPLAY starts at ${#BUFFER} in the combined display
+    local hl_start=$(( $#BUFFER + $#POSTDISPLAY - $#_hist_preview_suffix ))
+    local hl_end=$(( $#BUFFER + $#POSTDISPLAY ))
+    _hist_preview_hl="${hl_start} ${hl_end} fg=8"
+    region_highlight+=("$_hist_preview_hl")
   else
     # No expansion happened — restore cursor, leave POSTDISPLAY alone
     BUFFER="$orig_buffer"
