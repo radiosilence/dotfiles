@@ -1,19 +1,13 @@
-# History expansion inlay hints — shows dimmed preview of what !!, !$, ^foo^bar etc. expand to
-# Chains into zle-line-pre-redraw via add-zle-hook-widget (won't clobber zsh-autosuggestions)
+# History expansion inlay hints — dimmed inline preview of what !!, !$, ^foo^bar etc. expand to
+# Uses manual expansion (no zle expand-history) to avoid triggering autosuggestions overwrites
 [[ $- == *i* ]] || return
 autoload -Uz add-zle-hook-widget
 
-# Allow disabling via: zstyle ':hist-preview' enabled no
 _hist_expansion_preview() {
-  # Recursion guard — expand-history triggers redraw
   (( _hist_preview_active )) && return
   typeset -gi _hist_preview_active=1
 
-  # Strip previous preview suffix and its highlight entry
-  if [[ -n "$_hist_preview_suffix" ]]; then
-    POSTDISPLAY="${POSTDISPLAY%"$_hist_preview_suffix"}"
-    _hist_preview_suffix=""
-  fi
+  # Clean up previous highlight
   if [[ -n "$_hist_preview_hl" ]]; then
     region_highlight=("${(@)region_highlight:#${_hist_preview_hl}}")
     _hist_preview_hl=""
@@ -21,60 +15,70 @@ _hist_expansion_preview() {
 
   # Bail fast — no expansion characters present
   if [[ "$BUFFER" != *'!'* && "$BUFFER" != '^'* ]]; then
+    POSTDISPLAY=""
     _hist_preview_active=0
     return
   fi
 
-  # Still typing — single ! or bare ^ with nothing after it
+  # Still typing — single char
   if [[ "$BUFFER" == '!' || "$BUFFER" == '^' ]]; then
     _hist_preview_active=0
     return
   fi
 
-  # ^foo^bar must start at buffer position 0
+  # ^foo^bar must start at position 0 and have two ^
   if [[ "$BUFFER" != *'!'* && "$BUFFER" == '^'* ]]; then
-    # Only match ^foo^bar pattern (needs at least two ^)
-    if [[ "$BUFFER" != *'^'*'^'* ]]; then
-      _hist_preview_active=0
-      return
-    fi
+    [[ "$BUFFER" != *'^'*'^'* ]] && { _hist_preview_active=0; return }
   fi
 
-  # Check zstyle kill switch
+  # zstyle ':hist-preview' enabled no — kill switch
   local enabled
   zstyle -s ':hist-preview' enabled enabled
-  if [[ "$enabled" == "no" ]]; then
-    _hist_preview_active=0
-    return
+  [[ "$enabled" == "no" ]] && { _hist_preview_active=0; return }
+
+  # Grab last command and split into words
+  local last_cmd="${history[$((HISTCMD-1))]}"
+  [[ -z "$last_cmd" ]] && { _hist_preview_active=0; return }
+  local -a w=( ${(z)last_cmd} )
+
+  local expanded="$BUFFER"
+  local -i changed=0
+
+  if [[ "$expanded" == '^'*'^'* ]]; then
+    # ^old^new — quick substitution on last command
+    local tmp="${expanded#^}"
+    local old="${tmp%%^*}"
+    local new="${tmp#*^}" && new="${new%%^*}"
+    [[ -n "$old" ]] && expanded="${last_cmd/$old/$new}" && changed=1
+  else
+    # Word designators — specific before general to avoid partial matches
+    # !!:* → all arguments
+    [[ "$expanded" == *'!!:'[*]* ]] && expanded="${expanded//!![:][\*]/${(j: :)w[2,-1]}}" && changed=1
+    # !!:$ → last argument
+    [[ "$expanded" == *'!!:$'* ]] && expanded="${expanded//!!:\$/${w[-1]}}" && changed=1
+    # !!:^ → first argument
+    [[ "$expanded" == *'!!:^'* ]] && expanded="${expanded//!!:\^/${w[2]}}" && changed=1
+    # !!:n → nth word (0=cmd, 1=first arg, ...)
+    local -i i
+    for i in {0..9}; do
+      [[ "$expanded" == *"!!:${i}"* ]] && expanded="${expanded//!!:${i}/${w[$((i+1))]}}" && changed=1
+    done
+    # !! → entire last command (AFTER word designators)
+    [[ "$expanded" == *'!!'* ]] && expanded="${expanded//!!/${last_cmd}}" && changed=1
+    # !$ → last arg shorthand
+    [[ "$expanded" == *'!$'* ]] && expanded="${expanded//!\$/${w[-1]}}" && changed=1
+    # !^ → first arg shorthand
+    [[ "$expanded" == *'!^'* ]] && expanded="${expanded//!\^/${w[2]}}" && changed=1
   fi
 
-  # Save state
-  local orig_buffer="$BUFFER"
-  local orig_cursor=$CURSOR
-
-  # Let zsh expand history in-place
-  zle expand-history
-
-  if [ "$BUFFER" != "$orig_buffer" ]; then
-    local expanded="$BUFFER"
-    # Restore original buffer
-    BUFFER="$orig_buffer"
-    CURSOR=$orig_cursor
-
-    # Inline preview — replaces autosuggestion (more useful in this context)
-    _hist_preview_suffix="    \u2192  ${expanded}"
-    POSTDISPLAY="${_hist_preview_suffix}"
-
-    # Dim our suffix — use absolute offsets (compatible with autosuggestions approach)
-    # POSTDISPLAY starts at ${#BUFFER} in the combined display
-    local hl_start=$(( $#BUFFER + $#POSTDISPLAY - $#_hist_preview_suffix ))
-    local hl_end=$(( $#BUFFER + $#POSTDISPLAY ))
+  if (( changed )); then
+    POSTDISPLAY=$'    \u2192  '"${expanded}"
+    local hl_start=${#BUFFER}
+    local hl_end=$(( ${#BUFFER} + ${#POSTDISPLAY} ))
     _hist_preview_hl="${hl_start} ${hl_end} fg=8"
     region_highlight+=("$_hist_preview_hl")
   else
-    # No expansion happened — restore cursor, leave POSTDISPLAY alone
-    BUFFER="$orig_buffer"
-    CURSOR=$orig_cursor
+    POSTDISPLAY=""
   fi
 
   _hist_preview_active=0
