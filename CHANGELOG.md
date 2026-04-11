@@ -8,6 +8,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### April
 
+- History expansion inlay hints (`45-hist-preview.zsh`) — dimmed preview line showing what `!!`, `!$`, `!^`, `^foo^bar` etc. would expand to before you hit Enter. Chains into `zle-line-pre-redraw` so it coexists with zsh-autosuggestions (appends to `POSTDISPLAY` rather than clobbering it). Disable with `zstyle ':hist-preview' enabled no`
 - New `sudo:reattach` task — prepends `pam_reattach.so` to `sudo_local` so Touch ID works inside tmux. Depends on `brew:pam-reattach` + `sudo:touchid`
 - New `brew:pam-reattach` task — installs formula, status checks `.so` presence. `brew:bundle` depends on it to avoid lock races
 - `pam-reattach` added to `brewfiles.d/core.rb`
