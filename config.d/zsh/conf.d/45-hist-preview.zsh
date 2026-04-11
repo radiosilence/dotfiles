@@ -61,9 +61,9 @@ _hist_expansion_preview() {
     BUFFER="$orig_buffer"
     CURSOR=$orig_cursor
 
-    # Build our suffix and append to whatever POSTDISPLAY already has (autosuggestions etc.)
-    _hist_preview_suffix=$'\n'"  \u2192 ${expanded}"
-    POSTDISPLAY="${POSTDISPLAY}${_hist_preview_suffix}"
+    # Inline preview — replaces autosuggestion (more useful in this context)
+    _hist_preview_suffix=" \u2192 ${expanded}"
+    POSTDISPLAY="${_hist_preview_suffix}"
 
     # Dim our suffix — use absolute offsets (compatible with autosuggestions approach)
     # POSTDISPLAY starts at ${#BUFFER} in the combined display
