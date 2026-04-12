@@ -1,14 +1,12 @@
-[library]
-folders = ["/Users/james.cleveland/Music"]
 
 [playback]
 software_volume = false
-replaygain = "album"
+replaygain = "off"
 ticker_fps = 8
 target_fps = 60
 show_fps = true
 pre_amp_db = 0.0
-art_size = 24
+art_size = 52
 
 [remote]
 enabled = true
@@ -26,12 +24,16 @@ default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$lef
 [visualizer]
 enabled = true
 fps = 60
-mode = "radial"
+mode = "wormhole"
 scale = "bark"
 amplitude_scale = "aweight"
 bar_decay_ms = 25
 peak_decay_ms = 120
 palette = "spectrum"
+reactivity = 1.0
+bass_shake = true
+matrix_overlay = false
+reactive_bg = false
 
 [radio]
 lookahead = 5
@@ -42,6 +44,7 @@ seed_window = 5
 discovery_weight = 0.3
 
 [graphql]
+auth_enabled = true
 enabled = true
 port = 4000
 bind = "127.0.0.1"
