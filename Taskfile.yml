@@ -534,6 +534,7 @@ tasks:
     deps:
       - for:
           - argocd
+          - buf
           - clean-dls
           - clean-exif
           - docker
@@ -542,21 +543,26 @@ tasks:
           - fcloud
           - git-squash
           - git-sync
+          - glow
+          - golangci-lint
           - gt
           - helm
           - houston
           - imp
           - k9s
           - kill-port
+          - kubecolor
           - kubectl
           - lefthook
           - nano-web
           - op
           - orbctl
           - parallel-dl-extract
+          - procs
           - prune
           - prune-gen
           - pulumi
+          - sesh
           - tilt
           - to-audio
           - turso
@@ -586,7 +592,21 @@ tasks:
       - task: generate:completions:gen
         vars: { TOOL: rg, CMD: "rg --generate complete-zsh" }
       - task: generate:completions:gen
+        vars: { TOOL: xh, CMD: "xh --generate complete-zsh" }
+      - task: generate:completions:gen
         vars: { TOOL: pup, CMD: "pup completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: bun, CMD: "bun completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: deno, CMD: "deno completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: starship, CMD: "starship completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: sheldon, CMD: "sheldon completions --shell zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: bat, CMD: "bat --completion zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: delta, CMD: "delta --generate-completion zsh" }
       # Prebuilt: lsd
       - task: generate:completions:lsd
       # Sourced: npm
