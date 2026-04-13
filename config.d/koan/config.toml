@@ -44,7 +44,6 @@ seed_window = 5
 discovery_weight = 0.3
 
 [graphql]
-auth_enabled = true
 enabled = true
 port = 4000
 bind = "127.0.0.1"
