@@ -42,6 +42,9 @@ keybinds {
             }
         }
 
+        // clear scrollback (like Cmd+k in ghostty / Ctrl+k in tmux)
+        bind "Ctrl k" { Clear; }
+
         // alt+hjkl pane/tab navigation
         bind "Alt h" { MoveFocusOrTab "Left"; }
         bind "Alt l" { MoveFocusOrTab "Right"; }
