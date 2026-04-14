@@ -1,0 +1,43 @@
+// ── Options ──────────────────────────────────────────────────────────
+theme "monokai-pro"
+default_mode "normal"
+pane_frames true
+mouse_mode true
+copy_on_select true
+scroll_buffer_size 50000
+on_force_close "detach"
+session_serialization true
+serialize_pane_viewport true
+
+// ── Keybindings ─────────────────────────────────────────────────────
+// vim-style pane/tab navigation — frees alt-arrows for text editing
+keybinds {
+    shared_except "locked" {
+        // unbind default alt-arrow navigation
+        unbind "Alt Left" "Alt Right" "Alt Up" "Alt Down"
+
+        // alt+hjkl pane/tab navigation
+        bind "Alt h" { MoveFocusOrTab "Left"; }
+        bind "Alt l" { MoveFocusOrTab "Right"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+    }
+}
+
+// ── Monokai Pro Theme ───────────────────────────────────────────────
+// palette matched to tmux/alacritty config
+themes {
+    monokai-pro {
+        fg "#fcfcfa"
+        bg "#2d2a2e"
+        black "#2d2a2e"
+        red "#ff6188"
+        green "#a9dc76"
+        yellow "#ffd866"
+        blue "#78dce8"
+        magenta "#ab9df2"
+        cyan "#78dce8"
+        white "#fcfcfa"
+        orange "#fc9867"
+    }
+}
