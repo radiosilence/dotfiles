@@ -207,3 +207,4 @@ _wt_comp() {
 compdef _wt_comp wt
 compdef _wt_comp wtt
 compdef '_arguments "1:branch:_wt_branches"' wtd
+compdef '_arguments "1:branch:_wt_branches"' wtrm
