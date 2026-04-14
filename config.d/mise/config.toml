@@ -46,11 +46,9 @@ version = "latest"
 uvx_args = "--with requests --with beets-yearfixer --with beets[discogs]"
 
 [settings]
-paranoid = false
-not_found_auto_install = true
+paranoid = true
 fetch_remote_versions_cache = "30m"
 experimental = true
 trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
-auto_install = true
