@@ -57,7 +57,7 @@ if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/de
   gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')"; }
 fi
 
-alias converge='task --taskfile ~/.dotfiles/Taskfile.yml converge'
+converge() { git -C ~/.dotfiles pull --quiet && task --taskfile ~/.dotfiles/Taskfile.yml converge; }
 alias upd='converge'
 
 if command -v gh >/dev/null; then
