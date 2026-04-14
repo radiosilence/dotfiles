@@ -49,8 +49,8 @@ $character
 """
 
 [character]
-error_symbol = ""
-success_symbol = ""
+error_symbol = "[](red)"
+success_symbol = "[](green)"
 
 [directory]
 truncation_length = 8

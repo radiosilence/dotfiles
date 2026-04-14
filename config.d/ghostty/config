@@ -1,7 +1,7 @@
 theme = monokai-pro
 background-opacity = 0.85
 background-blur = 20
-font-family = Geist Mono
+font-family = GeistMono Nerd Font
 font-size = 11
 font-style = Regular
 keybind = global:§=toggle_quick_terminal
