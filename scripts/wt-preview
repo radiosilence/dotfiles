@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Preview for wt fzf picker: git log (top half) + lsd tree (bottom half)
+# Args: $1 = "branch\tpath" or just "branch" (fzf-tab sends $word)
+set -euo pipefail
+
+branch="${1%%$'\t'*}"
+path=$(git worktree list --porcelain 2>/dev/null \
+  | awk -v b="refs/heads/$branch" '/^worktree /{ wt=$2 } /^branch /{ if($2==b) print wt }')
+[[ -n $path ]] || exit 0
+
+# Split available height roughly 50/50
+half=$(( ${FZF_PREVIEW_LINES:-20} / 2 ))
+
+printf '\033[1;34m── git log (%s) ──\033[0m\n' "$branch"
+git -C "$path" log --oneline --graph --color=always -"$half" "$branch" 2>/dev/null
+
+printf '\n\033[1;34m── files ──\033[0m\n'
+lsd -A --color=always --icon=always --tree --depth 1 "$path" 2>/dev/null || ls "$path"

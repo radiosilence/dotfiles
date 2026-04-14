@@ -44,13 +44,7 @@ _wt_tab() {
   fi
 }
 
-_wt_fzf_preview='
-  b=$(echo {} | cut -f1)
-  p=$(echo {} | cut -f2)
-  mise x -- lsd -A --color=always --icon=always --tree --depth 2 "$p" 2>/dev/null || ls "$p"
-  echo ""
-  git -C "$p" log --oneline --graph --color=always --stat -10 "$b" 2>/dev/null
-'
+_wt_fzf_preview='~/.dotfiles/scripts/wt-preview {1}'
 
 # ── Core upsert logic ───────────────────────────────────────────────
 # _wt_core <go_fn> [--branch] [name] [base]
@@ -75,8 +69,8 @@ _wt_core() {
     local selected
     selected=$(git worktree list --porcelain \
       | awk '/^worktree /{ path=$2 } /^branch /{ branch=$2; sub("refs/heads/","",branch); printf "%s\t%s\n", branch, path }' \
-      | fzf --ansi --reverse --with-nth=1 --header="worktrees" \
-             --preview "$_wt_fzf_preview"
+      | fzf --ansi --reverse --delimiter=$'\t' --with-nth=1 --header="worktrees" \
+             --preview "$_wt_fzf_preview" --preview-window='right:50%'
     ) || return
     $go_fn "$(echo "$selected" | cut -f1)" "$(echo "$selected" | cut -f2)"
     return
@@ -216,15 +210,7 @@ compdef '_arguments "1:branch:_wt_branches"' wtd
 compdef '_arguments "1:branch:_wt_branches"' wtrm
 
 # ── fzf-tab previews ────────────────────────────────────────────────
-_wt_tab_preview='
-  p=$(git worktree list --porcelain 2>/dev/null \
-    | awk -v b="refs/heads/$word" "/^worktree /{ wt=\$2 } /^branch /{ if(\$2==b) print wt }")
-  [[ -n $p ]] || exit 0
-  { mise x -- lsd -A --color=always --icon=always --tree --depth 2 "$p" 2>/dev/null || ls "$p"; }
-  echo ""
-  git -C "$p" log --oneline --graph --color=always --stat -10 "$word" 2>/dev/null
-'
-zstyle ':fzf-tab:complete:wt:*'   fzf-preview "$_wt_tab_preview"
-zstyle ':fzf-tab:complete:wtt:*'  fzf-preview "$_wt_tab_preview"
-zstyle ':fzf-tab:complete:wtd:*'  fzf-preview "$_wt_tab_preview"
-zstyle ':fzf-tab:complete:wtrm:*' fzf-preview "$_wt_tab_preview"
+zstyle ':fzf-tab:complete:wt:*'   fzf-preview '~/.dotfiles/scripts/wt-preview $word'
+zstyle ':fzf-tab:complete:wtt:*'  fzf-preview '~/.dotfiles/scripts/wt-preview $word'
+zstyle ':fzf-tab:complete:wtd:*'  fzf-preview '~/.dotfiles/scripts/wt-preview $word'
+zstyle ':fzf-tab:complete:wtrm:*' fzf-preview '~/.dotfiles/scripts/wt-preview $word'
