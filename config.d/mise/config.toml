@@ -65,3 +65,4 @@ trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
 auto_install = true
+disable_tools = ["houston", "fcloud", "fresha-cloud", "drawbridge"]
