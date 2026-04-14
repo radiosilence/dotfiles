@@ -199,6 +199,11 @@ wtrm() {
   git worktree remove "$wt" || return 1
   git branch -d "$name" 2>/dev/null
   echo "removed: $name"
+
+  # Close the zellij tab if we're inside one named after this worktree
+  if [[ -n $ZELLIJ ]] && zellij action query-tab-names 2>/dev/null | grep -qxF "$name"; then
+    zellij action close-tab
+  fi
 }
 
 # ── wtp ─────────────────────────────────────────────────────────────
