@@ -8,53 +8,39 @@ CLAUDE_CODE_NO_FLICKER = "1"
 # GITHUB_TOKEN = "{{exec(command='op plugin run -- gh auth token')}}"
 
 [tools]
-# Language runtimes (project-specific: go, node, python, rust)
-bun = "latest"  # Fast JS runtime & package manager
-deno = "latest"  # Secure JS/TS runtime
-yq = "latest"  # YAML processor
-# CLI utilities
-fd = "latest"  # Fast find alternative
-"github:junegunn/fzf" = "latest"  # Fuzzy finder
-"github:jqlang/jq" = "latest"  # JSON processor
-"github:lsd-rs/lsd" = "latest"  # Modern ls replacement
-"github:ajeetdsouza/zoxide" = "latest"  # Smart cd replacement
-"github:Canop/broot" = "latest"  # Directory navigation
-"github:yt-dlp/yt-dlp-nightly-builds" = { version = "latest", bin = "yt-dlp" }  # Video downloader (nightly)
 "github:BurntSushi/ripgrep" = "latest"  # Fast grep
-# Shell & prompt
-"github:rossmacarthur/sheldon" = "latest"  # Zsh plugin manager
-"github:starship/starship" = "latest"  # Cross-shell prompt
-# Development tools
-"github:helix-editor/helix" = { version = "latest", bin = "hx" }  # Terminal text editor
-"github:go-task/task" = "latest"  # Task runner (gopher)
-"github:tamasfe/taplo" = "latest"  # TOML formatter
-# GitHub & misc
-"github:radiosilence/nano-web" = "latest"
-# Git
-"github:git-lfs/git-lfs" = "latest"  # Large file storage
-# Terminal
-"github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
-"github:zellij-org/zellij" = "latest"  # Terminal multiplexer (tiles)
+"github:Canop/broot" = "latest"  # Directory navigation
+"github:ajeetdsouza/zoxide" = "latest"  # Smart cd replacement
 "github:charmbracelet/glow" = "latest"  # Terminal markdown renderer
-"github:sharkdp/bat" = "latest"  # Cat with wings
-"github:fastfetch-cli/fastfetch" = "latest"  # System info
-"github:sharkdp/hyperfine" = "latest"  # Benchmarking
-"github:dandavison/delta" = "latest"  # Better git diffs
 "github:dalance/procs" = "latest"  # Better ps
-"github:ducaale/xh" = "latest"  # Modern HTTP client
-# Code formatting
-"github:mvdan/sh" = { version = "latest", bin = "shfmt" }  # Shell formatter
-
-"github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
-
-# Rust things
-"github:radiosilence/codeowners-lsp" = "latest"
-"github:radiosilence/koan" = "latest"
+"github:dandavison/delta" = "latest"  # Better git diffs
 "github:datadog-labs/pup" = "latest"
+"github:ducaale/xh" = "latest"  # Modern HTTP client
+"github:fastfetch-cli/fastfetch" = "latest"  # System info
+"github:git-lfs/git-lfs" = "latest"  # Large file storage
+"github:go-task/task" = "latest"  # Task runner (gopher)
 "github:hatoo/oha" = "latest"
-
-# Music library
+"github:helix-editor/helix" = { version = "latest", bin = "hx" }  # Terminal text editor
+"github:jqlang/jq" = "latest"  # JSON processor
+"github:junegunn/fzf" = "latest"  # Fuzzy finder
+"github:lsd-rs/lsd" = "latest"  # Modern ls replacement
+"github:radiosilence/codeowners-lsp" = "latest"
+"github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
+"github:radiosilence/koan" = "latest"
+"github:radiosilence/nano-web" = "latest"
+"github:rossmacarthur/sheldon" = "latest"  # Zsh plugin manager
+"github:sharkdp/bat" = "latest"  # Cat with wings
+"github:sharkdp/hyperfine" = "latest"  # Benchmarking
+"github:starship/starship" = "latest"  # Cross-shell prompt
+"github:tamasfe/taplo" = "latest"  # TOML formatter
+"github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
+"github:yt-dlp/yt-dlp-nightly-builds" = { version = "latest", bin = "yt-dlp" }  # Video downloader (nightly)
+"github:zellij-org/zellij" = "latest"  # Terminal multiplexer (tiles)
 "pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer" }  # Music organizer
+bun = "latest"
+deno = "latest"  # Secure JS/TS runtime
+fd = "latest"  # Fast find alternative
+yq = "latest"  # YAML processor
 
 [settings]
 paranoid = false
