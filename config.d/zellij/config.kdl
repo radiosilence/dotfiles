@@ -10,11 +10,18 @@ session_serialization true
 serialize_pane_viewport true
 
 // ── Keybindings ─────────────────────────────────────────────────────
-// vim-style pane/tab navigation — frees alt-arrows for text editing
+// vim-style navigation + unbind alt-letter defaults that collide with
+// terminal text editing (\ef forward-word, \eb backward-word, etc).
+// Unbound actions are still available via Ctrl+p (pane mode).
 keybinds {
     shared_except "locked" {
-        // unbind default alt-arrow navigation
+        // unbind defaults that eat terminal escape sequences
         unbind "Alt Left" "Alt Right" "Alt Up" "Alt Down"
+        unbind "Alt f"  // ToggleFloatingPanes — collides with \ef (forward-word)
+        // Alt n (NewPane) kept — no conflict
+        unbind "Alt i"  // MoveTab Left  — redundant with Alt+h
+        unbind "Alt o"  // MoveTab Right — redundant with Alt+l
+        unbind "Alt p"  // TogglePaneInGroup
 
         // alt+hjkl pane/tab navigation
         bind "Alt h" { MoveFocusOrTab "Left"; }
