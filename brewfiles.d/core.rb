@@ -34,7 +34,7 @@ brew 'mas'
 brew 'mdless'
 brew 'tokei'
 brew 'cmatrix'
-cask 'rar', greedy: true
+brew 'unar'
 
 # Sync
 brew 'fswatch'
