@@ -40,6 +40,7 @@ keybinds {
         // worktree picker (floating pane → opens tab on select)
         bind "Alt w" {
             Run "bash" "-c" "$HOME/.dotfiles/scripts/wt-picker" {
+                name "wt"
                 floating true
                 close_on_exit true
                 width "90%"
