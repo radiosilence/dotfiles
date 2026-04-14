@@ -47,9 +47,9 @@ _wt_tab() {
 _wt_fzf_preview='
   b=$(echo {} | cut -f1)
   p=$(echo {} | cut -f2)
-  { mise x -- lsd -A --color=always --icon=always --tree --depth 2 "$p" 2>/dev/null || ls "$p"; } \
-  && echo "" \
-  && git -C "$p" log --oneline --graph --color=always --stat -10 "$b" 2>/dev/null
+  mise x -- lsd -A --color=always --icon=always --tree --depth 2 "$p" 2>/dev/null || ls "$p"
+  echo ""
+  git -C "$p" log --oneline --graph --color=always --stat -10 "$b" 2>/dev/null
 '
 
 # ── Core upsert logic ───────────────────────────────────────────────
