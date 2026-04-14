@@ -351,28 +351,28 @@ themes {
             emphasis_3 171 157 242
         }
         frame_selected {
-            base 169 220 118
+            base 95 125 80
             background 45 42 46
-            emphasis_0 169 220 118
-            emphasis_1 252 252 250
-            emphasis_2 169 220 118
-            emphasis_3 169 220 118
+            emphasis_0 95 125 80
+            emphasis_1 140 138 142
+            emphasis_2 95 125 80
+            emphasis_3 95 125 80
         }
         frame_unselected {
-            base 59 57 60
+            base 65 62 67
             background 45 42 46
-            emphasis_0 59 57 60
-            emphasis_1 59 57 60
-            emphasis_2 59 57 60
-            emphasis_3 59 57 60
+            emphasis_0 65 62 67
+            emphasis_1 65 62 67
+            emphasis_2 65 62 67
+            emphasis_3 65 62 67
         }
         frame_highlight {
-            base 171 157 242
+            base 105 98 140
             background 45 42 46
-            emphasis_0 120 220 232
-            emphasis_1 252 252 250
-            emphasis_2 120 220 232
-            emphasis_3 120 220 232
+            emphasis_0 82 130 136
+            emphasis_1 140 138 142
+            emphasis_2 82 130 136
+            emphasis_3 82 130 136
         }
         exit_code_success {
             base 169 220 118
