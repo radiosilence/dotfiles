@@ -44,7 +44,13 @@ _wt_tab() {
   fi
 }
 
-_wt_fzf_preview='p=$(echo {} | cut -f2); mise x -- lsd -A --color=always --icon=always --tree --depth 2 "$p" 2>/dev/null || ls "$p"'
+_wt_fzf_preview='
+  b=$(echo {} | cut -f1)
+  p=$(echo {} | cut -f2)
+  { mise x -- lsd -A --color=always --icon=always --tree --depth 2 "$p" 2>/dev/null || ls "$p"; } \
+  && echo "" \
+  && git -C "$p" log --oneline --graph --color=always --stat -10 "$b" 2>/dev/null
+'
 
 # ── Core upsert logic ───────────────────────────────────────────────
 # _wt_core <go_fn> [--branch] [name] [base]
@@ -208,3 +214,17 @@ compdef _wt_comp wt
 compdef _wt_comp wtt
 compdef '_arguments "1:branch:_wt_branches"' wtd
 compdef '_arguments "1:branch:_wt_branches"' wtrm
+
+# ── fzf-tab previews ────────────────────────────────────────────────
+_wt_tab_preview='
+  p=$(git worktree list --porcelain 2>/dev/null \
+    | awk -v b="refs/heads/$word" "/^worktree /{ wt=\$2 } /^branch /{ if(\$2==b) print wt }")
+  [[ -n $p ]] || exit 0
+  { mise x -- lsd -A --color=always --icon=always --tree --depth 2 "$p" 2>/dev/null || ls "$p"; }
+  echo ""
+  git -C "$p" log --oneline --graph --color=always --stat -10 "$word" 2>/dev/null
+'
+zstyle ':fzf-tab:complete:wt:*'   fzf-preview "$_wt_tab_preview"
+zstyle ':fzf-tab:complete:wtt:*'  fzf-preview "$_wt_tab_preview"
+zstyle ':fzf-tab:complete:wtd:*'  fzf-preview "$_wt_tab_preview"
+zstyle ':fzf-tab:complete:wtrm:*' fzf-preview "$_wt_tab_preview"
