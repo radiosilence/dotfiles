@@ -8,13 +8,9 @@ CLAUDE_CODE_NO_FLICKER = "1"
 # GITHUB_TOKEN = "{{exec(command='op plugin run -- gh auth token')}}"
 
 [tools]
-# Language runtimes
+# Language runtimes (project-specific: go, node, python, rust)
 bun = "latest"  # Fast JS runtime & package manager
 deno = "latest"  # Secure JS/TS runtime
-go = "latest"  # Go toolchain
-node = "24"  # Node.js LTS
-python = "3.12"  # Python 3.12
-rust = "latest"  # Rust toolchain
 yq = "latest"  # YAML processor
 # CLI utilities
 fd = "latest"  # Fast find alternative
@@ -30,13 +26,8 @@ fd = "latest"  # Fast find alternative
 "github:starship/starship" = "latest"  # Cross-shell prompt
 # Development tools
 "github:helix-editor/helix" = { version = "latest", bin = "hx" }  # Terminal text editor
-pipx = "latest"  # Python app installer
-"github:casey/just" = "latest"  # Task runner (crabs)
 "github:go-task/task" = "latest"  # Task runner (gopher)
 "github:tamasfe/taplo" = "latest"  # TOML formatter
-# Code quality
-"github:koalaman/shellcheck" = "latest"  # Shell script linter
-"github:evilmartians/lefthook" = { version = "latest", bin = "lefthook" }  # Git hooks manager
 # GitHub & misc
 "github:radiosilence/nano-web" = "latest"
 # Git
@@ -44,8 +35,6 @@ pipx = "latest"  # Python app installer
 # Terminal
 "github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
 "github:zellij-org/zellij" = "latest"  # Terminal multiplexer (tiles)
-"github:joshmedeski/sesh" = "latest"  # Smart tmux session manager (zoxide + fzf)
-"github:arl/gitmux" = "latest"  # Git status in tmux status bar
 "github:charmbracelet/glow" = "latest"  # Terminal markdown renderer
 "github:sharkdp/bat" = "latest"  # Cat with wings
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
@@ -53,7 +42,6 @@ pipx = "latest"  # Python app installer
 "github:dandavison/delta" = "latest"  # Better git diffs
 "github:dalance/procs" = "latest"  # Better ps
 "github:ducaale/xh" = "latest"  # Modern HTTP client
-"github:rclone/rclone" = "latest"  # Cloud sync
 # Code formatting
 "github:mvdan/sh" = { version = "latest", bin = "shfmt" }  # Shell formatter
 
