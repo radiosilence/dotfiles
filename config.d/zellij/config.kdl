@@ -23,6 +23,9 @@ keybinds {
         unbind "Alt o"  // MoveTab Right — redundant with Alt+l
         unbind "Alt p"  // TogglePaneInGroup
 
+        // floating pane toggle
+        bind "Alt N" { ToggleFloatingPanes; }
+
         // alt+hjkl pane/tab navigation
         bind "Alt h" { MoveFocusOrTab "Left"; }
         bind "Alt l" { MoveFocusOrTab "Right"; }
