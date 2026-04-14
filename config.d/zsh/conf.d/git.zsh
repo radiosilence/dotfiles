@@ -221,3 +221,18 @@ alias gupav='git pull --rebase --autostash -v'
 alias glum='git pull upstream master'
 alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
 alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]"'
+
+# Live git status watcher — useful as a zellij subpane
+gwatch() {
+  local interval=${1:-2}
+  while true; do
+    clear
+    printf '\033[1;34m── %s (%s) ──\033[0m\n' "$(basename "$(git rev-parse --show-toplevel)")" "$(git symbolic-ref --short HEAD 2>/dev/null)"
+    git -c color.status=always status -sb
+    echo ""
+    git diff --stat --color=always 2>/dev/null
+    echo ""
+    git log --oneline --graph --color=always -5 2>/dev/null
+    sleep "$interval"
+  done
+}

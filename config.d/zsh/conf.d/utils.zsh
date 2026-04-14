@@ -59,6 +59,7 @@ alias upd='converge'
 if command -v gh >/dev/null; then
   alias ghprv='gh pr view'
   alias ghprb='gh pr view --web'
+  alias ghprcw='gh pr checks --watch'
   alias ccr='gh pr comment --body "@claude review"'
   alias ccrf='gh pr comment --body "@claude review and fix all issues"'
   alias ccrr='gh pr comment --body "@claude re-review"'
