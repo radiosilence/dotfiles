@@ -53,6 +53,7 @@ kubectl = "latest"  # Kubernetes CLI
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
 # Terminal
 "github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
+"github:zellij-org/zellij" = "latest"  # Terminal multiplexer (tiles)
 "github:joshmedeski/sesh" = "latest"  # Smart tmux session manager (zoxide + fzf)
 "github:arl/gitmux" = "latest"  # Git status in tmux status bar
 "github:charmbracelet/glow" = "latest"  # Terminal markdown renderer
