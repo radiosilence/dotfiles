@@ -1,52 +1,72 @@
 #!/usr/bin/env bash
-# Wrapper shell for worktree tabs — offers cleanup on exit
+# Wrapper shell for worktree tabs — auto-cleans or prompts on exit
 # Args: $1 = worktree path, $2 = branch name
 set -euo pipefail
 
 wt="$1"
 name="$2"
 
-# Colors
 dim=$'\033[2m'
 bold=$'\033[1m'
 yellow=$'\033[1;33m'
 green=$'\033[1;32m'
 red=$'\033[1;31m'
+cyan=$'\033[1;36m'
 reset=$'\033[0m'
 
-# Run interactive shell
 zsh -i || true
 
-# Guard: never offer to remove the main worktree
+# Guard: never touch the main worktree
 root=$(git -C "$wt" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
 root="${root%/.git}"
+[[ "$wt" == "$root" ]] && exit 0
 
-if [[ "$wt" == "$root" ]]; then
+echo ""
+echo "  ${bold}Exiting worktree session${reset}"
+
+# Check for dirty state
+dirty_files=$(git -C "$wt" status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+unpushed=$(git -C "$wt" log --oneline "@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
+
+if [[ $dirty_files -eq 0 && $unpushed -eq 0 ]]; then
+  # Clean — just remove silently
+  if git worktree remove "$wt" 2>/dev/null; then
+    git branch -d "$name" 2>/dev/null
+    echo "  ${green}✓${reset} removed ${bold}${name}${reset} ${dim}(clean)${reset}"
+    sleep 0.5
+  fi
   exit 0
 fi
 
-# Cleanup prompt
+# Dirty — show warnings and prompt
+if [[ $dirty_files -gt 0 ]]; then
+  echo "  ${yellow}You have ${dirty_files} uncommitted file(s). These will be lost if you remove the worktree.${reset}"
+fi
+if [[ $unpushed -gt 0 ]]; then
+  echo "  ${yellow}You have ${unpushed} unpushed commit(s). These will be lost if you remove the worktree.${reset}"
+fi
+
 echo ""
-echo "${yellow}━━━ worktree: ${bold}${name}${reset}${yellow} ━━━${reset}"
+echo "  ${cyan})${reset} 1. ${bold}Keep worktree${reset}    ${dim}Stays at ${wt}${reset}"
+echo "    2. ${bold}Remove worktree${reset}  ${dim}All changes and commits will be lost.${reset}"
 echo ""
-echo "  ${dim}path:${reset}   $wt"
-echo "  ${dim}branch:${reset} $name"
-echo ""
-printf "${bold}  remove worktree + branch? ${dim}[y/N]${reset} "
+printf "  ${dim}Enter to confirm · Esc to cancel${reset} "
+
 read -rsn1 answer
 echo ""
-echo ""
 
-if [[ $answer == [yY] ]]; then
-  if git worktree remove "$wt" 2>/dev/null; then
-    git branch -d "$name" 2>/dev/null
-    echo "  ${green}✓${reset} removed ${bold}${name}${reset}"
-  else
-    echo "  ${red}✗${reset} failed to remove ${dim}(dirty worktree?)${reset}"
-    echo "  ${dim}use ${reset}git worktree remove --force${dim} to force${reset}"
-    sleep 2
-  fi
-else
-  echo "  ${dim}kept ${name}${reset}"
-fi
+case "$answer" in
+  2)
+    if git worktree remove --force "$wt" 2>/dev/null; then
+      git branch -D "$name" 2>/dev/null
+      echo "  ${green}✓${reset} removed ${bold}${name}${reset}"
+    else
+      echo "  ${red}✗${reset} failed to remove"
+      sleep 2
+    fi
+    ;;
+  *)
+    echo "  ${dim}kept ${name}${reset}"
+    ;;
+esac
 sleep 0.5
