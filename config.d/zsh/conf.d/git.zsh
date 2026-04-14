@@ -224,11 +224,11 @@ alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commi
 
 # Live git status watcher — useful as a zellij subpane
 gwatch() {
-  local interval=${1:-2}
-  tput civis 2>/dev/null  # hide cursor
+  local interval=${1:-2} prev_lines=0
+  tput civis 2>/dev/null
   trap 'tput cnorm 2>/dev/null; return' INT TERM
   while true; do
-    local buf
+    local buf lines
     buf=$(
       printf '\033[1;34m── %s (%s) ──\033[0m\n' \
         "$(basename "$(git rev-parse --show-toplevel)")" \
@@ -239,7 +239,16 @@ gwatch() {
       echo ""
       git log --oneline --graph --color=always -5 2>/dev/null
     )
-    printf '\033[H\033[J%s' "$buf"  # cursor home + clear + print in one shot
+    # Count lines in new output
+    lines=$(echo "$buf" | wc -l)
+    # Cursor home, print content, erase any stale lines from previous frame
+    printf '\033[H%s' "$buf"
+    local i
+    for (( i=lines; i<prev_lines; i++ )); do
+      printf '\033[K\n'  # clear line
+    done
+    printf '\033[K'  # clear final line
+    prev_lines=$lines
     sleep "$interval"
   done
 }
