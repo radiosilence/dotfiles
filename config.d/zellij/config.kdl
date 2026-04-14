@@ -26,6 +26,10 @@ keybinds {
         // floating pane toggle
         bind "Alt N" { ToggleFloatingPanes; }
 
+        // alt+tab / alt+shift+tab: cycle panes
+        bind "Alt Tab" { FocusNextPane; }
+        bind "Alt Shift Tab" { FocusPreviousPane; }
+
         // alt+hjkl pane/tab navigation
         bind "Alt h" { MoveFocusOrTab "Left"; }
         bind "Alt l" { MoveFocusOrTab "Right"; }
