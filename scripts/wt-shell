@@ -47,8 +47,8 @@ if [[ $unpushed -gt 0 ]]; then
 fi
 
 echo ""
-echo "  ${cyan}1.${reset} ${bold}Keep worktree${reset}      ${dim}Stays at ${wt}${reset}"
-echo "  ${cyan}2.${reset} ${bold}Remove worktree${reset}    ${dim}All changes and commits will be lost.${reset}"
+echo "  ${cyan}[1]${reset} ${bold}Keep worktree${reset}      ${dim}Stays at ${wt}${reset}"
+echo "  ${cyan}[2]${reset} ${bold}Remove worktree${reset}    ${dim}All changes and commits will be lost.${reset}"
 echo ""
 printf "  ${dim}press 1 or 2${reset} "
 
