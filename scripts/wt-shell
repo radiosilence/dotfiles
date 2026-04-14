@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Wrapper shell for worktree tabs — offers cleanup on exit
+# Args: $1 = worktree path, $2 = branch name
+set -euo pipefail
+
+wt="$1"
+name="$2"
+
+# Run interactive shell
+zsh
+
+# Shell exited — offer cleanup
+printf '\n\033[1;33m── worktree: %s ──\033[0m\n' "$name"
+printf 'remove worktree + branch? [y/N] '
+read -rsn1 answer
+echo ""
+
+if [[ $answer == [yY] ]]; then
+  root=$(git -C "$wt" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+  root="${root%/.git}"
+  git worktree remove "$wt" 2>/dev/null && git branch -d "$name" 2>/dev/null
+  echo "removed: $name"
+else
+  echo "kept: $name"
+fi
+sleep 0.5
