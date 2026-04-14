@@ -239,15 +239,16 @@ gwatch() {
       echo ""
       git log --oneline --graph --color=always -5 2>/dev/null
     )
-    # Count lines in new output
+    # Append \033[K (clear to EOL) to every line so old content is wiped
     lines=$(echo "$buf" | wc -l)
-    # Cursor home, print content, erase any stale lines from previous frame
-    printf '\033[H%s' "$buf"
+    local cleaned
+    cleaned=$(echo "$buf" | sed $'s/$/\033[K/')
+    # Cursor home, print content, erase stale lines from previous frame
+    printf '\033[H%s' "$cleaned"
     local i
     for (( i=lines; i<prev_lines; i++ )); do
-      printf '\033[K\n'  # clear line
+      printf '\n\033[K'
     done
-    printf '\033[K'  # clear final line
     prev_lines=$lines
     sleep "$interval"
   done
