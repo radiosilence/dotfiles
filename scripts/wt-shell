@@ -6,21 +6,47 @@ set -euo pipefail
 wt="$1"
 name="$2"
 
-# Run interactive shell (ignore exit status — last command might be non-zero)
+# Colors
+dim=$'\033[2m'
+bold=$'\033[1m'
+yellow=$'\033[1;33m'
+green=$'\033[1;32m'
+red=$'\033[1;31m'
+reset=$'\033[0m'
+
+# Run interactive shell
 zsh -i || true
 
-# Shell exited — offer cleanup
-printf '\n\033[1;33m── worktree: %s ──\033[0m\n' "$name"
-printf 'remove worktree + branch? [y/N] '
+# Guard: never offer to remove the main worktree
+root=$(git -C "$wt" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+root="${root%/.git}"
+
+if [[ "$wt" == "$root" ]]; then
+  exit 0
+fi
+
+# Cleanup prompt
+echo ""
+echo "${yellow}━━━ worktree: ${bold}${name}${reset}${yellow} ━━━${reset}"
+echo ""
+echo "  ${dim}path:${reset}   $wt"
+echo "  ${dim}branch:${reset} $name"
+echo ""
+printf "${bold}  remove worktree + branch? ${dim}[y/N]${reset} "
 read -rsn1 answer
+echo ""
 echo ""
 
 if [[ $answer == [yY] ]]; then
-  root=$(git -C "$wt" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
-  root="${root%/.git}"
-  git worktree remove "$wt" 2>/dev/null && git branch -d "$name" 2>/dev/null
-  echo "removed: $name"
+  if git worktree remove "$wt" 2>/dev/null; then
+    git branch -d "$name" 2>/dev/null
+    echo "  ${green}✓${reset} removed ${bold}${name}${reset}"
+  else
+    echo "  ${red}✗${reset} failed to remove ${dim}(dirty worktree?)${reset}"
+    echo "  ${dim}use ${reset}git worktree remove --force${dim} to force${reset}"
+    sleep 2
+  fi
 else
-  echo "kept: $name"
+  echo "  ${dim}kept ${name}${reset}"
 fi
 sleep 0.5
