@@ -45,6 +45,10 @@ keybinds {
         // clear scrollback (like Cmd+k in ghostty / Ctrl+k in tmux)
         bind "Ctrl k" { Clear; }
 
+        // prev/next tab
+        bind "Ctrl Left" { GoToPreviousTab; }
+        bind "Ctrl Right" { GoToNextTab; }
+
         // direct tab switching (like browser tabs)
         bind "Ctrl 1" { GoToTab 1; }
         bind "Ctrl 2" { GoToTab 2; }
