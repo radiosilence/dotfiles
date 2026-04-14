@@ -66,14 +66,26 @@ _wt_core() {
       git worktree list
       return
     fi
-    local selected
-    selected=$(git worktree list --porcelain \
+    local output query selected
+    output=$(git worktree list --porcelain \
       | awk '/^worktree /{ path=$2 } /^branch /{ branch=$2; sub("refs/heads/","",branch); printf "%s\t%s\n", branch, path }' \
-      | fzf --ansi --reverse --delimiter=$'\t' --with-nth=1 --header="worktrees" \
-             --popup='center,90%,90%' --preview "$_wt_fzf_preview" --preview-window='right:70%'
-    ) || return
-    $go_fn "$(echo "$selected" | cut -f1)" "$(echo "$selected" | cut -f2)"
-    return
+      | fzf --ansi --reverse --delimiter=$'\t' --with-nth=1 \
+             --header="worktrees (type new name to create)" \
+             --popup='center,90%,90%' --preview "$_wt_fzf_preview" --preview-window='right:70%' \
+             --print-query
+    ) || true
+    query=$(echo "$output" | sed -n '1p')
+    selected=$(echo "$output" | sed -n '2p')
+
+    if [[ -n $selected ]]; then
+      $go_fn "$(echo "$selected" | cut -f1)" "$(echo "$selected" | cut -f2)"
+    elif [[ -n $query ]]; then
+      # New name typed — delegate to the create path
+      set -- "$query"
+    else
+      return
+    fi
+    [[ -n $selected ]] && return
   fi
 
   [[ $# -eq 0 ]] && { echo "usage: wt [-b] <name> [base]"; return 1; }
