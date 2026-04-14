@@ -18,7 +18,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Passwor
 - **Rust binaries** — System maintenance, git workflow, media processing, file operations
 - **Taskfile.yml** — DAG-based system management (bootstrap, update, completions, fonts)
 - **Tool management** — mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
-- **Terminal configs** — tmux, ghostty, starship prompt
+- **Terminal configs** — zellij, ghostty, tmux, starship prompt
 - **Editor configs** — helix (LSP, tree-sitter, formatters for 15+ languages), zed
 
 ## Documentation
@@ -47,6 +47,16 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Passwor
 - `git trigger` — Re-trigger CI with amend + force push
 - `git conf-dir` — Set per-directory git config (email, signing, etc.)
 - `fm` / `fr` — Fuzzy merge/rebase with fzf
+
+**Worktrees** (`wt*`) — git worktree management with Zellij integration. Worktrees live in `<repo>/.worktrees/` (auto-gitignored).
+
+- `wt` / `wt <name>` — Upsert worktree + cd (fzf picker with no args)
+- `wtt` / `wtt <name>` — Upsert worktree + Zellij tab (fzf picker with no args)
+- `wt -b <name>` / `wtt -b <name>` — Branch from current HEAD instead of origin/main
+- `wtpr <PR>` — Upsert worktree + tab for a GitHub PR (handles forks)
+- `wtrm` — Remove current worktree (cd to root + cleanup)
+- `wtd <name>` — Remove worktree by name + delete local branch
+- `wtp` — Prune stale worktree refs
 
 **Media**
 
