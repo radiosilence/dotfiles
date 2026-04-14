@@ -14,6 +14,9 @@ red=$'\033[1;31m'
 cyan=$'\033[1;36m'
 reset=$'\033[0m'
 
+# Set pane title
+printf '\033]2;%s\033\\' "$name"
+
 zsh -i || true
 
 # Guard: never touch the main worktree
