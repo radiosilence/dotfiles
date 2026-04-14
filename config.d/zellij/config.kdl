@@ -4,10 +4,12 @@ default_mode "normal"
 pane_frames true
 mouse_mode true
 copy_on_select true
-scroll_buffer_size 50000
+scroll_buffer_size 100000
+scrollback_lines_to_serialize 10000
 on_force_close "detach"
 session_serialization true
 serialize_pane_viewport true
+mouse_hover_effects true
 
 // ── Keybindings ─────────────────────────────────────────────────────
 // vim-style navigation + unbind alt-letter defaults that collide with
