@@ -10,6 +10,7 @@ on_force_close "detach"
 session_serialization true
 serialize_pane_viewport true
 mouse_hover_effects true
+support_kitty_keyboard_protocol true
 
 // ── Keybindings ─────────────────────────────────────────────────────
 // vim-style navigation + unbind alt-letter defaults that collide with

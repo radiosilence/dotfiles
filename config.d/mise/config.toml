@@ -31,24 +31,14 @@ fd = "latest"  # Fast find alternative
 # Development tools
 "github:helix-editor/helix" = { version = "latest", bin = "hx" }  # Terminal text editor
 pipx = "latest"  # Python app installer
-protobuf = "latest"  # Protocol buffers
-"github:bufbuild/buf" = "latest"  # Protobuf toolchain
 "github:casey/just" = "latest"  # Task runner (crabs)
 "github:go-task/task" = "latest"  # Task runner (gopher)
 "github:tamasfe/taplo" = "latest"  # TOML formatter
 # Code quality
 "github:koalaman/shellcheck" = "latest"  # Shell script linter
 "github:evilmartians/lefthook" = { version = "latest", bin = "lefthook" }  # Git hooks manager
-"github:golangci/golangci-lint" = "latest"  # Go linter
-# Kubernetes & cloud
-kubectl = "latest"  # Kubernetes CLI
-"github:derailed/k9s" = "latest"  # Kubernetes TUI
-"github:kubecolor/kubecolor" = "latest"  # Colorized kubectl
 # GitHub & misc
 "github:radiosilence/nano-web" = "latest"
-"github:dolthub/dolt" = "latest"  # Dolt — Git for data (required by gastown)
-"github:steveyegge/beads" = "latest"  # Beads — git-backed issue tracker (bd CLI)
-"github:tursodatabase/turso" = "latest"  # Turso CLI
 # Git
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
 # Terminal
@@ -64,23 +54,8 @@ kubectl = "latest"  # Kubernetes CLI
 "github:dalance/procs" = "latest"  # Better ps
 "github:ducaale/xh" = "latest"  # Modern HTTP client
 "github:rclone/rclone" = "latest"  # Cloud sync
-# Infra & cloud
-"github:argoproj/argo-cd" = "latest"  # GitOps CD
-"github:ByteNess/aws-vault" = "latest"  # AWS credential manager
-"github:pulumi/pulumi" = "latest"  # IaC in real languages
-"github:tilt-dev/tilt" = "latest"  # K8s dev environment
-"github:metalbear-co/mirrord" = "latest"  # Local-to-cluster debugging
-# API tools
-"github:fullstorydev/grpcurl" = "latest"  # gRPC curl
-"github:ktr0731/evans" = "latest"  # gRPC REPL
 # Code formatting
 "github:mvdan/sh" = { version = "latest", bin = "shfmt" }  # Shell formatter
-# Language servers
-"github:LuaLS/lua-language-server" = "latest"  # Lua LSP
-
-"pipx:nginx-language-server" = "latest"  # Nginx LSP
-terraform = "latest"  # IaC
-terraform-ls = "latest"  # Terraform LSP
 
 "github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
 
@@ -90,8 +65,6 @@ terraform-ls = "latest"  # Terraform LSP
 "github:datadog-labs/pup" = "latest"
 "github:hatoo/oha" = "latest"
 
-# Ansible
-"pipx:ansible" = { version = "latest", uvx = false, pipx_args = "--include-deps" }  # Config management
 # Music library
 "pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer" }  # Music organizer
 
