@@ -19,6 +19,10 @@ fi
 #   alias sp='sesh connect "$(sesh list --icons --hide-duplicates | fzf --ansi --reverse --header="sessions / dirs" --preview "sesh preview {}")"'
 # fi
 
+if command -v zellij >/dev/null; then
+  alias zj='zellij'
+fi
+
 if command -v zellij >/dev/null && command -v fzf >/dev/null; then
   zp() {
     local sessions selected target name
