@@ -78,15 +78,15 @@ case "$key" in
     ;;
 
   ctrl-v)
-    gh pr view "$name" --comments 2>&1 | less -R
+    gh pr view "$name" --comments 2>&1 | bat --paging=always --style=plain
     ;;
 
   ctrl-y)
-    gh pr checks "$name" 2>&1 | less -R
+    gh pr checks "$name" 2>&1 | bat --paging=always --style=plain
     ;;
 
   ctrl-d)
-    gh pr diff "$name" --color=always 2>&1 | less -R
+    gh pr diff "$name" --color=always 2>&1 | delta --paging=always
     ;;
 
   ctrl-l)
