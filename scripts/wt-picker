@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Worktree picker for Zellij keybinding — runs fzf, opens selection in a tab
+set -euo pipefail
+
+preview="$HOME/.dotfiles/scripts/wt-preview {1}"
+
+selected=$(git worktree list --porcelain 2>/dev/null \
+  | awk '/^worktree /{ path=$2 } /^branch /{ branch=$2; sub("refs/heads/","",branch); printf "%s\t%s\n", branch, path }' \
+  | fzf --ansi --reverse --delimiter=$'\t' --with-nth=1 --header="worktrees" \
+         --preview "$preview" --preview-window='right:70%'
+) || exit 0
+
+name=$(echo "$selected" | cut -f1)
+wt=$(echo "$selected" | cut -f2)
+
+# Focus existing tab or create new one
+if zellij action query-tab-names 2>/dev/null | grep -qxF "$name"; then
+  zellij action go-to-tab-name "$name"
+else
+  zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- zsh
+fi

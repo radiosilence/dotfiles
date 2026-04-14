@@ -30,6 +30,18 @@ keybinds {
         bind "Alt Tab" { FocusNextPane; }
         bind "Alt Shift Tab" { FocusPreviousPane; }
 
+        // worktree picker (floating pane → opens tab on select)
+        bind "Alt w" {
+            Run "bash" "-c" "$HOME/.dotfiles/scripts/wt-picker" {
+                floating true
+                close_on_exit true
+                width "90%"
+                height "90%"
+                x "5%"
+                y "5%"
+            }
+        }
+
         // alt+hjkl pane/tab navigation
         bind "Alt h" { MoveFocusOrTab "Left"; }
         bind "Alt l" { MoveFocusOrTab "Right"; }

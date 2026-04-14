@@ -70,7 +70,7 @@ _wt_core() {
     selected=$(git worktree list --porcelain \
       | awk '/^worktree /{ path=$2 } /^branch /{ branch=$2; sub("refs/heads/","",branch); printf "%s\t%s\n", branch, path }' \
       | fzf --ansi --reverse --delimiter=$'\t' --with-nth=1 --header="worktrees" \
-             --preview "$_wt_fzf_preview" --preview-window='right:50%'
+             --popup='center,90%,90%' --preview "$_wt_fzf_preview" --preview-window='right:70%'
     ) || return
     $go_fn "$(echo "$selected" | cut -f1)" "$(echo "$selected" | cut -f2)"
     return
