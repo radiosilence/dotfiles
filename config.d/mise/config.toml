@@ -5,18 +5,23 @@ CLAUDE_CODE_EFFORT_LEVEL = "max"
 CLAUDE_CODE_NO_FLICKER = "1"
 
 [tools]
+# core
+bun = "latest"  # JS runtime
+deno = "latest"  # Secure JS/TS runtime
+
+# github
 "github:BurntSushi/ripgrep" = "latest"  # Fast grep
 "github:Canop/broot" = "latest"  # Directory navigation
 "github:ajeetdsouza/zoxide" = "latest"  # Smart cd replacement
 "github:charmbracelet/glow" = "latest"  # Terminal markdown renderer
 "github:dalance/procs" = "latest"  # Better ps
 "github:dandavison/delta" = "latest"  # Better git diffs
-"github:datadog-labs/pup" = "latest"
+"github:datadog-labs/pup" = "latest"  # DD Client
 "github:ducaale/xh" = "latest"  # Modern HTTP client
 "github:fastfetch-cli/fastfetch" = "latest"  # System info
 "github:git-lfs/git-lfs" = "latest"  # Large file storage
 "github:go-task/task" = "latest"  # Task runner (gopher)
-"github:hatoo/oha" = "latest"
+"github:hatoo/oha" = "latest"  # Load testing
 "github:helix-editor/helix" = "latest"  # Terminal text editor (nightly)
 "github:jqlang/jq" = "latest"  # JSON processor
 "github:junegunn/fzf" = "latest"  # Fuzzy finder
@@ -32,10 +37,8 @@ CLAUDE_CODE_NO_FLICKER = "1"
 "github:tamasfe/taplo" = "latest"  # TOML formatter
 "github:tmux/tmux-builds" = "latest"  # Terminal multiplexer
 "github:zellij-org/zellij" = "latest"  # Terminal multiplexer (tiles)
-bun = "latest"
-deno = "latest"  # Secure JS/TS runtime
-fd = "latest"  # Fast find alternative
-yq = "latest"  # YAML processor
+"github:sharkdp/fd" = "latest"  # Fast find alternative
+"github:mikefarah/yq" = "latest"  # YAML processor
 
 [[tools."github:yt-dlp/yt-dlp-nightly-builds"]]  # Video downloader (nightly)
 version = "latest"
@@ -46,9 +49,9 @@ version = "latest"
 uvx_args = "--with requests --with beets-yearfixer --with beets[discogs]"
 
 [settings]
-paranoid = true
 fetch_remote_versions_cache = "30m"
 experimental = true
 trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
+disable_backends = ["ubi", "npm", "asdf"]
