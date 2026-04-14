@@ -10,6 +10,8 @@ macos-option-as-alt = true
 keybind = alt+3=text:#
 keybind = alt+2=text:€
 keybind = alt+0=text:º
+keybind = alt+minus=text:–
+keybind = alt+shift+minus=text:—
 keybind = alt+backspace=text:\x17
 keybind = shift+enter=text:\n
 clipboard-paste-protection = false
