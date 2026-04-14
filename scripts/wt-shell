@@ -6,8 +6,8 @@ set -euo pipefail
 wt="$1"
 name="$2"
 
-# Run interactive shell
-zsh -i
+# Run interactive shell (ignore exit status — last command might be non-zero)
+zsh -i || true
 
 # Shell exited — offer cleanup
 printf '\n\033[1;33m── worktree: %s ──\033[0m\n' "$name"
