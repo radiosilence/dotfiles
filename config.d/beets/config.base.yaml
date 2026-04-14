@@ -11,6 +11,7 @@ plugins:
   - musicbrainz
   - ftintitle
   - fetchart
+  - discogs
   - embedart
   - importadded
   - yearfixer
