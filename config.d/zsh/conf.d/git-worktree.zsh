@@ -37,7 +37,7 @@ _wt_tab() {
     if zellij action query-tab-names 2>/dev/null | grep -qxF "$name"; then
       zellij action go-to-tab-name "$name"
     else
-      zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- zsh
+      zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- ~/.dotfiles/scripts/wt-shell "$wt" "$name"
     fi
   else
     cd "$wt"
