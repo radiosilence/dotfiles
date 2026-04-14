@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Preview for wt fzf picker: git log (top half) + lsd tree (bottom half)
+# Preview for wt fzf picker
+# Shows PR details if one exists, otherwise git log + file tree
 # Args: $1 = "branch\tpath" or just "branch" (fzf-tab sends $word)
 set -euo pipefail
 
@@ -8,7 +9,12 @@ path=$(git worktree list --porcelain 2>/dev/null \
   | awk -v b="refs/heads/$branch" '/^worktree /{ wt=$2 } /^branch /{ if($2==b) print wt }')
 [[ -n $path ]] || exit 0
 
-# Split available height roughly 50/50
+# Try PR view first — shows title, status, checks, reviewers
+if command -v gh >/dev/null && CLICOLOR_FORCE=1 gh pr view "$branch" 2>/dev/null; then
+  exit 0
+fi
+
+# Fallback: git log + file tree
 half=$(( ${FZF_PREVIEW_LINES:-20} / 2 ))
 
 printf '\033[1;34m── git log (%s) ──\033[0m\n' "$branch"
