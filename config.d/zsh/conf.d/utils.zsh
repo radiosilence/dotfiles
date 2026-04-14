@@ -59,7 +59,9 @@ fi
 
 converge() {
   git -C ~/.dotfiles pull --quiet
-  sudo -v 2>/dev/null  # warm sudo cache before parallel tasks
+  # Pre-warm sudo on Linux (password prompt gets buried in parallel output)
+  # Skip on macOS — Touch ID prompts inline are fine
+  [[ $(uname) == "Linux" ]] && sudo -v 2>/dev/null
   task --taskfile ~/.dotfiles/Taskfile.yml converge
 }
 alias upd='converge'
