@@ -126,20 +126,6 @@ tasks:
       - curl -fsSL https://claude.ai/install.sh | bash
       - printf "{{.OK}} claude code\n"
 
-  brew:unquarantine:
-    desc: Remove quarantine from casks
-    platforms: [darwin]
-    deps: [brew:bundle]
-    cmds:
-      - |
-        caskroom="$(brew --caskroom 2>/dev/null)" || exit 0
-        for cask in stolendata-mpv rar; do
-          dir="$caskroom/$cask"
-          [ -d "$dir" ] || continue
-          sudo xattr -rd com.apple.quarantine "$dir" 2>/dev/null && \
-            printf "{{.OK}} unquarantined %s\n" "$cask" || \
-            printf "{{.WARN}} %s (no quarantine attr)\n" "$cask"
-        done
 
   brew:pam-reattach:
     desc: Install pam-reattach for tmux Touch ID support
@@ -202,7 +188,6 @@ tasks:
       - brew:roles
       - rosetta:install
       - claude:install
-      - brew:unquarantine
       - sudo:touchid
       - sudo:reattach
       - sudo:timeout
