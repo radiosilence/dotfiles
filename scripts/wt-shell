@@ -47,26 +47,31 @@ if [[ $unpushed -gt 0 ]]; then
 fi
 
 echo ""
-echo "  ${cyan})${reset} 1. ${bold}Keep worktree${reset}    ${dim}Stays at ${wt}${reset}"
-echo "    2. ${bold}Remove worktree${reset}  ${dim}All changes and commits will be lost.${reset}"
+echo "  ${cyan}1.${reset} ${bold}Keep worktree${reset}      ${dim}Stays at ${wt}${reset}"
+echo "  ${cyan}2.${reset} ${bold}Remove worktree${reset}    ${dim}All changes and commits will be lost.${reset}"
 echo ""
-printf "  ${dim}Enter to confirm · Esc to cancel${reset} "
+printf "  ${dim}press 1 or 2${reset} "
 
-read -rsn1 answer
-echo ""
-
-case "$answer" in
-  2)
-    if git worktree remove --force "$wt" 2>/dev/null; then
-      git branch -D "$name" 2>/dev/null
-      echo "  ${green}✓${reset} removed ${bold}${name}${reset}"
-    else
-      echo "  ${red}✗${reset} failed to remove"
-      sleep 2
-    fi
-    ;;
-  *)
-    echo "  ${dim}kept ${name}${reset}"
-    ;;
-esac
+while true; do
+  read -rsn1 answer
+  case "$answer" in
+    1)
+      echo ""
+      echo "  ${dim}kept ${name}${reset}"
+      break
+      ;;
+    2)
+      echo ""
+      if git worktree remove --force "$wt" 2>/dev/null; then
+        git branch -D "$name" 2>/dev/null
+        echo "  ${green}✓${reset} removed ${bold}${name}${reset}"
+      else
+        echo "  ${red}✗${reset} failed to remove"
+        sleep 2
+      fi
+      break
+      ;;
+  esac
+  # Ignore anything else — keep waiting
+done
 sleep 0.5
