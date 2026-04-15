@@ -24,18 +24,16 @@ brew 'sheldon' if Hardware::CPU.intel?
 brew 'cmake'
 brew 'make'
 brew 'llvm'
-brew 'clang-format'
 
 # CLI utils
 brew 'fcp'
 brew 'htop'
 brew 'btop'
 brew 'mas'
-brew 'mdless'
 brew 'tokei'
 brew 'cmatrix'
 brew 'unar'
-brew 'shellcheck'
+brew 'testdisk'
 
 # Sync
 brew 'fswatch'
