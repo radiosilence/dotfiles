@@ -116,7 +116,11 @@ case "$key" in
       zellij action go-to-tab-name "$name"
     else
       zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- ~/.dotfiles/scripts/wt-shell "$wt" "$name"
+      # Wait for tab to actually exist before floating pane closes
+      for _ in {1..20}; do
+        zellij action query-tab-names 2>/dev/null | grep -qxF "$name" && break
+        sleep 0.1
+      done
     fi
-    sleep 0.2  # let zellij process the action before floating pane closes
     ;;
 esac
