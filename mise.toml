@@ -1,2 +1,4 @@
 [tools]
+"github:evilmartians/lefthook" = "latest"
+lefthook = "latest"
 shellcheck = "latest"
