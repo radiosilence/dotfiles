@@ -209,6 +209,34 @@ wtrm() {
 # ── wtp ─────────────────────────────────────────────────────────────
 alias wtp='git worktree prune -v'
 
+# ── wtpb — prune orphaned worktree branches ─────────────────────────
+wtpb() {
+  local root=$(_wt_root)
+  local default=$(_wt_base)
+  local pruned=0
+  # Get branches that have active worktrees
+  local -a wt_branches
+  wt_branches=(${(f)"$(git worktree list --porcelain 2>/dev/null \
+    | awk '/^branch /{ b=$2; sub("refs/heads/","",b); print b }')"})
+
+  git for-each-ref --format='%(refname:short)' refs/heads/ | while read -r branch; do
+    [[ $branch == "$default" ]] && continue
+    # Skip if branch has an active worktree
+    if (( ${wt_branches[(Ie)$branch]} )); then
+      continue
+    fi
+    # Check if worktree dir exists at expected path
+    local wt="$root/.worktrees/$branch"
+    if [[ ! -d $wt ]]; then
+      git branch -d "$branch" 2>/dev/null && {
+        echo "  pruned: $branch"
+        pruned=$((pruned + 1))
+      } || echo "  skipped: $branch (unmerged — use -D to force)"
+    fi
+  done
+  echo "pruned $pruned orphaned branch(es)"
+}
+
 # ── Completions ─────────────────────────────────────────────────────
 _wt_branches() {
   local -a branches
