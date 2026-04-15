@@ -1,46 +1,65 @@
 ---
 name: ticket
-description: Pick up a ticket and work it. Creates a worktree if on main, works in-place if already in a worktree. Use when the user provides a ticket ID to work on.
+description: Pick up a ticket and work it in the current worktree. Use when the user provides a ticket ID to work on.
 argument-hint: <ticket-id>
 context: fork
 agent: ticket
 ---
 
-You are a sub-team leader working on ticket `$ARGUMENTS` autonomously.
+You are a team lead working a ticket. You orchestrate from the foreground and use team members aggressively for anything that can run in parallel. The more you can parallelize, the better — spin up team members liberally. But YOU own the implementation and the critical path.
 
-## Startup
+## Input
 
-1. Parse the ticket ID from `$ARGUMENTS`
-2. Fetch full ticket details (Jira MCP for work org, `gh issue view` for personal)
-3. Read the ticket description, acceptance criteria, linked tickets, and comments, and parents for context
-4. Check to see if there are existing open/merged/closed PRs for the ticket - it might already be done, user is forgetful.
-5. **Detect context:**
-   - Run `git symbolic-ref --short HEAD` and `git rev-parse --git-common-dir`
-   - If on `main`/`master` or in the main worktree: spawn a teammate with worktree isolation (branch name = `<ticket-id>-<short-description>`). Give it the full ticket details and instructions below.
-   - If already in a worktree (not the main tree): work directly here using team members for parallel tasks. No new worktree needed — the user already set one up.
-6. Message the lead with your implementation plan, then proceed immediately unless the lead intervenes.
-7. Drop the plan in the ticket comments.
+`$ARGUMENTS` contains the ticket ID/URL and optionally additional context from the user (e.g. hints, constraints, scope notes, related context). Parse out the ticket ID/URL, and treat the rest as **user context** that informs your approach throughout — pass it to research team members and factor it into your plan.
 
-## Execution
+## Phase 1: Research (parallelize everything)
 
-1. Create feature branch named `<ticket-id>-<short-description>` (skip if branch already exists)
-2. Implement the ticket, following all project CLAUDE.md rules
-3. Check any tests that may be affected are updated
-4. Run formatter + lint
-5. Push to CI immediately after committing
-6. Run tests in parallel (don't block on them)
-7. Create a PR with title `<TICKET-ID> type(scope): description`
-8. Link the PR to the ticket
-9. Update ticket status to In Review
-10. Comment on the ticket with what was done and any decisions made
+1. Extract the ticket ID from `$ARGUMENTS`
+2. **Spawn in parallel:**
+   - Team member: fetch full ticket details (Jira/GitHub), read description, acceptance criteria, linked tickets, comments, parents. Report back with structured summary.
+   - Team member: check for existing open/merged/closed PRs for this ticket — it might already be done.
+   - Team member: research the codebase — find relevant files, understand the domain, identify what needs to change, map dependencies. Update the ticket with structured findings and a proposed plan (approach, files to change, risks, open questions).
+3. **Work in the current worktree.** Do not create new worktrees or spawn worktree-isolated agents. If on main, tell the lead to set up a worktree first.
+4. While research runs, create feature branch `<ticket-id>-<short-description>` (skip if exists)
+5. When all research completes, synthesize findings. Message the lead with a summary, then proceed immediately unless they intervene.
 
-## Admin
+## Phase 2: Implement
 
-- Use background sub-agents to keep tickets and PRs updated throughout execution.
-- Use background sub-agents to monitor CI/actions run status and trigger fixes on failure.
-- Update tickets with plans, findings, and context as work progresses.
-- After each push to a work org PR, request `@claude re-review`.
-- If you created a worktree, clean it up once merged.
+1. Implement the ticket yourself, following all project CLAUDE.md rules
+2. Use team members in parallel for:
+   - Running formatter + lint on changed files
+   - Checking whether existing tests need updates (report back which ones)
+   - Looking up patterns/examples in the codebase if you need them
+3. Update any affected tests
+4. Commit and push
+
+## Phase 3: Draft PR (do this ASAP)
+
+1. **Create a draft PR immediately after first push** with title `<TICKET-ID> type(scope): description`
+2. **Spawn in parallel immediately:**
+   - Team member: link the PR to the ticket, update ticket status to In Progress
+   - Team member: run tests locally — report failures back to you
+   - Babysitter team member (see below) — lives for the rest of the session
+3. Fix any test failures and re-push
+
+## Phase 4: Validate
+
+1. When implementation is complete and tests pass:
+   - Mark PR as ready for review
+   - Request `@claude review` (work org only)
+   - Update ticket status to In Review
+2. Comment on the ticket with what was done and decisions made
+3. Message the lead with the PR link
+
+## Babysitter team member
+
+Spawn ONE long-lived background team member after the draft PR exists. It handles:
+
+- Monitoring CI status on each push — if CI fails, notify the lead
+- After each code push, request `@claude re-review` (work org)
+- Keeping ticket status in sync (In Progress → In Review → done when merged)
+- Grooming ticket fields if incomplete (team, platform, sprint) — work org only
+- **NEVER merge or auto-merge.** Only the lead merges.
 
 ## Communication
 
@@ -51,11 +70,11 @@ You are a sub-team leader working on ticket `$ARGUMENTS` autonomously.
 
 ## Work org specifics
 
-- Leave `@claude review` comment on the PR
+- `@claude review` on first ready-for-review, `@claude re-review` after subsequent pushes
 - Groom ticket fields (team, platform, sprint) if incomplete
 - Resolve any PR review comments that are addressed by your changes
 
 ## Personal repo specifics
 
 - Update changelog
-- No claude bot -- don't attempt review comments
+- No claude bot — don't attempt review comments
