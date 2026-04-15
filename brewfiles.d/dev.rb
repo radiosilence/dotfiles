@@ -9,6 +9,5 @@ cask 'lens', greedy: true
 
 # Databases
 brew 'postgresql'
-brew 'postgis'
 brew 'libpq'
 brew 'tursodatabase/tap/turso'
