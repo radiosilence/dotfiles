@@ -35,6 +35,7 @@ brew 'mdless'
 brew 'tokei'
 brew 'cmatrix'
 brew 'unar'
+brew 'shellcheck'
 
 # Sync
 brew 'fswatch'
