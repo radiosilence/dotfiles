@@ -65,7 +65,6 @@
     "ansible": true,
     "astro": true,
     "basher": true,
-    "catppuccin": true,
     "csv": true,
     "docker-compose": true,
     "dockerfile": true,
@@ -143,6 +142,10 @@
     "enable_keep_preview_on_code_navigation": true,
   },
   "languages": {
+    "Shell Script": {
+      "colorize_brackets": true,
+      "format_on_save": "on",
+    },
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
@@ -267,9 +270,6 @@
   },
   "lsp": {
     "codeowners-lsp": {
-      "binary": {
-        "path": "/Users/james.cleveland/workspace/radiosilence/codeowners-lsp/target/release/codeowners-lsp",
-      },
       "initialization_options": {
         "individual": "@radiosilence",
         "validate_owners": true,
