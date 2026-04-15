@@ -42,7 +42,6 @@ keybinds {
             Run "bash" "-c" "$HOME/.dotfiles/scripts/wt-picker" {
                 name "wt"
                 floating true
-                close_on_exit true
                 width "90%"
                 height "90%"
                 x "5%"
