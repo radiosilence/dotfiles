@@ -68,6 +68,7 @@ Spawn ONE long-lived background team member after the draft PR exists. It handle
 - Keeping ticket status in sync (In Progress → In Review → done when merged)
 - Grooming ticket fields if incomplete (team, platform, sprint) — work org only
 - Watching for auto-generated PRs spawned from ours (codegen, buf generation, quarantine tests, lint fixes, react lint). **Merge these automatically.** But **NEVER merge visual-test update PRs** — those need human review.
+- Monitoring PR review comments. When new comments come in: fix the issue, push, resolve the comment thread, and request `@claude re-review`.
 - **NEVER merge the main PR or auto-merge it.** Only the lead merges.
 
 ## Communication
