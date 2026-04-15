@@ -9,6 +9,7 @@
       "args": ["x", "--", "fastmail-cli", "mcp"],
     },
   },
+  "restore_on_startup": "none",
   "tab_size": 2,
   "toolbar": {
     "code_actions": true,
