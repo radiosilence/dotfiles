@@ -26,7 +26,7 @@ default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$lef
 [visualizer]
 enabled = true
 fps = 60
-mode = "terrain"
+mode = "oscilloscope"
 scale = "bark"
 amplitude_scale = "aweight"
 bar_decay_ms = 25
