@@ -18,7 +18,7 @@ end
 cask_args require_sha: true
 
 # Core — always loaded
-brewfiles_dir = File.join(dotfiles_dir, 'brewfiles.d')
+brewfiles_dir = File.join(dotfiles_dir, "brewfiles.d")
 eval(File.read(File.join(brewfiles_dir, 'core.rb')))
 
 # Role-based includes
