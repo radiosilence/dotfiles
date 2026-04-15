@@ -34,7 +34,7 @@ unpushed=$(git -C "$wt" log --oneline "@{upstream}..HEAD" 2>/dev/null | wc -l | 
 if [[ $dirty_files -eq 0 && $unpushed -eq 0 ]]; then
   # Clean — just remove silently
   if git worktree remove "$wt" 2>/dev/null; then
-    git branch -d "$name" 2>/dev/null
+    git -C "$root" branch -d "$name" 2>/dev/null
     echo "  ${green}✓${reset} removed ${bold}${name}${reset} ${dim}(clean)${reset}"
     sleep 0.5
   fi
@@ -66,7 +66,7 @@ while true; do
     2)
       echo ""
       if git worktree remove --force "$wt" 2>/dev/null; then
-        git branch -D "$name" 2>/dev/null
+        git -C "$root" branch -D "$name" 2>/dev/null
         echo "  ${green}✓${reset} removed ${bold}${name}${reset}"
       else
         echo "  ${red}✗${reset} failed to remove"
