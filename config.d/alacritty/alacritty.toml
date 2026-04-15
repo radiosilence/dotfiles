@@ -23,7 +23,7 @@ style = "Bold Italic"
 option_as_alt = "Both"
 opacity = 0.85
 blur = true
-decorations = "Transparent"
+decorations = "transparent"
 startup_mode = "Windowed"
 
 [window.dimensions]
@@ -45,7 +45,6 @@ cursor = "#c1c0c0"
 
 [colors.selection]
 text = "#fcfcfa"
-background = "#5b595c"
 
 [colors.normal]
 black = "#3d3a3e"
@@ -75,10 +74,6 @@ multiplier = 3
 # Mouse
 [mouse]
 hide_when_typing = false
-
-# Shell
-[terminal.shell]
-program = "/opt/homebrew/bin/zsh"
 
 # UK keyboard alt compose
 [[keyboard.bindings]]
