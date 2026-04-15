@@ -104,7 +104,12 @@ case "$key" in
       mkdir -p "$root/.worktrees"
       [[ -f "$root/.worktrees/.gitignore" ]] || echo '*' > "$root/.worktrees/.gitignore"
       git fetch origin "$base" --quiet || exit 1
-      git worktree add "$wt" -b "$name" "origin/$base" || exit 1
+      git fetch origin "$name" --quiet 2>/dev/null
+      # existing local branch → existing remote branch → new from base
+      git worktree add "$wt" "$name" 2>/dev/null \
+        || git worktree add "$wt" -b "$name" "origin/$name" 2>/dev/null \
+        || git worktree add "$wt" -b "$name" "origin/$base" \
+        || exit 1
     fi
 
     if zellij action query-tab-names 2>/dev/null | grep -qxF "$name"; then
@@ -112,5 +117,6 @@ case "$key" in
     else
       zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- ~/.dotfiles/scripts/wt-shell "$wt" "$name"
     fi
+    sleep 0.2  # let zellij process the action before floating pane closes
     ;;
 esac
