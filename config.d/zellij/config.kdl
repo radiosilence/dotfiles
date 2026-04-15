@@ -111,10 +111,10 @@ themes {
         ribbon_unselected {
             base 114 112 115
             background 48 46 50
-            emphasis_0 42 40 44
-            emphasis_1 42 40 44
-            emphasis_2 42 40 44
-            emphasis_3 42 40 44
+            emphasis_0 40 38 42
+            emphasis_1 40 38 42
+            emphasis_2 40 38 42
+            emphasis_3 40 38 42
         }
         table_title {
             base 169 220 118
