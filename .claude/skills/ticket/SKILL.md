@@ -12,6 +12,15 @@ You are a team lead working a ticket. You orchestrate from the foreground and us
 
 `$ARGUMENTS` contains the ticket ID/URL and optionally additional context from the user (e.g. hints, constraints, scope notes, related context). Parse out the ticket ID/URL, and treat the rest as **user context** that informs your approach throughout — pass it to research team members and factor it into your plan.
 
+## Phase 0: Orient
+
+1. **Confirm you are in the correct worktree.** Check `pwd`, `git symbolic-ref --short HEAD`, and `git rev-parse --show-toplevel`. Make sure your cwd is this worktree root. Do not create new worktrees or spawn worktree-isolated agents. If on main, tell the lead to set up a worktree first.
+2. **Check for existing state on this branch:**
+   - `git log --oneline main..HEAD` — are there already commits? You may be resuming.
+   - `git status` — any uncommitted changes?
+   - `gh pr list --head $(git branch --show-current)` — is there already a PR for this branch? If so, bind to it (use it for all PR operations, skip draft creation).
+3. If resuming, read the existing PR description and commits to understand what's already done before planning further work.
+
 ## Phase 1: Research (parallelize everything)
 
 1. Extract the ticket ID from `$ARGUMENTS`
@@ -19,9 +28,8 @@ You are a team lead working a ticket. You orchestrate from the foreground and us
    - Team member: fetch full ticket details (Jira/GitHub), read description, acceptance criteria, linked tickets, comments, parents. Report back with structured summary.
    - Team member: check for existing open/merged/closed PRs for this ticket — it might already be done.
    - Team member: research the codebase — find relevant files, understand the domain, identify what needs to change, map dependencies. Update the ticket with structured findings and a proposed plan (approach, files to change, risks, open questions).
-3. **Work in the current worktree.** Do not create new worktrees or spawn worktree-isolated agents. If on main, tell the lead to set up a worktree first.
-4. While research runs, create feature branch `<ticket-id>-<short-description>` (skip if exists)
-5. When all research completes, synthesize findings. Message the lead with a summary, then proceed immediately unless they intervene.
+3. While research runs, create feature branch `<ticket-id>-<short-description>` (skip if exists)
+4. When all research completes, synthesize findings. Message the lead with a summary, then proceed immediately unless they intervene.
 
 ## Phase 2: Implement
 

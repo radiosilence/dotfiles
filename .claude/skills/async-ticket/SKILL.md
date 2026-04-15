@@ -13,13 +13,14 @@ Spawn a single subagent with worktree isolation to work on a ticket.
 ## Steps
 
 1. Extract the ticket ID from `$ARGUMENTS`
-2. Derive a branch name: `<ticket-id>-wip` (the /ticket skill will refine it after reading the ticket)
-3. Spawn one agent with:
+2. Check if there's already a worktree/branch for this ticket (`git worktree list`, check for branches matching the ticket ID). If one exists, tell the lead and ask whether to resume there instead of creating a new one.
+3. Derive a branch name: `<ticket-id>-wip` (the /ticket skill will refine it after reading the ticket)
+4. Spawn one agent with:
    - `isolation: "worktree"` 
    - `run_in_background: true`
    - Prompt: run `/ticket $ARGUMENTS` — pass the FULL arguments through, not just the ID
-4. Tell the lead the agent is running and which worktree it's in
-5. You're done. Don't wait, don't poll. The ticket agent handles everything from here.
+5. Tell the lead the agent is running and which worktree it's in
+6. You're done. Don't wait, don't poll. The ticket agent handles everything from here.
 
 ## Rules
 
