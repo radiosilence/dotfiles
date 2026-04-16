@@ -1,47 +1,24 @@
-# Core — essential system tools, always installed
+# Core — packages that must stay in brew (system integration, libs for mise runtimes).
+# CLI tools have moved to Nix (see nix/packages.nix).
 tap 'buo/cask-upgrade'
 
-brew 'zsh'
-brew 'git'
+brew 'zsh'        # system shell registration
+brew 'mise'       # project-level runtimes
+brew 'pam-reattach'
+
 cask '1password', greedy: true
 cask '1password-cli', greedy: true
-
 cask 'ghostty', greedy: true
 
-
-brew 'curl'
-brew 'coreutils'
-brew 'findutils'
 brew 'uv'
-brew 'gnupg'
 brew 'openssl@3'
-brew 'mise'
-brew 'gh'
-brew 'pam-reattach'
-brew 'sheldon' if Hardware::CPU.intel?
-
-# Build tools
-brew 'cmake'
-brew 'make'
 brew 'llvm'
 
-# CLI utils
-brew 'fcp'
-brew 'htop'
-brew 'btop'
-brew 'mas'
-brew 'tokei'
-brew 'cmatrix'
-brew 'unar'
-brew 'testdisk'
+# Build tools (some native extensions need these via brew paths)
+brew 'cmake'
+brew 'make'
 
-# Sync
-brew 'fswatch'
-brew 'parallel'
-brew 'rsync'
-brew 'aria2'
-
-# Libs
+# Libs needed by mise-managed runtimes that expect brew linker paths
 brew 'gmp'
 brew 'libyaml'
 brew 'ossp-uuid'

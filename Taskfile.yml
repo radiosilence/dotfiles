@@ -25,10 +25,11 @@ tasks:
   # System update pipeline
   #
   # DAG:
-  #   link:*, auth:*, claude, tmux:*            — parallel
-  #   brew:bundle:update → brew → brew:upgrade → brew  — chained
-  #   mise → fonts                              — fonts needs yq
-  #   [brew, mise] → zsh-completions    — last
+  #   nix:switch                         — rebuilds nix-darwin + home-manager
+  #   auth:*, tmux:*                     — parallel
+  #   brew:bundle                        — remaining casks + libs
+  #   mise → fonts                       — fonts needs yq
+  #   [brew, mise] → zsh-completions     — last
   # ===========================================================================
 
   # ---------------------------------------------------------------------------
@@ -53,6 +54,20 @@ tasks:
     cmds:
       - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
       - printf "{{.OK}} dotfiles cloned\n"
+
+  nix:install:
+    desc: Install Nix via Determinate Systems installer
+    status: ["command -v nix"]
+    cmds:
+      - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+      - printf "{{.OK}} nix installed\n"
+
+  nix:switch:
+    desc: Rebuild nix-darwin + home-manager
+    deps: [nix:install]
+    cmds:
+      - darwin-rebuild switch --flake {{.DOTFILES}}
+      - printf "{{.OK}} nix-darwin switched\n"
 
   brew:install:
     desc: Install Homebrew
@@ -126,40 +141,6 @@ tasks:
       - curl -fsSL https://claude.ai/install.sh | bash
       - printf "{{.OK}} claude code\n"
 
-
-  brew:pam-reattach:
-    desc: Install pam-reattach for tmux Touch ID support
-    platforms: [darwin]
-    status: ["test -f /opt/homebrew/lib/pam/pam_reattach.so"]
-    cmds:
-      - brew install pam-reattach
-      - printf "{{.OK}} pam-reattach\n"
-
-  sudo:touchid:
-    desc: Enable TouchID for sudo
-    platforms: [darwin]
-    status: ["grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null"]
-    cmds:
-      - sudo sh -c 'printf "auth       sufficient     pam_tid.so\n" > /etc/pam.d/sudo_local'
-      - printf "{{.OK}} touchid sudo\n"
-
-  sudo:reattach:
-    desc: Enable Touch ID inside tmux via pam_reattach
-    platforms: [darwin]
-    deps: [brew:pam-reattach, sudo:touchid]
-    status: ["grep -q pam_reattach /etc/pam.d/sudo_local 2>/dev/null"]
-    cmds:
-      - sudo sh -c '{ printf "auth       optional       /opt/homebrew/lib/pam/pam_reattach.so\n"; cat /etc/pam.d/sudo_local; } > /etc/pam.d/sudo_local.tmp && mv /etc/pam.d/sudo_local.tmp /etc/pam.d/sudo_local'
-      - printf "{{.OK}} sudo reattach (tmux touchid)\n"
-
-  sudo:timeout:
-    desc: Set sudo timeout to 30 min
-    platforms: [darwin]
-    status: ["test -f /etc/sudoers.d/timeout"]
-    cmds:
-      - sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
-      - printf "{{.OK}} sudo timeout\n"
-
   mise:ensure:
     desc: Ensure mise is installed
     platforms: [darwin]
@@ -171,7 +152,7 @@ tasks:
 
   mise:install:
     desc: Install mise tools
-    deps: [mise:ensure, gh:auth, link:config]
+    deps: [mise:ensure, gh:auth]
     status: ["! command -v mise"]
     cmds:
       - |
@@ -188,14 +169,12 @@ tasks:
       - brew:roles
       - rosetta:install
       - claude:install
-      - sudo:touchid
-      - sudo:reattach
-      - sudo:timeout
       - 1password:ssh-config
       - reinstall-bins
       - use-ssh
-      # Regular update
-      - link
+      # Nix (handles packages, config symlinks, git, ssh, zsh, etc.)
+      - nix:switch
+      # Remaining non-nix tasks
       - check:auth
       - install:fonts
       - brew:bundle
@@ -203,6 +182,8 @@ tasks:
       - dnf:upgrade
       - mise:upgrade
       - tmux
+      - link:claude-hooks
+      - patch:npmrc
       - generate:completions
     cmds:
       - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
@@ -211,86 +192,8 @@ tasks:
       - printf "{{.OK}} {{.BOLD}}converged{{.RESET}} (restart shell for changes)\n"
 
   # ---------------------------------------------------------------------------
-  # Link tasks
+  # Link tasks (only things not handled by home-manager)
   # ---------------------------------------------------------------------------
-
-  link:
-    desc: Symlink dotfiles and configs
-    deps:
-      - link:dotfiles
-      - link:config
-      - patch:gitconfig
-      - patch:ssh
-      - link:brewfile
-      - link:claude-hooks
-      - link:sheldon
-      - patch:npmrc
-      - link:cargo
-
-  link:dotfiles:
-    desc: Symlink dotfiles (.* → ~)
-    cmds:
-      - |
-        for f in "{{.DOTFILES}}"/.* ; do
-          name=$(basename "$f")
-          case "$name" in
-            .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
-            .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json)
-              continue ;;
-          esac
-          target="$HOME/$name"
-          [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
-          rm -rf "$target"
-          ln -s "$f" "$target"
-          printf "{{.LINK}} %s\n" "$name"
-        done
-
-  link:config:
-    desc: Symlink config dirs (config.d/* → ~/.config/*)
-    cmds:
-      - |
-        mkdir -p "$HOME/.config"
-        for f in "{{.DOTFILES}}/config.d"/*; do
-          [ -e "$f" ] || continue
-          name=$(basename "$f")
-          target="$HOME/.config/$name"
-          [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
-          rm -rf "$target"
-          ln -s "$f" "$target"
-          printf "{{.LINK}} ~/.config/%s\n" "$name"
-        done
-
-  patch:gitconfig:
-    desc: Ensure gitconfig includes dotfiles
-    cmds:
-      - |
-        [ -f "$HOME/.gitconfig" ] || touch "$HOME/.gitconfig"
-        grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null && exit 0
-        printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
-        printf "{{.OK}} gitconfig include\n"
-
-  patch:ssh:
-    desc: Ensure SSH config includes dotfiles
-    cmds:
-      - |
-        mkdir -p "$HOME/.ssh"
-        if [ ! -f "$HOME/.ssh/config" ]; then
-          touch "$HOME/.ssh/config"
-          chmod 600 "$HOME/.ssh/config"
-        fi
-        grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null && exit 0
-        printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
-        printf "{{.OK}} ssh config include\n"
-
-  link:brewfile:
-    desc: Symlink Brewfile
-    platforms: [darwin]
-    cmds:
-      - |
-        target="$HOME/Brewfile"
-        [ -L "$target" ] && [ "$(readlink "$target")" = "{{.DOTFILES}}/Brewfile" ] && exit 0
-        ln -sf "{{.DOTFILES}}/Brewfile" "$target"
-        printf "{{.OK}} Brewfile\n"
 
   link:claude-hooks:
     desc: Inject Claude Code hooks into settings.json
@@ -321,28 +224,6 @@ tasks:
         done < "{{.DOTFILES}}/packager.d/npmrc-security"
         [ "$changed" = 1 ] && printf "{{.OK}} npmrc security defaults\n"
         exit 0
-
-  link:cargo:
-    desc: Symlink cargo security config
-    cmds:
-      - |
-        mkdir -p "$HOME/.cargo"
-        target="$HOME/.cargo/config.toml"
-        src="{{.DOTFILES}}/packager.d/cargo-config.toml"
-        [ -L "$target" ] && [ "$(readlink "$target")" = "$src" ] && exit 0
-        if [ -f "$target" ] && [ ! -L "$target" ]; then
-          printf "{{.WARN}} ~/.cargo/config.toml exists — merge %s manually\n" "$src"
-          exit 0
-        fi
-        ln -sf "$src" "$target"
-        printf "{{.LINK}} cargo config\n"
-
-  link:sheldon:
-    desc: Sheldon plugin manager
-    status:
-      - "! command -v sheldon"
-    cmds:
-      - sheldon source >/dev/null 2>&1 && printf "{{.OK}} sheldon\n"
 
   # ---------------------------------------------------------------------------
   # Build / utility tasks
@@ -442,8 +323,8 @@ tasks:
         printf "{{.OK}} {{.NAME}}\n"
 
   brew:bundle:
-    desc: Install/upgrade brew packages
-    deps: [link:brewfile, brew:pam-reattach]
+    desc: Install/upgrade brew packages (casks + remaining libs)
+    deps: [brew:roles]
     platforms: [darwin]
     status: ["! command -v brew"]
     cmds:
@@ -637,4 +518,4 @@ tasks:
     deps: [generate:completions:setup]
     status: ["! command -v npm"]
     cmds:
-      - npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
+      - npm completion > "{{.HOME}}/.config/zsh/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
