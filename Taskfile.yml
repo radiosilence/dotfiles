@@ -224,6 +224,7 @@ tasks:
       - link:brewfile
       - link:claude-hooks
       - link:sheldon
+      - link:launchagents
       - patch:npmrc
       - link:cargo
 
@@ -336,6 +337,27 @@ tasks:
         fi
         ln -sf "$src" "$target"
         printf "{{.LINK}} cargo config\n"
+
+  link:launchagents:
+    desc: Symlink and reload LaunchAgents
+    platforms: [darwin]
+    cmds:
+      - |
+        mkdir -p "$HOME/Library/LaunchAgents"
+        for f in "{{.DOTFILES}}/launchd"/*.plist; do
+          [ -e "$f" ] || continue
+          name=$(basename "$f")
+          label="${name%.plist}"
+          target="$HOME/Library/LaunchAgents/$name"
+          [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] || {
+            rm -f "$target"
+            ln -s "$f" "$target"
+            printf "{{.LINK}} LaunchAgents/%s\n" "$name"
+          }
+          launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
+          launchctl bootstrap "gui/$(id -u)" "$target"
+          printf "{{.OK}} %s (loaded)\n" "$label"
+        done
 
   link:sheldon:
     desc: Sheldon plugin manager
