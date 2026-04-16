@@ -183,6 +183,7 @@ tasks:
       - mise:upgrade
       - tmux
       - link:claude-hooks
+      - link:launchagents
       - patch:npmrc
       - generate:completions
     cmds:
@@ -194,6 +195,27 @@ tasks:
   # ---------------------------------------------------------------------------
   # Link tasks (only things not handled by home-manager)
   # ---------------------------------------------------------------------------
+
+  link:launchagents:
+    desc: Symlink and reload LaunchAgents
+    platforms: [darwin]
+    cmds:
+      - |
+        mkdir -p "$HOME/Library/LaunchAgents"
+        for f in "{{.DOTFILES}}/launchd"/*.plist; do
+          [ -e "$f" ] || continue
+          name=$(basename "$f")
+          label="${name%.plist}"
+          target="$HOME/Library/LaunchAgents/$name"
+          [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] || {
+            rm -f "$target"
+            ln -s "$f" "$target"
+            printf "{{.LINK}} LaunchAgents/%s\n" "$name"
+          }
+          launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
+          launchctl bootstrap "gui/$(id -u)" "$target"
+          printf "{{.OK}} %s (loaded)\n" "$label"
+        done
 
   link:claude-hooks:
     desc: Inject Claude Code hooks into settings.json
