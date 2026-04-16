@@ -63,11 +63,17 @@ tasks:
       - printf "{{.OK}} nix installed\n"
 
   nix:switch:
-    desc: Rebuild nix-darwin + home-manager
+    desc: Rebuild nix config (darwin-rebuild on macOS, home-manager on Linux)
     deps: [nix:install]
     cmds:
-      - darwin-rebuild switch --flake {{.DOTFILES}}
-      - printf "{{.OK}} nix-darwin switched\n"
+      - |
+        if [ "$(uname)" = "Darwin" ]; then
+          darwin-rebuild switch --flake {{.DOTFILES}}
+          printf "{{.OK}} nix-darwin switched\n"
+        else
+          home-manager switch --flake {{.DOTFILES}}
+          printf "{{.OK}} home-manager switched\n"
+        fi
 
   brew:install:
     desc: Install Homebrew

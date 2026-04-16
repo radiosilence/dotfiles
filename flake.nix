@@ -17,11 +17,19 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, ... }: let
     username = "james.cleveland";
-    hostname = "James-Cleveland-Mac";
-    system = "aarch64-darwin";
+
+    # Shared home-manager modules — portable across macOS and Linux
+    homeModules = [
+      ./nix/home.nix
+    ];
+
+    mkHomeArgs = {
+      dotfiles = self.outPath;
+    };
   in {
-    darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
-      inherit system;
+    # ── macOS (nix-darwin + home-manager) ─────────────────────────────
+    darwinConfigurations."James-Cleveland-Mac" = nix-darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
       modules = [
         ./nix/darwin.nix
         home-manager.darwinModules.home-manager
@@ -29,10 +37,8 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.${username} = import ./nix/home.nix;
-            extraSpecialArgs = {
-              dotfiles = self.outPath;
-            };
+            users.${username} = { imports = homeModules; };
+            extraSpecialArgs = mkHomeArgs;
           };
 
           users.users.${username} = {
@@ -43,13 +49,30 @@
       ];
     };
 
-    # Convenience: `nix run .#switch`
-    apps.${system}.switch = {
+    # ── Linux (standalone home-manager, no NixOS required) ────────────
+    homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      modules = homeModules;
+      extraSpecialArgs = mkHomeArgs;
+    };
+
+    # ── Convenience apps ──────────────────────────────────────────────
+    apps.aarch64-darwin.switch = {
       type = "app";
       program = let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
         script = pkgs.writeShellScript "darwin-switch" ''
           darwin-rebuild switch --flake "${self}" "$@"
+        '';
+      in "${script}";
+    };
+
+    apps.x86_64-linux.switch = {
+      type = "app";
+      program = let
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        script = pkgs.writeShellScript "hm-switch" ''
+          home-manager switch --flake "${self}" "$@"
         '';
       in "${script}";
     };

@@ -1,4 +1,4 @@
-{ pkgs, dotfiles, ... }: {
+{ pkgs, lib, dotfiles, ... }: {
   imports = [
     ./packages.nix
     ./git.nix
@@ -15,6 +15,7 @@
     PAGER = "bat --style=plain";
     MANPAGER = "bat --style=plain --language=man";
     WORDCHARS = "*?_-.[]~=&;!#$%^(){}<>";
+  } // lib.optionalAttrs pkgs.stdenv.isDarwin {
     HOMEBREW_BUNDLE_FILE = "~/Brewfile";
   };
 

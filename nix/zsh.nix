@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   programs.zsh = {
     enable = true;
     dotDir = ".config/zsh";
@@ -94,9 +94,6 @@
       claude = "claude --dangerously-skip-permissions";
       c = "claude --dangerously-skip-permissions";
 
-      # Brew
-      bb = "brew bundle";
-
       # Mise
       m = "mise";
       mi = "mise i";
@@ -123,6 +120,9 @@
 
       # Converge
       upd = "converge";
+    } // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      # Brew (macOS only)
+      bb = "brew bundle";
     };
 
     # ── initExtraFirst ─────────────────────────────────────────────────
@@ -138,7 +138,7 @@
     # ── initExtra ──────────────────────────────────────────────────────
     # Runs after compinit and plugins. Order matters — kept close to original conf.d numbering.
     initExtra = ''
-      # ── Options (was 00-prelude.zsh, partially) ──────────────────────
+      # ── Options ──────────────────────────────────────────────────────
       setopt NO_BEEP
       setopt GLOB_COMPLETE
       setopt ALWAYS_TO_END
@@ -152,7 +152,7 @@
       setopt INTERACTIVE_COMMENTS
       setopt BANG_HIST
 
-      # ── Cache eval helper (from 00-prelude) ──────────────────────────
+      # ── Cache eval helper ────────────────────────────────────────────
       _cached_eval() {
         local name=$1 cmd=$2 dep=$3
         local cache_dir=~/.cache/zsh/eval
@@ -169,7 +169,8 @@
         fpath=(~/.config/zsh/completions $fpath)
       fi
 
-      # ── Brew completions fpath ───────────────────────────────────────
+    '' + lib.optionalString pkgs.stdenv.isDarwin ''
+      # ── Brew completions fpath (macOS) ───────────────────────────────
       for _brew_zsh in /opt/homebrew/share/zsh/site-functions /usr/local/share/zsh/site-functions; do
         if [[ -d $_brew_zsh ]]; then
           fpath=($_brew_zsh $fpath)
@@ -178,7 +179,8 @@
       done
       unset _brew_zsh
 
-      # ── Completion styling (from 00-prelude) ─────────────────────────
+    '' + ''
+      # ── Completion styling ───────────────────────────────────────────
       zstyle ':completion:*' menu select
       zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
       zstyle ':completion:*' special-dirs true
@@ -217,11 +219,12 @@
       zstyle ':fzf-tab:complete:kill:*' fzf-preview 'ps -p $word -o pid,user,%cpu,%mem,command --no-headers 2>/dev/null'
       zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word 2>/dev/null'
 
-      # ── PATH (was 10-path.zsh + dotfiles.zsh) ────────────────────────
+      # ── PATH ─────────────────────────────────────────────────────────
       path=(~/.local/bin ~/.dotfiles/bin ~/.dotfiles/scripts $path)
       export PATH
 
-      # ── Brew (was 15-brew.zsh) ───────────────────────────────────────
+    '' + lib.optionalString pkgs.stdenv.isDarwin ''
+      # ── Brew (macOS) ─────────────────────────────────────────────────
       if [[ -d /opt/homebrew ]]; then
         export BREW_PREFIX=/opt/homebrew
       else
@@ -230,35 +233,38 @@
       path=("$BREW_PREFIX/bin" "$BREW_PREFIX/sbin" $path)
       export PATH
 
-      # ── 1Password (was 20-op.zsh) ───────────────────────────────────
+    '' + ''
+      # ── 1Password ───────────────────────────────────────────────────
       [[ -f ~/.config/op/plugins.sh ]] && source ~/.config/op/plugins.sh
 
-      # ── Mise (was 25-mise.zsh) ──────────────────────────────────────
+      # ── Mise ────────────────────────────────────────────────────────
       if command -v mise >/dev/null; then
         _cached_eval "mise" "mise activate zsh"
       fi
 
-      # ── GitHub token (was github.zsh) ───────────────────────────────
+      # ── GitHub token ────────────────────────────────────────────────
       if [[ -z $GITHUB_TOKEN ]] && command -v gh >/dev/null && gh auth status &>/dev/null; then
         export GITHUB_TOKEN=$(gh auth token 2>/dev/null)
       fi
 
-      # ── GCP (was gcp.zsh) ──────────────────────────────────────────
+      # ── GCP ─────────────────────────────────────────────────────────
       if command -v gcloud >/dev/null; then
         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
       fi
 
-      # ── libpq (was libpq.zsh) ──────────────────────────────────────
+    '' + lib.optionalString pkgs.stdenv.isDarwin ''
+      # ── libpq (macOS — brew paths) ─────────────────────────────────
       if [[ -d /opt/homebrew/opt/libpq ]]; then
         export LDFLAGS="''${LDFLAGS} -L/opt/homebrew/opt/libpq/lib"
         export CPPFLAGS="''${CPPFLAGS} -I/opt/homebrew/opt/libpq/include"
         path=(/opt/homebrew/opt/libpq/bin $path)
       fi
 
-      # ── OrbStack (was orbstack.zsh) ─────────────────────────────────
+      # ── OrbStack (macOS) ────────────────────────────────────────────
       [[ -f ~/.orbstack/shell/init.zsh ]] && source ~/.orbstack/shell/init.zsh
 
-      # ── Terraform (was terraform.zsh) ───────────────────────────────
+    '' + ''
+      # ── Terraform ───────────────────────────────────────────────────
       if command -v terraform >/dev/null; then
         autoload -U +X bashcompinit && bashcompinit
         complete -o nospace -C terraform terraform
@@ -267,12 +273,12 @@
       # ── Bun completions ─────────────────────────────────────────────
       [ -s ~/.bun/_bun ] && source ~/.bun/_bun
 
-      # ── npm-add-safe (was claude.zsh) ───────────────────────────────
+      # ── npm-add-safe ────────────────────────────────────────────────
       npm-add-safe() {
         claude --allow-dangerously-skip-permissions -p "please checkout the git repo for npm package $1, audit the code and it's dependencies, and if it seems reasonable, run npm add $1. You are NOT being run interactively, if the package seems safe, add it, do not ask questions."
       }
 
-      # ── Utility functions (was utils.zsh) ───────────────────────────
+      # ── Utility functions ───────────────────────────────────────────
       whatport() { lsof -i :"$1"; }
 
       if command -v fd >/dev/null; then
@@ -329,7 +335,7 @@
         autoload -Uz ~/.config/zsh/functions/*(.:t)
       fi
 
-      # ── Interactive keybindings (was interactive.zsh) ────────────────
+      # ── Interactive keybindings ──────────────────────────────────────
       if [[ $- == *i* ]]; then
         bindkey '^[^?' backward-kill-word
         bindkey '^[[1;3D' backward-word
@@ -338,7 +344,6 @@
       fi
 
       # ── Source remaining conf.d files ────────────────────────────────
-      # Complex configs that stay as files: git, git-worktree, k8s
       for config in ~/.config/zsh/conf.d/*.zsh; do
         [[ -r "$config" ]] && source "$config"
       done

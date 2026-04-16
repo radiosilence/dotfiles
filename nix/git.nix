@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   programs.git = {
     enable = true;
 
@@ -21,8 +21,10 @@
     signing = {
       signByDefault = true;
       format = "ssh";
-      sshProgram = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-      # key is set in local git config (machine-specific, via 1Password)
+      # macOS: 1Password desktop app handles signing
+      # Linux: 1Password CLI or SSH agent (configured in local gitconfig)
+      sshProgram = lib.mkIf pkgs.stdenv.isDarwin
+        "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
     };
 
     ignores = [
