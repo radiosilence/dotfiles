@@ -1,7 +1,7 @@
 # FZF configuration
 command -v fzf >/dev/null || return
 
-_cached_eval "fzf" "fzf --zsh"
+_cached_eval "fzf" "fzf --zsh" "$(command -v fzf)"
 
 if command -v bat >/dev/null; then
   alias fzf='fzf \
