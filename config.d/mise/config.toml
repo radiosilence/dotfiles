@@ -33,11 +33,12 @@ deno = "latest" # Secure JS/TS runtime
 "github:rossmacarthur/sheldon" = "latest"       # Zsh plugin manager
 "github:sharkdp/bat" = "latest"                 # Cat with wings
 "github:sharkdp/hyperfine" = "latest"           # Benchmarking
-"github:starship/starship" = "latest"           # Cross-shell prompt
+"github:starship/starship" = "latest"
 "github:tamasfe/taplo" = "latest"               # TOML formatter
 "github:tmux/tmux-builds" = "latest"            # Terminal multiplexer
 "github:zellij-org/zellij" = "latest"           # Terminal multiplexer (tiles)
 "github:sharkdp/fd" = "latest"                  # Fast find alternative
+"github:radiosilence/watchwoman" = "latest"
 
 [[tools."github:yt-dlp/yt-dlp-nightly-builds"]] # Video downloader (nightly)
 version = "latest"
