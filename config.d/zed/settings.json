@@ -80,6 +80,7 @@
     "ruby": true,
     "kotlin": true,
     "lua": true,
+    "nix": true,
     "nginx": true,
     "proto": true,
     "scss": true,

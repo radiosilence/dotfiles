@@ -6,7 +6,7 @@ brew 'awscli'
 brew 'aws-shell'
 brew 'aws-sso-util'
 brew 'cf-terraforming'
-brew 'watchman'
+# watchman replaced by watchwoman — see github:radiosilence/watchwoman
 brew 'nanovms/ops/ops'
 brew 'qemu'
 brew 'ios-deploy'
