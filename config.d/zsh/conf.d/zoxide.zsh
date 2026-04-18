@@ -1,4 +1,4 @@
 # Zoxide (smart cd)
 command -v zoxide >/dev/null || return
 
-_cached_eval "zoxide" "zoxide init zsh"
+_cached_eval "zoxide" "zoxide init zsh" "$(command -v zoxide)"
