@@ -6,10 +6,10 @@ shell = "zsh"
 # Core Zsh Enhancements (Fish has these features built-in)
 # ============================================================================
 
-# Syntax highlighting for commands as you type
-# Colors commands green (valid) or red (invalid), highlights strings, etc.
-[plugins.zsh-syntax-highlighting]
-github = "zsh-users/zsh-syntax-highlighting"
+# Syntax highlighting: zsh-patina (Rust daemon via Homebrew)
+#   Initialised in ~/.config/zsh/conf.d/zzz-patina.zsh
+#   Replaces zsh-users/zsh-syntax-highlighting with Sublime Text-grade
+#   highlighting and sub-millisecond latency.
 
 # Fish-like autosuggestions based on history and completions
 # Shows grayed-out text suggesting commands as you type, press → to accept
