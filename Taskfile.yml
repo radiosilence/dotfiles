@@ -576,6 +576,7 @@ tasks:
           - unfuck-xcode
           - url2base64
           - vimv
+          - watchwoman
           - yq
         task: generate:completions:gen
         vars:

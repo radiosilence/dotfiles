@@ -3,7 +3,6 @@ tap 'nanovms/ops'
 tap 'hashicorp/tap'
 
 brew 'awscli'
-brew 'aws-shell'
 brew 'aws-sso-util'
 brew 'cf-terraforming'
 # watchman replaced by watchwoman — see github:radiosilence/watchwoman
