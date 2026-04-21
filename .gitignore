@@ -17,3 +17,4 @@ Brewfile.local
 # Zsh compiled files
 *.zwc
 *.bak
+docs-local
