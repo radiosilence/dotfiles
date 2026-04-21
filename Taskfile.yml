@@ -431,21 +431,14 @@ tasks:
     desc: Install missing fonts
     platforms: [darwin]
     deps:
+      # Geist Sans/Mono + Geist Mono Nerd Font are managed via Homebrew casks
+      # (font-geist, font-geist-mono, font-geist-mono-nerd-font) in core.rb.
+      # Only community forks without brew casks stay here.
       - task: install:fonts:get
         vars:
           NAME: Hack Ligatured
           URL: "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip"
           MARKER: HackNerdFontJBMLigatured-Regular.ttf
-      - task: install:fonts:get
-        vars:
-          NAME: Geist
-          URL: "https://github.com/vercel/geist-font/releases/download/geist%401.7.0/geist-font-v1.7.0.zip"
-          MARKER: Geist-Regular.otf
-      - task: install:fonts:get
-        vars:
-          NAME: Geist Mono Nerd Font
-          URL: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip"
-          MARKER: GeistMonoNerdFont-Regular.otf
 
   install:fonts:get:
     internal: true
