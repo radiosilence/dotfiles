@@ -9,7 +9,7 @@
       "args": ["x", "--", "fastmail-cli", "mcp"],
     },
   },
-  "restore_on_startup": "none",
+  "restore_on_startup": "last_workspace",
   "tab_size": 2,
   "toolbar": {
     "code_actions": true,
@@ -97,7 +97,7 @@
       "default": "allow",
     },
     "dock": "right",
-    "play_sound_when_agent_done": false,
+    "play_sound_when_agent_done": "when_hidden",
     "default_profile": "write",
     "inline_assistant_model": {
       "provider": "zed.dev",
