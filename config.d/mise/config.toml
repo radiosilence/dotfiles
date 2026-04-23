@@ -40,6 +40,7 @@ deno = "latest" # Secure JS/TS runtime
 "github:sharkdp/fd" = "latest"                  # Fast find alternative
 "github:radiosilence/watchwoman" = "latest"
 "github:michel-kraemer/zsh-patina" = "latest"
+kubecolor = "latest"
 
 [[tools."github:yt-dlp/yt-dlp-nightly-builds"]] # Video downloader (nightly)
 version = "latest"
