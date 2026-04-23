@@ -27,7 +27,6 @@ tasks:
   # DAG:
   #   link:*, auth:*, claude, tmux:*            — parallel
   #   brew:bundle:update → brew → brew:upgrade → brew  — chained
-  #   mise → fonts                              — fonts needs yq
   #   [brew, mise] → zsh-completions    — last
   # ===========================================================================
 
@@ -197,7 +196,6 @@ tasks:
       # Regular update
       - link
       - check:auth
-      - install:fonts
       - brew:bundle
       - apt:upgrade
       - dnf:upgrade
@@ -426,35 +424,6 @@ tasks:
         else
           printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"
         fi
-
-  install:fonts:
-    desc: Install missing fonts
-    platforms: [darwin]
-    deps:
-      # Geist Sans/Mono + Geist Mono Nerd Font are managed via Homebrew casks
-      # (font-geist, font-geist-mono, font-geist-mono-nerd-font) in core.rb.
-      # Only community forks without brew casks stay here.
-      - task: install:fonts:get
-        vars:
-          NAME: Hack Ligatured
-          URL: "https://github.com/gaplo917/Ligatured-Hack/releases/download/v3.003%2BNv2.1.0%2BFC%2BJBMv2.242/HackLigatured-v3.003%2BFC3.1%2BJBMv2.242.zip"
-          MARKER: HackNerdFontJBMLigatured-Regular.ttf
-
-  install:fonts:get:
-    internal: true
-    run: always
-    platforms: [darwin]
-    status: ["test -f ~/Library/Fonts/{{.MARKER}}"]
-    cmds:
-      - mkdir -p ~/Library/Fonts
-      - |
-        printf "{{.WORK}} {{.NAME}}\n"
-        tmpdir=$(mktemp -d)
-        curl -fsSL "{{.URL}}" -o "$tmpdir/font.zip"
-        unzip -qo "$tmpdir/font.zip" -d "$tmpdir/out"
-        find "$tmpdir/out" \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp {} ~/Library/Fonts/ \;
-        rm -rf "$tmpdir"
-        printf "{{.OK}} {{.NAME}}\n"
 
   brew:bundle:
     desc: Install/upgrade brew packages
