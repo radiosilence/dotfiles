@@ -8,6 +8,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### April
 
+- New `preem` alias — prints cyberpunk banner with random Night City quote. Pure ANSI, no deps
 - New `sudo:reattach` task — prepends `pam_reattach.so` to `sudo_local` so Touch ID works inside tmux. Depends on `brew:pam-reattach` + `sudo:touchid`
 - New `brew:pam-reattach` task — installs formula, status checks `.so` presence. `brew:bundle` depends on it to avoid lock races
 - `pam-reattach` added to `brewfiles.d/core.rb`

@@ -57,6 +57,16 @@ if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/de
   gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')"; }
 fi
 
+alias preem='_quotes=(
+  "Wake the fuck up, samurai. We have a city to burn."
+  "Never stop fighting."
+  "You gonna do something or just stand there and bleed?"
+  "The street finds its own uses for things."
+  "When you see a man with a lot of weapons, he is compensating for something."
+  "Everybody lies. That is the one truth of Night City."
+  "Style over substance, choom."
+); printf "\e[38;5;51m▓▒░\e[38;5;201m NIGHT CITY \e[38;5;51m░▒▓\e[0m \e[38;5;226m%s\e[0m\n" "${_quotes[$((RANDOM % ${#_quotes[@]} + 1))]}"'
+
 converge() {
   git -C ~/.dotfiles pull --quiet
   # Pre-warm sudo on Linux (password prompt gets buried in parallel output)
