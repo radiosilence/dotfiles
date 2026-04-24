@@ -8,6 +8,19 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### April
 
+**Terminal overhaul — swap from ghostty to wezterm:**
+
+- `font-geist`, `font-geist-mono`, `font-geist-mono-nerd-font` moved from `install:fonts` task (pinned to v1.7.0) to `brewfiles.d/core.rb` casks. Auto-updates via `brew upgrade`. Whole `install:fonts` / `install:fonts:get` Taskfile machinery deleted along with its DAG entry
+- `cask 'wezterm'` added; `cask 'ghostty'` removed (`config.d/ghostty/` kept)
+- `.wezterm.lua`: `send_composed_key_when_*_alt_is_pressed = false` so Alt forwards as a real modifier (was breaking zellij Alt+hjkl). UK compose keys already explicit overrides so nothing lost. `format-tab-title` handler added so active pane's OSC title propagates live. `default_prog = { 'zsh', '-ic', 'zps' }` — new WezTerm tab drops into the zellij picker, ESC falls through to a plain shell
+- `zps` helper in `config.d/zsh/conf.d/utils.zsh` — thin wrapper around `zp` that always `exec zsh` after
+- `icon:wezterm` Taskfile task — copies `config.d/wezterm/wezterm.icns` (mikker's design) to `/Applications/WezTerm.app/Contents/Resources/terminal.icns`, nukes Dock icon caches, `killall Dock`. Checksum-based `status:` so it only re-runs when brew upgrade wipes it. Hooked into `converge` after `brew:bundle`
+
+**Editor + multiplexer:**
+
+- Zed `buffer_font_features`: all Geist Mono stylistic sets (`ss01`–`ss11`, minus skipped `ss05`) enabled. Coding ligatures live under `ss11` in Geist Mono (not `calt`/`liga`) — vercel/geist-font#201 context
+- Zellij: `Ctrl+Shift+P` enters pane mode (default `Ctrl+P` kept as in-mode escape). Explicit `web_server false` + `web_sharing "disabled"` to harden against future default flips
+
 - New `sudo:reattach` task — prepends `pam_reattach.so` to `sudo_local` so Touch ID works inside tmux. Depends on `brew:pam-reattach` + `sudo:touchid`
 - New `brew:pam-reattach` task — installs formula, status checks `.so` presence. `brew:bundle` depends on it to avoid lock races
 - `pam-reattach` added to `brewfiles.d/core.rb`

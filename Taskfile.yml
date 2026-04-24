@@ -197,6 +197,7 @@ tasks:
       - link
       - check:auth
       - brew:bundle
+      - icon:wezterm
       - apt:upgrade
       - dnf:upgrade
       - mise:upgrade
@@ -433,6 +434,22 @@ tasks:
     cmds:
       - brew bundle --quiet
       - brew cleanup --quiet &
+
+  icon:wezterm:
+    desc: Apply custom WezTerm app icon (re-run after every brew upgrade)
+    platforms: [darwin]
+    status:
+      - test ! -d /Applications/WezTerm.app
+      - |
+        src=$(shasum "{{.DOTFILES}}/config.d/wezterm/wezterm.icns" | awk '{print $1}')
+        dst=$(shasum /Applications/WezTerm.app/Contents/Resources/terminal.icns 2>/dev/null | awk '{print $1}')
+        [ "$src" = "$dst" ]
+    cmds:
+      - cp "{{.DOTFILES}}/config.d/wezterm/wezterm.icns" /Applications/WezTerm.app/Contents/Resources/terminal.icns
+      - rm -f /var/folders/*/*/*/com.apple.dock.iconcache 2>/dev/null || true
+      - rm -rf /var/folders/*/*/*/com.apple.iconservices* 2>/dev/null || true
+      - killall Dock 2>/dev/null || true
+      - printf "{{.OK}} WezTerm icon applied\n"
 
   apt:upgrade:
     desc: Update apt packages

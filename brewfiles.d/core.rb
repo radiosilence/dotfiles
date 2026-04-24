@@ -6,7 +6,7 @@ brew 'git'
 cask '1password', greedy: true
 cask '1password-cli', greedy: true
 
-cask 'ghostty', greedy: true
+cask 'wezterm', greedy: true
 
 # Fonts — auto-updated via brew upgrade
 cask 'font-geist', greedy: true

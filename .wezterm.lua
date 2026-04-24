@@ -7,6 +7,9 @@ config.unix_domains = {
 }
 config.default_gui_startup_args = { 'connect', 'unix' }
 
+-- New tab: zellij picker (zp) → attach/create; ESC falls through to a plain shell.
+config.default_prog = { '/bin/zsh', '-ic', 'zps' }
+
 -- Window
 config.initial_rows = 64
 config.initial_cols = 160
@@ -21,13 +24,21 @@ config.hide_tab_bar_if_only_one_tab = false
 config.use_fancy_tab_bar = true
 config.tab_bar_at_bottom = false
 
+-- Always reflect the active pane's OSC-set title (zellij session/tab).
+wezterm.on('format-tab-title', function(tab)
+  local title = tab.active_pane.title or ''
+  if title == '' then title = 'wezterm' end
+  return ' ' .. title .. ' '
+end)
+
 -- Font: Geist Mono 11 (shared across all three terminals)
 config.font = wezterm.font('Geist Mono', { weight = "Regular" })
 config.font_size = 11
 
--- macOS option-as-alt
-config.send_composed_key_when_left_alt_is_pressed = true
-config.send_composed_key_when_right_alt_is_pressed = true
+-- macOS option-as-alt: send raw Alt modifier instead of letting macOS compose.
+-- UK-keyboard composes (#, €, º, ^W) are remapped explicitly in `keys` below.
+config.send_composed_key_when_left_alt_is_pressed = false
+config.send_composed_key_when_right_alt_is_pressed = false
 
 -- Keybindings
 config.keys = {
