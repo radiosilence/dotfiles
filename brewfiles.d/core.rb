@@ -7,6 +7,7 @@ cask '1password', greedy: true
 cask '1password-cli', greedy: true
 
 cask 'wezterm', greedy: true
+brew 'fileicon'  # icon:wezterm task uses this to bypass macOS 26 liquid-glass framing
 
 # Fonts — auto-updated via brew upgrade
 cask 'font-geist', greedy: true
