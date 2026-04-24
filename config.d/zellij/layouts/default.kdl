@@ -1,0 +1,7 @@
+// Default layout: compact bar at bottom (tabs + mode indicator in one line).
+layout {
+    pane
+    pane size=1 borderless=true {
+        plugin location="compact-bar"
+    }
+}
