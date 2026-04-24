@@ -436,19 +436,18 @@ tasks:
       - brew cleanup --quiet &
 
   icon:wezterm:
-    desc: Apply custom WezTerm app icon (re-run after every brew upgrade)
+    desc: Apply custom WezTerm icon via Finder xattr (bypasses macOS 26 liquid-glass framing)
     platforms: [darwin]
+    deps: [brew:bundle]
     status:
       - test ! -d /Applications/WezTerm.app
-      - |
-        src=$(shasum "{{.DOTFILES}}/config.d/wezterm/wezterm.icns" | awk '{print $1}')
-        dst=$(shasum /Applications/WezTerm.app/Contents/Resources/terminal.icns 2>/dev/null | awk '{print $1}')
-        [ "$src" = "$dst" ]
+      - test -f "/Applications/WezTerm.app/Icon\r"
     cmds:
-      - cp "{{.DOTFILES}}/config.d/wezterm/wezterm.icns" /Applications/WezTerm.app/Contents/Resources/terminal.icns
+      - fileicon set /Applications/WezTerm.app "{{.DOTFILES}}/config.d/wezterm/wezterm.icns"
       - rm -f /var/folders/*/*/*/com.apple.dock.iconcache 2>/dev/null || true
       - rm -rf /var/folders/*/*/*/com.apple.iconservices* 2>/dev/null || true
       - killall Dock 2>/dev/null || true
+      - killall Finder 2>/dev/null || true
       - printf "{{.OK}} WezTerm icon applied\n"
 
   apt:upgrade:
