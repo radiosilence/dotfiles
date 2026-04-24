@@ -1,4 +1,8 @@
 {
+  "cli_default_open_behavior": "existing_window",
+  "collaboration_panel": {
+    "dock": "left",
+  },
   "context_servers": {
     "folk": {
       "command": "mise",
@@ -32,13 +36,13 @@
     },
   },
   "project_panel": {
-    "dock": "left",
+    "dock": "right",
   },
   "outline_panel": {
     "dock": "left",
   },
   "git_panel": {
-    "dock": "left",
+    "dock": "right",
   },
   "edit_predictions": {
     "provider": "zed",
@@ -96,7 +100,7 @@
     "tool_permissions": {
       "default": "allow",
     },
-    "dock": "right",
+    "dock": "left",
     "play_sound_when_agent_done": "when_hidden",
     "default_profile": "write",
     "inline_assistant_model": {
@@ -113,22 +117,13 @@
   "buffer_font_size": 12.0,
   "buffer_font_family": "Geist Mono",
   "buffer_font_features": {
-    "ss01": true,
-    "ss02": true,
-    "ss03": true,
-    "ss04": true,
-    "ss06": true,
-    "ss07": true,
-    "ss08": true,
-    "ss09": true,
-    "ss10": true,
     "ss11": true,
   },
   "terminal": {
     "dock": "bottom",
     "font_family": "GeistMono Nerd Font",
     "font_features": {
-      "liga": true,
+      "liga": false,
     },
     "cursor_shape": "bar",
     "minimum_contrast": 0,

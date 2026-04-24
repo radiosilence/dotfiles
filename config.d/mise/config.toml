@@ -1,7 +1,7 @@
 [env]
 KERL_BUILD_DOCS = "yes"
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
-CLAUDE_CODE_EFFORT_LEVEL = "max"
+# CLAUDE_CODE_EFFORT_LEVEL = "max"
 CLAUDE_CODE_NO_FLICKER = "1"
 
 [tools]
@@ -41,6 +41,8 @@ deno = "latest" # Secure JS/TS runtime
 "github:radiosilence/watchwoman" = "latest"
 "github:michel-kraemer/zsh-patina" = "latest"
 kubecolor = "latest"
+"github:anomalyco/opencode" = "latest"
+opencode = "latest"
 
 [[tools."github:yt-dlp/yt-dlp-nightly-builds"]] # Video downloader (nightly)
 version = "latest"
