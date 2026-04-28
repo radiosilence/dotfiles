@@ -62,13 +62,17 @@ flowchart TD
         comp_setup["completions:setup"]
         apt["apt:upgrade"]
         dnf["dnf:upgrade"]
+        secrets["secrets:populate"]
     end
 
     %% Converge direct deps (dotted)
     converge -.-> clone & brew_inst & roles & rosetta & claude
     converge -.-> unq & touchid & reattach & timeout & op_ssh
     converge -.-> reinstall & use_ssh & link & check & fonts
-    converge -.-> bundle & apt & dnf & mise_up & tmux & comps
+    converge -.-> bundle & apt & dnf & mise_up & tmux & comps & secrets
+
+    %% Secrets
+    secrets --> bundle & reinstall
 
     %% Bootstrap
     clone --> xcode
