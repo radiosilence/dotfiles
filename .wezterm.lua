@@ -64,9 +64,10 @@ config.keys = {
   -- Shift+Enter literal newline (bypasses shell accept-line)
   { key = "Enter", mods = "SHIFT", action = wezterm.action.SendString("\n") },
 
-  -- Cmd+C is relayed to zellij as Ctrl+Shift+C so zellij's Copy action runs
-  -- against *its* selection (WezTerm can't see zellij's selection).
-  { key = "c", mods = "CMD", action = wezterm.action.SendKey { key = "c", mods = "CTRL|SHIFT" } },
+  -- Cmd+C relays to zellij as F12 — zellij's Copy runs against *its* selection
+  -- (WezTerm can't see zellij's). F12 is legacy-safe; Ctrl+Shift+C collapses to
+  -- Ctrl+C without kitty keyboard protocol negotiating cleanly end-to-end.
+  { key = "c", mods = "CMD", action = wezterm.action.SendKey { key = "F12" } },
   -- Cmd+V stays terminal-level: zellij has no clipboard-read API, and paste
   -- fundamentally needs the terminal to emit bracketed-paste sequences.
   { key = "v", mods = "CMD", action = wezterm.action.PasteFrom "Clipboard" },
