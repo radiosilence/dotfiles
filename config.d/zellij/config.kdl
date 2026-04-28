@@ -187,8 +187,8 @@ keybinds clear-defaults=true {
         }
         bind "Alt tab" { FocusNextPane; }
         bind "Alt Shift tab" { FocusPreviousPane; }
-        // Cmd+C in WezTerm is relayed here as Ctrl+Shift+C (copy the zellij selection).
-        bind "Ctrl Shift c" { Copy; }
+        // Cmd+C in WezTerm is relayed here as F12 (legacy-safe — Ctrl+Shift+C collapses to Ctrl+C in non-kitty mode).
+        bind "F12" { Copy; }
     }
     shared_except "locked" "move" {
         bind "Ctrl h" { SwitchToMode "move"; }
@@ -534,8 +534,9 @@ scroll_buffer_size 100000
 // copy_command "xclip -selection clipboard" // x11
 // copy_command "wl-copy"                    // wayland
 // copy_command "pbcopy"                     // osx
-// 
-// copy_command "pbcopy"
+//
+// Skip OSC 52 — fork pbcopy directly so it doesn't depend on wezterm relaying.
+copy_command "pbcopy"
  
 // Choose the destination for copied text
 // Allows using the primary selection buffer (on x11/wayland) instead of the system clipboard.
@@ -549,7 +550,7 @@ scroll_buffer_size 100000
 // Enable automatic copying (and clearing) of selection when releasing mouse
 // Default: true
 // 
-copy_on_select false
+copy_on_select true
  
 // Path to the default editor to use to edit pane scrollbuffer
 // Default: $EDITOR or $VISUAL
