@@ -48,7 +48,6 @@ flowchart TD
         patch_ssh["patch:ssh"]
         link_claude["link:claude-hooks"]
         link_sheldon["link:sheldon"]
-        patch_npm["patch:npmrc"]
         link_cargo["link:cargo"]
     end
 
@@ -92,7 +91,7 @@ flowchart TD
 
     %% Link
     link --> link_dots & link_conf & patch_git & patch_ssh
-    link --> link_brew & link_claude & link_sheldon & patch_npm & link_cargo
+    link --> link_brew & link_claude & link_sheldon & link_cargo
 
     %% Updates
     reinstall --> mise_i
