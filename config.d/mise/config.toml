@@ -18,6 +18,7 @@ glow = "github:charmbracelet/glow"
 helix = "github:helix-editor/helix"
 hyperfine = "github:sharkdp/hyperfine"
 jq = "github:jqlang/jq"
+kubecolor = "github:kubecolor/kubecolor"
 lsd = "github:lsd-rs/lsd"
 oha = "github:hatoo/oha"
 opencode = "github:anomalyco/opencode"
@@ -38,10 +39,8 @@ zellij = "github:zellij-org/zellij"
 zsh-patina = "github:michel-kraemer/zsh-patina"
 
 [tools]
-# Core (registry defaults — aqua)
 bun = "latest"  # JS runtime
 deno = "latest"  # Secure JS/TS runtime
-kubecolor = "latest"
 
 # Aliased to GitHub backend (see [tool_alias])
 bat = "latest"  # Cat with wings
@@ -55,6 +54,7 @@ glow = "latest"  # Terminal Markdown renderer
 helix = "latest"  # Terminal text editor (nightly)
 hyperfine = "latest"  # Benchmarking
 jq = "latest"  # JSON processor
+kubecolor = "latest"  # Terminal kubectl colorizer
 lsd = "latest"  # Modern ls replacement
 oha = "latest"  # Load testing
 opencode = "latest"
