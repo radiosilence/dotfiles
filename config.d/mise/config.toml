@@ -4,7 +4,7 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
 # CLAUDE_CODE_EFFORT_LEVEL = "max"
 CLAUDE_CODE_NO_FLICKER = "1"
 
-# Pin canonical short names to the github backend so dependent project
+# Pin canonical short names to the GitHub backend so dependent project
 # mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
 # bouncing to aqua/asdf.
 [tool_alias]
@@ -44,7 +44,7 @@ bun = "latest"  # JS runtime
 deno = "latest"  # Secure JS/TS runtime
 kubecolor = "latest"
 
-# Aliased to github backend (see [tool_alias])
+# Aliased to GitHub backend (see [tool_alias])
 bat = "latest"  # Cat with wings
 broot = "latest"  # Directory navigation
 delta = "latest"  # Better git diffs
@@ -52,7 +52,7 @@ fastfetch = "latest"  # System info
 fd = "latest"  # Fast find alternative
 fzf = "latest"  # Fuzzy finder
 git-lfs = "latest"  # Large file storage
-glow = "latest"  # Terminal markdown renderer
+glow = "latest"  # Terminal Markdown renderer
 helix = "latest"  # Terminal text editor (nightly)
 hyperfine = "latest"  # Benchmarking
 jq = "latest"  # JSON processor
@@ -64,7 +64,7 @@ pnpm-shell-completion = "latest"
 procs = "latest"  # Better ps
 pup = "latest"  # DD Client
 ripgrep = "latest"  # Fast grep
-sheldon = "latest"  # Zsh plugin manager
+sheldon = "latest"  # Zsh plug-in manager
 starship = "latest"
 taplo = "latest"  # TOML formatter
 task = "latest"  # Task runner (gopher)
