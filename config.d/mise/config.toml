@@ -3,47 +3,6 @@ KERL_BUILD_DOCS = "yes"
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
 CLAUDE_CODE_NO_FLICKER = "1"
 
-# Pin canonical short names to the GitHub backend so dependent project
-# mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
-# bouncing to aqua/asdf.
-[tool_alias]
-# Personal repos (no canonical alias)
-codeowners-lsp = "github:radiosilence/codeowners-lsp"
-fastmail-cli = "github:radiosilence/fastmail-cli"
-koan = "github:radiosilence/koan"
-nano-web = "github:radiosilence/nano-web"
-watchwoman = "github:radiosilence/watchwoman"
-bat = "github:sharkdp/bat"
-broot = "github:Canop/broot"
-delta = "github:dandavison/delta"
-fastfetch = "github:fastfetch-cli/fastfetch"
-fd = "github:sharkdp/fd"
-fzf = "github:junegunn/fzf"
-git-lfs = "github:git-lfs/git-lfs"
-glow = "github:charmbracelet/glow"
-helix = "github:helix-editor/helix"
-hyperfine = "github:sharkdp/hyperfine"
-jq = "github:jqlang/jq"
-kubecolor = "github:kubecolor/kubecolor"
-lsd = "github:lsd-rs/lsd"
-oha = "github:hatoo/oha"
-opencode = "github:anomalyco/opencode"
-pnpm = "github:pnpm/pnpm"
-pnpm-shell-completion = "github:g-plane/pnpm-shell-completion"
-procs = "github:dalance/procs"
-pup = "github:datadog-labs/pup"
-ripgrep = "github:BurntSushi/ripgrep"
-sheldon = "github:rossmacarthur/sheldon"
-starship = "github:starship/starship"
-taplo = "github:tamasfe/taplo"
-task = "github:go-task/task"
-tmux = "github:tmux/tmux-builds"
-xh = "github:ducaale/xh"
-yq = "github:mikefarah/yq"
-yt-dlp = "github:yt-dlp/yt-dlp-nightly-builds"
-zellij = "github:zellij-org/zellij"
-zsh-patina = "github:michel-kraemer/zsh-patina"
-
 [tools]
 bun = "latest"  # JS runtime
 deno = "latest"  # Secure JS/TS runtime
@@ -99,3 +58,44 @@ trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
 disable_backends = ["ubi", "npm"]
+
+# Pin canonical short names to the GitHub backend so dependent project
+# mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
+# bouncing to aqua/asdf.
+[tool_alias]
+# Personal repos (no canonical alias)
+codeowners-lsp = "github:radiosilence/codeowners-lsp"
+fastmail-cli = "github:radiosilence/fastmail-cli"
+koan = "github:radiosilence/koan"
+nano-web = "github:radiosilence/nano-web"
+watchwoman = "github:radiosilence/watchwoman"
+bat = "github:sharkdp/bat"
+broot = "github:Canop/broot"
+delta = "github:dandavison/delta"
+fastfetch = "github:fastfetch-cli/fastfetch"
+fd = "github:sharkdp/fd"
+fzf = "github:junegunn/fzf"
+git-lfs = "github:git-lfs/git-lfs"
+glow = "github:charmbracelet/glow"
+helix = "github:helix-editor/helix"
+hyperfine = "github:sharkdp/hyperfine"
+jq = "github:jqlang/jq"
+kubecolor = "github:kubecolor/kubecolor"
+lsd = "github:lsd-rs/lsd"
+oha = "github:hatoo/oha"
+opencode = "github:anomalyco/opencode"
+pnpm = "github:pnpm/pnpm"
+pnpm-shell-completion = "github:g-plane/pnpm-shell-completion"
+procs = "github:dalance/procs"
+pup = "github:datadog-labs/pup"
+ripgrep = "github:BurntSushi/ripgrep"
+sheldon = "github:rossmacarthur/sheldon"
+starship = "github:starship/starship"
+taplo = "github:tamasfe/taplo"
+task = "github:go-task/task"
+tmux = "github:tmux/tmux-builds"
+xh = "github:ducaale/xh"
+yq = "github:mikefarah/yq"
+yt-dlp = "github:yt-dlp/yt-dlp-nightly-builds"
+zellij = "github:zellij-org/zellij"
+zsh-patina = "github:michel-kraemer/zsh-patina"
