@@ -7,6 +7,12 @@ CLAUDE_CODE_NO_FLICKER = "1"
 # mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
 # bouncing to aqua/asdf.
 [tool_alias]
+# Personal repos (no canonical alias)
+codeowners-lsp = "github:radiosilence/codeowners-lsp"
+fastmail-cli = "github:radiosilence/fastmail-cli"
+koan = "github:radiosilence/koan"
+nano-web = "github:radiosilence/nano-web"
+watchwoman = "github:radiosilence/watchwoman"
 bat = "github:sharkdp/bat"
 broot = "github:Canop/broot"
 delta = "github:dandavison/delta"
@@ -41,8 +47,11 @@ zsh-patina = "github:michel-kraemer/zsh-patina"
 [tools]
 bun = "latest"  # JS runtime
 deno = "latest"  # Secure JS/TS runtime
-
-# Aliased to GitHub backend (see [tool_alias])
+codeowners-lsp = "latest"  # Codeowners LSP
+fastmail-cli = "latest"  # Fastmail CLI
+koan = "latest"  # TUI music player
+nano-web = "latest"  # Ultrafast webserver
+watchwoman = "latest"  # Watchman replacement
 bat = "latest"  # Cat with wings
 broot = "latest"  # Directory navigation
 delta = "latest"  # Better git diffs
@@ -70,13 +79,6 @@ tmux = "latest"  # Terminal multiplexer
 xh = "latest"  # Modern HTTP client
 zellij = "latest"  # Terminal multiplexer (tiles)
 zsh-patina = "latest"  # ZSH syntax highlighting
-
-# Personal repos (no canonical alias)
-"github:radiosilence/codeowners-lsp" = "latest"
-"github:radiosilence/fastmail-cli" = "latest"
-"github:radiosilence/koan" = "latest"
-"github:radiosilence/nano-web" = "latest"
-"github:radiosilence/watchwoman" = "latest"
 
 [[tools.yt-dlp]]  # Video downloader (nightly)
 version = "latest"
