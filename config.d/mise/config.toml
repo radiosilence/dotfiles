@@ -57,7 +57,6 @@ experimental = true
 trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
-disable_backends = ["ubi", "npm"]
 
 # Pin canonical short names to the GitHub backend so dependent project
 # mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
