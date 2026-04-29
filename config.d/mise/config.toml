@@ -57,20 +57,19 @@ jq = "latest"  # JSON processor
 kubecolor = "latest"  # Terminal kubectl colorizer
 lsd = "latest"  # Modern ls replacement
 oha = "latest"  # Load testing
-opencode = "latest"
 pnpm = "latest"  # Node package manager
 pnpm-shell-completion = "latest"
 procs = "latest"  # Better ps
 pup = "latest"  # DD Client
 ripgrep = "latest"  # Fast grep
 sheldon = "latest"  # Zsh plug-in manager
-starship = "latest"
+starship = "latest"  # Prompt
 taplo = "latest"  # TOML formatter
 task = "latest"  # Task runner (gopher)
 tmux = "latest"  # Terminal multiplexer
 xh = "latest"  # Modern HTTP client
 zellij = "latest"  # Terminal multiplexer (tiles)
-zsh-patina = "latest"
+zsh-patina = "latest"  # ZSH syntax highlighting
 
 # Personal repos (no canonical alias)
 "github:radiosilence/codeowners-lsp" = "latest"
