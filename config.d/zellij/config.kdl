@@ -187,7 +187,7 @@ keybinds clear-defaults=true {
         }
         bind "Alt tab" { FocusNextPane; }
         bind "Alt Shift tab" { FocusPreviousPane; }
-        // Cmd+C in WezTerm is relayed here as F12 (legacy-safe — Ctrl+Shift+C collapses to Ctrl+C in non-kitty mode).
+        // Cmd+C in the host terminal is relayed as F12 (legacy-safe CSI sequence) → triggers Copy.
         bind "F12" { Copy; }
     }
     shared_except "locked" "move" {
@@ -535,7 +535,7 @@ scroll_buffer_size 100000
 // copy_command "wl-copy"                    // wayland
 // copy_command "pbcopy"                     // osx
 //
-// Skip OSC 52 — fork pbcopy directly so it doesn't depend on wezterm relaying.
+// Skip OSC 52 — fork pbcopy directly so clipboard works regardless of terminal relay.
 copy_command "pbcopy"
  
 // Choose the destination for copied text

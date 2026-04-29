@@ -52,11 +52,6 @@ if command -v zellij >/dev/null && command -v fzf >/dev/null; then
     fi
   }
 
-  # WezTerm default_prog entry point: picker → zellij if selected, else fall through to a shell.
-  zps() {
-    zp
-    exec zsh
-  }
 fi
 
 if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/dev/null; then
