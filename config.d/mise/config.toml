@@ -1,7 +1,6 @@
 [env]
 KERL_BUILD_DOCS = "yes"
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
-# CLAUDE_CODE_EFFORT_LEVEL = "max"
 CLAUDE_CODE_NO_FLICKER = "1"
 
 # Pin canonical short names to the GitHub backend so dependent project

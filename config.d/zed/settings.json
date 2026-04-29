@@ -77,7 +77,6 @@
     "emmet": true,
     "git-firefly": true,
     "graphql": true,
-    "harper": true,
     "helm": true,
     "html": true,
     "oxc": true,
@@ -297,18 +296,6 @@
           },
           "closureReturnTypeHints": {
             "enable": "always",
-          },
-        },
-      },
-    },
-    "harper-ls": {
-      "settings": {
-        "harper-ls": {
-          "dialect": "British",
-          "userDictPath": "~/.config/harper-ls/dictionary.txt",
-          "fileDictPath": "~/.config/harper-ls/file-dicts",
-          "linters": {
-            "AvoidCurses": false,
           },
         },
       },
