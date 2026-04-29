@@ -53,7 +53,14 @@ wrap-around = true
 enable = true
 
 [editor.statusline]
-left = ["mode", "spinner", "version-control", "file-name", "read-only-indicator", "file-modification-indicator"]
+left = [
+  "mode",
+  "spinner",
+  "version-control",
+  "file-name",
+  "read-only-indicator",
+  "file-modification-indicator",
+]
 center = []
 right = ["diagnostics", "selections", "register", "position", "file-type"]
 
@@ -67,3 +74,9 @@ Cmd-p = "file_picker"
 Cmd-S-p = "command_palette"
 Cmd-S-f = "global_search"
 Cmd-s = ":w"
+
+
+[[language]]
+name = "toml"
+auto-format = true
+language-servers = ["tombi"]

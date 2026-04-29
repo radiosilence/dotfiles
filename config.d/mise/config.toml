@@ -4,59 +4,93 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
 # CLAUDE_CODE_EFFORT_LEVEL = "max"
 CLAUDE_CODE_NO_FLICKER = "1"
 
-[tools]
-# core
-bun = "latest"  # JS runtime
-deno = "latest" # Secure JS/TS runtime
+# Pin canonical short names to the github backend so dependent project
+# mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
+# bouncing to aqua/asdf.
+[tool_alias]
+bat = "github:sharkdp/bat"
+broot = "github:Canop/broot"
+delta = "github:dandavison/delta"
+fastfetch = "github:fastfetch-cli/fastfetch"
+fd = "github:sharkdp/fd"
+fzf = "github:junegunn/fzf"
+git-lfs = "github:git-lfs/git-lfs"
+glow = "github:charmbracelet/glow"
+helix = "github:helix-editor/helix"
+hyperfine = "github:sharkdp/hyperfine"
+jq = "github:jqlang/jq"
+lsd = "github:lsd-rs/lsd"
+oha = "github:hatoo/oha"
+opencode = "github:anomalyco/opencode"
+pnpm = "github:pnpm/pnpm"
+pnpm-shell-completion = "github:g-plane/pnpm-shell-completion"
+procs = "github:dalance/procs"
+pup = "github:datadog-labs/pup"
+ripgrep = "github:BurntSushi/ripgrep"
+sheldon = "github:rossmacarthur/sheldon"
+starship = "github:starship/starship"
+taplo = "github:tamasfe/taplo"
+task = "github:go-task/task"
+tmux = "github:tmux/tmux-builds"
+xh = "github:ducaale/xh"
+yq = "github:mikefarah/yq"
+yt-dlp = "github:yt-dlp/yt-dlp-nightly-builds"
+zellij = "github:zellij-org/zellij"
+zsh-patina = "github:michel-kraemer/zsh-patina"
 
-# github
-"github:BurntSushi/ripgrep" = "latest"            # Fast grep
-"github:Canop/broot" = "latest"                   # Directory navigation
-"github:ajeetdsouza/zoxide" = "latest"            # Smart cd replacement
-"github:charmbracelet/glow" = "latest"            # Terminal markdown renderer
-"github:dalance/procs" = "latest"                 # Better ps
-"github:dandavison/delta" = "latest"              # Better git diffs
-"github:datadog-labs/pup" = "latest"              # DD Client
-"github:ducaale/xh" = "latest"                    # Modern HTTP client
-"github:fastfetch-cli/fastfetch" = "latest"       # System info
-"github:git-lfs/git-lfs" = "latest"               # Large file storage
-"github:go-task/task" = "latest"                  # Task runner (gopher)
-"github:hatoo/oha" = "latest"                     # Load testing
-"github:helix-editor/helix" = "latest"            # Terminal text editor (nightly)
-"github:jqlang/jq" = "latest"                     # JSON processor
-"github:junegunn/fzf" = "latest"                  # Fuzzy finder
-"github:lsd-rs/lsd" = "latest"                    # Modern ls replacement
+[tools]
+# Core (registry defaults — aqua)
+bun = "latest"  # JS runtime
+deno = "latest"  # Secure JS/TS runtime
+kubecolor = "latest"
+
+# Aliased to github backend (see [tool_alias])
+bat = "latest"  # Cat with wings
+broot = "latest"  # Directory navigation
+delta = "latest"  # Better git diffs
+fastfetch = "latest"  # System info
+fd = "latest"  # Fast find alternative
+fzf = "latest"  # Fuzzy finder
+git-lfs = "latest"  # Large file storage
+glow = "latest"  # Terminal markdown renderer
+helix = "latest"  # Terminal text editor (nightly)
+hyperfine = "latest"  # Benchmarking
+jq = "latest"  # JSON processor
+lsd = "latest"  # Modern ls replacement
+oha = "latest"  # Load testing
+opencode = "latest"
+pnpm = "latest"  # Node package manager
+pnpm-shell-completion = "latest"
+procs = "latest"  # Better ps
+pup = "latest"  # DD Client
+ripgrep = "latest"  # Fast grep
+sheldon = "latest"  # Zsh plugin manager
+starship = "latest"
+taplo = "latest"  # TOML formatter
+task = "latest"  # Task runner (gopher)
+tmux = "latest"  # Terminal multiplexer
+xh = "latest"  # Modern HTTP client
+zellij = "latest"  # Terminal multiplexer (tiles)
+zsh-patina = "latest"
+
+# Personal repos (no canonical alias)
 "github:radiosilence/codeowners-lsp" = "latest"
-"github:radiosilence/fastmail-cli" = "latest"     # Fastmail CLI
+"github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
 "github:radiosilence/koan" = "latest"
 "github:radiosilence/nano-web" = "latest"
-"github:rossmacarthur/sheldon" = "latest"         # Zsh plugin manager
-"github:sharkdp/bat" = "latest"                   # Cat with wings
-"github:sharkdp/hyperfine" = "latest"             # Benchmarking
-"github:starship/starship" = "latest"
-"github:tamasfe/taplo" = "latest"                 # TOML formatter
-"github:tmux/tmux-builds" = "latest"              # Terminal multiplexer
-"github:zellij-org/zellij" = "latest"             # Terminal multiplexer (tiles)
-"github:sharkdp/fd" = "latest"                    # Fast find alternative
 "github:radiosilence/watchwoman" = "latest"
-"github:michel-kraemer/zsh-patina" = "latest"
-"github:pnpm/pnpm" = "latest"                     # Node package manager
-"github:g-plane/pnpm-shell-completion" = "latest" # pnpm zsh completion (pnpm 10 dropped built-in)
-kubecolor = "latest"
-"github:anomalyco/opencode" = "latest"
-opencode = "latest"
 
-[[tools."github:yt-dlp/yt-dlp-nightly-builds"]] # Video downloader (nightly)
+[[tools.yt-dlp]]  # Video downloader (nightly)
 version = "latest"
 bin = "yt-dlp"
 
-[[tools."pipx:beets"]] # Music organizer
-version = "latest"
-uvx_args = "--with requests --with beets-yearfixer --with beets[discogs]"
-
-[[tools."github:mikefarah/yq"]]
+[[tools.yq]]
 version = "latest"
 bin = "yq"
+
+[[tools."pipx:beets"]]  # Music organizer
+version = "latest"
+uvx_args = "--with requests --with beets-yearfixer --with beets[discogs]"
 
 [settings]
 fetch_remote_versions_cache = "30m"
