@@ -37,6 +37,7 @@ task = "latest"  # Task runner (gopher)
 tmux = "latest"  # Terminal multiplexer
 xh = "latest"  # Modern HTTP client
 zellij = "latest"  # Terminal multiplexer (tiles)
+zoxide = "latest"  # Smart cd replacement
 zsh-patina = "latest"  # ZSH syntax highlighting
 
 [[tools.yt-dlp]]  # Video downloader (nightly)
@@ -82,7 +83,6 @@ jq = "github:jqlang/jq"
 kubecolor = "github:kubecolor/kubecolor"
 lsd = "github:lsd-rs/lsd"
 oha = "github:hatoo/oha"
-opencode = "github:anomalyco/opencode"
 pnpm = "github:pnpm/pnpm"
 pnpm-shell-completion = "github:g-plane/pnpm-shell-completion"
 procs = "github:dalance/procs"
@@ -97,4 +97,5 @@ xh = "github:ducaale/xh"
 yq = "github:mikefarah/yq"
 yt-dlp = "github:yt-dlp/yt-dlp-nightly-builds"
 zellij = "github:zellij-org/zellij"
+zoxide = "github:ajeetdsouza/zoxide"
 zsh-patina = "github:michel-kraemer/zsh-patina"
