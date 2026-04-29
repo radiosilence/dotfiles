@@ -161,14 +161,13 @@
         "tsgo",
         "!vtsls",
         "!typescript-language-server",
-        "!biome",
         "...",
       ],
       "colorize_brackets": true,
       "format_on_save": "on",
       "prettier": { "allowed": false },
       "formatter": [
-        { "code_action": "source.fixAll.eslint" },
+        // { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.oxc" },
         { "language_server": { "name": "oxfmt" } },
       ],
@@ -179,14 +178,13 @@
         "tsgo",
         "!vtsls",
         "!typescript-language-server",
-        "!biome",
         "...",
       ],
       "colorize_brackets": true,
       "format_on_save": "on",
       "prettier": { "allowed": false },
       "formatter": [
-        { "code_action": "source.fixAll.eslint" },
+        // { "code_action": "source.fixAll.eslint" },
         { "code_action": "source.fixAll.oxc" },
         { "language_server": { "name": "oxfmt" } },
       ],
@@ -331,23 +329,6 @@
       "initialization_options": {
         "enabledFeatures": {
           "diagnostics": false,
-        },
-      },
-    },
-    "vtsls": {
-      "settings": {
-        "javascript": {
-          "updateImportsOnFileMove": {
-            "enabled": "always",
-          },
-        },
-        "typescript": {
-          "updateImportsOnFileMove": {
-            "enabled": "always",
-          },
-          "tsserver": {
-            "maxTsServerMemory": 26384,
-          },
         },
       },
     },
