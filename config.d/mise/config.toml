@@ -75,7 +75,7 @@ zsh-patina = "latest"
 
 # Personal repos (no canonical alias)
 "github:radiosilence/codeowners-lsp" = "latest"
-"github:radiosilence/fastmail-cli" = "latest"  # Fastmail CLI
+"github:radiosilence/fastmail-cli" = "latest"
 "github:radiosilence/koan" = "latest"
 "github:radiosilence/nano-web" = "latest"
 "github:radiosilence/watchwoman" = "latest"
