@@ -29,3 +29,4 @@ cursor-click-to-move = true
 notify-on-command-finish = unfocused
 window-save-state = always
 link-previews = true
+confirm-close-surface = false
