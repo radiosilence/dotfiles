@@ -312,24 +312,23 @@ tasks:
     vars:
       TMPL: '{{.DOTFILES}}/packager.d/mise-secrets.tmpl'
       LOCAL: '$HOME/mise.local.toml'
+    status:
+      - |
+        for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
+          [ -z "$(yq -p toml -oy ".env.${key} // \"\"" "{{.LOCAL}}" 2>/dev/null)" ] && exit 1
+        done
     cmds:
       - |
         [ -f "{{.LOCAL}}" ] || printf '[env]\n' > "{{.LOCAL}}"
         grep -q '^\[env\]' "{{.LOCAL}}" || printf '\n[env]\n' >> "{{.LOCAL}}"
 
-        # Keys present in the template but missing from mise.local.toml
-        missing=$(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' ' | while read -r key; do
-          [ "$(yq -p toml -oy ".env.${key} // \"\"" "{{.LOCAL}}" 2>/dev/null)" = "" ] && printf '%s\n' "$key"
-        done)
-
-        [ -z "$missing" ] && exit 0
-
         # One op call → all secrets resolved at once
         resolved=$(op inject -i "{{.TMPL}}") || { printf "{{.FAIL}} op inject failed (is op signed in?)\n"; exit 1; }
 
-        printf '%s\n' "$missing" | while read -r key; do
+        for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
+          [ -n "$(yq -p toml -oy ".env.${key} // \"\"" "{{.LOCAL}}" 2>/dev/null)" ] && continue
           line=$(printf '%s\n' "$resolved" | grep -E "^${key} *=")
-          [ -z "$line" ] && { printf "{{.WARN}} %s not in template\n" "$key"; continue; }
+          [ -z "$line" ] && continue
           printf '%s\n' "$line" >> "{{.LOCAL}}"
           printf "{{.OK}} %s\n" "$key"
         done
