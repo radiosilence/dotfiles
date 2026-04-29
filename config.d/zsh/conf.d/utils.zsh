@@ -44,6 +44,10 @@ if command -v zellij >/dev/null && command -v fzf >/dev/null; then
     [ -z "$selected" ] && return
     target="${selected#* }"
     if [ -n "$sessions" ] && echo "$sessions" | grep -qxF "$target"; then
+      # cd to a matching dir first so ghostty's CWD save + autoattach can rejoin on restore.
+      local matched
+      matched=$(zoxide query "$target" 2>/dev/null)
+      [ -n "$matched" ] && [ -d "$matched" ] && cd "$matched"
       zellij attach "$target"
     else
       target="${target/#\~/$HOME}"
