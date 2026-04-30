@@ -2,6 +2,7 @@
 KERL_BUILD_DOCS = "yes"
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
 CLAUDE_CODE_NO_FLICKER = "1"
+DD_TOKEN_STORAGE = "file"  # pup OAuth tokens in ~/.config/pup/ (0600) instead of keychain
 
 [tools]
 bun = "latest"  # JS runtime
