@@ -209,6 +209,34 @@ wtrm() {
 # ── wtp ─────────────────────────────────────────────────────────────
 alias wtp='git worktree prune -v'
 
+# ── wtclean — housekeep worktrees: prune stale registry, nuke agent leftovers, leave dirty ones alone
+wtclean() {
+  local root=$(_wt_root) wt removed=0 kept=0
+  [[ -z $root ]] && { echo "not in a git repo"; return 1; }
+  while IFS= read -r wt; do
+    [[ -z $wt || $wt == "$root" ]] && continue
+    git worktree unlock "$wt" 2>/dev/null
+    # Agent worktrees are session detritus — always force.
+    if [[ $wt == */.claude/worktrees/* ]]; then
+      if git worktree remove --force "$wt" 2>/dev/null; then
+        echo "  removed (agent): $wt"
+        ((removed++))
+      fi
+      continue
+    fi
+    # Real worktrees: only remove if clean. Refuses on uncommitted changes / current cwd.
+    if git worktree remove "$wt" 2>/dev/null; then
+      echo "  removed: $wt"
+      ((removed++))
+    else
+      echo "  kept:    $wt (dirty or in-use — use 'wtrm $(basename "$wt")' to force)"
+      ((kept++))
+    fi
+  done < <(git worktree list --porcelain 2>/dev/null | awk '/^worktree /{ print $2 }')
+  git worktree prune -v
+  echo "wtclean: removed $removed, kept $kept"
+}
+
 # ── wtpb — prune orphaned worktree branches ─────────────────────────
 wtpb() {
   local root=$(_wt_root)
