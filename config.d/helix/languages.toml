@@ -42,6 +42,7 @@ formatter = { command = "stylua", args = ["-"] }
 [[language]]
 name = "toml"
 auto-format = true
+language-servers = ["tombi"]
 
 [[language]]
 name = "yaml"

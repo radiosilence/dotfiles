@@ -74,9 +74,3 @@ Cmd-p = "file_picker"
 Cmd-S-p = "command_palette"
 Cmd-S-f = "global_search"
 Cmd-s = ":w"
-
-
-[[language]]
-name = "toml"
-auto-format = true
-language-servers = ["tombi"]

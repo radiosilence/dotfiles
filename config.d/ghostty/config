@@ -19,6 +19,9 @@ clipboard-paste-protection = false
 
 # Cmd+C → F12 (CSI \e[24~) so zellij's F12 → Copy bind triggers against zellij's selection.
 keybind = cmd+c=text:\x1b[24~
+# Cmd+K → Ctrl+L (form feed) so the focused shell inside zellij clears its own buffer.
+keybind = cmd+k=text:\x0c
+
 
 # New tabs/windows always start in $HOME — don't inherit CWD from parent.
 working-directory = home

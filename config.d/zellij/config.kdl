@@ -165,6 +165,9 @@ keybinds clear-defaults=true {
         bind "Alt N" { ToggleFloatingPanes; }
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
+        // Backups for terminals that mangle Alt+[/] (clashes with CSI/OSC start in legacy mode).
+        bind "Alt ," { PreviousSwapLayout; }
+        bind "Alt ." { NextSwapLayout; }
         bind "Ctrl g" { SwitchToMode "locked"; }
         bind "Alt h" { MoveFocusOrTab "left"; }
         bind "Alt j" { MoveFocus "down"; }
