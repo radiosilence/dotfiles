@@ -585,14 +585,20 @@ tasks:
       - task: generate:completions:lsd
       # Sourced: npm
       - task: generate:completions:npm
+    cmds:
+      - |
+        n=$(wc -l < /tmp/.task-completions-changed 2>/dev/null | tr -d ' ' || echo 0)
+        printf "{{.OK}} completions: %s updated\n" "${n:-0}"
 
   generate:completions:setup:
     internal: true
     deps: [brew:bundle, mise:upgrade]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+      STATE: "/tmp/.task-completions-changed"
     cmds:
       - mkdir -p {{.COMP_DIR}}
+      - ': > {{.STATE}}'
 
   generate:completions:gen:
     internal: true
@@ -601,6 +607,7 @@ tasks:
     status: ["! command -v {{.TOOL}}"]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+      STATE: "/tmp/.task-completions-changed"
     cmds:
       - |
         new=$(mktemp)
@@ -608,6 +615,7 @@ tasks:
           if ! cmp -s "$new" "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null; then
             mv "$new" "{{.COMP_DIR}}/_{{.TOOL}}"
             printf "{{.OK}} %s\n" "{{.TOOL}}"
+            echo "{{.TOOL}}" >> {{.STATE}}
           else
             rm -f "$new"
           fi
@@ -621,6 +629,7 @@ tasks:
     status: ["! command -v lsd"]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+      STATE: "/tmp/.task-completions-changed"
     cmds:
       - |
         src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
@@ -628,12 +637,15 @@ tasks:
         if ! cmp -s "$src" "{{.COMP_DIR}}/_lsd" 2>/dev/null; then
           cp "$src" "{{.COMP_DIR}}/_lsd"
           printf "{{.OK}} lsd (pre-built)\n"
+          echo "lsd" >> {{.STATE}}
         fi
 
   generate:completions:npm:
     internal: true
     deps: [generate:completions:setup]
     status: ["! command -v npm"]
+    vars:
+      STATE: "/tmp/.task-completions-changed"
     cmds:
       - |
         new=$(mktemp)
@@ -641,6 +653,7 @@ tasks:
           if ! cmp -s "$new" "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null; then
             mv "$new" "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh"
             printf "{{.OK}} npm (sourced)\n"
+            echo "npm" >> {{.STATE}}
           else
             rm -f "$new"
           fi
