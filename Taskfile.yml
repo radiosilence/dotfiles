@@ -457,8 +457,7 @@ tasks:
   mise:upgrade:
     desc: Update mise tools
     deps: [gh:auth]
-    status:
-      - '! command -v mise || [ -z "$(mise outdated 2>/dev/null)" ]'
+    status: ["! command -v mise"]
     cmds:
       - mise up
       - mise reshim
