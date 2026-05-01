@@ -171,7 +171,8 @@ tasks:
   mise:install:
     desc: Install mise tools
     deps: [mise:ensure, gh:auth, link:config]
-    status: ["! command -v mise"]
+    status:
+      - '! command -v mise || [ -z "$(mise ls --missing 2>/dev/null)" ]'
     cmds:
       - |
         export PATH="$HOME/.local/share/mise/shims:$PATH"
@@ -358,22 +359,23 @@ tasks:
           name=$(basename "$f")
           label="${name%.plist}"
           target="$HOME/Library/LaunchAgents/$name"
-          [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] || {
-            rm -f "$target"
-            ln -s "$f" "$target"
-            printf "{{.LINK}} LaunchAgents/%s\n" "$name"
-          }
+          # Skip everything if symlink already correct — no relink, no reload.
+          if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
+            continue
+          fi
+          rm -f "$target"
+          ln -s "$f" "$target"
           launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
           launchctl bootstrap "gui/$(id -u)" "$target"
           printf "{{.OK}} %s (loaded)\n" "$label"
         done
 
   link:sheldon:
-    desc: Sheldon plugin manager
+    desc: Sheldon plugin manager smoke test
     status:
-      - "! command -v sheldon"
+      - "! command -v sheldon || sheldon source >/dev/null 2>&1"
     cmds:
-      - sheldon source >/dev/null 2>&1 && printf "{{.OK}} sheldon\n"
+      - 'printf "{{.WARN}} sheldon source failed\n"'
 
   # ---------------------------------------------------------------------------
   # Build / utility tasks
@@ -391,13 +393,11 @@ tasks:
   use-ssh:
     desc: Switch dotfiles remote from HTTPS to SSH
     dir: "{{.DOTFILES}}"
+    status:
+      - 'git remote get-url origin 2>/dev/null | grep -q "^git@"'
     cmds:
       - |
         current=$(git remote get-url origin)
-        if echo "$current" | grep -q "^git@"; then
-          printf "{{.OK}} already using SSH\n"
-          exit 0
-        fi
         ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
         git remote set-url origin "$ssh_url"
         printf "{{.OK}} remote switched to %s\n" "$ssh_url"
@@ -415,32 +415,25 @@ tasks:
   check:auth:gh:
     desc: Check GitHub CLI auth
     platforms: [darwin]
-    status: ["! command -v gh"]
+    status:
+      - "! command -v gh || gh auth status >/dev/null 2>&1"
     cmds:
-      - |
-        if gh auth status >/dev/null 2>&1; then
-          printf "{{.OK}} gh: authenticated\n"
-        else
-          printf "{{.WARN}} gh: not authenticated (run gh auth login)\n"
-        fi
+      - 'printf "{{.WARN}} gh: not authenticated (run gh auth login)\n"'
 
   check:auth:op:
     desc: Check 1Password CLI integration
     platforms: [darwin]
-    status: ["! command -v op"]
+    status:
+      - "! command -v op || op account list >/dev/null 2>&1"
     cmds:
-      - |
-        if op account list >/dev/null 2>&1; then
-          printf "{{.OK}} op: integrated\n"
-        else
-          printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"
-        fi
+      - 'printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"'
 
   brew:bundle:
     desc: Install/upgrade brew packages
     deps: [link:brewfile, brew:pam-reattach]
     platforms: [darwin]
-    status: ["! command -v brew"]
+    status:
+      - '! command -v brew || brew bundle check >/dev/null 2>&1'
     cmds:
       - brew bundle --quiet
       - brew cleanup --quiet &
@@ -464,7 +457,8 @@ tasks:
   mise:upgrade:
     desc: Update mise tools
     deps: [gh:auth]
-    status: ["! command -v mise"]
+    status:
+      - '! command -v mise || mise outdated >/dev/null 2>&1'
     cmds:
       - mise up
       - mise reshim
@@ -600,7 +594,6 @@ tasks:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
       - mkdir -p {{.COMP_DIR}}
-      - rm -f {{.COMP_DIR}}/_*
 
   generate:completions:gen:
     internal: true
@@ -611,10 +604,16 @@ tasks:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
     cmds:
       - |
-        if {{.CMD}} > "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null && [ -s "{{.COMP_DIR}}/_{{.TOOL}}" ]; then
-          printf "{{.OK}} %s\n" "{{.TOOL}}"
+        new=$(mktemp)
+        if {{.CMD}} > "$new" 2>/dev/null && [ -s "$new" ]; then
+          if ! cmp -s "$new" "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null; then
+            mv "$new" "{{.COMP_DIR}}/_{{.TOOL}}"
+            printf "{{.OK}} %s\n" "{{.TOOL}}"
+          else
+            rm -f "$new"
+          fi
         else
-          rm -f "{{.COMP_DIR}}/_{{.TOOL}}"
+          rm -f "$new"
         fi
 
   generate:completions:lsd:
@@ -626,11 +625,26 @@ tasks:
     cmds:
       - |
         src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
-        [ -f "$src" ] && cp "$src" "{{.COMP_DIR}}/_lsd" && printf "{{.OK}} lsd (pre-built)\n"
+        [ -f "$src" ] || exit 0
+        if ! cmp -s "$src" "{{.COMP_DIR}}/_lsd" 2>/dev/null; then
+          cp "$src" "{{.COMP_DIR}}/_lsd"
+          printf "{{.OK}} lsd (pre-built)\n"
+        fi
 
   generate:completions:npm:
     internal: true
     deps: [generate:completions:setup]
     status: ["! command -v npm"]
     cmds:
-      - npm completion > "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null && printf "{{.OK}} npm (sourced)\n"
+      - |
+        new=$(mktemp)
+        if npm completion > "$new" 2>/dev/null && [ -s "$new" ]; then
+          if ! cmp -s "$new" "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null; then
+            mv "$new" "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh"
+            printf "{{.OK}} npm (sourced)\n"
+          else
+            rm -f "$new"
+          fi
+        else
+          rm -f "$new"
+        fi
