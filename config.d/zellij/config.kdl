@@ -190,8 +190,6 @@ keybinds clear-defaults=true {
         }
         bind "Alt tab" { FocusNextPane; }
         bind "Alt Shift tab" { FocusPreviousPane; }
-        // Cmd+C in the host terminal is relayed as F12 (legacy-safe CSI sequence) → triggers Copy.
-        bind "F12" { Copy; }
     }
     shared_except "locked" "move" {
         bind "Ctrl h" { SwitchToMode "move"; }
