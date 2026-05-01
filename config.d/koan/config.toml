@@ -53,6 +53,7 @@ playground = false
 auth_enabled = true
 access_token_ttl = "15m"
 refresh_token_ttl = "30d"
+cors_origins = []
 
 [discovery]
 analysis_on_scan = false
