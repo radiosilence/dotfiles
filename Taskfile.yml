@@ -125,7 +125,6 @@ tasks:
       - curl -fsSL https://claude.ai/install.sh | bash
       - printf "{{.OK}} claude code\n"
 
-
   brew:pam-reattach:
     desc: Install pam-reattach for tmux Touch ID support
     platforms: [darwin]
@@ -310,8 +309,8 @@ tasks:
     desc: Populate ~/mise.local.toml secrets from 1Password (single op inject call)
     deps: [brew:bundle, reinstall-bins]
     vars:
-      TMPL: '{{.DOTFILES}}/packager.d/mise-secrets.tmpl'
-      LOCAL: '$HOME/mise.local.toml'
+      TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
+      LOCAL: "$HOME/mise.local.toml"
     status:
       - |
         for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
@@ -433,7 +432,7 @@ tasks:
     deps: [link:brewfile, brew:pam-reattach]
     platforms: [darwin]
     status:
-      - '! command -v brew || brew bundle check >/dev/null 2>&1'
+      - "! command -v brew || brew bundle check >/dev/null 2>&1"
     cmds:
       - brew bundle --quiet
       - brew cleanup --quiet &
@@ -570,7 +569,8 @@ tasks:
       - task: generate:completions:gen
         vars: { TOOL: pup, CMD: "pup completions zsh" }
       - task: generate:completions:gen
-        vars: { TOOL: bun, CMD: "bun completions zsh" }
+        vars:
+          { TOOL: bun, CMD: "bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'" }
       - task: generate:completions:gen
         vars: { TOOL: deno, CMD: "deno completions zsh" }
       - task: generate:completions:gen
@@ -598,7 +598,7 @@ tasks:
       STATE: "/tmp/.task-completions-changed"
     cmds:
       - mkdir -p {{.COMP_DIR}}
-      - ': > {{.STATE}}'
+      - ": > {{.STATE}}"
 
   generate:completions:gen:
     internal: true
