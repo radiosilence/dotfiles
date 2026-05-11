@@ -74,9 +74,10 @@ zstyle ':completion:*' squeeze-slashes true
 
 # Group completions by category with descriptions
 zstyle ':completion:*' group-name ''
-zstyle ':completion:*:descriptions' format '%F{yellow}── %d ──%f'
-zstyle ':completion:*:messages' format '%F{purple}── %d ──%f'
-zstyle ':completion:*:warnings' format '%F{red}── no matches ──%f'
+# Headers off — fzf flattens everything anyway, the legend is just noise.
+# Messages / warnings still useful (errors, "no matches" etc.) so keep those.
+zstyle ':completion:*:messages' format $'\e[35m── %d ──\e[0m'
+zstyle ':completion:*:warnings' format $'\e[31m── no matches ──\e[0m'
 
 # Colors for files/dirs (uses LS_COLORS)
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
@@ -116,6 +117,7 @@ zstyle ':completion:*:git-checkout:*' sort false
 # fzf-tab config (if loaded)
 zstyle ':fzf-tab:*' fzf-flags --height=50% --layout=reverse --border=rounded --info=inline
 zstyle ':fzf-tab:*' switch-group '<' '>'
+zstyle ':fzf-tab:*' prefix ''  # drop the leading "·" on every entry
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always $realpath 2>/dev/null || ls -1 --color=always $realpath'
 zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --style=numbers --color=always --line-range=:100 $realpath 2>/dev/null || cat $realpath 2>/dev/null || lsd -1 --color=always $realpath 2>/dev/null || echo $desc'
 zstyle ':fzf-tab:complete:kill:*' fzf-preview 'ps -p $word -o pid,user,%cpu,%mem,command --no-headers 2>/dev/null'
