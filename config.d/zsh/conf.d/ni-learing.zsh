@@ -19,13 +19,6 @@ alias nrt='nr test'
 alias nrs='nr start'
 alias nrl='nr lint'
 
-# Socket Firewall wraps for non-JS package managers ni doesn't touch.
-# sfw also supports: yarn, pnpm, bun, pip, uv, cargo (ni handles npm-family).
-if command -v sfw >/dev/null; then
-  alias uv='sfw uv'
-  alias cargo='sfw cargo'
-fi
-
 # Teaching aliases — old pnpm/bun muscle memory just prints the ni equivalent.
 # Doesn't run anything: forces you to retype with the right command, which is
 # the fastest way to actually retrain. Delete this block once muscle memory wins.
