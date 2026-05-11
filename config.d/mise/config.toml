@@ -3,6 +3,7 @@ KERL_BUILD_DOCS = "yes"
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
 CLAUDE_CODE_NO_FLICKER = "1"
 DD_TOKEN_STORAGE = "file"  # pup OAuth tokens in ~/.config/pup/ (0600) instead of keychain
+NI_CONFIG_FILE = "{{ env.HOME }}/.config/ni/nirc"  # @antfu/ni reads from here instead of ~/.nirc
 
 [tools]
 bun = "latest"  # JS runtime
@@ -25,7 +26,9 @@ hyperfine = "latest"  # Benchmarking
 jq = "latest"  # JSON processor
 kubecolor = "latest"  # Terminal kubectl colorizer
 lsd = "latest"  # Modern ls replacement
+ni = "latest"  # @antfu/ni — package-manager-agnostic ni/nr/nlx/nun/nup
 oha = "latest"  # Load testing
+sfw-free = "latest"  # Socket Firewall wrapper — verifies packages before install
 pnpm = "latest"  # Node package manager
 pnpm-shell-completion = "latest"  # pnpm's built-in completion doesn't read package.json scripts; this does
 procs = "latest"  # Better ps
@@ -83,7 +86,9 @@ hyperfine = "github:sharkdp/hyperfine"
 jq = "github:jqlang/jq"
 kubecolor = "github:kubecolor/kubecolor"
 lsd = "github:lsd-rs/lsd"
+ni = "npm:@antfu/ni"
 oha = "github:hatoo/oha"
+sfw-free = "github:SocketDev/sfw-free"
 pnpm = "github:pnpm/pnpm"
 pnpm-shell-completion = "github:g-plane/pnpm-shell-completion"
 procs = "github:dalance/procs"

@@ -74,10 +74,11 @@ zstyle ':completion:*' squeeze-slashes true
 
 # Group completions by category with descriptions
 zstyle ':completion:*' group-name ''
-# Headers off — fzf flattens everything anyway, the legend is just noise.
-# Messages / warnings still useful (errors, "no matches" etc.) so keep those.
-zstyle ':completion:*:messages' format $'\e[35m── %d ──\e[0m'
-zstyle ':completion:*:warnings' format $'\e[31m── no matches ──\e[0m'
+# Empty descriptions format: fzf-tab still detects groups (and colours items
+# per-group), but no header text is rendered.
+zstyle ':completion:*:descriptions' format ''
+zstyle ':completion:*:messages'     format $'\e[35m── %d ──\e[0m'
+zstyle ':completion:*:warnings'     format $'\e[31m── no matches ──\e[0m'
 
 # Colors for files/dirs (uses LS_COLORS)
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}

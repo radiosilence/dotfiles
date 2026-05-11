@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Shim — Socket's free build ships as `sfw-free`, but downstream tools
+# (notably @antfu/ni when useSfw=true) probe for `sfw`. This bridges them.
+exec sfw-free "$@"
