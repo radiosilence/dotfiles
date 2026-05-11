@@ -42,6 +42,8 @@ If it makes sense for a task to have a background agent (state polls, admin stuf
 
 **USE WORKTREES**. Especially with `/batch` skill. Also make sure to clean them up.
 
+When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containing multiple repo checkouts, treat every feature as worktree-scoped: create a per-feature worktree off the relevant repo for any non-trivial work rather than mutating the main checkout. Keeps repos clean when juggling parallel features across repos. Clean up worktrees when the feature merges or is abandoned.
+
 ## Git & GitHub
 
 - **Never push tags** — user handles tags/releases
