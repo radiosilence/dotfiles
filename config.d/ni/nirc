@@ -2,8 +2,8 @@
 ; Linked to ~/.config/ni/nirc; loaded via NI_CONFIG_FILE env (set in mise).
 
 ; Prefix all package-manager calls with Socket Firewall to verify packages
-; before install. Requires `sfw` on PATH (provided by the dotfiles shim
-; over sfw-free).
+; before install. Requires `sfw` on PATH (mise installs the sfw-free github
+; release and exposes it as `sfw` via bin= in mise config).
 useSfw=true
 
 ; Use catalog mode when pnpm catalogs are detected. Default is true; pinned

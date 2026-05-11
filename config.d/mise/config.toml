@@ -28,7 +28,7 @@ kubecolor = "latest"  # Terminal kubectl colorizer
 lsd = "latest"  # Modern ls replacement
 ni = "latest"  # @antfu/ni — package-manager-agnostic ni/nr/nlx/nun/nup
 oha = "latest"  # Load testing
-sfw-free = "latest"  # Socket Firewall wrapper — verifies packages before install
+sfw-free = { version = "latest", bin = "sfw" }  # Socket Firewall — release ships as sfw-free; ni probes for sfw
 pnpm = "latest"  # Node package manager
 pnpm-shell-completion = "latest"  # pnpm's built-in completion doesn't read package.json scripts; this does
 procs = "latest"  # Better ps
