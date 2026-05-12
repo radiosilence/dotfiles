@@ -2,6 +2,7 @@
 name: async-ticket
 description: Fire-and-forget ticket work. Creates a worktree and runs /ticket in it as a background subagent. Use when the user wants to kick off a ticket without blocking their current session.
 argument-hint: <ticket-id>
+model: haiku
 ---
 
 Spawn a single subagent with worktree isolation to work on a ticket.

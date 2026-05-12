@@ -3,6 +3,7 @@ name: zellij-here
 description: Open a new zellij pane in the project/worktree Claude is contextually working on -- inferred automatically, no questions asked. Use when the user says "open here", "new pane here", "/here", "open this in zellij". The whole point is the user doesn't have to tell Claude where it's working -- Claude figures it out from session context.
 argument-hint: "[optional path -- overrides inference]"
 allowed-tools: Bash
+model: haiku
 ---
 
 # zellij-here

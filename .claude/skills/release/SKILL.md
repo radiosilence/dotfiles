@@ -2,6 +2,7 @@
 name: release
 description: Prepare a release — version bump, changelog, docs. Use when the user says "release", "cut a release", "version bump", or "/release patch|minor|major".
 argument-hint: <patch|minor|major>
+model: sonnet
 ---
 
 Prepare a release for the current project. **Do NOT create or push tags** — the user handles that.
