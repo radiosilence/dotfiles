@@ -40,6 +40,14 @@ On first project interaction, check `.claude/settings.json` for pre-push hooks. 
 
 If it makes sense for a task to have a background agent (state polls, admin stuff etc) do it.
 
+**Subagent model routing.** Always declare `model:` on the spawn — never inherit (silent Opus inheritance is how bills explode). Defaults:
+
+- **Haiku** — polling, status checks, CLI/API calls, formatter, lint, test runs, ticket grooming, file lookups. Anything mechanical or I/O-bound.
+- **Sonnet** — research, pattern lookups, summarising a few files, "which X needs updating" style questions. Default for light reasoning work.
+- **Opus** — anything that needs actual thinking: cross-file synthesis, non-trivial design/debugging, ambiguous specs, judgement calls. If the agent has to *decide* rather than *look up* or *do*, use Opus. Escalate from Sonnet if it comes back confused or hand-wavy.
+
+**Long-lived background agents (babysitters, pollers, monitors) are always Haiku.** If you're tempted to escalate one, spin up a separate short-lived agent for the real work and keep the background loop dumb.
+
 **USE WORKTREES**. Especially with `/batch` skill. Also make sure to clean them up.
 
 When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containing multiple repo checkouts, treat every feature as worktree-scoped: create a per-feature worktree off the relevant repo for any non-trivial work rather than mutating the main checkout. Keeps repos clean when juggling parallel features across repos. Clean up worktrees when the feature merges or is abandoned.
