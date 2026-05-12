@@ -549,6 +549,8 @@ tasks:
           CMD: "{{.ITEM}} completion zsh"
       # Custom completion commands
       - task: generate:completions:gen
+        vars: { TOOL: aube, CMD: "aube completion zsh" }
+      - task: generate:completions:gen
         vars: { TOOL: nr, CMD: "nr --completion-zsh" }
       - task: generate:completions:gen
         vars: { TOOL: gh, CMD: "gh completion -s zsh" }
