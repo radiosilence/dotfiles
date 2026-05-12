@@ -26,7 +26,8 @@ hyperfine = "latest"  # Benchmarking
 jq = "latest"  # JSON processor
 kubecolor = "latest"  # Terminal kubectl colorizer
 lsd = "latest"  # Modern ls replacement
-ni = "latest"  # @antfu/ni — package-manager-agnostic ni/nr/nlx/nun/nup
+aube = "latest"  # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
+ni = "latest"  # @antfu/ni — auto-detects project pm, wraps it with consistent verbs
 oha = "latest"  # Load testing
 sfw-free = { version = "latest", bin = "sfw" }  # Socket Firewall — release ships as sfw-free; ni probes for sfw
 pnpm = "latest"  # Node package manager
@@ -63,6 +64,10 @@ trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
 
+[settings.npm]
+package_manager = "aube"  # dogfood aube as the npm: backend installer
+
+
 # Pin canonical short names to the GitHub backend so dependent project
 # mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
 # bouncing to aqua/asdf.
@@ -85,6 +90,7 @@ helix = "github:helix-editor/helix"
 hyperfine = "github:sharkdp/hyperfine"
 jq = "github:jqlang/jq"
 kubecolor = "github:kubecolor/kubecolor"
+aube = "github:endevco/aube"
 lsd = "github:lsd-rs/lsd"
 ni = "npm:@antfu/ni"
 oha = "github:hatoo/oha"
