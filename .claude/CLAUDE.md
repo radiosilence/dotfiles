@@ -48,6 +48,10 @@ If it makes sense for a task to have a background agent (state polls, admin stuf
 
 **Long-lived background agents (babysitters, pollers, monitors) are always Haiku.** If you're tempted to escalate one, spin up a separate short-lived agent for the real work and keep the background loop dumb.
 
+## Session hygiene
+
+`/clear` between unrelated tasks. Don't let a session sprawl across days — long sessions re-pay the 1h-cache premium on every renewal and accumulate cache-write costs. New ticket = new session. If a session feels like it's not converging (going in circles, ballooning context, spawning subagent after subagent without progress), `/clear` and restart rather than pushing through.
+
 **USE WORKTREES**. Especially with `/batch` skill. Also make sure to clean them up.
 
 When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containing multiple repo checkouts, treat every feature as worktree-scoped: create a per-feature worktree off the relevant repo for any non-trivial work rather than mutating the main checkout. Keeps repos clean when juggling parallel features across repos. Clean up worktrees when the feature merges or is abandoned.
