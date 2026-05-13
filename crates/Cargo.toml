@@ -73,17 +73,17 @@ path = "src/bin/parallel-dl-extract.rs"
 
 [dependencies]
 # Error handling
-anyhow = "1"
+anyhow = "1.0"
 # Encoding
 base64 = "0.22"
 # CLI
-clap = { version = "4", features = ["cargo", "derive", "env"] }
-clap_complete = "4"
+clap = { version = "4.6", features = ["cargo", "derive", "env"] }
+clap_complete = "4.6"
 # Terminal colors
-colored = "3"
+colored = "3.1"
 dialoguer = "0.12"
 # Directories
-dirs = "6"
+dirs = "6.0"
 # Git
 git2 = { version = "0.20", default-features = false }
 # Image processing
@@ -93,20 +93,20 @@ indicatif = { version = "0.18", features = ["rayon"] }
 netstat2 = "0.11"
 nix = { version = "0.31", features = ["signal", "user"] }
 # Parallelism
-rayon = "1"
+rayon = "1.12"
 # Async
 reqwest = { version = "0.13", default-features = false, features = [
   "blocking",
   "rustls"
 ] }
-tempfile = "3"
+tempfile = "3.27"
 # File/Path utilities
-walkdir = "2"
+walkdir = "2.5"
 # Command detection
-which = "8"
-zip = "8"
+which = "8.0"
+zip = "8.6"
 
 [dev-dependencies]
-assert_cmd = "2"
-assert_fs = "1"
-predicates = "3"
+assert_cmd = "2.2"
+assert_fs = "1.1"
+predicates = "3.1"
