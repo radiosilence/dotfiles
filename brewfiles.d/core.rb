@@ -2,6 +2,7 @@
 tap 'buo/cask-upgrade'
 
 brew 'zsh'
+cask 'ghostty', greedy: true
 brew 'git'
 cask '1password', greedy: true
 cask '1password-cli', greedy: true
