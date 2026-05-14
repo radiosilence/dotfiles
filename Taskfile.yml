@@ -345,28 +345,30 @@ tasks:
       TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
       LOCAL: "$HOME/mise.local.toml"
     status:
-      # Grep is simpler and more reliable than yq for "is KEY = anywhere in
-      # this file" — the previous yq-based check was flaky with op inject's
-      # output format and silently appended duplicate KEY entries every run.
       - |
         [ -f "{{.LOCAL}}" ] || exit 1
         for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
-          grep -qE "^${key} *=" "{{.LOCAL}}" || exit 1
+          v=$(yq -p toml -oy ".env.${key}" "{{.LOCAL}}" 2>/dev/null)
+          { [ -z "$v" ] || [ "$v" = "null" ]; } && exit 1
         done
     cmds:
       - |
-        [ -f "{{.LOCAL}}" ] || printf '[env]\n' > "{{.LOCAL}}"
-        grep -q '^\[env\]' "{{.LOCAL}}" || printf '\n[env]\n' >> "{{.LOCAL}}"
+        [ -f "{{.LOCAL}}" ] || : > "{{.LOCAL}}"
 
-        resolved=$(op inject -i "{{.TMPL}}") || { printf "{{.FAIL}} op inject failed (is op signed in?)\n"; exit 1; }
+        # op inject expands op:// refs in the template into a TOML-shaped blob
+        # of `KEY = "value"` lines. Parse it via yq, then yq -i the values
+        # into the local file — idempotent by construction (set rewrites the
+        # key in place, no append, no dupes).
+        resolved_file=$(mktemp)
+        op inject -i "{{.TMPL}}" > "$resolved_file" || { printf "{{.FAIL}} op inject failed (is op signed in?)\n"; rm -f "$resolved_file"; exit 1; }
 
         for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
-          grep -qE "^${key} *=" "{{.LOCAL}}" && continue  # already present, skip
-          line=$(printf '%s\n' "$resolved" | grep -E "^${key} *=")
-          [ -z "$line" ] && continue
-          printf '%s\n' "$line" >> "{{.LOCAL}}"
+          val=$(yq -p toml -oy ".${key}" "$resolved_file" 2>/dev/null)
+          { [ -z "$val" ] || [ "$val" = "null" ]; } && continue
+          v="$val" yq -i -p toml -o toml ".env.${key} = strenv(v)" "{{.LOCAL}}"
           printf "{{.OK}} %s\n" "$key"
         done
+        rm -f "$resolved_file"
 
   link:cargo:
     desc: Symlink cargo security config
