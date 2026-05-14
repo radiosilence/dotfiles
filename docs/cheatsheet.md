@@ -292,11 +292,9 @@ See `Brewfile` for full package list.
 ├── git.d/                  # Git config
 ├── ssh.d/                  # SSH config
 ├── .zshrc                  # Shell entry point
-├── .tmux.conf             # Tmux config
-├── .wezterm.lua           # WezTerm config
 ├── Brewfile               # Homebrew packages
 ├── mise.toml              # Runtime versions
-└── setup                   # Bootstrap script
+└── setup-macos             # Bootstrap script
 ```
 
 ---

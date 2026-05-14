@@ -18,7 +18,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Passwor
 - **Rust binaries** — System maintenance, git workflow, media processing, file operations
 - **Taskfile.yml** — DAG-based system management (bootstrap, update, completions, fonts)
 - **Tool management** — mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
-- **Terminal configs** — zellij, ghostty, tmux, starship prompt
+- **Terminal configs** — zellij, ghostty, starship prompt
 - **Editor configs** — helix (LSP, tree-sitter, formatters for 15+ languages), zed
 
 ## Documentation
@@ -27,7 +27,6 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Passwor
 |-----|-------------|
 | [cheatsheet.md](docs/cheatsheet.md) | Complete reference — all commands, aliases, functions |
 | [new-tools.md](docs/new-tools.md) | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
-| [tmux-cheatsheet.md](docs/tmux-cheatsheet.md) | tmux keybindings and usage reference |
 | [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews |
 | [CHANGELOG.md](CHANGELOG.md) | Full history from 2018 to present |
 
