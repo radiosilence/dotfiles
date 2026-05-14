@@ -3,16 +3,30 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | bash
 set -e
 
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 tmpdir=$(mktemp -d)
 trap "rm -rf '$tmpdir'" EXIT
 
 printf "\n  \033[1m\033[35m⟢\033[0m \033[1mdotfiles bootstrap\033[0m\n\n"
 
-# Get go-task + Taskfile — no git, no xcode, just curl
-curl -fsSL https://taskfile.dev/install.sh | sh -s -- -b "$tmpdir" 2>/dev/null
-curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/Taskfile.yml -o "$tmpdir/Taskfile.yml"
+# 1. Xcode CLI Tools — provides git, blocks everything else
+if ! command -v git >/dev/null 2>&1; then
+  printf "  \033[33m\033[0m installing Xcode Command Line Tools (GUI prompt)...\n"
+  xcode-select --install 2>/dev/null || true
+  while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
+  printf "  \033[32m󰄬\033[0m xcode cli tools\n"
+fi
 
+# 2. Clone dotfiles to the real location (not /tmp)
+if [ ! -d "$DOTFILES" ]; then
+  git clone https://github.com/radiosilence/dotfiles "$DOTFILES"
+  printf "  \033[32m󰄬\033[0m dotfiles cloned to %s\n" "$DOTFILES"
+fi
+
+# 3. Install go-task into tmpdir
+curl -fsSL https://taskfile.dev/install.sh | sh -s -- -b "$tmpdir" 2>/dev/null
 printf "  \033[32m󰄬\033[0m bootstrap ready — handing off to Taskfile\n\n"
 
-# Let the DAG handle everything
-"$tmpdir/task" --taskfile "$tmpdir/Taskfile.yml" converge
+# 4. Hand off to Taskfile from the real dotfiles dir so {{.ROOT_DIR}} resolves
+cd "$DOTFILES"
+"$tmpdir/task" converge

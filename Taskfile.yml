@@ -24,10 +24,13 @@ tasks:
   # ===========================================================================
   # System update pipeline
   #
-  # DAG:
-  #   link:*, auth:*, claude, tmux:*            — parallel
-  #   brew:bundle:update → brew → brew:upgrade → brew  — chained
-  #   [brew, mise] → zsh-completions    — last
+  # `task converge` is the single entry point. It works on both fresh systems
+  # (everything missing) and converged ones (most tasks no-op via status:).
+  #
+  # Deps express real prerequisites — tasks that need brew packages depend on
+  # brew:bundle, tasks that need mise tools depend on mise:install, etc.
+  # Don't use `! command -v X` as a "skip if missing" shortcut for a tool we
+  # install ourselves — that turns a missing dep into a silent no-op.
   # ===========================================================================
 
   # ---------------------------------------------------------------------------
@@ -128,6 +131,7 @@ tasks:
   brew:pam-reattach:
     desc: Install pam-reattach for tmux Touch ID support
     platforms: [darwin]
+    deps: [brew:install]
     status: ["test -f /opt/homebrew/lib/pam/pam_reattach.so"]
     cmds:
       - brew install pam-reattach
@@ -171,7 +175,7 @@ tasks:
     desc: Install mise tools
     deps: [mise:ensure, gh:auth, link:config]
     status:
-      - '! command -v mise || [ -z "$(mise ls --missing 2>/dev/null)" ]'
+      - 'test -z "$(mise ls --missing 2>/dev/null)"'
     cmds:
       - |
         export PATH="$HOME/.local/share/mise/shims:$PATH"
@@ -180,26 +184,23 @@ tasks:
 
   converge:
     desc: Converge system to desired state
+    # Most tasks below are reached transitively via the DAG. They're listed
+    # here as explicit entry points — order does not matter, deps decide it.
     deps:
-      # Bootstrap (skipped on working systems via status:)
-      - dotfiles:clone
-      - brew:install
       - brew:roles
       - rosetta:install
       - claude:install
-      - sudo:touchid
       - sudo:reattach
       - sudo:timeout
       - 1password:ssh-config
-      - reinstall-bins
       - use-ssh
-      # Regular update
       - link
       - check:auth
       - brew:bundle
       - apt:upgrade
       - dnf:upgrade
       - mise:upgrade
+      - reinstall-bins
       - secrets:populate
       - tmux
       - generate:completions
@@ -228,6 +229,7 @@ tasks:
 
   link:dotfiles:
     desc: Symlink dotfiles (.* → ~)
+    deps: [dotfiles:clone]
     cmds:
       - |
         for f in "{{.DOTFILES}}"/.* ; do
@@ -246,6 +248,7 @@ tasks:
 
   link:config:
     desc: Symlink config dirs (config.d/* → ~/.config/*)
+    deps: [dotfiles:clone]
     cmds:
       - |
         mkdir -p "$HOME/.config"
@@ -284,6 +287,7 @@ tasks:
   link:brewfile:
     desc: Symlink Brewfile
     platforms: [darwin]
+    deps: [dotfiles:clone]
     cmds:
       - |
         target="$HOME/Brewfile"
@@ -293,6 +297,8 @@ tasks:
 
   link:claude-hooks:
     desc: Inject Claude Code hooks into settings.json
+    deps: [brew:bundle, dotfiles:clone]
+    # Skip if jq is missing (non-darwin without it) or Claude hasn't run yet
     status: ["! command -v jq || ! test -f $HOME/.claude/settings.json"]
     cmds:
       - |
@@ -334,6 +340,7 @@ tasks:
 
   link:cargo:
     desc: Symlink cargo security config
+    deps: [dotfiles:clone]
     cmds:
       - |
         mkdir -p "$HOME/.cargo"
@@ -350,6 +357,9 @@ tasks:
   link:launchagents:
     desc: Symlink and reload LaunchAgents
     platforms: [darwin]
+    # Wait for brew + mise: plists often reference binaries from both, and
+    # bootstrapping a plist with a missing executable logs noise to Console.
+    deps: [dotfiles:clone, brew:bundle, mise:install]
     cmds:
       - |
         mkdir -p "$HOME/Library/LaunchAgents"
@@ -371,6 +381,8 @@ tasks:
 
   link:sheldon:
     desc: Sheldon plugin manager smoke test
+    deps: [brew:bundle]
+    # Skip on systems where sheldon isn't available (non-darwin)
     status:
       - "! command -v sheldon || sheldon source >/dev/null 2>&1"
     cmds:
@@ -382,15 +394,18 @@ tasks:
 
   reinstall-bins:
     desc: Build and install rust binaries from crates/
-    deps: [mise:install]
+    deps: [mise:install, dotfiles:clone]
     status: ["test -f {{.DOTFILES}}/bin/clean-dls"]
     cmds:
       - printf "{{.WORK}} building rust binaries\n"
-      - cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
+      - |
+        export PATH="$HOME/.local/share/mise/shims:$PATH"
+        cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
       - printf "{{.OK}} binaries installed\n"
 
   use-ssh:
     desc: Switch dotfiles remote from HTTPS to SSH
+    deps: [dotfiles:clone, 1password:setup]
     dir: "{{.DOTFILES}}"
     status:
       - 'git remote get-url origin 2>/dev/null | grep -q "^git@"'
@@ -414,25 +429,24 @@ tasks:
   check:auth:gh:
     desc: Check GitHub CLI auth
     platforms: [darwin]
-    status:
-      - "! command -v gh || gh auth status >/dev/null 2>&1"
+    deps: [brew:bundle]
+    status: ["gh auth status >/dev/null 2>&1"]
     cmds:
       - 'printf "{{.WARN}} gh: not authenticated (run gh auth login)\n"'
 
   check:auth:op:
     desc: Check 1Password CLI integration
     platforms: [darwin]
-    status:
-      - "! command -v op || op account list >/dev/null 2>&1"
+    deps: [brew:bundle]
+    status: ["op account list >/dev/null 2>&1"]
     cmds:
       - 'printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"'
 
   brew:bundle:
     desc: Install/upgrade brew packages
-    deps: [link:brewfile, brew:pam-reattach]
+    deps: [brew:install, link:brewfile, brew:pam-reattach]
     platforms: [darwin]
-    status:
-      - "! command -v brew || brew bundle check >/dev/null 2>&1"
+    status: ["brew bundle check >/dev/null 2>&1"]
     cmds:
       - brew bundle --quiet
       - brew cleanup --quiet &
@@ -455,8 +469,7 @@ tasks:
 
   mise:upgrade:
     desc: Update mise tools
-    deps: [gh:auth]
-    status: ["! command -v mise"]
+    deps: [mise:install]
     cmds:
       - mise up
       - mise reshim
@@ -596,7 +609,7 @@ tasks:
 
   generate:completions:setup:
     internal: true
-    deps: [brew:bundle, mise:upgrade]
+    deps: [brew:bundle, mise:install]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
       STATE: "/tmp/.task-completions-changed"
