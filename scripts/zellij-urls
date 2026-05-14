@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# URL picker for zellij: reads a screen dump, extracts URLs, fzf to pick, opens.
+# Bound to Alt+o in zellij config — DumpScreen writes the dump file, then a
+# floating pane runs this script against it.
+set -o pipefail
+
+dump="${1:-/tmp/zellij-urls.txt}"
+if [ ! -r "$dump" ]; then
+  echo "no dump at $dump" >&2
+  sleep 2
+  exit 1
+fi
+
+# Strip ANSI CSI/SGR + OSC sequences so URLs split across escape codes still
+# match. \x1b\][^\x07]*\x07 catches OSC8 hyperlink wrappers too.
+urls=$(
+  sed -E '
+    s/\x1b\[[0-9;?]*[a-zA-Z]//g
+    s/\x1b\][^\x07]*\x07//g
+    s/\x1b\\//g
+  ' "$dump" \
+    | grep -oE '(https?|ftp|file)://[A-Za-z0-9._~:/?#@!$&'"'"'()*+,;=%-]+' \
+    | sed 's/[.,;:)]*$//' \
+    | awk '!seen[$0]++'
+)
+
+if [ -z "$urls" ]; then
+  echo "no URLs in pane"
+  sleep 1.5
+  exit 0
+fi
+
+choice=$(echo "$urls" | fzf --prompt='open url> ' --height=100% --reverse) || exit 0
+[ -n "$choice" ] && open "$choice"
