@@ -2,14 +2,12 @@
 # Bootstrap script — run this on a fresh macOS system.
 # Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
 #
-# Sequential, interactive bootstrap. Each step blocks until done — brew's
-# sudo prompts and 1Password's manual setup can't race anything. Once this
-# finishes, `task converge` parallelises everything else.
+# Sequential, interactive bootstrap. Each step blocks until done so brew's
+# sudo prompts, GitHub auth, and 1Password's manual setup can't race the
+# pipeline. Once this finishes, `task converge` parallelises everything else.
 set -e
 
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
-tmpdir=$(mktemp -d)
-trap "rm -rf '$tmpdir'" EXIT
 
 OK=$'\033[32m󰄬\033[0m'
 WARN=$'\033[33m\033[0m'
@@ -55,8 +53,27 @@ fi
 print -P "  ${OK} homebrew"
 
 # ---------------------------------------------------------------------------
-# 4. 1Password — install app + CLI, then block until SSH agent is enabled.
-#    Everything downstream (ssh git, op secrets, gh auth) depends on this.
+# 4. Install gh + mise immediately — the rest of bootstrap needs both. brew
+#    bundle (in task converge later) will see them already there and skip.
+# ---------------------------------------------------------------------------
+print -P "  ${WORK} installing gh + mise"
+brew install --quiet gh mise
+print -P "  ${OK} gh + mise"
+
+# ---------------------------------------------------------------------------
+# 5. GitHub auth — exporting GITHUB_TOKEN now means mise can fetch version
+#    metadata from GitHub without rate-limiting during the rest of bootstrap.
+# ---------------------------------------------------------------------------
+if ! gh auth status &>/dev/null; then
+  print -P "  ${WARN} run ${BOLD}gh auth login${RESET} in another terminal"
+  while ! gh auth status &>/dev/null; do sleep 0.5; done
+fi
+export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"
+print -P "  ${OK} gh authed (GITHUB_TOKEN exported)"
+
+# ---------------------------------------------------------------------------
+# 6. 1Password — install app + CLI, then block until SSH agent is enabled.
+#    Everything downstream (ssh git, op secrets) depends on this.
 # ---------------------------------------------------------------------------
 print -P "  ${WORK} installing 1Password (app + CLI)"
 brew install --cask --quiet 1password 1password-cli
@@ -71,7 +88,7 @@ fi
 print -P "  ${OK} 1password agent ready"
 
 # ---------------------------------------------------------------------------
-# 5. Clone (or fast-forward) dotfiles to the real location
+# 7. Clone (or fast-forward) dotfiles to the real location
 # ---------------------------------------------------------------------------
 if [[ ! -d "$DOTFILES" ]]; then
   git clone https://github.com/radiosilence/dotfiles "$DOTFILES"
@@ -86,10 +103,19 @@ fi
 print -P "  ${OK} dotfiles at $DOTFILES"
 
 # ---------------------------------------------------------------------------
-# 6. Install go-task and hand off — task converge handles everything else
+# 8. Install task + aube via mise. task drives `converge`; aube is the
+#    npm-backend package_manager configured in mise.toml — without it,
+#    `mise install` blows up on any npm: tool.
 # ---------------------------------------------------------------------------
-curl -fsSL https://taskfile.dev/install.sh | sh -s -- -b "$tmpdir" 2>/dev/null
+print -P "  ${WORK} installing task + aube via mise"
+mise install task@latest aube@latest >/dev/null
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+print -P "  ${OK} task + aube installed via mise"
+
+# ---------------------------------------------------------------------------
+# 9. Hand off — task converge handles everything else (parallel from here)
+# ---------------------------------------------------------------------------
 print -P "  ${OK} bootstrap done — handing off to Taskfile\n"
 
 cd "$DOTFILES"
-"$tmpdir/task" converge
+task converge

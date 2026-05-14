@@ -345,20 +345,23 @@ tasks:
       TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
       LOCAL: "$HOME/mise.local.toml"
     status:
+      # Grep is simpler and more reliable than yq for "is KEY = anywhere in
+      # this file" — the previous yq-based check was flaky with op inject's
+      # output format and silently appended duplicate KEY entries every run.
       - |
+        [ -f "{{.LOCAL}}" ] || exit 1
         for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
-          [ -z "$(yq -p toml -oy ".env.${key} // \"\"" "{{.LOCAL}}" 2>/dev/null)" ] && exit 1
+          grep -qE "^${key} *=" "{{.LOCAL}}" || exit 1
         done
     cmds:
       - |
         [ -f "{{.LOCAL}}" ] || printf '[env]\n' > "{{.LOCAL}}"
         grep -q '^\[env\]' "{{.LOCAL}}" || printf '\n[env]\n' >> "{{.LOCAL}}"
 
-        # One op call → all secrets resolved at once
         resolved=$(op inject -i "{{.TMPL}}") || { printf "{{.FAIL}} op inject failed (is op signed in?)\n"; exit 1; }
 
         for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
-          [ -n "$(yq -p toml -oy ".env.${key} // \"\"" "{{.LOCAL}}" 2>/dev/null)" ] && continue
+          grep -qE "^${key} *=" "{{.LOCAL}}" && continue  # already present, skip
           line=$(printf '%s\n' "$resolved" | grep -E "^${key} *=")
           [ -z "$line" ] && continue
           printf '%s\n' "$line" >> "{{.LOCAL}}"
