@@ -1,32 +1,95 @@
-#!/usr/bin/env bash
-# Bootstrap script — run this on a fresh macOS system
-# Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | bash
+#!/usr/bin/env zsh
+# Bootstrap script — run this on a fresh macOS system.
+# Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
+#
+# Sequential, interactive bootstrap. Each step blocks until done — brew's
+# sudo prompts and 1Password's manual setup can't race anything. Once this
+# finishes, `task converge` parallelises everything else.
 set -e
 
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 tmpdir=$(mktemp -d)
 trap "rm -rf '$tmpdir'" EXIT
 
-printf "\n  \033[1m\033[35m⟢\033[0m \033[1mdotfiles bootstrap\033[0m\n\n"
+OK=$'\033[32m󰄬\033[0m'
+WARN=$'\033[33m\033[0m'
+WORK=$'\033[35m󱁤\033[0m'
+BOLD=$'\033[1m'
+RESET=$'\033[0m'
 
-# 1. Xcode CLI Tools — provides git, blocks everything else
+print -P "\n  ${BOLD}\033[35m⟢${RESET} ${BOLD}dotfiles bootstrap${RESET}\n"
+
+# ---------------------------------------------------------------------------
+# 1. Xcode CLI Tools — provides git
+# ---------------------------------------------------------------------------
 if ! command -v git >/dev/null 2>&1; then
-  printf "  \033[33m\033[0m installing Xcode Command Line Tools (GUI prompt)...\n"
+  print -P "  ${WARN} installing Xcode Command Line Tools (GUI prompt)"
   xcode-select --install 2>/dev/null || true
   while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
-  printf "  \033[32m󰄬\033[0m xcode cli tools\n"
 fi
+print -P "  ${OK} xcode cli tools"
 
-# 2. Clone dotfiles to the real location (not /tmp)
-if [ ! -d "$DOTFILES" ]; then
+# ---------------------------------------------------------------------------
+# 2. Touch ID for sudo — one password prompt now, biometric forever after.
+#    Without this, brew's sudo asks hang silently because the pipe has no TTY.
+# ---------------------------------------------------------------------------
+if ! sudo grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null; then
+  print -P "  ${WARN} enabling Touch ID for sudo (enter password once)"
+  sudo sh -c 'printf "auth       sufficient     pam_tid.so\n" > /etc/pam.d/sudo_local'
+fi
+print -P "  ${OK} touchid sudo"
+
+# ---------------------------------------------------------------------------
+# 3. Homebrew — NONINTERACTIVE skips the "press RETURN" prompt; brew's sudo
+#    calls now resolve via Touch ID GUI dialog.
+# ---------------------------------------------------------------------------
+if ! command -v brew >/dev/null 2>&1; then
+  print -P "  ${WORK} installing Homebrew"
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+if [[ -d /opt/homebrew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+print -P "  ${OK} homebrew"
+
+# ---------------------------------------------------------------------------
+# 4. 1Password — install app + CLI, then block until SSH agent is enabled.
+#    Everything downstream (ssh git, op secrets, gh auth) depends on this.
+# ---------------------------------------------------------------------------
+print -P "  ${WORK} installing 1Password (app + CLI)"
+brew install --cask --quiet 1password 1password-cli
+
+sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+if [[ ! -S "$sock" ]]; then
+  print -P "  ${WARN} open 1Password → Settings → Developer, then enable:"
+  print -P "         • ${BOLD}SSH Agent${RESET}"
+  print -P "         • ${BOLD}Connect with 1Password CLI${RESET}"
+  while [[ ! -S "$sock" ]]; do sleep 0.5; done
+fi
+print -P "  ${OK} 1password agent ready"
+
+# ---------------------------------------------------------------------------
+# 5. Clone (or fast-forward) dotfiles to the real location
+# ---------------------------------------------------------------------------
+if [[ ! -d "$DOTFILES" ]]; then
   git clone https://github.com/radiosilence/dotfiles "$DOTFILES"
-  printf "  \033[32m󰄬\033[0m dotfiles cloned to %s\n" "$DOTFILES"
+else
+  # Force HTTPS for this fetch in case use-ssh switched the remote during a
+  # previous partial run — we don't want pull blocking on SSH config that
+  # hasn't been linked yet.
+  git -C "$DOTFILES" -c "remote.origin.url=https://github.com/radiosilence/dotfiles" \
+    pull --ff-only --quiet origin main 2>/dev/null || \
+    print -P "  ${WARN} couldn't fast-forward — using existing checkout"
 fi
+print -P "  ${OK} dotfiles at $DOTFILES"
 
-# 3. Install go-task into tmpdir
+# ---------------------------------------------------------------------------
+# 6. Install go-task and hand off — task converge handles everything else
+# ---------------------------------------------------------------------------
 curl -fsSL https://taskfile.dev/install.sh | sh -s -- -b "$tmpdir" 2>/dev/null
-printf "  \033[32m󰄬\033[0m bootstrap ready — handing off to Taskfile\n\n"
+print -P "  ${OK} bootstrap done — handing off to Taskfile\n"
 
-# 4. Hand off to Taskfile from the real dotfiles dir so {{.ROOT_DIR}} resolves
 cd "$DOTFILES"
 "$tmpdir/task" converge

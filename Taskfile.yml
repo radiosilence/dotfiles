@@ -436,7 +436,9 @@ tasks:
   check:auth:gh:
     desc: Check GitHub CLI auth
     platforms: [darwin]
-    deps: [brew:bundle]
+    # gh:auth blocks until the user runs `gh auth login`, so by the time this
+    # status check fires, gh either auths cleanly or really is broken.
+    deps: [gh:auth]
     status: ["gh auth status >/dev/null 2>&1"]
     cmds:
       - 'printf "{{.WARN}} gh: not authenticated (run gh auth login)\n"'
@@ -444,7 +446,9 @@ tasks:
   check:auth:op:
     desc: Check 1Password CLI integration
     platforms: [darwin]
-    deps: [brew:bundle]
+    # 1password:setup waits for the SSH agent socket — by then the user has
+    # been through 1Password settings and op should be talking to the app.
+    deps: [1password:setup]
     status: ["op account list >/dev/null 2>&1"]
     cmds:
       - 'printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"'
