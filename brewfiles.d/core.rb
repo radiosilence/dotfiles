@@ -19,6 +19,7 @@ brew 'gnupg'
 brew 'openssl@3'
 brew 'mise'
 brew 'gh'
+brew 'node' # need a global npm for mise's npm: backend even when aube is the resolver
 brew 'pam-reattach' # Touch ID inside zellij/tmux-style detached sessions
 brew 'sheldon' if Hardware::CPU.intel?
 
