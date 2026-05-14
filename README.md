@@ -5,12 +5,12 @@ Personal dev environment. macOS, zsh, Rust tooling.
 ## Setup
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | bash
+curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
 ```
 
-12 lines of shell that bootstraps go-task into a tmpdir, curls the Taskfile, and runs `task converge`. The Taskfile DAG handles everything — xcode, brew, mise, 1Password, gh auth, symlinks, Rust binaries, completions, fonts. Idempotent — re-running skips what's already done.
+Sequential bootstrap (xcode → Touch ID for sudo → brew → 1Password → clone) and then hands off to `task converge` for everything else — mise, symlinks, Rust binaries, completions, fonts, gh auth. Idempotent; re-running skips what's already done.
 
-Run `upd` (or `converge`) anytime to update everything. Tasks that need 1Password or gh auth poll silently until ready — no interactive prompts.
+Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth poll silently until ready.
 
 ## What's Here
 
