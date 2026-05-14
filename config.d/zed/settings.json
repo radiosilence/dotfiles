@@ -90,6 +90,7 @@
     "stylelint": true,
     "tailwind-css": true,
     "terraform": true,
+    "toml": true,
     "tombi": true,
     "tsgo": true,
     "zedokai": true,
