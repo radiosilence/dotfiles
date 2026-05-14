@@ -59,9 +59,13 @@ tasks:
   brew:install:
     desc: Install Homebrew
     platforms: [darwin]
+    # sudo:touchid runs first so brew's sudo prompts use Touch ID instead of
+    # blocking on a password the non-interactive shell can't supply.
+    deps: [sudo:touchid]
     status: ["command -v brew"]
     cmds:
-      - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      # NONINTERACTIVE=1 skips the "press RETURN" prompt brew bombs on without a TTY.
+      - NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       - |
         if [ -d /opt/homebrew ]; then
           eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -84,10 +88,14 @@ tasks:
     deps: [brew:bundle]
     status:
       - "test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-
     cmds:
-      - printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent (Settings → Developer → SSH Agent)\n"
       - |
+        # Sanity-check the app actually landed before telling the user to open it.
+        if [ ! -d "/Applications/1Password.app" ]; then
+          printf "{{.FAIL}} 1Password.app not installed — brew:bundle should have done this\n"
+          exit 1
+        fi
+        printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent (Settings → Developer → SSH Agent)\n"
         sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
         while [ ! -S "$sock" ]; do sleep 0.5; done
         printf "{{.OK}} 1password ssh agent\n"
@@ -128,15 +136,6 @@ tasks:
       - curl -fsSL https://claude.ai/install.sh | bash
       - printf "{{.OK}} claude code\n"
 
-  brew:pam-reattach:
-    desc: Install pam-reattach for tmux Touch ID support
-    platforms: [darwin]
-    deps: [brew:install]
-    status: ["test -f /opt/homebrew/lib/pam/pam_reattach.so"]
-    cmds:
-      - brew install pam-reattach
-      - printf "{{.OK}} pam-reattach\n"
-
   sudo:touchid:
     desc: Enable TouchID for sudo
     platforms: [darwin]
@@ -145,14 +144,23 @@ tasks:
       - sudo sh -c 'printf "auth       sufficient     pam_tid.so\n" > /etc/pam.d/sudo_local'
       - printf "{{.OK}} touchid sudo\n"
 
+  brew:pam-reattach:
+    desc: Install pam-reattach (Touch ID inside zellij/tmux detached sessions)
+    platforms: [darwin]
+    deps: [brew:install]
+    status: ["test -f /opt/homebrew/lib/pam/pam_reattach.so"]
+    cmds:
+      - brew install pam-reattach
+      - printf "{{.OK}} pam-reattach\n"
+
   sudo:reattach:
-    desc: Enable Touch ID inside tmux via pam_reattach
+    desc: Prepend pam_reattach to sudo_local so Touch ID works in detached sessions
     platforms: [darwin]
     deps: [brew:pam-reattach, sudo:touchid]
     status: ["grep -q pam_reattach /etc/pam.d/sudo_local 2>/dev/null"]
     cmds:
       - sudo sh -c '{ printf "auth       optional       /opt/homebrew/lib/pam/pam_reattach.so\n"; cat /etc/pam.d/sudo_local; } > /etc/pam.d/sudo_local.tmp && mv /etc/pam.d/sudo_local.tmp /etc/pam.d/sudo_local'
-      - printf "{{.OK}} sudo reattach (tmux touchid)\n"
+      - printf "{{.OK}} sudo reattach\n"
 
   sudo:timeout:
     desc: Set sudo timeout to 30 min
@@ -202,7 +210,6 @@ tasks:
       - mise:upgrade
       - reinstall-bins
       - secrets:populate
-      - tmux
       - generate:completions
     cmds:
       - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
@@ -473,46 +480,6 @@ tasks:
     cmds:
       - mise up
       - mise reshim
-
-  tmux:
-    desc: Install/update tmux plugins
-    deps:
-      - tmux:resurrect
-      - tmux:fzf-url
-
-  tmux:resurrect:
-    desc: Install/update tmux-resurrect
-    cmds:
-      - task: tmux:plugin
-        vars:
-          NAME: tmux-resurrect
-          URL: https://github.com/tmux-plugins/tmux-resurrect.git
-
-  tmux:fzf-url:
-    desc: Install/update tmux-fzf-url
-    cmds:
-      - task: tmux:plugin
-        vars:
-          NAME: tmux-fzf-url
-          URL: https://github.com/wfxr/tmux-fzf-url.git
-
-  tmux:plugin:
-    internal: true
-    run: always
-    vars:
-      DEST: "{{.HOME}}/.tmux/plugins/{{.NAME}}"
-    cmds:
-      - mkdir -p {{.HOME}}/.tmux/plugins
-      - |
-        if [ -d "{{.DEST}}" ]; then
-          before=$(git -C "{{.DEST}}" rev-parse HEAD)
-          git -C "{{.DEST}}" pull --quiet
-          after=$(git -C "{{.DEST}}" rev-parse HEAD)
-          [ "$before" != "$after" ] && printf "{{.OK}} {{.NAME}} (updated)\n" || true
-        else
-          git clone --quiet {{.URL}} "{{.DEST}}"
-          printf "{{.OK}} {{.NAME}} (installed)\n"
-        fi
 
   generate:completions:
     desc: Regenerate zsh completions
