@@ -63,6 +63,19 @@ experimental = true
 trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
+# Don't auto-install missing tools on shell startup / cd / shim invocation.
+# `task converge` (or `mise i`) handles installs explicitly. The defaults are
+# all `true`, which means every new shell during bootstrap tries to install
+# the entire tool list before anything else is ready.
+auto_install = false
+exec_auto_install = false
+not_found_auto_install = false
+
+[settings.hook_env]
+chpwd_only = true  # only check on cd, not every prompt
+
+[settings.task]
+run_auto_install = false  # don't install on `mise run` either
 
 [settings.npm]
 package_manager = "aube"  # dogfood aube as the npm: backend installer
