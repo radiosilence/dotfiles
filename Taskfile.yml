@@ -159,8 +159,28 @@ tasks:
     deps: [brew:pam-reattach, sudo:touchid]
     status: ["grep -q pam_reattach /etc/pam.d/sudo_local 2>/dev/null"]
     cmds:
-      - sudo sh -c '{ printf "auth       optional       /opt/homebrew/lib/pam/pam_reattach.so\n"; cat /etc/pam.d/sudo_local; } > /etc/pam.d/sudo_local.tmp && mv /etc/pam.d/sudo_local.tmp /etc/pam.d/sudo_local'
-      - printf "{{.OK}} sudo reattach\n"
+      - |
+        # Resolve dynamically — handles both /opt/homebrew and /usr/local.
+        # Refuse to touch sudo_local if the .so is missing: a sudo_local that
+        # references a non-existent module bricks sudo entirely, and recovery
+        # requires enabling the root user via Directory Utility.
+        so="$(brew --prefix pam-reattach)/lib/pam/pam_reattach.so"
+        if [ ! -f "$so" ]; then
+          printf "{{.FAIL}} pam_reattach.so missing at %s — refusing to edit sudo_local\n" "$so"
+          exit 1
+        fi
+        # Backup, write, then probe PAM. If sudo can't initialize PAM, revert.
+        backup=$(mktemp)
+        sudo cp /etc/pam.d/sudo_local "$backup"
+        sudo sh -c "{ printf 'auth       optional       %s\n' '$so'; cat /etc/pam.d/sudo_local; } > /etc/pam.d/sudo_local.tmp && mv /etc/pam.d/sudo_local.tmp /etc/pam.d/sudo_local"
+        if sudo -n true 2>&1 | grep -q "initialize PAM"; then
+          printf "{{.FAIL}} sudo PAM broke after edit — reverting\n"
+          sudo cp "$backup" /etc/pam.d/sudo_local
+          rm -f "$backup"
+          exit 1
+        fi
+        rm -f "$backup"
+        printf "{{.OK}} sudo reattach\n"
 
   sudo:timeout:
     desc: Set sudo timeout to 30 min
