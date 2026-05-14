@@ -87,7 +87,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 **Unified output formatting:**
 
 - Replaced all `/// .SECTION` headers and mixed output styles across the entire repo with nerdfont icons and consistent ANSI colors
-- Icon system: `󰄬` success (green), `󰌷` link (green), `→` action (cyan), `󱁤` build (magenta), `󰛖` font (magenta), `󰅖` error (red), `` warning (yellow), `⟢` section header (magenta bold)
+- Icon system: `󰄬` success (green), `󰌷` link (green), `→` action (cyan), `󱁤` build (magenta), `󰛖` font (magenta), `󰅖` error (red), ``warning (yellow),`⟢` section header (magenta bold)
 - Affected: all 22 crate binaries, shared lib, setup-macos, mise tasks, zsh functions (upd, fonts!), hooks
 
 **Zsh cleanup:**
@@ -376,7 +376,6 @@ Built `fastmail-cli` in Go — JMAP email search, send, manage identities. Multi
 
 - Added lefthook for pre-commit hooks (shellcheck, rubocop) (`2d32c58`)
 - Added/removed uv (`e8c820d`, `648b584`)
-- Turso, biome re-added (`2c593b1`)
 - K9s config added
 - Various package management (`318a598`, `9ed369f`)
 - Fixed yt-dlp and other scripts (`300f7fa`)

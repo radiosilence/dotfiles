@@ -546,7 +546,6 @@ tasks:
           - sesh
           - tilt
           - to-audio
-          - turso
           - unfuck-xcode
           - url2base64
           - vimv
