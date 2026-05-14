@@ -165,9 +165,6 @@ keybinds clear-defaults=true {
         bind "Alt N" { ToggleFloatingPanes; }
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
-        // Backups for terminals that mangle Alt+[/] (clashes with CSI/OSC start in legacy mode).
-        bind "Alt ," { PreviousSwapLayout; }
-        bind "Alt ." { NextSwapLayout; }
         bind "Ctrl g" { SwitchToMode "locked"; }
         bind "Alt h" { MoveFocusOrTab "left"; }
         bind "Alt j" { MoveFocus "down"; }
@@ -186,6 +183,18 @@ keybinds clear-defaults=true {
                 width "90%"
                 height "90%"
                 name "wt"
+            }
+        }
+        bind "Alt o" {
+            DumpScreen "/tmp/zellij-urls.txt" "true"
+            Run "bash" "-c" "$HOME/.dotfiles/scripts/zellij-urls /tmp/zellij-urls.txt" {
+                floating true
+                hold_on_close false
+                x "20%"
+                y "20%"
+                width "60%"
+                height "60%"
+                name "urls"
             }
         }
         bind "Alt tab" { FocusNextPane; }
