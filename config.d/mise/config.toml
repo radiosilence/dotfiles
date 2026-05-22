@@ -35,6 +35,7 @@ pnpm-shell-completion = "latest"  # pnpm's built-in completion doesn't read pack
 procs = "latest"  # Better ps
 pup = "latest"  # DD Client
 ripgrep = "latest"  # Fast grep
+rust = "latest"  # toolchain for `task reinstall-bins` (compiles dotfiles/crates)
 sheldon = "latest"  # Zsh plug-in manager
 snowflake-cli = "latest"  # Snowflake CLI (binary: `snow`)
 starship = "latest"  # Prompt

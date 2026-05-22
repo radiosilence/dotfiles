@@ -12,6 +12,8 @@ cask 'font-geist', greedy: true
 cask 'font-geist-mono', greedy: true
 cask 'font-geist-mono-nerd-font', greedy: true
 
+cask 'betterdisplay', greedy: true
+
 brew 'curl'
 brew 'coreutils'
 brew 'findutils'
