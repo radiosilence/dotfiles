@@ -199,6 +199,14 @@ tasks:
       - brew install mise
       - printf "{{.OK}} mise installed\n"
 
+  uv:ensure:
+    desc: Ensure uv is installed
+    platforms: [linux]
+    status: ["command -v uv"]
+    cmds:
+      - curl -LsSf https://astral.sh/uv/install.sh | sh
+      - printf "{{.OK}} uv installed\n"
+
   mise:install:
     desc: Install mise tools
     deps: [mise:ensure, gh:auth, link:config]
@@ -207,6 +215,12 @@ tasks:
     cmds:
       - |
         export PATH="$HOME/.local/share/mise/shims:$PATH"
+        MISE_BIN="$(command -v mise)"
+        case "$MISE_BIN" in
+          "$HOME/.local/"*)
+            mise self-update
+            ;;
+        esac
         mise install
       - printf "{{.OK}} mise tools installed\n"
 
@@ -228,6 +242,7 @@ tasks:
       - apt:upgrade
       - dnf:upgrade
       - mise:upgrade
+      - uv:ensure
       - reinstall-bins
       - secrets:populate
       - generate:completions

@@ -23,12 +23,12 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 
 ## Documentation
 
-| Doc | Description |
-|-----|-------------|
-| [cheatsheet.md](docs/cheatsheet.md) | Complete reference — all commands, aliases, functions |
-| [new-tools.md](docs/new-tools.md) | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
-| [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews |
-| [CHANGELOG.md](CHANGELOG.md) | Full history from 2018 to present |
+| Doc                                                   | Description                                                  |
+| ----------------------------------------------------- | ------------------------------------------------------------ |
+| [cheatsheet.md](docs/cheatsheet.md)                   | Complete reference — all commands, aliases, functions        |
+| [new-tools.md](docs/new-tools.md)                     | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
+| [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews                         |
+| [CHANGELOG.md](CHANGELOG.md)                          | Full history from 2018 to present                            |
 
 ## Highlights
 
@@ -87,8 +87,9 @@ Stores config in `~/.local/git.d/<path>.conf` and adds an `includeIf` to `~/.git
 **Git signing** — Commit signing via 1Password SSH agent. `user.signingkey` is per-machine (local git config).
 
 **Tool duplication** — Some tools exist in both brew and mise intentionally:
+
 - `sheldon` — brew for Intel (no arm64 binary), mise for Apple Silicon
-- `uv` — brew only (system-wide Python tooling)
+- `uv` — official astral standalone installer (system-wide Python tooling)
 
 ## Syncthing
 
