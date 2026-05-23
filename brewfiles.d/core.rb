@@ -17,7 +17,6 @@ cask 'betterdisplay', greedy: true
 brew 'curl'
 brew 'coreutils'
 brew 'findutils'
-brew 'uv'
 brew 'gnupg'
 brew 'openssl@3'
 brew 'mise'
