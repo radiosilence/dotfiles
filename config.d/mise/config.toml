@@ -45,6 +45,7 @@ xh = "latest"  # Modern HTTP client
 zellij = "latest"  # Terminal multiplexer (tiles)
 zoxide = "latest"  # Smart cd replacement
 zsh-patina = "latest"  # ZSH syntax highlighting
+k9s = "latest"
 
 [[tools.yt-dlp]]  # Video downloader (nightly)
 version = "latest"
@@ -73,7 +74,6 @@ not_found_auto_install = false
 
 [settings.npm]
 package_manager = "aube"  # dogfood aube as the npm: backend installer
-
 
 # Pin canonical short names to the GitHub backend so dependent project
 # mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without

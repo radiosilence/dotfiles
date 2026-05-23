@@ -108,8 +108,10 @@
       "model": "claude-sonnet-4",
     },
     "default_model": {
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-thinking-latest",
+      "effort": "medium",
+      "enable_thinking": true,
+      "provider": "zed.dev",
+      "model": "claude-opus-4-7",
     },
   },
   "agent_ui_font_size": 13.0,

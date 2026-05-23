@@ -56,3 +56,6 @@ kkp() {
         --header 'TAB to select multiple, ENTER to delete')
   [[ -n "$pods" ]] && echo "$pods" | xargs kubectl delete pod
 }
+
+alias kubectx='kubectl config use-context '
+alias kubens='kubectl config set-context --namespace '
