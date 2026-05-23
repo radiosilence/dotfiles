@@ -355,6 +355,7 @@ tasks:
 
   secrets:populate:
     desc: Populate ~/mise.local.toml secrets from 1Password (single op inject call)
+    platforms: [darwin]
     deps: [brew:bundle, reinstall-bins]
     vars:
       TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
