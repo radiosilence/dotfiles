@@ -46,7 +46,6 @@ zellij = "latest"  # Terminal multiplexer (tiles)
 zoxide = "latest"  # Smart cd replacement
 zsh-patina = "latest"  # ZSH syntax highlighting
 k9s = "latest"
-node = "latest"
 
 [[tools.yt-dlp]]  # Video downloader (nightly)
 version = "latest"
@@ -72,9 +71,6 @@ jobs = 14
 # the entire tool list before anything else is ready.
 auto_install = false
 not_found_auto_install = false
-
-[settings.npm]
-package_manager = "aube"  # dogfood aube as the npm: backend installer
 
 # Pin canonical short names to the GitHub backend so dependent project
 # mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
