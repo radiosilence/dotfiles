@@ -266,7 +266,6 @@ tasks:
       - link:brewfile
       - link:claude-hooks
       - link:sheldon
-      - link:launchagents
       - link:cargo
 
   link:dotfiles:
@@ -401,31 +400,6 @@ tasks:
         fi
         ln -sf "$src" "$target"
         printf "{{.LINK}} cargo config\n"
-
-  link:launchagents:
-    desc: Symlink and reload LaunchAgents
-    platforms: [darwin]
-    # Wait for brew + mise: plists often reference binaries from both, and
-    # bootstrapping a plist with a missing executable logs noise to Console.
-    deps: [dotfiles:clone, brew:bundle, mise:install]
-    cmds:
-      - |
-        mkdir -p "$HOME/Library/LaunchAgents"
-        for f in "{{.DOTFILES}}/launchd"/*.plist; do
-          [ -e "$f" ] || continue
-          name=$(basename "$f")
-          label="${name%.plist}"
-          target="$HOME/Library/LaunchAgents/$name"
-          # Skip everything if symlink already correct — no relink, no reload.
-          if [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ]; then
-            continue
-          fi
-          rm -f "$target"
-          ln -s "$f" "$target"
-          launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
-          launchctl bootstrap "gui/$(id -u)" "$target"
-          printf "{{.OK}} %s (loaded)\n" "$label"
-        done
 
   link:sheldon:
     desc: Sheldon plugin manager smoke test
