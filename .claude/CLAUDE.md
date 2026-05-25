@@ -70,6 +70,18 @@ When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containin
 
 Update docs/readme/(+ changelog if exists) after every change. Style: concise, non-salesy, explain **why** not what. No marketing language. No trivial breakdowns of obvious functionality. Information density over verbosity.
 
+## Issue / ticket / PR descriptions
+
+**Write things that won't go stale.** GitHub issues, Jira tickets, epics, PR descriptions — the longer they live, the more aggressively you strip out anything operational. The body explains *what this thing fundamentally is* and *the load-bearing decisions behind it*; nothing else.
+
+- **No sub-issue lists, child-ticket tables, or PR-number inventories in epic bodies.** Sub-issue panels / linked-PR widgets are the source of truth. Duplicating them = guaranteed drift.
+- **No status snapshots** (volumes, RPS, SLOs, current phase, "merged so far", "still TODO"). They're true at write-time and rot from there. If you genuinely need them, link to the dashboard / RFC, don't embed.
+- **No process boilerplate.** "Don't list them here — the panel is the source of truth" is itself stale-prone meta-commentary about the ticket. Just *don't list them.* Silence is the convention.
+- **Link, don't duplicate.** RFCs in Notion, designs in Figma, dashboards in Grafana — link them. Don't paraphrase their content into the ticket; the RFC is authoritative and the paraphrase rots.
+- **Title should be timeless too.** "app-reviews Service" not "Epic: app-reviews Phase A → B → C". Phases finish; the service doesn't.
+
+If a future reader 6 months from now would find a sentence misleading or wrong, it doesn't belong in the body.
+
 ## Workflow (batch/teams)
 
 ### Context Detection
