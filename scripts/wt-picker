@@ -100,9 +100,9 @@ case "$key" in
 
   *) # Enter — open/create
     if [[ -z $wt ]]; then
-      wt="$root/.worktrees/$name"
-      mkdir -p "$root/.worktrees"
-      [[ -f "$root/.worktrees/.gitignore" ]] || echo '*' > "$root/.worktrees/.gitignore"
+      wt_dir="$(dirname "$root")/worktrees/$(basename "$root")"
+      wt="$wt_dir/$name"
+      mkdir -p "$wt_dir"
       git fetch origin "$base" --quiet || exit 1
       git fetch origin "$name" --quiet 2>/dev/null
       # existing local branch → existing remote branch → new from base

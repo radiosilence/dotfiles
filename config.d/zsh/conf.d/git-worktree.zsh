@@ -1,5 +1,6 @@
 # Git worktree management (wt*)
-# Worktrees live in <repo-root>/.worktrees/<name>/
+# Worktrees live in <repo-parent>/worktrees/<repo>/<name>/ — outside the repo
+# so editors / file watchers don't recursively index them.
 command -v git >/dev/null || return
 
 # ── Helpers ──────────────────────────────────────────────────────────
@@ -16,12 +17,16 @@ _wt_base() {
     && echo "${ref##refs/remotes/origin/}" || echo "main"
 }
 
-_wt_path() { echo "$(_wt_root)/.worktrees/${1}"; }
+_wt_dir() {
+  local root=$(_wt_root) || return 1
+  echo "$(dirname "$root")/worktrees/$(basename "$root")"
+}
+
+_wt_path() { echo "$(_wt_dir)/${1}"; }
 
 _wt_ensure_dir() {
-  local dir=$(_wt_root)/.worktrees
+  local dir=$(_wt_dir)
   [[ -d $dir ]] || mkdir -p "$dir"
-  [[ -f $dir/.gitignore ]] || echo '*' > "$dir/.gitignore"
 }
 
 _wt_find() {
@@ -254,7 +259,7 @@ wtpb() {
       continue
     fi
     # Check if worktree dir exists at expected path
-    local wt="$root/.worktrees/$branch"
+    local wt=$(_wt_path "$branch")
     if [[ ! -d $wt ]]; then
       git branch -d "$branch" 2>/dev/null && {
         echo "  pruned: $branch"
