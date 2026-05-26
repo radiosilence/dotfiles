@@ -81,6 +81,7 @@
     "html": true,
     "oxc": true,
     "ruby": true,
+    "jsonl": true,
     "kotlin": true,
     "lua": true,
     "nix": true,

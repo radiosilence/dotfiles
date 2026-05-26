@@ -73,7 +73,7 @@ Update docs/readme/(+ changelog if exists) after every change. Style: concise, n
 ## Issue / ticket / PR descriptions
 
 **Write things that won't go stale.** GitHub issues, Jira tickets, epics, PR descriptions — the longer they live, the more aggressively you strip out anything operational. The body explains *what this thing fundamentally is* and *the load-bearing decisions behind it*; nothing else.
-
+- **Always resolve comments on github when you have resolved them ** its annoying to have to ask
 - **No sub-issue lists, child-ticket tables, or PR-number inventories in epic bodies.** Sub-issue panels / linked-PR widgets are the source of truth. Duplicating them = guaranteed drift.
 - **No status snapshots** (volumes, RPS, SLOs, current phase, "merged so far", "still TODO"). They're true at write-time and rot from there. If you genuinely need them, link to the dashboard / RFC, don't embed.
 - **No process boilerplate.** "Don't list them here — the panel is the source of truth" is itself stale-prone meta-commentary about the ticket. Just *don't list them.* Silence is the convention.

@@ -47,6 +47,7 @@ zoxide = "latest"  # Smart cd replacement
 zsh-patina = "latest"  # ZSH syntax highlighting
 k9s = "latest"
 kubectl = "latest"
+aws-vault = "latest"
 
 [[tools.yt-dlp]]  # Video downloader (nightly)
 version = "latest"
