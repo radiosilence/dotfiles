@@ -6,6 +6,13 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### May
+
+**Zellij socket-path fix + cwd-named `zj`:**
+
+- `ZELLIJ_SOCKET_DIR=/tmp/zellij` exported in `config.d/zsh/conf.d/utils.zsh`. macOS `$TMPDIR` is a ~50-char `/var/folders/...` path; zellij's per-session unix socket lives under it and the whole path must stay ≤103 bytes (`sun_path` limit). Long, stable session names (e.g. `zp`/autoattach naming a session after `app-professional-profiles`) tipped it past 103 and zellij died on attach — while bare `zellij` survived only because its random names were shorter. Pinning the socket dir somewhere short makes any name fit. Not a serialization/resurrection problem; `session_serialization` stays on
+- `zj` is now a function, not an alias: bare `zj` attaches to / creates a session named after `$PWD` (same sanitisation as autoattach); `zj <args>` still passes through to `zellij`
+
 ### April
 
 **Terminal overhaul — swap from ghostty to wezterm:**
