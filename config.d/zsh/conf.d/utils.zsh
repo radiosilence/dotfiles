@@ -20,7 +20,23 @@ fi
 # fi
 
 if command -v zellij >/dev/null; then
-  alias zj='zellij'
+  # macOS $TMPDIR is a long /var/folders/... path. Zellij's per-session unix
+  # socket lives under it and the whole path must stay ≤103 bytes — long session
+  # names (e.g. dir-based ones like "app-professional-profiles") tip it over and
+  # zellij dies on attach. Pin the socket dir somewhere short so any name fits.
+  # Must be exported before zellij-autoattach.zsh runs (it loads after this).
+  export ZELLIJ_SOCKET_DIR="/tmp/zellij"
+
+  # zj            → attach to / create a session named after the cwd
+  # zj <args...>  → plain zellij passthrough (zj ls, zj kill-session, …)
+  zj() {
+    if [[ $# -eq 0 ]]; then
+      local name=$(basename "$PWD" | tr -c '[:alnum:]_-' '-' | sed 's/^-*//;s/-*$//')
+      zellij attach -c "${name:-home}"
+    else
+      zellij "$@"
+    fi
+  }
 fi
 
 if command -v zellij >/dev/null && command -v fzf >/dev/null; then
