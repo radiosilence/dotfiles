@@ -3,4 +3,5 @@
 !async-ticket/
 !release/
 !ticket/
+!ticket/**
 !zellij-here/
