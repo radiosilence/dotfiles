@@ -353,12 +353,12 @@ tasks:
         printf "{{.OK}} claude hooks: gastown\n"
 
   secrets:populate:
-    desc: Populate ~/mise.local.toml secrets from 1Password (single op inject call)
+    desc: Populate ~/.mise.toml secrets from 1Password (single op inject call)
     platforms: [darwin]
     deps: [brew:bundle, reinstall-bins]
     vars:
       TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
-      LOCAL: "$HOME/mise.local.toml"
+      LOCAL: "$HOME/.mise.toml"
     status:
       - |
         [ -f "{{.LOCAL}}" ] || exit 1
