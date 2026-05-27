@@ -124,7 +124,7 @@
   },
   "terminal": {
     "dock": "bottom",
-    "font_family": "GeistMono Nerd Font",
+    "font_family": "GeistMono Nerd Font Mono",
     "font_features": {
       "liga": false,
     },
