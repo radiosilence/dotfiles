@@ -61,15 +61,16 @@ brew install --quiet gh mise
 print -P "  ${OK} gh + mise"
 
 # ---------------------------------------------------------------------------
-# 5. GitHub auth — exporting GITHUB_TOKEN now means mise can fetch version
-#    metadata from GitHub without rate-limiting during the rest of bootstrap.
+# 5. GitHub auth — mise reads tokens directly from gh's hosts.yml via its
+#    github.gh_cli_tokens setting (default on), so as long as gh is authed
+#    mise can fetch release metadata without hitting the unauthenticated
+#    rate limit. No need to export GITHUB_TOKEN globally.
 # ---------------------------------------------------------------------------
 if ! gh auth status &>/dev/null; then
   print -P "  ${WARN} run ${BOLD}gh auth login${RESET} in another terminal"
   while ! gh auth status &>/dev/null; do sleep 0.5; done
 fi
-export GITHUB_TOKEN="$(gh auth token 2>/dev/null)"
-print -P "  ${OK} gh authed (GITHUB_TOKEN exported)"
+print -P "  ${OK} gh authed"
 
 # ---------------------------------------------------------------------------
 # 6. 1Password — install app + CLI, then block until SSH agent is enabled.
