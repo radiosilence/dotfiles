@@ -11,6 +11,8 @@ cask '1password-cli', greedy: true
 cask 'font-geist', greedy: true
 cask 'font-geist-mono', greedy: true
 cask 'font-geist-mono-nerd-font', greedy: true
+cask 'font-departure-mono', greedy: true
+cask 'font-departure-mono-nerd-font', greedy: true
 
 cask 'betterdisplay', greedy: true
 
