@@ -74,6 +74,15 @@ jobs = 14
 auto_install = false
 not_found_auto_install = false
 
+# mise hits the GitHub API to resolve plugin/tool releases and gets
+# rate-limited at 60/hr unauthenticated. The advertised `gh_cli_tokens = true`
+# default is a no-op as of 2026.5.15 (mise only reads ~/.config/mise/github_tokens.toml,
+# never shells out to gh). credential_command lazy-resolves per fetch via gh,
+# so no token has to live in the env. Replaces the deleted GITHUB_TOKEN export
+# from 20-github.zsh.
+[settings.github]
+credential_command = "gh auth token"
+
 # Pin canonical short names to the GitHub backend so dependent project
 # mise.toml files (`task = "..."`, `yq = "..."`, etc.) resolve here without
 # bouncing to aqua/asdf.
