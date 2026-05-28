@@ -8,6 +8,10 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### May
 
+**mise GitHub token via `gh auth token`:**
+
+- `[settings.github] credential_command = "gh auth token"` in `config.d/mise/config.toml`. Restores authed GitHub API access after `20-github.zsh` was deleted in `6d43d37` (commit assumed mise's `gh_cli_tokens = true` would read tokens from `~/.config/gh/hosts.yml` — it doesn't in 2026.5.15, mise only consulted `~/.config/mise/github_tokens.toml` and silently fell back to unauthenticated, hitting the 60/hr rate limit). `credential_command` lazy-shells `gh auth token` per fetch, so no token lives in the env
+
 **Zellij socket-path fix + cwd-named `zj`:**
 
 - `ZELLIJ_SOCKET_DIR=/tmp/zellij` exported in `config.d/zsh/conf.d/utils.zsh`. macOS `$TMPDIR` is a ~50-char `/var/folders/...` path; zellij's per-session unix socket lives under it and the whole path must stay ≤103 bytes (`sun_path` limit). Long, stable session names (e.g. `zp`/autoattach naming a session after `app-professional-profiles`) tipped it past 103 and zellij died on attach — while bare `zellij` survived only because its random names were shorter. Pinning the socket dir somewhere short makes any name fit. Not a serialization/resurrection problem; `session_serialization` stays on
