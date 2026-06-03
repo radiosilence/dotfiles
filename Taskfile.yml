@@ -353,12 +353,12 @@ tasks:
         printf "{{.OK}} claude hooks: gastown\n"
 
   secrets:populate:
-    desc: Populate ~/.mise.toml secrets from 1Password (single op inject call)
+    desc: Populate mise conf.d/secrets.toml from 1Password (single op inject call)
     platforms: [darwin]
-    deps: [brew:bundle, reinstall-bins]
+    deps: [brew:bundle, reinstall-bins, link:config]
     vars:
       TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
-      LOCAL: "$HOME/.mise.toml"
+      LOCAL: "$HOME/.config/mise/conf.d/secrets.toml"
     status:
       - |
         [ -f "{{.LOCAL}}" ] || exit 1
@@ -369,6 +369,7 @@ tasks:
     cmds:
       - |
         [ -f "{{.LOCAL}}" ] || : > "{{.LOCAL}}"
+        chmod 600 "{{.LOCAL}}"
 
         # op inject expands op:// refs in the template into a TOML-shaped blob
         # of `KEY = "value"` lines. Parse it via yq, then yq -i the values
