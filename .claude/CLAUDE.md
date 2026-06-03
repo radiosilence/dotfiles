@@ -82,6 +82,10 @@ Update docs/readme/(+ changelog if exists) after every change. Style: concise, n
 
 If a future reader 6 months from now would find a sentence misleading or wrong, it doesn't belong in the body.
 
+**PR bodies specifically — write for a tired human who has to verify it.** The reviewer's job is to confirm the diff does what it claims. Give them exactly that: what it does, the load-bearing decisions, how to confirm it works (key paths / what's tested), and an explicit dependency list naming the exact thing each blocked piece needs. Not a narration of how you built it. If the reader has to reverse-engineer intent from the diff, the body failed.
+
+**PRs shouldn't be weird, bloated, or do more than necessary.** One focused change per PR. No gold-plating, no opportunistic refactors riding along, no speculative abstractions, no scope creep beyond the stated goal. If something extra is genuinely worth doing, it's its own PR. A tight diff is a reviewable diff.
+
 ## Workflow (batch/teams)
 
 ### Context Detection
