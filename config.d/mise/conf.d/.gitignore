@@ -1,0 +1,6 @@
+*
+!.gitignore
+!env.toml
+!tools.toml
+!settings.toml
+!aliases.toml
