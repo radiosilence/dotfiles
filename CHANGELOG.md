@@ -6,7 +6,15 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
-### May
+### June
+
+**Lima payload-detonation sandbox (`jail`):**
+
+- `config.d/lima/isolated.yaml` (symlinked to `~/.config/lima/`) — a throwaway arm64 Ubuntu VM for detonating untrusted samples that hit the org (scripts/JS/Python/macros) and running Claude inside as an autonomous triage agent. The point is to box *Claude itself*: an agent with `--dangerously-skip-permissions` on attacker-controlled input is a prompt-injection target, so it runs where a hijack can't reach the host
+- Host fs is invisible to the guest except `~/lima-jail` ↔ `/jail` (the one quarantine mount); no home mount, no SSH-agent forwarding, no env passthrough. Egress stays *on* — the sample (and a tricked agent) can reach the web, which is the tradeoff for observing real C2 behaviour. `tcpdump` auto-starts at boot via a systemd unit writing full pcap to `/jail/capture.pcap`, so the capture lands on the host and survives nuking the VM — every exfil/pivot attempt is on the record
+- Claude auth is a throwaway `claude setup-token`, injected at runtime into the agent's process env only (`CLAUDE_CODE_OAUTH_TOKEN` via `limactl shell jail -- env …`) — never baked into the committed YAML, never written to the contaminated `/jail` mount. Revoke after each session; blast radius of a scraped token is capped at "some API spend until revoked". The box pre-seeds `hasCompletedOnboarding`/`bypassPermissionsModeAccepted` so an injected token authenticates without tripping interactive gates — agent runs must be headless (`-p`), the TUI still shows a login screen
+- `config.d/zsh/conf.d/lima.zsh` — helpers: `jail-rebuild` (delete + fresh box; config changes only land on first boot, so rebuild = recreate not restart), `jail-mint` (runs `setup-token`, greps the bare `sk-ant-oat…` out of its banner noise, caches in `$JAIL_TOKEN`), `jail-claude` (auto-mints on first use then injects), `jail-send`, `jail-shell`, `jail-pcap`, `jail-nuke`. One fresh box per sample — vz has no clean snapshot-revert, so never reuse a contaminated guest
+- Known gap: in-guest capture can be tampered by capture-aware malware wiping `/jail`. Host-side capture via `socket_vmnet` would be tamper-proof — deferred
 
 **mise GitHub token via `gh auth token`:**
 
