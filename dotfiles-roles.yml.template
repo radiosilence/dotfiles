@@ -17,3 +17,4 @@ roles:
   # - tailscale    # tailscale
   # - sharing      # fun things
   # - ai           # tbh just claude
+  # - virtual      # lima (payload-detonation sandbox)

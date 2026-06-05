@@ -15,6 +15,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Claude auth is a throwaway `claude setup-token`, injected at runtime into the agent's process env only (`CLAUDE_CODE_OAUTH_TOKEN` via `limactl shell jail -- env …`) — never baked into the committed YAML, never written to the contaminated `/jail` mount. Revoke after each session; blast radius of a scraped token is capped at "some API spend until revoked". The box pre-seeds `hasCompletedOnboarding`/`bypassPermissionsModeAccepted` so an injected token authenticates without tripping interactive gates — agent runs must be headless (`-p`), the TUI still shows a login screen
 - `config.d/zsh/conf.d/lima.zsh` — helpers: `jail-rebuild` (delete + fresh box; config changes only land on first boot, so rebuild = recreate not restart), `jail-mint` (runs `setup-token`, greps the bare `sk-ant-oat…` out of its banner noise, caches in `$JAIL_TOKEN`), `jail-claude` (auto-mints on first use then injects), `jail-send`, `jail-shell`, `jail-pcap`, `jail-nuke`. One fresh box per sample — vz has no clean snapshot-revert, so never reuse a contaminated guest
 - Known gap: in-guest capture can be tampered by capture-aware malware wiping `/jail`. Host-side capture via `socket_vmnet` would be tamper-proof — deferred
+- `brewfiles.d/virtual.rb` declares `lima` under a new `virtual` brew role (documented in `dotfiles-roles.yml.template`), so a fresh machine reinstalls Lima via `brew bundle`
 
 **mise GitHub token via `gh auth token`:**
 
