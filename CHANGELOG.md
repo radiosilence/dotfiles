@@ -17,6 +17,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Known gap: in-guest capture can be tampered by capture-aware malware wiping `/jail`. Host-side capture via `socket_vmnet` would be tamper-proof — deferred
 - `brewfiles.d/virtual.rb` declares `lima` under a new `virtual` brew role (documented in `dotfiles-roles.yml.template`), so a fresh machine reinstalls Lima via `brew bundle`
 
+**Secrets off disk — JIT injection over parked env vars:**
+
+- Killed `NODE_AUTH_TOKEN` / `NPM_AUTH_TOKEN` from `packager.d/mise-secrets.tmpl` (both org tokens dead after the GitHub compromise; npmjs installs are anonymous anyway — `.npmrc` no longer references an auth token, only `publish` needs a write-scoped token, injected just-in-time)
+- `BUF_TOKEN` moved to JIT: `buf` is now an `op run` wrapper in `20-op.zsh` that resolves `op://Personal/buf.build/token` into the one process that needs it via an inline `<()`'d reference file — nothing on disk, no secrets file to sync or leak. op's session cache makes it a warm lookup, not a Touch ID per call
+- `mise-secrets.tmpl` now empty: zero standing secrets in shell env. The `secrets:populate` machinery stays dormant for genuine always-on-env cases, but JIT is the default. Live `~/.config/mise/conf.d/secrets.toml` wiped
+
 **mise GitHub token via `gh auth token`:**
 
 - `[settings.github] credential_command = "gh auth token"` in `config.d/mise/config.toml`. Restores authed GitHub API access after `20-github.zsh` was deleted in `6d43d37` (commit assumed mise's `gh_cli_tokens = true` would read tokens from `~/.config/gh/hosts.yml` — it doesn't in 2026.5.15, mise only consulted `~/.config/mise/github_tokens.toml` and silently fell back to unauthenticated, hitting the 60/hr rate limit). `credential_command` lazy-shells `gh auth token` per fetch, so no token lives in the env
