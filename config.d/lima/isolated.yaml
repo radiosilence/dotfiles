@@ -1,0 +1,110 @@
+# Payload detonation sandbox (scripts / JS / Python / macros).
+# Canonical copy lives in dotfiles; symlinked to ~/.config/lima/isolated.yaml.
+# Shell helpers (jail-rebuild, jail-claude, ...) are in zsh/conf.d/lima.zsh.
+#
+#   - Host filesystem: INVISIBLE except ~/lima-jail <-> /jail (the quarantine drop box).
+#   - Egress: ON. The payload can reach the real web; so can its C2. See WARNINGS below.
+#   - Capture: tcpdump auto-starts at boot, full pcap of every interface -> /jail/capture.pcap
+#     (written live/unbuffered, lands on the HOST, survives nuking the VM).
+#   - Analysis: pull the pcap from ~/lima-jail and open it in Wireshark on the HOST,
+#     where it's not sitting in the blast radius. tshark is also in the guest.
+#
+# RUNBOOK (one fresh VM per sample):
+#   mkdir -p ~/lima-jail
+#   limactl start --name=jail ~/.config/lima/isolated.yaml   # or: jail-rebuild
+#   cp suspicious_sample ~/lima-jail/          # drop it in   # or: jail-send <file>
+#   limactl shell jail                         # detonate: cd /jail && ./run-it
+#   # ...let it run...
+#   open ~/lima-jail/capture.pcap              # analyse on host (Wireshark)
+#   limactl delete -f jail                     # BURN IT. Next sample = fresh VM.
+#
+# CLAUDE AUTH (throwaway, revocable, injected at RUNTIME -- never baked in):
+#   # 1. Mint a disposable token on the HOST (uses your sub, revocable any time):
+#   export JAIL_TOKEN=$(claude setup-token)        # or an API key from console
+#   # 2. Run claude IN the box with the token only in its process env:
+#   limactl shell jail -- env CLAUDE_CODE_OAUTH_TOKEN="$JAIL_TOKEN" \
+#     bash -lc 'cd /jail && claude'                # or just: jail-claude
+#   # 3. When done: revoke it. Settings -> the session/key you minted. Then nuke VM.
+#   # The token never touches /jail or the YAML, so it's not on the contaminated
+#   # mount -- only in claude's environ inside the disposable guest.
+#
+# WARNINGS (read these, choom):
+#   * Real egress = the sample phones its real C2, may pull a live second stage,
+#     and that traffic exits YOUR org's public IP. Run this off-corp / behind a VPN
+#     if you don't want to tip off the attacker or attribute it to you.
+#   * /jail is the malware's ONE window to your host fs. It can wipe/encrypt what's
+#     there, including capture.pcap. Copy the pcap out promptly, or switch to
+#     host-side capture (socket_vmnet) for a tamper-proof record.
+#   * vz has no clean snapshot-revert. Destroy + recreate per sample. Never reuse.
+
+vmType: "vz"
+os: "Linux"
+
+images:
+  - location: "https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-arm64.img"
+    arch: "aarch64"
+
+cpus: 4
+memory: "4GiB"
+disk: "20GiB"
+
+# The ONLY host path the guest can see. Treat it as contaminated quarantine.
+mounts:
+  - location: "~/lima-jail"
+    mountPoint: "/jail"
+    writable: true
+
+containerd:
+  system: false
+  user: false
+
+provision:
+  # Analysis + runtime tooling. ripgrep/jq/file for triage, the interpreters to
+  # detonate scripts, tcpdump/tshark/dnsutils for traffic.
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y \
+        tcpdump tshark dnsutils \
+        python3 python3-pip \
+        nodejs npm \
+        ripgrep jq file unzip git curl
+      # Claude Code, for in-box analysis. Auth is injected at RUNTIME as an env
+      # var (see header) -- NEVER baked in here, never via the /jail mount.
+      npm install -g @anthropic-ai/claude-code
+
+  # Pre-clear Claude's interactive gates so an injected token Just Works in both
+  # headless (-p) and TUI mode -- no onboarding/theme/bypass-accept prompts. The
+  # token itself is NEVER seeded here; it's injected at runtime (see jail-claude).
+  - mode: user
+    script: |
+      #!/bin/bash
+      set -eux
+      cat > "$HOME/.claude.json" <<'EOF'
+      {"hasCompletedOnboarding": true, "bypassPermissionsModeAccepted": true, "theme": "dark"}
+      EOF
+
+  # Auto-capture: tcpdump on all interfaces, unbuffered, from boot -> host-visible pcap.
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux
+      cat > /etc/systemd/system/jail-capture.service <<'EOF'
+      [Unit]
+      Description=jail full-packet capture
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      ExecStart=/usr/bin/tcpdump -i any -U -w /jail/capture.pcap
+      Restart=always
+      RestartSec=1
+
+      [Install]
+      WantedBy=multi-user.target
+      EOF
+      systemctl daemon-reload
+      systemctl enable --now jail-capture.service
