@@ -24,6 +24,7 @@ brew 'openssl@3'
 brew 'mise'
 brew 'gh'
 brew 'node' # need a global npm for mise's npm: backend even when aube is the resolver
+brew 'uv' # global uv/uvx for mise's pipx: backend (e.g. snowflake-cli); brew runs pre-mise so it's there at install time
 brew 'pam-reattach' # Touch ID inside zellij/tmux-style detached sessions
 brew 'sheldon' if Hardware::CPU.intel?
 

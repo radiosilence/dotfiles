@@ -8,6 +8,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### June
 
+**Global `uv` for mise's pipx backend:**
+
+- `brewfiles.d/core.rb` declares `brew 'uv'`. The `pipx:` backend (`snowflake-cli` and friends in `tools.toml`) shells out to `uv`/`uvx` to build isolated tool venvs, but neither was installed — `mise install` died with a misleading errno 2 trying to exec a missing binary, blaming the package version. Lives in `core` not `dev` because the `tools.toml` pipx entries are unconditional, so a role-less machine still needs uv; brew runs pre-mise so the binary exists before mise reaches for it. uv fetches its own CPython, so no system interpreter to pollute. mise auto-detects `uvx` — no `pipx.uvx` setting required
+- `config.d/zsh/conf.d/sfw.zsh` wraps interactive `uvx` in Socket Firewall alongside `uv`/`cargo`. mise calls the binary directly so pipx-backend installs bypass sfw regardless — not worth chasing, the wrap only covers interactive use
+
 **Lima payload-detonation sandbox (`jail`):**
 
 - `config.d/lima/isolated.yaml` (symlinked to `~/.config/lima/`) — a throwaway arm64 Ubuntu VM for detonating untrusted samples that hit the org (scripts/JS/Python/macros) and running Claude inside as an autonomous triage agent. The point is to box *Claude itself*: an agent with `--dangerously-skip-permissions` on attacker-controlled input is a prompt-injection target, so it runs where a hijack can't reach the host
@@ -16,6 +21,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - `config.d/zsh/conf.d/lima.zsh` — helpers: `jail-rebuild` (delete + fresh box; config changes only land on first boot, so rebuild = recreate not restart), `jail-mint` (runs `setup-token`, greps the bare `sk-ant-oat…` out of its banner noise, caches in `$JAIL_TOKEN`), `jail-claude` (auto-mints on first use then injects), `jail-send`, `jail-shell`, `jail-pcap`, `jail-nuke`. One fresh box per sample — vz has no clean snapshot-revert, so never reuse a contaminated guest
 - Known gap: in-guest capture can be tampered by capture-aware malware wiping `/jail`. Host-side capture via `socket_vmnet` would be tamper-proof — deferred
 - `brewfiles.d/virtual.rb` declares `lima` under a new `virtual` brew role (documented in `dotfiles-roles.yml.template`), so a fresh machine reinstalls Lima via `brew bundle`
+
+**Secrets off disk — JIT injection over parked env vars:**
+
+- Killed `NODE_AUTH_TOKEN` / `NPM_AUTH_TOKEN` from `packager.d/mise-secrets.tmpl` (both org tokens dead after the GitHub compromise; npmjs installs are anonymous anyway — `.npmrc` no longer references an auth token, only `publish` needs a write-scoped token, injected just-in-time)
+- `BUF_TOKEN` moved to JIT: `buf` is now an `op run` wrapper in `20-op.zsh` that resolves `op://Personal/buf.build/token` into the one process that needs it via an inline `<()`'d reference file — nothing on disk, no secrets file to sync or leak. op's session cache makes it a warm lookup, not a Touch ID per call
+- `mise-secrets.tmpl` now empty: zero standing secrets in shell env. The `secrets:populate` machinery stays dormant for genuine always-on-env cases, but JIT is the default. Live `~/.config/mise/conf.d/secrets.toml` wiped
 
 **mise GitHub token via `gh auth token`:**
 
