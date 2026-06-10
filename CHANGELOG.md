@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### June
 
+**npm/buf auth — parked scoped tokens, walking back JIT op-injection:**
+
+- The `op run`-per-invocation wrappers (buf, and a stillborn ni/aube experiment) re-prompted Touch ID on *every* call: op uses system-auth with no session caching, so a "warm lookup" never materialised — earlier changelog claim was wrong. Unusable for commands run dozens of times a session
+- Reverted to standing env vars for the two genuinely low-risk creds: `NPM_AUTH_TOKEN` (read-only npmjs) and `BUF_TOKEN` (BSR-scoped), parked in the gitignored `~/.config/mise/conf.d/secrets.toml` and exported by mise. `.npmrc` carries `//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}` as env indirection — no literal on disk, anonymous-read fallback when unset
+- `buf()` wrapper removed from `20-op.zsh`; buf reads `BUF_TOKEN` straight from env. JIT-over-op stays the right call for *high*-value secrets, but for read-only/narrow-scope tokens the per-call Touch ID isn't worth it — scope down the token instead
+
 **Global `uv` for mise's pipx backend:**
 
 - `brewfiles.d/core.rb` declares `brew 'uv'`. The `pipx:` backend (`snowflake-cli` and friends in `tools.toml`) shells out to `uv`/`uvx` to build isolated tool venvs, but neither was installed — `mise install` died with a misleading errno 2 trying to exec a missing binary, blaming the package version. Lives in `core` not `dev` because the `tools.toml` pipx entries are unconditional, so a role-less machine still needs uv; brew runs pre-mise so the binary exists before mise reaches for it. uv fetches its own CPython, so no system interpreter to pollute. mise auto-detects `uvx` — no `pipx.uvx` setting required
