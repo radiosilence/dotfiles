@@ -8,6 +8,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### June
 
+**Global `uv` for mise's pipx backend:**
+
+- `brewfiles.d/core.rb` declares `brew 'uv'`. The `pipx:` backend (`snowflake-cli` and friends in `tools.toml`) shells out to `uv`/`uvx` to build isolated tool venvs, but neither was installed — `mise install` died with a misleading errno 2 trying to exec a missing binary, blaming the package version. Lives in `core` not `dev` because the `tools.toml` pipx entries are unconditional, so a role-less machine still needs uv; brew runs pre-mise so the binary exists before mise reaches for it. uv fetches its own CPython, so no system interpreter to pollute. mise auto-detects `uvx` — no `pipx.uvx` setting required
+- `config.d/zsh/conf.d/sfw.zsh` wraps interactive `uvx` in Socket Firewall alongside `uv`/`cargo`. mise calls the binary directly so pipx-backend installs bypass sfw regardless — not worth chasing, the wrap only covers interactive use
+
 **Lima payload-detonation sandbox (`jail`):**
 
 - `config.d/lima/isolated.yaml` (symlinked to `~/.config/lima/`) — a throwaway arm64 Ubuntu VM for detonating untrusted samples that hit the org (scripts/JS/Python/macros) and running Claude inside as an autonomous triage agent. The point is to box *Claude itself*: an agent with `--dangerously-skip-permissions` on attacker-controlled input is a prompt-injection target, so it runs where a hijack can't reach the host
