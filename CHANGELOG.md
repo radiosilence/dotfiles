@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### June
 
+**npm registry auth — JIT token over a parked `.npmrc` secret:**
+
+- `.npmrc` restores `//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}` — but the value is env indirection, never a literal. No token on disk; raw `npm` outside the wrappers just does anonymous reads
+- `config.d/zsh/conf.d/20-op.zsh` function-wraps the registry-touching ni/aube verbs (`ni nci nup nlx na aube aubx`) to `op run`-inject `NPM_AUTH_TOKEN` from `op://Personal/npm/token` into that subprocess only — same pattern as the `buf` wrapper. Script-runners (`nr`/`nd`/`aubr`) and `nun` stay bare to skip the op lookup. op's session cache keeps it warm; Touch ID only on first use / after timeout. Caveat by design: auth flows through the wrappers, not raw `pnpm`/`npm` — which is the point, the token lives in process memory for one invocation and nowhere else
+- Defined in `20-op.zsh` (loads before `25-mise.zsh`), but order-independent: the functions only need `op` at definition time and resolve `command ni` at invocation, long after mise puts the shim on PATH. Breadcrumb added to `ni-learing.zsh` so the `ni`-is-a-function surprise is documented next to the aliases that inherit it
+
 **Global `uv` for mise's pipx backend:**
 
 - `brewfiles.d/core.rb` declares `brew 'uv'`. The `pipx:` backend (`snowflake-cli` and friends in `tools.toml`) shells out to `uv`/`uvx` to build isolated tool venvs, but neither was installed — `mise install` died with a misleading errno 2 trying to exec a missing binary, blaming the package version. Lives in `core` not `dev` because the `tools.toml` pipx entries are unconditional, so a role-less machine still needs uv; brew runs pre-mise so the binary exists before mise reaches for it. uv fetches its own CPython, so no system interpreter to pollute. mise auto-detects `uvx` — no `pipx.uvx` setting required

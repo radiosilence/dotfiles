@@ -1,6 +1,8 @@
 # @antfu/ni — package-manager-agnostic shortcuts.
 # Built-ins: ni / nr / nlx / nun / nup / nci / na / nd
 # Config at ~/.config/ni/nirc (NI_CONFIG_FILE) enables useSfw=true.
+# Note: ni/nci/nup/nlx/na (+ aube/aubx) are function-wrapped in 20-op.zsh to
+# JIT-inject the npmjs.org token from 1Password — these aliases inherit it.
 
 command -v ni >/dev/null || return
 
