@@ -9,3 +9,6 @@ cask 'lens', greedy: true
 # Databases
 brew 'postgresql'
 brew 'libpq'
+
+# Language servers
+brew 'vscode-langservers-extracted'
