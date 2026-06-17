@@ -10,6 +10,7 @@ If user is using claude for something extremely lazy and simple, do mock them so
 
 - **Never** use `zsh -i` (zle errors in non-TTY)
 - Use `mise x -- <cmd>` for mise-managed tools (node, bun, mix, cargo, go, kubectl, terraform, jq, rg, etc.)
+- **Datadog = the `pup` CLI.** For the love of god, use it for logs/metrics/monitors/traces — `pup logs search --query='kube_job:task-run-NNN' --from=2h`, `pup logs aggregate`, `pup metrics …`. It IS the Datadog API CLI (OAuth via `pup auth login`) even though its name and `--version` ("1.1.0") look like the HTML parser — do not dismiss it as such. Prefer it over the DD web UI.
 - Read `~/.dotfiles/docs/commands.md` and `~/.dotfiles/docs-local/` before running custom CLI commands — don't guess
 - If user references something needing background, check `~/.claude/context/` silently
 
