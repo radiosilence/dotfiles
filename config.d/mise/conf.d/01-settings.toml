@@ -1,0 +1,25 @@
+[settings]
+fetch_remote_versions_cache = "30m"
+experimental = true
+trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
+env_file = ".env"
+jobs = 14
+# Don't auto-install missing tools on shell startup / cd / shim invocation.
+# `task converge` (or `mise i`) handles installs explicitly. The defaults are
+# all `true`, which means every new shell during bootstrap tries to install
+# the entire tool list before anything else is ready.
+auto_install = false
+not_found_auto_install = false
+
+disable_backends = ["asdf"]
+
+minimum_release_age_excludes = [
+  "koan",
+  "nano-web",
+  "watchwoman",
+  "fastmail-cli",
+  "codeowners-lsp"
+]
+
+[settings.github]
+credential_command = "gh auth token"
