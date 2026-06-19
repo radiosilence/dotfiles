@@ -5,9 +5,9 @@
 
 command -v ni >/dev/null || return
 
-ni() {
-  NPM_AUTH_TOKEN=$(op read "op://Personal/npm-work/token") command ni "$@"
-}
+# ni() {
+#   NPM_AUTH_TOKEN=$(op read "op://Personal/npm-work/token") command ni "$@"
+# }
 
 _na_agent_for_cwd() {
   local dir=$PWD
