@@ -8,10 +8,10 @@ jobs = 14
 # `task converge` (or `mise i`) handles installs explicitly. The defaults are
 # all `true`, which means every new shell during bootstrap tries to install
 # the entire tool list before anything else is ready.
-auto_install = false
-not_found_auto_install = false
+auto_install = true
+not_found_auto_install = true
 
-disable_backends = ["asdf"]
+disable_backends = ["asdf", "ubi"]
 
 minimum_release_age_excludes = [
   "koan",
