@@ -1,5 +1,4 @@
 # Core — essential system tools, always installed
-tap 'buo/cask-upgrade'
 
 brew 'zsh'
 cask 'ghostty', greedy: true
