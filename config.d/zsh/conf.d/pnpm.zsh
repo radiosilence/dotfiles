@@ -4,9 +4,9 @@
 # g-plane plugin (installed via mise) for that. Locate it via `mise where`.
 command -v pnpm >/dev/null || return
 
-pnpm() {
-  NPM_AUTH_TOKEN=$(op read "op://Personal/npm-work/token") command pnpm "$@"
-}
+# pnpm() {
+#   NPM_AUTH_TOKEN=$(op read "op://Personal/npm-work/token") command pnpm "$@"
+# }
 
 if (( $+commands[mise] )); then
   _pnpm_completion_dir=$(mise where pnpm-shell-completion 2>/dev/null)
