@@ -5,6 +5,10 @@
 
 command -v ni >/dev/null || return
 
+ni() {
+  NPM_AUTH_TOKEN=$(op read "op://Personal/Npm Work/token") command ni "$@"
+}
+
 _na_agent_for_cwd() {
   local dir=$PWD
   while [[ $dir != / && -n $dir ]]; do
