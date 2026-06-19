@@ -1,15 +1,15 @@
 [tools]
-bun = "latest"  # JS runtime
-deno = "latest"  # Secure JS/TS runtime
-codeowners-lsp = "latest"  # Codeowners LSP
-fastmail-cli = "latest"  # Fastmail CLI
-koan = "latest"  # TUI music player
-nano-web = "latest"  # Ultrafast webserver
-watchwoman = "latest"  # Watchman replacement
+1password = "latest"
+aube = "latest"  # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
+aws-vault = "latest"
 bat = "latest"  # Cat with wings
 broot = "latest"  # Directory navigation
+bun = "latest"  # JS runtime
+codeowners-lsp = "latest"  # Codeowners LSP
 delta = "latest"  # Better git diffs
+deno = "latest"  # Secure JS/TS runtime
 fastfetch = "latest"  # System info
+fastmail-cli = "latest"  # Fastmail CLI
 fd = "latest"  # Fast find alternative
 fzf = "latest"  # Fuzzy finder
 git-lfs = "latest"  # Large file storage
@@ -17,30 +17,32 @@ glow = "latest"  # Terminal Markdown renderer
 helix = "latest"  # Terminal text editor (nightly)
 hyperfine = "latest"  # Benchmarking
 jq = "latest"  # JSON processor
+k9s = "latest"
+koan = "latest"  # TUI music player
 kubecolor = "latest"  # Terminal kubectl colorizer
+kubectl = "latest"
 lsd = "latest"  # Modern ls replacement
-aube = "latest"  # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
+nano-web = "latest"  # Ultrafast webserver
 ni = "latest"  # @antfu/ni — auto-detects project pm, wraps it with consistent verbs
 oha = "latest"  # Load testing
-sfw-free = { version = "latest", bin = "sfw" }  # Socket Firewall — release ships as sfw-free; ni probes for sfw
 pnpm = "latest"
 pnpm-shell-completion = "latest"  # pnpm's built-in completion doesn't read package.json scripts; this does
 procs = "latest"  # Better ps
 pup = "latest"  # DD Client
 ripgrep = "latest"  # Fast grep
 rust = "latest"  # toolchain for `task reinstall-bins` (compiles dotfiles/crates)
+sfw-free = { version = "latest", bin = "sfw" }  # Socket Firewall — release ships as sfw-free; ni probes for sfw
 sheldon = "latest"  # Zsh plug-in manager
 snowflake-cli = "latest"  # Snowflake CLI (binary: `snow`)
 starship = "latest"  # Prompt
 taplo = "latest"  # TOML formatter
 task = "latest"  # Task runner
+vfox = "latest"
+watchwoman = "latest"  # Watchman replacement
 xh = "latest"  # Modern HTTP client
 zellij = "latest"  # Terminal multiplexer (tiles)
 zoxide = "latest"  # Smart cd replacement
 zsh-patina = "latest"  # ZSH syntax highlighting
-k9s = "latest"
-kubectl = "latest"
-aws-vault = "latest"
 
 [[tools.yt-dlp]]  # Video downloader (nightly)
 version = "latest"

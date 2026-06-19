@@ -12,7 +12,7 @@ auto_install = true
 not_found_auto_install = true
 
 disable_backends = ["asdf", "ubi"]
-
+activate_aggressive = true
 minimum_release_age_excludes = [
   "koan",
   "nano-web",
