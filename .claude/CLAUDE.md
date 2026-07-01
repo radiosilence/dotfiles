@@ -62,8 +62,9 @@ When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containin
 
 - **Never push tags** — user handles tags/releases
 - **Push before slow checks**: commit → lint-staged → push → run typecheck/tests locally after (in background). CI catches issues in parallel. Fix and re-push if local checks fail.
+- When you have resolved a comment ACTUALLY RESOLVE IT ON GITHUB
 - Always work in PRs, never push to main
-- Signed commits preferred, unsigned OK if 1Password times out
+- Signed commits MANDATORY
 - Never auto-merge unless explicitly requested
 - Don't rebase, just merge — we squash PRs
 - IMPORTANT: Request `@claude (re-)review` if applicable (work)
@@ -99,21 +100,23 @@ Determine org context from git remote URL:
 
 ### Work
 
-- Use JIRA MCP
+- Use GitHub Issues
 - ALWAYS leave a PR comment `@claude review` and if updating a PR, leave a comment `@claude re-review`
-- ALWAYS resolve PR comments that we have actually resolved
+- ALWAYS github resolve PR comments that we have actually resolved
 - Infer project/org from git remote + existing ticket refs
 - Infer user from `git config user.email` — only pick up tickets assigned to them
 - Update status: In Progress → In Review → Merged → Done (use a backgrounded agent to poll)
 - Groom tickets: team, platform, sprint
 - Comment tickets with findings and actions
-- When creating JIRA tickets, ALWAYS:
+- When creating GitHub Issues, ALWAYS:
   - Assign to current user
   - Assign to current sprint
+  - Use correct tags
+  - Assigned to correct parent issue
   - Select correct platform/team
 - Planning: When creating plans, instead of using local files, create Jira tickets, link any context discussed
 - Unsure about parent ticket → ask
-- PR title format: `XXX-12345 type(thing): description`
+- PR title format: `12345 type(thing): description`
 - Do not update PO files directly ever.
 
 ### Personal

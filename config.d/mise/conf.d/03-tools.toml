@@ -4,6 +4,7 @@ aube = "latest"  # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + pack
 aws-vault = "latest"
 bat = "latest"  # Cat with wings
 broot = "latest"  # Directory navigation
+buf = "latest"
 bun = "latest"  # JS runtime
 codeowners-lsp = "latest"  # Codeowners LSP
 delta = "latest"  # Better git diffs
