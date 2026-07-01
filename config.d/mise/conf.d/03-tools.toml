@@ -14,6 +14,7 @@ fastmail-cli = "latest"  # Fastmail CLI
 fd = "latest"  # Fast find alternative
 fzf = "latest"  # Fuzzy finder
 git-lfs = "latest"  # Large file storage
+gh = "latest"
 glow = "latest"  # Terminal Markdown renderer
 helix = "latest"  # Terminal text editor (nightly)
 hyperfine = "latest"  # Benchmarking
