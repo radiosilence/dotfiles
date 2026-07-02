@@ -3,14 +3,16 @@ personal = "Zen"
 work = "Firefox"
 
 [urls]
-personal = ["reddit.com", "news.ycombinator.com", "youtube.com"]
+personal = [ "reddit.com", "news.ycombinator.com", "youtube.com", "x.com" ]
 work = [
-  "atlassian.net",
-  "meet.google.com",
-  "figma.com",
-  "mail.google.com",
-  "slack.com",
-  "datadoghq.com"
+    "atlassian.net",
+    "meet.google.com",
+    "figma.com",
+    "mail.google.com",
+    "slack.com",
+    "datadoghq.com",
+    "snowflake",
+    "127.0.0.1:35001"
 ]
 
 [work_days]

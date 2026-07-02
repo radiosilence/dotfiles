@@ -38,12 +38,15 @@ fi
 print -P "  ${OK} touchid sudo"
 
 # ---------------------------------------------------------------------------
-# 3. Homebrew — NONINTERACTIVE skips the "press RETURN" prompt; brew's sudo
-#    calls now resolve via Touch ID GUI dialog.
+# 3. Homebrew — official .pkg installer; `latest/download` is a stable URL so
+#    no version pinning. sudo resolves via Touch ID from step 2.
 # ---------------------------------------------------------------------------
 if ! command -v brew >/dev/null 2>&1; then
   print -P "  ${WORK} installing Homebrew"
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  pkg="$(mktemp -d)/Homebrew.pkg"
+  curl -fsSL -o "$pkg" https://github.com/Homebrew/brew/releases/latest/download/Homebrew.pkg
+  sudo installer -pkg "$pkg" -target /
+  rm -rf "${pkg:h}"
 fi
 if [[ -d /opt/homebrew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"

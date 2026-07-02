@@ -6,6 +6,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### July
+
+**Homebrew via official .pkg installer:**
+
+- `setup-macos` now installs Homebrew from the `Homebrew.pkg` asset on the latest GitHub release (`releases/latest/download/` is a stable URL — no version pinning, no API call) instead of curl-piping `install.sh` into bash. One `sudo installer` invocation, resolved by the Touch ID sudo set up in step 2, replaces a script that shells out to sudo repeatedly — fewer moving parts to race in a piped, non-TTY bootstrap
+
 ### June
 
 **Global `uv` for mise's pipx backend:**
