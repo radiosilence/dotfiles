@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Atuin shell history:**
+
+- `atuin` added to mise tools (aqua backend, no curlbash) with init in `config.d/zsh/conf.d/zz-atuin.zsh` — the `zz-` prefix is load-bearing: both atuin and `fzf --zsh` bind ctrl-r and last-loaded wins, so atuin must source after `fzf.zsh` (atuin takes ctrl-r; fzf keeps ctrl-t/alt-c). Up-arrow stays native via `--disable-up-arrow`
+- `config.d/atuin/config.toml` holds only deviations from defaults: compact inline style, global filter by default (repo-scoped start hid imported history, which has no cwd context — ctrl-r cycling into workspace scope still works), enter-to-run
+- Considered suvadu (agent-origin tracking for AI-run commands) — passed for now: 4 months old, single-org, and shell history is too load-bearing a slot for a v0.x bet. Revisit if it matures
+
 **Homebrew via official .pkg installer:**
 
 - `setup-macos` now installs Homebrew from the `Homebrew.pkg` asset on the latest GitHub release (`releases/latest/download/` is a stable URL — no version pinning, no API call) instead of curl-piping `install.sh` into bash. One `sudo installer` invocation, resolved by the Touch ID sudo set up in step 2, replaces a script that shells out to sudo repeatedly — fewer moving parts to race in a piped, non-TTY bootstrap
