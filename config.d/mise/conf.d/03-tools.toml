@@ -37,8 +37,8 @@ rust = "latest"  # toolchain for `task reinstall-bins` (compiles dotfiles/crates
 sfw-free = { version = "latest", bin = "sfw" }  # Socket Firewall — release ships as sfw-free; ni probes for sfw
 sheldon = "latest"  # Zsh plug-in manager
 snowflake-cli = "latest"  # Snowflake CLI (binary: `snow`)
-suvadu = "latest"
 starship = "latest"  # Prompt
+suvadu = "latest"  # Agent-aware shell history (binary: `suv`) — aliased to github:AppachiTech/suvadu in 02-aliases.toml
 taplo = "latest"  # TOML formatter
 task = "latest"  # Task runner
 vfox = "latest"

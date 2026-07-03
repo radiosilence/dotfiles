@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Suvadu trial (agent-aware shell history):**
+
+- Reversed the "passed for now" call below — trialling suvadu alongside atuin rather than instead of it. mise-managed via alias (`suvadu = "github:AppachiTech/suvadu"` in `02-aliases.toml`, github backend — not in the mise registry), no curlbash
+- Keybind topology is load-order-driven since `suv init zsh` has no flag to opt out of bindings: `suvadu.zsh` sorts after `fzf.zsh` and before `zz-atuin.zsh`, so **ctrl-r = atuin, up/down arrows = suvadu**. Both record every command; the trial ends by deleting whichever conf.d file loses
+- `config.d/suvadu/hooks/` holds the `suv init claude-code`-generated Claude Code hooks (PostToolUse/UserPromptSubmit → records agent-run commands with origin tracking), symlinked to `~/.config/suvadu` like any other config dir. The suvadu MCP server in `~/.claude.json` exposes the recorded history to Claude itself
+
 **Atuin shell history:**
 
 - `atuin` added to mise tools (aqua backend, no curlbash) with init in `config.d/zsh/conf.d/zz-atuin.zsh` — the `zz-` prefix is load-bearing: both atuin and `fzf --zsh` bind ctrl-r and last-loaded wins, so atuin must source after `fzf.zsh` (atuin takes ctrl-r; fzf keeps ctrl-t/alt-c). Up-arrow stays native via `--disable-up-arrow`
