@@ -1,0 +1,8 @@
+#!/bin/sh
+# Open a URL in a specific macOS browser app, named via $OPEN_URL_APP.
+#
+# claude spawns $BROWSER as a bare executable with the URL as its only arg
+# (no shell, no arg splitting), so `BROWSER="open -a Helium"` can't work.
+# This wrapper is that executable: point $BROWSER here and set $OPEN_URL_APP
+# to the app to force the OAuth flow into (e.g.) the personal browser.
+exec open -a "${OPEN_URL_APP:?OPEN_URL_APP not set}" "$@"
