@@ -8,6 +8,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Lift the `brew bundle` parallelism cap:**
+
+- `HOMEBREW_BUNDLE_JOBS` set to `hw.ncpu` in `15-brew.zsh`. Homebrew 6.x ships a real parallel installer for `brew bundle` (dependency-graph scheduled thread pool), but `auto` caps at `min(cores, 4)` — leaving 14 cores idle on the 18-core box. Pinned to core count rather than a literal 18 so it stays correct across machines
+- Only lifts the ceiling for formulae; casks stay serialised inside the installer (they fire interactive `sudo`/`Password:` prompts to `/dev/tty` that would otherwise interleave into garbage), so a cask-heavy Brewfile has a floor no amount of jobs can dodge
+
 **Suvadu trial (agent-aware shell history):**
 
 - Reversed the "passed for now" call below — trialling suvadu alongside atuin rather than instead of it. mise-managed via alias (`suvadu = "github:AppachiTech/suvadu"` in `02-aliases.toml`, github backend — not in the mise registry), no curlbash
