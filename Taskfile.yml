@@ -504,6 +504,7 @@ tasks:
   generate:completions:
     desc: Regenerate zsh completions
     deps:
+      - mise:upgrade
       - for:
           - argocd
           - buf
