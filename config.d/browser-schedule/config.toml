@@ -1,6 +1,6 @@
 [browsers]
 personal = "Zen"
-work = "Helium"
+work = "Firefox"
 
 [urls]
 personal = [ "reddit.com", "news.ycombinator.com", "youtube.com", "x.com" ]
@@ -12,7 +12,8 @@ work = [
     "slack.com",
     "datadoghq.com",
     "snowflake",
-    "127.0.0.1:35001"
+    "127.0.0.1:35001",
+    "accounts.google.com/o/saml2/idp"
 ]
 
 [work_days]

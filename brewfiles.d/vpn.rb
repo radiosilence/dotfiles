@@ -1,2 +1,2 @@
 # VPNs
-cask 'mullvad-vpn', greedy: true
+cask 'sfm', greedy: true
