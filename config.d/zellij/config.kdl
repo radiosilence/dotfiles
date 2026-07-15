@@ -586,19 +586,15 @@ copy_on_select true
 // 
 // auto_layout false
  
-// Whether sessions should be serialized to the cache folder (including their tabs/panes, cwds and running commands) so that they can later be resurrected
-// Options:
-//   - true (default)
-//   - false
-// 
-session_serialization true
+// Sessions end for good — no serialization, no EXITED corpses to `zj da` later.
+session_serialization false
  
 // Whether pane viewports are serialized along with the session, default is false
 // Options:
 //   - true
 //   - false (default)
 // 
-serialize_pane_viewport true
+serialize_pane_viewport false
  
 // Scrollback lines to serialize along with the pane viewport when serializing sessions, 0
 // defaults to the scrollback size. If this number is higher than the scrollback size, it will
