@@ -1,1 +1,1 @@
-cask 'tailscale-app', greedy: true
+cask 'tailscale-app'

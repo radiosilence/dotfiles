@@ -1,2 +1,2 @@
 # Docker / containers
-cask 'orbstack', greedy: true
+cask 'orbstack'

@@ -1,2 +1,2 @@
 # Photo / creative — Adobe suite
-cask 'adobe-creative-cloud', greedy: true
+cask 'adobe-creative-cloud'

@@ -1,2 +1,2 @@
 # VPNs
-cask 'sfm', greedy: true
+cask 'sfm'
