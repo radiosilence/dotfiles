@@ -15,7 +15,7 @@ else
   []
 end
 
-cask_args require_sha: true
+cask_args require_sha: true, language: 'en-GB'
 
 # Core — always loaded
 brewfiles_dir = File.join(dotfiles_dir, "brewfiles.d")
