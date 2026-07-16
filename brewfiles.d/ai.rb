@@ -1,4 +1,4 @@
-cask 'claude', greedy: true
+cask 'claude'
 brew 'gemini-cli'
-cask 't3-code', greedy: true
+cask 't3-code'
 brew 'clawkwork/tap/clawk'

@@ -1,19 +1,19 @@
 # Core — essential system tools, always installed
 
 brew 'zsh'
-cask 'ghostty', greedy: true
+cask 'ghostty'
 brew 'git'
-cask '1password', greedy: true
-cask '1password-cli', greedy: true
+cask '1password'
+cask '1password-cli'
 
 # Fonts — auto-updated via brew upgrade
-cask 'font-geist', greedy: true
-cask 'font-geist-mono', greedy: true
-cask 'font-geist-mono-nerd-font', greedy: true
-cask 'font-departure-mono', greedy: true
-cask 'font-departure-mono-nerd-font', greedy: true
+cask 'font-geist'
+cask 'font-geist-mono'
+cask 'font-geist-mono-nerd-font'
+cask 'font-departure-mono'
+cask 'font-departure-mono-nerd-font'
 
-cask 'betterdisplay', greedy: true
+cask 'betterdisplay'
 
 brew 'curl'
 brew 'coreutils'

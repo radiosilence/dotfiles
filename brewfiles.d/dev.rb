@@ -2,9 +2,9 @@
 tap 'withgraphite/tap'
 tap 'metalbear-co/mirrord'
 
-cask 'zed', greedy: true
-cask 'fork', greedy: true
-cask 'lens', greedy: true
+cask 'zed'
+cask 'fork'
+cask 'lens'
 
 # Databases
 brew 'postgresql'
