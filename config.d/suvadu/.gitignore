@@ -1,0 +1,7 @@
+# Suvadu's history DB lives in ~/Library/Application Support/tech.appachi.suvadu,
+# not here — but this dir is symlinked to ~/.config/suvadu, so guard against a
+# DB ever being written through it. Only the generated hook scripts are tracked.
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
