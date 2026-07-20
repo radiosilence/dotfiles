@@ -1,6 +1,5 @@
 [tools]
 1password = "latest"
-atuin = "latest"  # Shell history — SQLite-backed, ctrl-r UI, encrypted sync
 aube = "latest"  # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
 aws-vault = "latest"
 bat = "latest"  # Cat with wings
