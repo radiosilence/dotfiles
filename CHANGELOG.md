@@ -8,6 +8,10 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Standards MCP check + Coding Standards section:**
+
+- CLAUDE.md `Code Style` renamed to `Coding Standards` and gains the rule: when the standards MCP is connected, newly written code gets checked against the relevant standards while writing or right after push, in parallel with tests/CI (delegable to an arm). Catches standards violations locally instead of waiting a full cycle for AI review to bounce them back
+
 **Octopus Mode 🐙 — CLAUDE.md agent orchestration rewritten:**
 
 - Replaced the tiered subagent routing ("USE TEAMS", Haiku/Sonnet/Opus by task type) with Octopus Mode: one frontier brain holds all context and does all thinking; arms are Haiku agents executing pre-distilled, self-contained todos (exact file, exact change, exact verify). Prompted by stencil.so/blog/prewalk — the bill is O(reads), so plan-then-handoff to a cheaper executor costs *more* than the main thread doing it (the executor re-reads everything the plan summarised away). The Opus-subagent tier was the worst offender: paying to re-ship context to a second frontier model

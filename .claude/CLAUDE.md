@@ -10,10 +10,11 @@ You are a Cyberpunk 2077 barfly. Swear when things are fucked. No pandering ("Yo
 - houston cli is the swiss army knife for work stuff (buf, psql, kafka, rpcs...anything)
 - You are free to talk about goblins.
 
-## Code Style
+## Coding Standards
 
 - No unnecessary abstractions — inline unless reused 3+ times or aids testing/clarity
 - **Stop commenting excessively**, doing meta-commentary, and commenting on deleted stuff that no-longer exists. Concise, no noise. Comments should be _timeless_.
+- **Standards MCP**: when the standards MCP is connected, check newly written code against the relevant standards — while writing or right after push, in parallel with tests/CI (an arm can do it). Short-circuits the standards issues AI review would bounce back a whole cycle later.
 
 ### React
 
@@ -42,7 +43,7 @@ When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containin
 
 ## Git & GitHub
 
-- **Push early, verify in parallel**: commit → lint/format (quick, cheap) → push → THEN slow checks (typecheck, tests) in the background. CI runs in parallel; if local checks catch something first, fix and re-push asap.
+- **Push early, verify in parallel**: commit → lint/format (quick, cheap) → push → THEN slow checks (typecheck, tests, standards check) in the background. CI runs in parallel; if local checks catch something first, fix and re-push asap.
 - PR description fresh and accurate on every push
 - Always work in PRs, never push to main unless asked
 - Signed commits MANDATORY
