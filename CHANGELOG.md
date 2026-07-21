@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Octopus Mode 🐙 — CLAUDE.md agent orchestration rewritten:**
+
+- Replaced the tiered subagent routing ("USE TEAMS", Haiku/Sonnet/Opus by task type) with Octopus Mode: one frontier brain holds all context and does all thinking; arms are Haiku agents executing pre-distilled, self-contained todos (exact file, exact change, exact verify). Prompted by stencil.so/blog/prewalk — the bill is O(reads), so plan-then-handoff to a cheaper executor costs *more* than the main thread doing it (the executor re-reads everything the plan summarised away). The Opus-subagent tier was the worst offender: paying to re-ship context to a second frontier model
+- Read-only recon fan-out survives as the one delegation that saves money — cheap agents sweep files and return conclusions, keeping raw reads out of main context
+- De-rotted the rest of the file while in there: merged Commit/Pushing into Git & GitHub (same rules written twice), deduped resolve-comments and @claude-review (3× each), tore out all Jira references (GitHub Issues everywhere), killed dead `/batch`/teams references, and recorded the no-plan-mode preference (align in chat, tickets created/updated at do-time so they never drift)
+
 **Atuin dropped, suvadu kept — ctrl-r back to fzf:**
 
 - Ended the trial: removed `atuin` (mise tool, `config.d/atuin/`, `zz-atuin.zsh`). The atuin ctrl-r UI overlapped fzf without earning the slot; suvadu stays for its agent-aware recording and MCP read path
