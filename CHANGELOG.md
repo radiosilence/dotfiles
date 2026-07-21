@@ -8,6 +8,18 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Octopus Mode 🐙 — CLAUDE.md agent orchestration rewritten:**
+
+- Replaced the tiered subagent routing ("USE TEAMS", Haiku/Sonnet/Opus by task type) with Octopus Mode: one frontier brain holds all context and does all thinking; arms are Haiku agents executing pre-distilled, self-contained todos (exact file, exact change, exact verify). Prompted by stencil.so/blog/prewalk — the bill is O(reads), so plan-then-handoff to a cheaper executor costs *more* than the main thread doing it (the executor re-reads everything the plan summarised away). The Opus-subagent tier was the worst offender: paying to re-ship context to a second frontier model
+- Read-only recon fan-out survives as the one delegation that saves money — cheap agents sweep files and return conclusions, keeping raw reads out of main context
+- De-rotted the rest of the file while in there: merged Commit/Pushing into Git & GitHub (same rules written twice), deduped resolve-comments and @claude-review (3× each), tore out all Jira references (GitHub Issues everywhere), killed dead `/batch`/teams references, and recorded the no-plan-mode preference (align in chat, tickets created/updated at do-time so they never drift)
+
+**Atuin dropped, suvadu kept — ctrl-r back to fzf:**
+
+- Ended the trial: removed `atuin` (mise tool, `config.d/atuin/`, `zz-atuin.zsh`). The atuin ctrl-r UI overlapped fzf without earning the slot; suvadu stays for its agent-aware recording and MCP read path
+- Dropping atuin does **not** hand ctrl-r to fzf on its own — `suv init zsh` also binds `^R` (to `suvadu-search`), and it loads after `fzf.zsh`. `suvadu.zsh` now reclaims ctrl-r with `bindkey '^R' fzf-history-widget` after the init eval, so fzf owns ctrl-r while suvadu keeps the up/down arrows and its recorder hook
+- Fixed a silent breakage: `.claude/settings.json` registered the `suv init claude-code` hooks (PostToolUse/PostToolUseFailure/UserPromptSubmit) but the scripts under `config.d/suvadu/hooks/` were never committed — the symlink `~/.config/suvadu → config.d/suvadu` dangled, so agent-command origin tracking no-opped against missing files. Regenerated and committed the hooks; the MCP read path was always fine
+
 **Lift the `brew bundle` parallelism cap:**
 
 - `HOMEBREW_BUNDLE_JOBS` set to `hw.ncpu` in `15-brew.zsh`. Homebrew 6.x ships a real parallel installer for `brew bundle` (dependency-graph scheduled thread pool), but `auto` caps at `min(cores, 4)` — leaving 14 cores idle on the 18-core box. Pinned to core count rather than a literal 18 so it stays correct across machines
