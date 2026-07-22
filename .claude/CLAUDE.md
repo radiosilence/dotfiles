@@ -49,6 +49,7 @@ When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containin
 
 - **Push early, verify in parallel**: commit → lint/format (quick, cheap) → push → THEN slow checks (typecheck, tests, standards check) in the background. CI runs in parallel; if local checks catch something first, fix and re-push asap.
 - PR description fresh and accurate on every push
+- **PR labels**: apply the correct labels when the repo has them (e.g. `expect-breaking-changes`, `allow-unsafe-migrations`). Any label that waives a safety gate MUST come with context in the PR description — what it permits and the reasoning why it's OK here.
 - Always work in PRs, never push to main unless asked
 - Signed commits MANDATORY
 - **Never push tags** — user handles tags/releases
