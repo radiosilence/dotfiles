@@ -8,6 +8,10 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Time awareness rule:**
+
+- CLAUDE.md gains a top-of-file rule: on return-from-silence signals ("I'm back", "morning!!") or relative dates ("today", "yesterday"), run `date` and re-anchor before reasoning about time, keeping the previous anchor so relative references resolve against when the last exchange actually happened. Sessions span sleep/weekend breaks; the user shouldn't have to announce that it's the next day
+
 **Standards MCP check + Coding Standards section:**
 
 - CLAUDE.md `Code Style` renamed to `Coding Standards` and gains the rule: when the standards MCP is connected, newly written code gets checked against the relevant standards while writing or right after push, in parallel with tests/CI (delegable to an arm). Catches standards violations locally instead of waiting a full cycle for AI review to bounce them back
