@@ -8,6 +8,10 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**PR labels rule:**
+
+- CLAUDE.md Git & GitHub gains: apply the repo's labels when creating PRs (e.g. `expect-breaking-changes`, `allow-unsafe-migrations`), and any label that waives a safety gate must be justified in the PR description — what it permits and why it's OK for this change. A bare waiver label tells the reviewer nothing
+
 **Time awareness rule:**
 
 - CLAUDE.md gains a top-of-file rule: on return-from-silence signals ("I'm back", "morning!!") or relative dates ("today", "yesterday"), run `date` and re-anchor before reasoning about time, keeping the previous anchor so relative references resolve against when the last exchange actually happened. Sessions span sleep/weekend breaks; the user shouldn't have to announce that it's the next day
