@@ -11,6 +11,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 **PR labels rule:**
 
 - CLAUDE.md Git & GitHub gains: apply the repo's labels when creating PRs (e.g. `expect-breaking-changes`, `allow-unsafe-migrations`), and any label that waives a safety gate must be justified in the PR description — what it permits and why it's OK for this change. A bare waiver label tells the reviewer nothing
+- Companion rule: ANY unsafe change (breaking, risky migration, backwards-incompatible) gets justified in the PR description even when no label exists to flag it — the reviewer gets the risk context either way
 
 **Time awareness rule:**
 
