@@ -1,2 +1,2 @@
 # Audio hardware — interface drivers and control apps
-cask 'focusrite-control'
+cask 'focusrite-control-2'
