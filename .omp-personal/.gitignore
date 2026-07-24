@@ -1,0 +1,6 @@
+*
+!.gitignore
+!agent/
+agent/*
+!agent/config.yml
+!agent/mcp.json

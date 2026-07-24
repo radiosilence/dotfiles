@@ -1,0 +1,76 @@
+providers: 
+  webSearch: auto
+modelRoles: 
+  default: anthropic/claude-opus-4-8
+  smol: anthropic/claude-haiku-4-5
+symbolPreset: nerd
+setupVersion: 1
+statusLine: 
+  preset: default
+  separator: none
+  sessionAccent: true
+  transparent: true
+terminal: 
+  showProgress: true
+tui: 
+  tight: true
+display: 
+  showTokenUsage: true
+  shimmer: classic
+theme: 
+  dark: dark-catppuccin
+hideThinkingBlock: true
+tier: 
+  anthropic: none
+advisor: 
+  enabled: false
+prewalk: 
+  enabled: true
+steeringMode: all
+followUpMode: all
+features: 
+  unexpectedStopDetection: false
+memory: 
+  backend: mnemopi
+mnemopi: 
+  polyphonicRecall: true
+  enhancedRecall: true
+  proactiveLinking: true
+  noEmbeddings: true
+  scoping: per-project-tagged
+edit: 
+  mode: hashline
+bash: 
+  autoBackground: 
+    enabled: true
+bashInterceptor: 
+  enabled: true
+astGrep: 
+  enabled: true
+github: 
+  enabled: true
+browser: 
+  cmux: false
+plan: 
+  enabled: false
+  defaultOnStartup: false
+ttsr: 
+  disabledRules: 
+    - ts-no-return-type
+  enabled: false
+  contextMode: discard
+  builtinRules: false
+autolearn: 
+  enabled: true
+  autoContinue: false
+omitThinking: true
+textVerbosity: low
+personality: pragmatic
+goal: 
+  enabled: false
+  continuationModes: 
+    []
+checkpoint: 
+  enabled: false
+todo: 
+  reminders: false

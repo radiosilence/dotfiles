@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
+  "mcpServers": {
+    "argocd": {
+      "type": "http",
+      "url": "https://mcp.external-infrastructure.fresha.io/fresha/argocd/mcp"
+    },
+    "code-search": {
+      "type": "http",
+      "url": "https://mcp.external-infrastructure.fresha.io/fresha/code-search/mcp"
+    },
+    "design-system": {
+      "type": "http",
+      "url": "https://mcp.external-infrastructure.fresha.io/fresha/design-system/mcp/"
+    },
+    "standards": {
+      "type": "http",
+      "url": "https://mcp.external-infrastructure.fresha.io/fresha/standards/mcp/"
+    },
+    "metabase": {
+      "type": "http",
+      "url": "https://metabase.data-eng.fresha.io/api/mcp"
+    },
+    "fastmail": {
+      "type": "http",
+      "url": "https://mcp.blit.cc/fastmail"
+    },
+    "figma": {
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "suvadu": {
+      "type": "stdio",
+      "command": "/Users/james.cleveland/.local/share/mise/installs/suvadu/latest/suv",
+      "args": ["mcp-serve"],
+      "env": {}
+    }
+  }
+}

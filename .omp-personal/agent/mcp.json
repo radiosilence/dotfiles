@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
+  "mcpServers": {
+    "fastmail": {
+      "type": "http",
+      "url": "https://mcp.blit.cc/fastmail"
+    },
+    "suvadu": {
+      "type": "stdio",
+      "command": "/Users/james.cleveland/.local/share/mise/installs/suvadu/latest/suv",
+      "args": ["mcp-serve"],
+      "env": {}
+    }
+  }
+}

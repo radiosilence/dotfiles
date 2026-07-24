@@ -265,6 +265,7 @@ tasks:
       - patch:ssh
       - link:brewfile
       - link:claude-hooks
+      - link:agent-configs
       - link:sheldon
       - link:cargo
 
@@ -277,7 +278,8 @@ tasks:
           name=$(basename "$f")
           case "$name" in
             .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
-            .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json)
+            .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json|\
+            .omp|.omp-personal|.claude-personal)
               continue ;;
           esac
           target="$HOME/$name"
@@ -286,6 +288,27 @@ tasks:
           ln -s "$f" "$target"
           printf "{{.LINK}} %s\n" "$name"
         done
+
+  link:agent-configs:
+    desc: Per-file symlink agent configs (omp/claude-personal); runtime state/PII stays in ~
+    deps: [dotfiles:clone]
+    cmds:
+      - |
+        link() {
+          src="{{.DOTFILES}}/$1"; dst="$HOME/$1"
+          [ -e "$src" ] || return 0
+          [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ] && return 0
+          mkdir -p "$(dirname "$dst")"
+          rm -f "$dst"
+          ln -s "$src" "$dst"
+          printf "{{.LINK}} %s\n" "$1"
+        }
+        link .claude-personal/CLAUDE.md
+        link .claude-personal/settings.json
+        link .omp/agent/config.yml
+        link .omp/agent/mcp.json
+        link .omp-personal/agent/config.yml
+        link .omp-personal/agent/mcp.json
 
   link:config:
     desc: Symlink config dirs (config.d/* → ~/.config/*)

@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Agent configs vendored (omp + claude-personal):**
+
+- `~/.omp`, `~/.omp-personal`, and `~/.claude-personal` now feed committed config into the repo the same spirit as `~/.claude` — but per-file, not whole-dir. Only the safe surface is symlinked in: omp `agent/{config.yml,mcp.json}` and claude-personal `{CLAUDE.md,settings.json}`. Everything else (transcripts, Mnemopi `memories`, `*.db`, sessions, 200M+ of caches/natives) stays put in `~` and never enters the repo tree
+- Per-file over `.claude`'s whole-dir symlink for two reasons: the omp dirs host *live daemons* (a `rm -rf`-then-relink of the whole dir would nuke the running harness), and whole-dir would drag hundreds of MB of gitignored runtime junk into the working tree. Each subtree carries a deny-all-then-allowlist `.gitignore` (`*` + `!` the exact files) so a new secret file added by any tool fails safe — stays ignored until explicitly whitelisted
+- `task link:dotfiles` skip-lists the three dirs (its destructive whole-dir linker must not touch them); a new idempotent `link:agent-configs` task rebuilds the per-file symlinks on a fresh machine
+
 **PR labels rule:**
 
 - CLAUDE.md Git & GitHub gains: apply the repo's labels when creating PRs (e.g. `expect-breaking-changes`, `allow-unsafe-migrations`), and any label that waives a safety gate must be justified in the PR description — what it permits and why it's OK for this change. A bare waiver label tells the reviewer nothing
