@@ -1,10 +1,12 @@
 [tool_alias]
 broot = "github:Canop/broot"
 codeowners-lsp = "github:radiosilence/codeowners-lsp"
+dexter = "aqua:remoteoss/dexter"
 fastfetch = "github:fastfetch-cli/fastfetch"
 fastmail-cli = "github:radiosilence/fastmail-cli"
 koan = "github:radiosilence/koan"
 nano-web = "github:radiosilence/nano-web"
+omp = "github:can1357/oh-my-pi"
 pnpm-shell-completion = "github:g-plane/pnpm-shell-completion"
 procs = "github:dalance/procs"
 pup = "github:datadog-labs/pup"
