@@ -3,7 +3,7 @@ personal = "Zen"
 work = "Firefox"
 
 [urls]
-personal = [ "reddit.com", "news.ycombinator.com", "youtube.com", "x.com" ]
+personal = [ "reddit.com", "news.ycombinator.com", "youtube.com", "x.com", "radiosilence.dev", "blit.cc" ]
 work = [
     "atlassian.net",
     "meet.google.com",
