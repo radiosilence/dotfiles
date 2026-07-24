@@ -9,7 +9,8 @@ alias c='claude --dangerously-skip-permissions'
 # settings, MCP servers, session history — fully isolated from the default work
 # login in ~/.claude. It's a real browser /login (not an OAuth token), so
 # subscription-only features like /remote work. First run: `claude-me` then
-# `/login` with the personal account.
+# `/login` with the personal account. Only cjc gets --remote-control: the work
+# org disables Remote Control by policy, so the flag is dead weight there.
 #
 # We copy the work CLAUDE.md into the personal profile on each launch so the
 # persona + rules stay in sync (this clobbers any personal-only edits to that
@@ -19,6 +20,6 @@ export CLAUDE_PERSONAL_DIR="${CLAUDE_PERSONAL_DIR:-$HOME/.claude-personal}"
 claude-me() {
   mkdir -p "$CLAUDE_PERSONAL_DIR"
   [[ -f "$HOME/.claude/CLAUDE.md" ]] && cp "$HOME/.claude/CLAUDE.md" "$CLAUDE_PERSONAL_DIR/CLAUDE.md"
-  CLAUDE_CONFIG_DIR="$CLAUDE_PERSONAL_DIR" command claude --dangerously-skip-permissions "$@"
+  CLAUDE_CONFIG_DIR="$CLAUDE_PERSONAL_DIR" command claude --dangerously-skip-permissions --remote-control "$@"
 }
 alias cjc='claude-me'
