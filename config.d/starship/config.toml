@@ -48,10 +48,6 @@ $shell\
 $character
 """
 
-[env_var.CLAUDE_CODE_OAUTH_TOKEN]
-variable = "CLAUDE_CODE_OAUTH_TOKEN"
-format = "[ 󱚝 personal](bold yellow) "
-
 [character]
 error_symbol = "[](red)"
 success_symbol = "[](green)"
