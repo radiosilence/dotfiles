@@ -4,4 +4,6 @@
 !release/
 !ticket/
 !ticket/**
+!slack/
+!slack/**
 !zellij-here/
