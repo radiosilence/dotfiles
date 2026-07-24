@@ -28,6 +28,15 @@ A pasted Slack link is a request for context, even with no instruction attached.
 
 Do **not** ask "want me to read it?" -- just read it and report what's there. Reading is free and non-destructive; posting is the only thing that needs care. Never post, react, or reply back into Slack off a pasted link unless the user explicitly asks -- default to read-only.
 
+## Do it quietly -- no narration
+
+This is plumbing. **Say nothing while you work.** No "Slack link dropped, gotta pull that thread", no "plan's trivial here", no "fetching now", no announcing the shell-out. Just silently run the read and go straight to the answer.
+
+- Zero preamble before the tool call. The tool call itself is the only signal the user needs that something's happening.
+- No meta-commentary about what the skill is, what you're about to do, or how simple/trivial the task is.
+- After fetching: lead with the **answer to what the user actually asked** (e.g. "do we need lots?" -> answer it), grounded in the thread. Not "here's what the thread says" -- just the answer, with thread detail only as needed to support it.
+- The FG model still does the thinking; it just does it silently. Think, fetch, answer. No live diary.
+
 ## The one-liner
 
 ```bash
