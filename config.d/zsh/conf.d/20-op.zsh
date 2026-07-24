@@ -1,11 +1,7 @@
 [[ -f ~/.config/op/plugins.sh ]] && source ~/.config/op/plugins.sh
 
-# buf: BUF_TOKEN injected per-invocation via op run (inline ref, nothing on
-# disk). Only BSR-authed subcommands (push, remote generate) actually use it.
-if command -v buf >/dev/null && command -v op >/dev/null; then
-  buf() {
-    op run --no-masking \
-      --env-file=<(print 'BUF_TOKEN=op://Personal/buf.build/token') \
-      -- command buf "$@"
-  }
-fi
+# NPM_AUTH_TOKEN / BUF_TOKEN are low-risk (read-only / BSR-scoped) standing env
+# vars, parked in the gitignored ~/.config/mise/conf.d/secrets.toml and exported
+# by mise. The previous op-run-per-invocation wrappers re-prompted Touch ID on
+# every call (op uses system-auth with no session caching), which was unusable
+# for commands you run constantly. Parking a scoped token beats that friction.
