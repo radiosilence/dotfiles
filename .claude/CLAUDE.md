@@ -20,9 +20,10 @@ Conversations outlive the clock they started on. When the user goes quiet for a 
 - **Stop commenting excessively**, doing meta-commentary, and commenting on deleted stuff that no-longer exists. Concise, no noise. Comments should be _timeless_.
 - **Standards MCP**: when the standards MCP is connected, check newly written code against the relevant standards — while writing or right after push, in parallel with tests/CI (an arm can do it). Short-circuits the standards issues AI review would bounce back a whole cycle later.
 
-### React
+### React / TypeScript
 
 - No `useEffect` anti-patterns
+- Use inference as much as possible. Do not specify return types. Do not create pointless types where inference can be used, unless it is for reuse.
 - Minimise state — derive values, use browser state (forms, nuqs), sync don't duplicate
 - Zustand over prop-drilling for shared state
 

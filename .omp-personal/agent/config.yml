@@ -2,7 +2,7 @@ providers:
   webSearch: anthropic
   memoryModel: online
 modelRoles: 
-  default: anthropic/claude-opus-4-8
+  smol: anthropic/claude-haiku-4-5
 symbolPreset: nerd
 theme: 
   dark: dark-ember
@@ -18,7 +18,7 @@ display:
 hideThinkingBlock: true
 personality: default
 advisor: 
-  enabled: true
+  enabled: false
 steeringMode: all
 followUpMode: all
 memory: 
@@ -44,4 +44,8 @@ mnemopi:
 goal: 
   enabled: false
 prewalk: 
-  enabled: true
+  enabled: false
+ttsr: 
+  enabled: false
+dev: 
+  autoqaConsent: granted

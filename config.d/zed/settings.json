@@ -224,7 +224,44 @@
         },
       },
       "language_servers": [
-        "expert",
+        "dexter",
+        "!expert",
+        "!elixir-ls",
+        "!next-ls",
+        "!lexical",
+        "...",
+      ],
+      "format_on_save": "on",
+    },
+    "EEx": {
+      "colorize_brackets": true,
+      "formatter": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
+      "language_servers": [
+        "dexter",
+        "!expert",
+        "!elixir-ls",
+        "!next-ls",
+        "!lexical",
+        "...",
+      ],
+      "format_on_save": "on",
+    },
+    "HEEx": {
+      "colorize_brackets": true,
+      "formatter": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
+      "language_servers": [
+        "dexter",
+        "!expert",
         "!elixir-ls",
         "!next-ls",
         "!lexical",

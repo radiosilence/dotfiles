@@ -15,8 +15,9 @@ minimum_release_age_excludes = [
   "koan",
   "nano-web",
   "watchwoman",
-  "fastmail-cli",
-  "codeowners-lsp"
+  "fastmail",
+  "codeowners-lsp",
+  "caldav"
 ]
 
 [settings.github]

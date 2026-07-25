@@ -23,9 +23,9 @@ hideThinkingBlock: true
 tier: 
   anthropic: none
 advisor: 
-  enabled: false
-prewalk: 
   enabled: true
+prewalk: 
+  enabled: false
 steeringMode: all
 followUpMode: all
 features: 

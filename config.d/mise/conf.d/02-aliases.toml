@@ -1,9 +1,10 @@
 [tool_alias]
 broot = "github:Canop/broot"
+caldav = "github:radiosilence/caldav-cli"
 codeowners-lsp = "github:radiosilence/codeowners-lsp"
 dexter = "aqua:remoteoss/dexter"
 fastfetch = "github:fastfetch-cli/fastfetch"
-fastmail-cli = "github:radiosilence/fastmail-cli"
+fastmail = "github:radiosilence/fastmail-cli"
 koan = "github:radiosilence/koan"
 nano-web = "github:radiosilence/nano-web"
 omp = "github:can1357/oh-my-pi"
