@@ -1,5 +1,5 @@
 theme = monokai-pro
-background-opacity = 0.85
+background-opacity = 1
 background-blur = 20
 macos-titlebar-style = tabs
 font-family = Geist Mono

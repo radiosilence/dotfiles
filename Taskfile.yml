@@ -265,6 +265,7 @@ tasks:
       - patch:ssh
       - link:brewfile
       - link:claude-hooks
+      - link:agent-configs
       - link:sheldon
       - link:cargo
 
@@ -277,7 +278,8 @@ tasks:
           name=$(basename "$f")
           case "$name" in
             .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
-            .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json)
+            .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json|\
+            .claude|.omp|.omp-personal|.claude-personal)
               continue ;;
           esac
           target="$HOME/$name"
@@ -286,6 +288,38 @@ tasks:
           ln -s "$f" "$target"
           printf "{{.LINK}} %s\n" "$name"
         done
+
+  link:agent-configs:
+    desc: Per-file symlink agent configs (omp/claude-personal); runtime state/PII stays in ~
+    deps: [dotfiles:clone]
+    cmds:
+      - |
+        link() {
+          src="{{.DOTFILES}}/$1"; dst="$HOME/$1"
+          [ -e "$src" ] || return 0
+          [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ] && return 0
+          mkdir -p "$(dirname "$dst")"
+          rm -f "$dst"
+          ln -s "$src" "$dst"
+          printf "{{.LINK}} %s\n" "$1"
+        }
+        link .claude-personal/CLAUDE.md
+        link .claude-personal/settings.json
+        link .omp/agent/config.yml
+        link .omp/agent/mcp.json
+        link .omp-personal/agent/config.yml
+        link .omp-personal/agent/mcp.json
+        # work claude profile — vendor config into ~/.claude-work; runtime/PII stays local
+        linkto() {
+          src="{{.DOTFILES}}/$1"; dst="$2"
+          [ -e "$src" ] || return 0
+          [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ] && return 0
+          mkdir -p "$(dirname "$dst")"; rm -f "$dst"
+          ln -s "$src" "$dst"; printf "{{.LINK}} %s\n" "$dst"
+        }
+        linkto .claude/CLAUDE.md     "$HOME/.claude-work/CLAUDE.md"
+        linkto .claude/skills        "$HOME/.claude-work/skills"
+        linkto .claude/settings.json "$HOME/.claude-work/settings.json"
 
   link:config:
     desc: Symlink config dirs (config.d/* → ~/.config/*)
@@ -337,20 +371,17 @@ tasks:
         printf "{{.OK}} Brewfile\n"
 
   link:claude-hooks:
-    desc: Inject Claude Code hooks into settings.json
+    desc: Inject the gastown hook into the work profile's local settings overlay
     deps: [brew:bundle, dotfiles:clone]
-    # Skip if jq is missing (non-darwin without it) or Claude hasn't run yet
-    status: ["! command -v jq || ! test -f $HOME/.claude/settings.json"]
+    status: ["! command -v jq"]
     cmds:
       - |
-        claude_settings="$HOME/.claude/settings.json"
-        jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$claude_settings" >/dev/null 2>&1 && exit 0
-        jq '
-          .hooks //= {} |
-          .hooks.PostToolUse //= [] |
-          .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]
-        ' "$claude_settings" > "$claude_settings.tmp" && mv "$claude_settings.tmp" "$claude_settings"
-        printf "{{.OK}} claude hooks: gastown\n"
+        s="$HOME/.claude-work/settings.local.json"
+        mkdir -p "$HOME/.claude-work"
+        [ -f "$s" ] || echo '{}' > "$s"
+        jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$s" >/dev/null 2>&1 && exit 0
+        jq '.hooks //= {} | .hooks.PostToolUse //= [] | .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]' "$s" > "$s.tmp" && mv "$s.tmp" "$s"
+        printf "{{.OK}} claude hooks: gastown (work overlay)\n"
 
   secrets:populate:
     desc: Populate mise conf.d/secrets.toml from 1Password (single op inject call)
@@ -572,6 +603,14 @@ tasks:
         vars: { TOOL: xh, CMD: "xh --generate complete-zsh" }
       - task: generate:completions:gen
         vars: { TOOL: pup, CMD: "pup completions zsh" }
+      - task: generate:completions:tfl
+        vars: { TOOL: tfl, CMD: "tfl completions zsh" }
+      - task: generate:completions:tfl
+        vars: { TOOL: tfl, CMD: "tfl completions zsh" }
+      - task: generate:completions:carddav
+        vars: { TOOL: carddav, CMD: "carddav completions zsh" }
+      - task: generate:completions:folk
+        vars: { TOOL: folk, CMD: "folk completions zsh" }
       - task: generate:completions:gen
         vars:
           { TOOL: bun, CMD: "bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'" }

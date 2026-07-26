@@ -1,25 +1,23 @@
 command -v claude >/dev/null || return
 
-alias claude='claude --dangerously-skip-permissions'
-alias c='claude --dangerously-skip-permissions'
-
-# claude-me / cjc — run Claude as the PERSONAL account.
-#
-# CLAUDE_CONFIG_DIR gives the personal profile its own everything — OAuth login,
-# settings, MCP servers, session history — fully isolated from the default work
-# login in ~/.claude. It's a real browser /login (not an OAuth token), so
-# subscription-only features like /remote work. First run: `claude-me` then
-# `/login` with the personal account. Only cjc gets --remote-control: the work
-# org disables Remote Control by policy, so the flag is dead weight there.
-#
-# We copy the work CLAUDE.md into the personal profile on each launch so the
-# persona + rules stay in sync (this clobbers any personal-only edits to that
-# file — swap the `cp` for a `[[ -f ]] ||` guard if you'd rather seed it once).
-export CLAUDE_PERSONAL_DIR="${CLAUDE_PERSONAL_DIR:-$HOME/.claude-personal}"
-
-claude-me() {
-  mkdir -p "$CLAUDE_PERSONAL_DIR"
-  [[ -f "$HOME/.claude/CLAUDE.md" ]] && cp "$HOME/.claude/CLAUDE.md" "$CLAUDE_PERSONAL_DIR/CLAUDE.md"
-  CLAUDE_CONFIG_DIR="$CLAUDE_PERSONAL_DIR" command claude --dangerously-skip-permissions --remote-control "$@"
+# claude / c — auto-pick the profile for $PWD from ~/.config/ai-profiles/claude.yaml.
+# ~/.claude is claude's NATIVE home (config at ~/.claude.json in $HOME) — pointing
+# CLAUDE_CONFIG_DIR at it makes claude hunt for ~/.claude/.claude.json and re-onboard.
+# So only override for a real isolated profile (e.g. ~/.claude-personal); otherwise run
+# native. No config / no matching root -> native.
+claude() {
+  local dir args
+  IFS=$'\t' read -r dir args < <(_ai_profile ~/.config/ai-profiles/claude.yaml)
+  if [[ -n $dir && $dir != $HOME/.claude ]]; then
+    CLAUDE_CONFIG_DIR="$dir" command claude --dangerously-skip-permissions ${=args} "$@"
+  else
+    command claude --dangerously-skip-permissions ${=args} "$@"
+  fi
 }
-alias cjc='claude-me'
+alias c=claude
+
+# cjc — force the PERSONAL profile regardless of cwd. --remote-control is personal-only
+# (the work org disables Remote Control by policy). First run: `cjc` then `/login`.
+cjc() {
+  CLAUDE_CONFIG_DIR="$HOME/.claude-personal" command claude --dangerously-skip-permissions --remote-control "$@"
+}

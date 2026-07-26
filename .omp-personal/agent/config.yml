@@ -1,0 +1,51 @@
+providers: 
+  webSearch: anthropic
+  memoryModel: online
+modelRoles: 
+  smol: anthropic/claude-haiku-4-5
+symbolPreset: nerd
+theme: 
+  dark: dark-ember
+  light: light
+setupVersion: 1
+statusLine: 
+  separator: none
+  transparent: true
+terminal: 
+  showProgress: true
+display: 
+  shimmer: kitt
+hideThinkingBlock: true
+personality: default
+advisor: 
+  enabled: false
+steeringMode: all
+followUpMode: all
+memory: 
+  backend: mnemopi
+bash: 
+  autoBackground: 
+    enabled: true
+bashInterceptor: 
+  enabled: true
+github: 
+  enabled: true
+astGrep: 
+  enabled: true
+plan: 
+  enabled: false
+autolearn: 
+  enabled: true
+mnemopi: 
+  polyphonicRecall: true
+  enhancedRecall: true
+  proactiveLinking: true
+  scoping: per-project-tagged
+goal: 
+  enabled: false
+prewalk: 
+  enabled: false
+ttsr: 
+  enabled: false
+dev: 
+  autoqaConsent: granted
