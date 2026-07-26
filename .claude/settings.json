@@ -1,0 +1,8 @@
+{
+  "model": "opus[1m]",
+  "theme": "dark",
+  "editorMode": "normal",
+  "skipDangerousModePermissionPrompt": true,
+  "preferredNotifChannel": "ghostty",
+  "teammateMode": "in-process"
+}

@@ -1,16 +1,20 @@
 command -v omp >/dev/null || return
 
-alias omp='omp --auto-approve'
+# omp / o — auto-pick the profile for $PWD from ~/.config/ai-profiles/omp.yaml.
+# ~/.omp is omp's native dir; only override PI_CONFIG_DIR (resolved under $HOME) for a
+# real isolated profile (e.g. ~/.omp-personal). No config / no matching root -> native.
+omp() {
+  local dir args
+  IFS=$'\t' read -r dir args < <(_ai_profile ~/.config/ai-profiles/omp.yaml)
+  if [[ -n $dir && $dir != $HOME/.omp ]]; then
+    PI_CONFIG_DIR="${dir#$HOME/}" command omp --auto-approve ${=args} "$@"
+  else
+    command omp --auto-approve ${=args} "$@"
+  fi
+}
+alias o=omp
 
-# ojc — run omp (Oh My Pi) as the PERSONAL account.
-#
-# PI_CONFIG_DIR is a dirname under $HOME (omp's equivalent of CLAUDE_CONFIG_DIR).
-# It gives the personal profile its own OAuth login, settings, sessions and MCP
-# servers, fully isolated from the default work profile in ~/.omp. It's a real
-# browser /login, so subscription-only routing (Claude Pro/Max OAuth) works.
-# First run: `ojc` then `/login` with the personal account.
-export OMP_PERSONAL_DIR="${OMP_PERSONAL_DIR:-.omp-personal}"
-
+# ojc — force the PERSONAL profile regardless of cwd. First run: `ojc` then `/login`.
 ojc() {
-  PI_CONFIG_DIR="$OMP_PERSONAL_DIR" command omp --auto-approve "$@"
+  PI_CONFIG_DIR=".omp-personal" command omp --auto-approve "$@"
 }
