@@ -603,12 +603,12 @@ tasks:
         vars: { TOOL: xh, CMD: "xh --generate complete-zsh" }
       - task: generate:completions:gen
         vars: { TOOL: pup, CMD: "pup completions zsh" }
-      - task: generate:completions:tfl
-        vars: { TOOL: tfl, CMD: "tfl completions zsh" }
-      - task: generate:completions:carddav
-        vars: { TOOL: carddav, CMD: "carddav completions zsh" }
-      - task: generate:completions:folk
+      - task: generate:completions:gen
         vars: { TOOL: folk, CMD: "folk completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: tfl, CMD: "tfl completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: carddav, CMD: "carddav completions zsh" }
       - task: generate:completions:gen
         vars:
           { TOOL: bun, CMD: "bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'" }
