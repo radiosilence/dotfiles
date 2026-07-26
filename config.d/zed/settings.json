@@ -89,7 +89,6 @@
     "proto": true,
     "scss": true,
     "stylelint": false,
-    "tailwind-css": true,
     "terraform": true,
     "toml": true,
     "tombi": true,

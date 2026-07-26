@@ -9,6 +9,7 @@ bun = "latest"  # JS runtime
 caldav = "latest"
 codeowners-lsp = "latest"  # Codeowners LSP
 cloudflared = "latest"
+dagger = "latest"
 delta = "latest"  # Better git diffs
 dexter = "latest"  # Elixir LSP
 deno = "latest"  # Secure JS/TS runtime
