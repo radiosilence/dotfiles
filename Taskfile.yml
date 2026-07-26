@@ -541,6 +541,7 @@ tasks:
           - buf
           - clean-dls
           - clean-exif
+          - dagger
           - docker
           - embed-art
           - extract-exif-from-flac
