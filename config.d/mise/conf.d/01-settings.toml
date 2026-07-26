@@ -13,10 +13,13 @@ minimum_release_age_excludes = [
   "aube",
   "deno",
   "koan",
+  "mainlynorfolk",
+  "tfl",
   "nano-web",
   "watchwoman",
-  "fastmail-cli",
-  "codeowners-lsp"
+  "fastmail",
+  "codeowners-lsp",
+  "caldav"
 ]
 
 [settings.github]

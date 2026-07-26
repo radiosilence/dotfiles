@@ -8,6 +8,25 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**`claude` / `omp` auto-pick their profile by directory:**
+
+- `claude`/`c` and `omp`/`o` are now functions that resolve which profile to launch from `$PWD` — no switcher, no thinking. cwd under a configured work root → the work profile; anywhere else → personal (with `--remote-control` for claude). `c` and `o` are plain aliases to those functions, so both the short and long name do the magic
+- Driven by `~/.config/ai-profiles/{claude,omp}.yaml` (longest matching `root` wins, else `default: true`). Shared resolver `_ai_profile` in `ai-profiles.zsh` parses it with `yq`. The real configs are gitignored (private paths); only `*.template` + a deny-all-`*.yaml` `.gitignore` are committed. No config / no yq / no match → the tool's own default dir, so a fresh machine just works
+- Work claude is now its own isolated profile `~/.claude-work`, symmetric with `~/.claude-personal`: its `.claude.json` + runtime live there (out of the repo tree), while `CLAUDE.md`/`skills`/`settings.json` are vendored back as per-file symlinks. The old whole-dir `~/.claude` symlink and `$HOME/.claude.json` are **gone** — running `claude` with no wrapper re-onboards a fresh profile, by design (clean cutover, no back-compat shims). The wrapper sets `CLAUDE_CONFIG_DIR=~/.claude-work` for work, `~/.claude-personal` for personal
+- Work settings are **split** to keep this *public* repo clean: committed `.claude/settings.json` is minimal and portable (model, theme, editor, notif — no hooks, no marketplaces, no usernames); everything machine- or org-specific (suvadu + gastown hooks, custom marketplaces + their plugins, local permissions) lives in gitignored `~/.claude-work/settings.local.json`, which claude deep-merges at runtime
+- omp needs none of this — `~/.omp` is already a clean isolated dir, so the wrapper leaves `PI_CONFIG_DIR` unset for work and sets it (`~/.omp-personal`) only for personal. `cjc` / `ojc` stay as force-personal escape hatches; `cjc` no longer `cp`s the work `CLAUDE.md` over the personal one (both are committed now)
+
+**bat pager fixed — no more one-line-at-a-time / hangs:**
+
+- `PAGER='bat --style=plain'` was the bug: bat as a generic pager receives other tools' output and re-pages through `less`, and `alias cat='bat'` paged big files (a screenful, or with a broken pager a line, at a time — and could hang waiting on `less`). Now `cat` is `bat --paging=never` (dumps), `PAGER`/`BAT_PAGER` are plain `less` with `LESS='-FR'` (raw colours, quit-if-one-screen, no `-X` footgun)
+- `MANPAGER` pipes through `col -bx | bat -l man` (+ `MANROFFOPT=-c`) so man's backspace overstrike is stripped instead of rendered as garbage
+
+**Agent configs vendored (omp + claude-personal):**
+
+- `~/.omp`, `~/.omp-personal`, and `~/.claude-personal` now feed committed config into the repo the same spirit as `~/.claude` — but per-file, not whole-dir. Only the safe surface is symlinked in: omp `agent/{config.yml,mcp.json}` and claude-personal `{CLAUDE.md,settings.json}`. Everything else (transcripts, Mnemopi `memories`, `*.db`, sessions, 200M+ of caches/natives) stays put in `~` and never enters the repo tree
+- Per-file over `.claude`'s whole-dir symlink for two reasons: the omp dirs host *live daemons* (a `rm -rf`-then-relink of the whole dir would nuke the running harness), and whole-dir would drag hundreds of MB of gitignored runtime junk into the working tree. Each subtree carries a deny-all-then-allowlist `.gitignore` (`*` + `!` the exact files) so a new secret file added by any tool fails safe — stays ignored until explicitly whitelisted
+- `task link:dotfiles` skip-lists the three dirs (its destructive whole-dir linker must not touch them); a new idempotent `link:agent-configs` task rebuilds the per-file symlinks on a fresh machine
+
 **PR labels rule:**
 
 - CLAUDE.md Git & GitHub gains: apply the repo's labels when creating PRs (e.g. `expect-breaking-changes`, `allow-unsafe-migrations`), and any label that waives a safety gate must be justified in the PR description — what it permits and why it's OK for this change. A bare waiver label tells the reviewer nothing
