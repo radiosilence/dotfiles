@@ -608,7 +608,7 @@ tasks:
       - task: generate:completions:gen
         vars: { TOOL: tfl, CMD: "tfl completions zsh" }
       - task: generate:completions:gen
-        vars: { TOOL: carddav, CMD: "carddav completions zsh" }
+        vars: { TOOL: caldav, CMD: "caldav completions zsh" }
       - task: generate:completions:gen
         vars:
           { TOOL: bun, CMD: "bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'" }
