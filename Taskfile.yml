@@ -586,8 +586,6 @@ tasks:
       - task: generate:completions:gen
         vars: { TOOL: gh, CMD: "gh completion -s zsh" }
       - task: generate:completions:gen
-        vars: { TOOL: fastmail-cli, CMD: "fastmail-cli completions zsh" }
-      - task: generate:completions:gen
         vars: { TOOL: koan, CMD: "koan completions zsh" }
       - task: generate:completions:gen
         vars: { TOOL: codeowners-cli, CMD: "codeowners-cli completions zsh" }
@@ -609,6 +607,8 @@ tasks:
         vars: { TOOL: tfl, CMD: "tfl completions zsh" }
       - task: generate:completions:gen
         vars: { TOOL: caldav, CMD: "caldav completions zsh" }
+      - task: generate:completions:gen
+        vars: { TOOL: fastmail, CMD: "fastmail completions zsh" }
       - task: generate:completions:gen
         vars:
           { TOOL: bun, CMD: "bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'" }
