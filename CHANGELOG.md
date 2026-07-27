@@ -8,6 +8,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**Completions now actually wait for `mise up`:**
+
+- `generate:completions` listed `mise:upgrade` as a dep alongside the ~50 `generate:completions:gen` deps — but go-task runs *all* deps in parallel, so completions were generated from pre-upgrade binaries while `mise up` was still running. The ordering was never real
+- Fixed by moving the constraint onto `generate:completions:setup`, the single task every gen deps on: `mise:install` → `mise:upgrade`. One choke point orders the whole fan-out without serialising it
+
 **`claude` / `omp` auto-pick their profile by directory:**
 
 - `claude`/`c` and `omp`/`o` are now functions that resolve which profile to launch from `$PWD` — no switcher, no thinking. cwd under a configured work root → the work profile; anywhere else → personal (with `--remote-control` for claude). `c` and `o` are plain aliases to those functions, so both the short and long name do the magic

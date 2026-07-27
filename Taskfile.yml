@@ -634,7 +634,10 @@ tasks:
 
   generate:completions:setup:
     internal: true
-    deps: [brew:bundle, mise:install]
+    # Every gen task deps on this, so this is the choke point that orders the
+    # whole fan-out after the binaries exist and are upgraded. mise:upgrade
+    # (not mise:install) — completions must come from post-`mise up` shims.
+    deps: [brew:bundle, mise:upgrade]
     vars:
       COMP_DIR: "{{.HOME}}/.config/zsh/completions"
       STATE: "/tmp/.task-completions-changed"
