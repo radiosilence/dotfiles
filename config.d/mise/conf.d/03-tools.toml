@@ -33,6 +33,7 @@ nano-web = "latest"  # Ultrafast webserver
 ni = "latest"  # @antfu/ni — auto-detects project pm, wraps it with consistent verbs
 oha = "latest"  # Load testing
 omp = "latest"  # Oh My Pi — terminal AI coding agent, OAuths into Claude Pro/Max
+"pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer --with beets[discogs]" }  # Music organizer
 pnpm = "latest"
 pnpm-shell-completion = "latest"  # pnpm's built-in completion doesn't read package.json scripts; this does
 procs = "latest"  # Better ps
@@ -50,18 +51,8 @@ tfl = "latest"  # TfL MCP
 vfox = "latest"
 watchwoman = "latest"  # Watchman replacement
 xh = "latest"  # Modern HTTP client
+yq = { version = "latest", bin = "yq" }
+yt-dlp = { version = "latest", bin = "yt-dlp" }  # Video downloader (nightly)
 zellij = "latest"  # Terminal multiplexer (tiles)
 zoxide = "latest"  # Smart cd replacement
 zsh-patina = "latest"  # ZSH syntax highlighting
-
-[[tools.yt-dlp]]  # Video downloader (nightly)
-version = "latest"
-bin = "yt-dlp"
-
-[[tools.yq]]
-version = "latest"
-bin = "yq"
-
-[[tools."pipx:beets"]]  # Music organizer
-version = "latest"
-uvx_args = "--with requests --with beets-yearfixer --with beets[discogs]"
