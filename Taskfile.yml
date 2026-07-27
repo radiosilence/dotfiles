@@ -506,8 +506,8 @@ tasks:
     platforms: [darwin]
     status: ["brew bundle check >/dev/null 2>&1"]
     cmds:
-      - brew bundle --quiet
-      - brew cleanup --quiet &
+      - brew bundle --verbose
+      - brew cleanup &
 
   apt:upgrade:
     desc: Update apt packages
