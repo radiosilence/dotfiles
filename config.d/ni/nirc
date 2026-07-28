@@ -1,5 +1,5 @@
 ; @antfu/ni configuration
-; Linked to ~/.config/ni/nirc; loaded via NI_CONFIG_FILE env (set in mise).
+; Linked to ~/.config/ni/nirc; loaded via NI_CONFIG_FILE (set in ni.zsh).
 
 ; Prefix all package-manager calls with Socket Firewall to verify packages
 ; before install. Requires `sfw` on PATH (mise installs the sfw-free github
