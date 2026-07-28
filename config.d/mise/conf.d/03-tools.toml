@@ -3,6 +3,7 @@
 aube = "latest"  # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
 aws-vault = "latest"
 bat = "latest"  # Cat with wings
+beets = "latest"  # Music organizer
 broot = "latest"  # Directory navigation
 buf = "latest"
 bun = "latest"  # JS runtime
@@ -33,7 +34,6 @@ nano-web = "latest"  # Ultrafast webserver
 ni = "latest"  # @antfu/ni — auto-detects project pm, wraps it with consistent verbs
 oha = "latest"  # Load testing
 omp = "latest"  # Oh My Pi — terminal AI coding agent, OAuths into Claude Pro/Max
-"pipx:beets" = { version = "latest", uvx_args = "--with requests --with beets-yearfixer --with beets[discogs]" }  # Music organizer
 pnpm = "latest"
 pnpm-shell-completion = "latest"  # pnpm's built-in completion doesn't read package.json scripts; this does
 procs = "latest"  # Better ps
@@ -51,8 +51,8 @@ tfl = "latest"  # TfL MCP
 vfox = "latest"
 watchwoman = "latest"  # Watchman replacement
 xh = "latest"  # Modern HTTP client
-yq = { version = "latest", bin = "yq" }
-yt-dlp = { version = "latest", bin = "yt-dlp" }  # Video downloader (nightly)
+yq = "latest"
+yt-dlp = "latest"  # Video downloader
 zellij = "latest"  # Terminal multiplexer (tiles)
 zoxide = "latest"  # Smart cd replacement
 zsh-patina = "latest"  # ZSH syntax highlighting
