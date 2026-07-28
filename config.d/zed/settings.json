@@ -315,6 +315,9 @@
         },
       },
     },
+    "HTML": {
+      "formatter": "language_server",
+    },
   },
   "lsp": {
     "codeowners-lsp": {
