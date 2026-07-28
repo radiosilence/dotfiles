@@ -14,7 +14,7 @@ fi
 # Ensure trailing slash for gitdir matching
 [[ "$dir" == */ ]] || dir="$dir/"
 
-# Derive conf name from path: ~/workspace/surgeventures -> workspace--surgeventures
+# Derive conf name from path: ~/workspace/acme -> workspace--acme
 rel_dir="${dir/#$HOME\//}"
 rel_dir="${rel_dir%/}"
 name="${rel_dir//\//--}"

@@ -21,7 +21,6 @@ DaisyUI
 Dataclasses
 REDACTED
 FastmailCli
-REDACTED
 GitOps
 HCL
 HTML5
