@@ -1,7 +1,0 @@
-[install]
-minimumReleaseAge = 43200  # 12 hours
-
-[install.lifecycle]
-postinstall = false
-preinstall = false
-prepare = false

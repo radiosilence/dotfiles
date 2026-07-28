@@ -276,10 +276,14 @@ tasks:
       - |
         for f in "{{.DOTFILES}}"/.* ; do
           name=$(basename "$f")
+          # .npmrc/.yarnrc.yml are MDM-managed and must stay REAL files: the
+          # remediation script edits them with `sed -i`, which refuses symlinks
+          # and, under `set -e`, aborts the whole run before any config lands.
           case "$name" in
             .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
             .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json|\
-            .claude|.omp|.omp-personal|.claude-personal)
+            .claude|.omp|.omp-personal|.claude-personal|\
+            .npmrc|.yarnrc.yml)
               continue ;;
           esac
           target="$HOME/$name"
