@@ -21,7 +21,6 @@ DaisyUI
 Dataclasses
 EngineerBetter
 FastmailCli
-Fresha
 GitOps
 HCL
 HTML5

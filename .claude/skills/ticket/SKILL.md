@@ -80,7 +80,7 @@ When implementation is complete and tests pass:
 
 ## Babysitter delegation
 
-Do **not** inline a babysitter here — delegate to the dedicated `babysit` skill (fresha-tools / feature-workflow plugin). It is the source of truth for PR shepherding.
+Do **not** inline a babysitter here — delegate to the dedicated `babysit` skill (feature-workflow plugin). It is the source of truth for PR shepherding.
 
 > **Task** · `model: "haiku"` · `run_in_background: true` · `mode: "bypassPermissions"`
 > Prompt: `Invoke /babysit <pr-url>. Stay alive for the rest of the session.`

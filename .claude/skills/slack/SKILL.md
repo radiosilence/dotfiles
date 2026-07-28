@@ -1,6 +1,6 @@
 ---
 name: slack
-description: Read and post to Slack from OMP (or any harness without a Slack connector) by shelling out to the `claude` CLI, which has the managed Slack MCP authed and connected. ALWAYS trigger this skill whenever a Slack URL appears anywhere in the chat -- any `slack.com/archives/...` link (e.g. `shedul.slack.com/archives/C.../p...`), a `slack://` link, or a message/thread/channel permalink -- even if the user only pastes the link with no explicit instruction. Also trigger when the user wants to read a Slack thread/channel, post or reply to a message, add a reaction, or search Slack, and no native Slack tool is present in the current session.
+description: Read and post to Slack from OMP (or any harness without a Slack connector) by shelling out to the `claude` CLI, which has the managed Slack MCP authed and connected. ALWAYS trigger this skill whenever a Slack URL appears anywhere in the chat -- any `slack.com/archives/...` link (e.g. `<workspace>.slack.com/archives/C.../p...`), a `slack://` link, or a message/thread/channel permalink -- even if the user only pastes the link with no explicit instruction. Also trigger when the user wants to read a Slack thread/channel, post or reply to a message, add a reaction, or search Slack, and no native Slack tool is present in the current session.
 allowed-tools: Bash
 ---
 

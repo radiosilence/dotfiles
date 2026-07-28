@@ -1,5 +1,5 @@
 [env]
 # omp resolves PI_CONFIG_DIR under $HOME, so this stays relative — no templating.
-# Work roots unset it (see ~/workspace/freshaengineering/mise.toml): ~/.omp is
+# Work roots unset it in their own mise.toml: ~/.omp is
 # omp's native dir and pointing PI_CONFIG_DIR at it is not the same as native.
 PI_CONFIG_DIR = ".omp-personal"

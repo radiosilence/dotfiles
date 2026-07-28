@@ -10,7 +10,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 **Agent profiles moved from zsh wrappers to mise env:**
 
-- `~/.config/ai-profiles/*.yaml` + the `_ai_profile` zsh resolver are gone. Profile selection is now just mise `[env]`: `CLAUDE_CONFIG_DIR`/`PI_CONFIG_DIR` default to the personal profiles in `mise/conf.d`, and `~/workspace/freshaengineering/mise.toml` overrides them per-root. mise already walks the directory hierarchy — no reason to reimplement that in shell
+- `~/.config/ai-profiles/*.yaml` + the `_ai_profile` zsh resolver are gone. Profile selection is now just mise `[env]`: `CLAUDE_CONFIG_DIR`/`PI_CONFIG_DIR` default to the personal profiles in `mise/conf.d`, and the work root's `mise.toml` overrides them per-root. mise already walks the directory hierarchy — no reason to reimplement that in shell
 - Paths need `{{env.HOME}}`, **not** `~` — mise does not tilde-expand `[env]` values, and a literal `~/…` makes the tool resolve it relative to cwd and silently re-onboard into `./~/`. `PI_CONFIG_DIR` stays HOME-relative (`.omp-personal`) because omp resolves it under `$HOME` itself
 - Unsetting a var in a child config is `VAR = false`; `_.unset = [...]` parses as a tool spec and hard-errors on mise 2026.7.15
 - Claude behaviour that used to ride on flags now lives in the committed `settings.json` for both profiles: `remoteControlAtStartup: true` replaces `--remote-control`, and `permissions.defaultMode: "bypassPermissions"` replaces `--dangerously-skip-permissions`. `c` is now a bare alias. omp keeps `--auto-approve` on `o` — it has no verified config equivalent, and it doesn't validate unknown config keys, so a guess would fail silently
