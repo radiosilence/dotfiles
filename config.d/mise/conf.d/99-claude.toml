@@ -1,4 +1,4 @@
 [env]
+# mise does not tilde-expand env values — a literal "~/..." makes claude resolve
+# the path relative to cwd and silently re-onboard into ./~/
 CLAUDE_CONFIG_DIR = "{{env.HOME}}/.claude-personal"
-CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
-CLAUDE_CODE_NO_FLICKER = "1"

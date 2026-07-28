@@ -15,6 +15,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Unsetting a var in a child config is `VAR = false`; `_.unset = [...]` parses as a tool spec and hard-errors on mise 2026.7.15
 - Claude behaviour that used to ride on flags now lives in the committed `settings.json` for both profiles: `remoteControlAtStartup: true` replaces `--remote-control`, and `permissions.defaultMode: "bypassPermissions"` replaces `--dangerously-skip-permissions`. `c` is now a bare alias. omp keeps `--auto-approve` on `o` — it has no verified config equivalent, and it doesn't validate unknown config keys, so a guess would fail silently
 
+**Static env vars moved out of mise into zsh:**
+
+- mise `[env]` now carries only what genuinely varies per-directory — `CLAUDE_CONFIG_DIR` and `PI_CONFIG_DIR`, both overridden in work roots. Everything static moved to the conf.d file for its tool (`NI_CONFIG_FILE` → `ni.zsh`, the `CLAUDE_CODE_*` flags → `claude.zsh`) with `env.zsh` for the homeless ones; `00-env.toml` is gone
+- Perf was not the reason — measured at ~0.15 ms per var, so the five that moved were worth well under a millisecond of a ~40 ms `hook-env` you pay on every `cd` regardless. The point is that mise is for directory-scoped values and a shell rc is for constants
+
 **Completions now actually wait for `mise up`:**
 
 - `generate:completions` listed `mise:upgrade` as a dep alongside the ~50 `generate:completions:gen` deps — but go-task runs *all* deps in parallel, so completions were generated from pre-upgrade binaries while `mise up` was still running. The ordering was never real
