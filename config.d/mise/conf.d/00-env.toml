@@ -1,4 +1,0 @@
-[env]
-KERL_BUILD_DOCS = "yes"
-DD_TOKEN_STORAGE = "file"  # pup OAuth tokens in ~/.config/pup/ (0600) instead of keychain
-NI_CONFIG_FILE = "{{ env.HOME }}/.config/ni/nirc"  # @antfu/ni reads from here instead of ~/.nirc
