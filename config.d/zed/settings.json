@@ -318,6 +318,12 @@
     "HTML": {
       "formatter": "language_server",
     },
+    "Markdown": {
+      "language_servers": ["!harper-ls", "..."],
+    },
+    "Plain Text": {
+      "language_servers": ["!harper-ls", "..."],
+    },
   },
   "lsp": {
     "codeowners-lsp": {
