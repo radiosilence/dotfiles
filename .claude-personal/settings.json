@@ -4,5 +4,9 @@
   },
   "skipDangerousModePermissionPrompt": true,
   "theme": "auto",
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "remoteControlAtStartup": true,
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  }
 }
