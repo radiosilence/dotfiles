@@ -5,6 +5,8 @@
 
 command -v ni >/dev/null || return
 
+export NI_CONFIG_FILE="$HOME/.config/ni/nirc"  # @antfu/ni reads from here instead of ~/.nirc
+
 # ni() {
 #   NPM_AUTH_TOKEN=$(op read "op://Personal/npm-work/token") command ni "$@"
 # }
