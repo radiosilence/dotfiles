@@ -4,4 +4,5 @@
 !01-settings.toml
 !02-aliases.toml
 !03-tools.toml
+!98-omp.toml
 !99-claude.toml

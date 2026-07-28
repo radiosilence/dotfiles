@@ -4,5 +4,9 @@
   "editorMode": "normal",
   "skipDangerousModePermissionPrompt": true,
   "preferredNotifChannel": "ghostty",
-  "teammateMode": "in-process"
+  "teammateMode": "in-process",
+  "remoteControlAtStartup": true,
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  }
 }
