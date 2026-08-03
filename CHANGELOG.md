@@ -8,6 +8,15 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### July
 
+**`16-shadows.zsh` — system tools replaced with current Homebrew builds:**
+
+- macOS ships deliberately frozen versions of a handful of CLI tools, and brew refuses to link its replacements (keg-only, or GNU tools installed g-prefixed). Nothing was bridging that gap, so the 2006-era ones were winning. One file now does it for `make`, `coreutils`, `findutils`, `curl` and `libressl` — the point being that shadowing a system binary is a decision, and decisions belong in one place rather than scattered across per-tool conf.d files
+- The one that actually bites: Apple's `make` is **3.81**, frozen pre-GPLv3, so no `.ONESHELL`, no `!=`, no `$(file ...)`. Also `curl` 8.7.1 links zlib only — `Content-Encoding: br`/`zstd` fails outright with `Unrecognized content encoding type`
+- Stayed on LibreSSL (4.3.2) rather than switching to OpenSSL: `/usr/bin/openssl` being LibreSSL is a macOS assumption that tooling encodes, and the complaint was the 2021 version, not the fork
+- Numbered `16-` to land immediately after `15-brew.zsh` — it must beat `/opt/homebrew/bin`, while the alphabetical files that follow keep `~/.dotfiles/bin` on top
+- Not via mise: its registry has `coreutils` only as `aqua:uutils/coreutils` (the Rust rewrite, not GNU), `make`/`sqlite` only on the conda backend, and no `findutils`/`curl`/`libressl` at all
+- `llvm` left shadowed on purpose — Apple's clang knows the macOS SDK, and displacing it causes link failures
+
 **Agent profiles moved from zsh wrappers to mise env:**
 
 - `~/.config/ai-profiles/*.yaml` + the `_ai_profile` zsh resolver are gone. Profile selection is now just mise `[env]`: `CLAUDE_CONFIG_DIR`/`PI_CONFIG_DIR` default to the personal profiles in `mise/conf.d`, and the work root's `mise.toml` overrides them per-root. mise already walks the directory hierarchy — no reason to reimplement that in shell
