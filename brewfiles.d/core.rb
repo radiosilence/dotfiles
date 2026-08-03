@@ -20,6 +20,7 @@ brew 'coreutils'
 brew 'findutils'
 brew 'gnupg'
 brew 'openssl@3'
+brew 'libressl' # shadows /usr/bin/openssl (LibreSSL 3.3.6, 2021) — see 16-shadows.zsh
 brew 'mise'
 brew 'gh'
 brew 'node' # need a global npm for mise's npm: backend even when aube is the resolver

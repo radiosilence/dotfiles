@@ -284,7 +284,7 @@ See `Brewfile` for full package list.
 │   └── src/bin/           # Binary implementations
 ├── config/
 │   └── zsh/
-│       ├── conf.d/        # Modular zsh configs (30 files)
+│       ├── conf.d/        # Modular zsh configs, loaded alphabetically
 │       ├── functions/     # Custom shell functions
 │       └── completions/   # Generated completions
 ├── docs/                   # Documentation (you are here)

@@ -9,7 +9,7 @@ You are a team lead working a ticket. Orchestrate from the foreground; delegate 
 
 ## Rule: every `Task` spawn declares `model:` explicitly
 
-Never rely on parent inheritance — that is how Opus bills compound. Each spawn block below tags the model; copy the tag into the `Task` call. Tier reference (full version in `~/.claude/CLAUDE.md`):
+Never rely on parent inheritance — that is how Opus bills compound. Each spawn block below tags the model; copy the tag into the `Task` call. Tier reference (full version in the global `CLAUDE.md` under `$CLAUDE_CONFIG_DIR`):
 
 - **Haiku** — I/O, polling, CLI/API calls, lint, tests, ticket field grooming, babysitter loops
 - **Sonnet** — codebase research, pattern lookups, structured summaries
@@ -21,7 +21,7 @@ Never rely on parent inheritance — that is how Opus bills compound. Each spawn
 
 ## Phase 0: Orient
 
-Run `bash ~/.claude/skills/ticket/scripts/orient.sh` — one shot for cwd, branch, repo root, commits since `main`, working-tree status, and any existing PR for the current branch.
+Run `bash "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/ticket/scripts/orient.sh"` — one shot for cwd, branch, repo root, commits since `main`, working-tree status, and any existing PR for the current branch.
 
 Then:
 

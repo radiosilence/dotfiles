@@ -1,12 +1,25 @@
 {
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
   "model": "opus[1m]",
+  "enabledPlugins": {
+    "datadog@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "fresha-tools": {
+      "source": {
+        "source": "github",
+        "repo": "freshaengineering/claude-plugin-marketplace"
+      }
+    }
+  },
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "editorMode": "normal",
-  "skipDangerousModePermissionPrompt": true,
   "preferredNotifChannel": "ghostty",
   "teammateMode": "in-process",
   "remoteControlAtStartup": true,
-  "permissions": {
-    "defaultMode": "bypassPermissions"
-  }
+  "tui": "fullscreen"
 }
