@@ -32,6 +32,16 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - The daemon reads config only at startup and restarts whenever a session dies, so it kept re-reading whatever existed at that instant. `herdr server reload-config` is the only reliable way to apply an edit
 - `initial-command = zsh -ic herdr` resumes the persistent session on launch. Must be `-i`, not `-l`: mise activates from `.zshrc`, which only runs for interactive shells
 
+**`wtpr` rebuilt on herdr; PR picker popup:**
+
+- `wtpr` takes a PR number, a full URL, or `owner/repo#N`. A URL resolves the local checkout itself, so it works from anywhere rather than only inside the target repo — GitHub owner matches the directory under `~/workspace`
+- Workspace lookup is not reimplemented: `herdr worktree open --cwd <root> --branch <b>` lets herdr resolve the repo and own workspace creation, falling back to `worktree create`. That is why this is ~20 lines rather than grovelling through `workspace list` JSON
+- Fetches via `refs/pull/N/head`, so fork PRs work without the branch existing on origin
+- `alt+shift+p` opens an fzf picker (number / author / branch / title) in a herdr `type = "popup"`. `--print-query` returns what was typed when nothing matches, so a pasted URL falls through to `wtpr` untouched — including for repos other than the one the popup was opened in
+- `${${(f)out}[1]}` **indexes characters, not lines** — the nested expansion collapses to a scalar first, yielding `h` and `t` rather than the query and the selected row. Needs `local -a lines=("${(@f)out}")`. Cost an hour; the tell was `t` appearing as a "PR reference"
+- A `wt-runcmd` wrapper for vim-style `:!cmd` was written and then deleted — `vared` only imitates what an interactive shell already does, and it could not run a follow-up command. The popup runs plain `zsh -i` instead
+- Popups close the moment the command returns, so failures must hold the window open or the error is never seen
+
 **Claude profiles — `.claude/` renamed to `.claude-work/`:**
 
 - `.dotfiles/.claude/` was the work profile source, but Claude Code also treats `.claude/` in any repo as *project* config. One directory doing both jobs meant herdr installed a session hook into the tracked work profile. `.claude/` is now gitignored so tools writing there land somewhere harmless

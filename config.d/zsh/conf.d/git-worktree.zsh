@@ -141,34 +141,55 @@ wt()  { _wt_core _wt_cd "$@"; }
 # ── wtt — upsert worktree + zellij tab ──────────────────────────────
 wtt() { _wt_core _wt_tab "$@"; }
 
-# ── wtpr <PR-number> ────────────────────────────────────────────────
+# Local checkout for an owner/repo. GitHub owner matches the directory under
+# ~/workspace, so freshaengineering/app-reviews lives at the same path.
+_wt_repo_root() {
+  local owner=$1 repo=$2 p
+  for p in "$HOME/workspace/$owner/$repo" "$HOME/workspace"/*/"$repo"; do
+    [[ -d $p/.git ]] && { echo "$p"; return 0; }
+  done
+  echo "no local checkout for $owner/$repo under ~/workspace" >&2
+  return 1
+}
+
+# ── wtpr <PR-number|PR-url|owner/repo#N> ────────────────────────────
+# Opens the PR's worktree as a herdr workspace, creating either if absent.
 wtpr() {
   command -v gh >/dev/null || { echo "gh not found"; return 1; }
-  local pr=$1
-  [[ -z $pr ]] && { echo "usage: wtpr <PR-number>"; return 1; }
+  command -v herdr >/dev/null || { echo "herdr not found"; return 1; }
+  local arg=$1
+  [[ -z $arg ]] && { echo "usage: wtpr <PR-number|PR-url|owner/repo#N>"; return 1; }
+
+  local owner repo pr root
+  if [[ $arg =~ '^https?://[^/]+/([^/]+)/([^/]+)/pull/([0-9]+)' ]]; then
+    owner=$match[1] repo=$match[2] pr=$match[3]
+    root=$(_wt_repo_root "$owner" "$repo") || return 1
+  elif [[ $arg =~ '^([^/]+)/([^#]+)#([0-9]+)$' ]]; then
+    owner=$match[1] repo=$match[2] pr=$match[3]
+    root=$(_wt_repo_root "$owner" "$repo") || return 1
+  elif [[ $arg == <-> ]]; then
+    pr=$arg
+    root=$(_wt_root) || { echo "not in a git repo — pass a PR url"; return 1; }
+  else
+    echo "unrecognised PR reference: $arg"; return 1
+  fi
 
   local branch
-  branch=$(gh pr view "$pr" --json headRefName -q .headRefName) || return 1
-  local wt=$(_wt_path "$branch")
-
-  if [[ -d $wt ]]; then
-    _wt_tab "$branch" "$wt"
-    return
+  if [[ -n $owner ]]; then
+    branch=$(gh pr view "$pr" --repo "$owner/$repo" --json headRefName -q .headRefName)
+  else
+    branch=$(cd "$root" && gh pr view "$pr" --json headRefName -q .headRefName)
   fi
+  [[ -n $branch ]] || { echo "could not resolve PR #$pr"; return 1; }
 
-  local existing=$(_wt_find "$branch")
-  if [[ -n $existing ]]; then
-    _wt_tab "$branch" "$existing"
-    return
-  fi
+  # PR head may not exist locally; refs/pull works for forks too
+  git -C "$root" fetch origin "pull/${pr}/head:${branch}" --quiet 2>/dev/null \
+    || git -C "$root" fetch origin "$branch" --quiet 2>/dev/null
 
-  _wt_ensure_dir
-
-  git fetch origin "pull/${pr}/head:${branch}" --quiet 2>/dev/null \
-    || git fetch origin "$branch" --quiet || return 1
-
-  git worktree add "$wt" "$branch" || return 1
-  _wt_tab "$branch" "$wt"
+  # herdr resolves the repo from --cwd and owns workspace creation
+  herdr worktree open --cwd "$root" --branch "$branch" --focus 2>/dev/null && return 0
+  herdr worktree create --cwd "$root" --branch "$branch" \
+    --path "$(dirname "$root")/worktrees/$(basename "$root")/${branch:t}" --focus
 }
 
 # ── wtd <name> ──────────────────────────────────────────────────────

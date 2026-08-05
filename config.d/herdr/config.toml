@@ -5,7 +5,7 @@ name = "terminal"
 auto_switch = false
 
 [ui.toast]
-delivery = "system"
+delivery = "terminal"
 
 [ui]
 show_agent_labels_on_pane_borders = true
@@ -92,3 +92,21 @@ swap_pane_left = "prefix+alt+h"
 swap_pane_down = "prefix+alt+j"
 swap_pane_up = "prefix+alt+k"
 swap_pane_right = "prefix+alt+l"
+
+# Ephemeral popups (type=popup: modal overlay, closes on exit). Commands inherit
+# HERDR_ACTIVE_PANE_CWD, so they act on the pane you launched from.
+[[keys.command]]
+key = "alt+shift+p"
+type = "popup"
+command = "zsh -ic 'wtpr-pick'"
+description = "pick a PR -> worktree"
+width = "80%"
+height = "70%"
+
+[[keys.command]]
+key = "prefix+semicolon"
+type = "popup"
+command = "zsh -i"
+description = "scratch shell in the pane's cwd"
+width = "80%"
+height = "60%"
