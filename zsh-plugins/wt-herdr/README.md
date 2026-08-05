@@ -33,10 +33,12 @@ local = "~/.dotfiles/zsh-plugins/wt-herdr"
 | Command | Does |
 | --- | --- |
 | `wth [-b] <name> [base]` | upsert worktree, open as a herdr workspace. No args: fzf picker |
-| `wtpr <n\|url\|owner/repo#n>` | check out a PR's branch into a worktree and open it |
+| `wtpr <n\|url\|owner/repo#n>` | PR **or** issue — a URL disambiguates, a bare number is probed |
 | `wti <n\|url\|owner/repo#n>` | worktree for a GitHub issue, named `<n>-<slug>`, with claude primed on `/ticket <n>` |
 
-`wtpr` takes a PR number (repo from `$PWD`), a full URL, or `owner/repo#n`. URLs
+`wtpr` is the single entry point for both. A URL disambiguates itself (`/pull/` vs `/issues/`); a bare number is ambiguous because GitHub numbers PRs and issues from one sequence, so it probes with `gh pr view` and falls through to `wti` when that fails.
+
+It takes a number (repo from `$PWD`), a full URL, or `owner/repo#n`. URLs
 resolve the local checkout themselves, so it works from anywhere — the GitHub
 owner is matched against directory names under `~/workspace`. Fetches via
 `refs/pull/N/head`, so fork PRs work without the branch existing on origin.
