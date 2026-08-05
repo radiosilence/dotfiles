@@ -55,4 +55,16 @@
       "shift-enter": ["terminal::SendText", "\u001b\r"],
     },
   },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-w": "git::Worktree"
+    }
+  },
+  {
+    "context": "Workspace",
+    "unbind": {
+      "ctrl-cmd-w": "git::Worktree"
+    }
+  }
 ]
