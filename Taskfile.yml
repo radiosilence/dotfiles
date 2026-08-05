@@ -556,6 +556,7 @@ tasks:
           - golangci-lint
           - gt
           - helm
+          - herdr
           - houston
           - imp
           - k9s

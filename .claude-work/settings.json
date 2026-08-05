@@ -3,17 +3,6 @@
     "defaultMode": "bypassPermissions"
   },
   "model": "opus[1m]",
-  "enabledPlugins": {
-    "datadog@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "fresha-tools": {
-      "source": {
-        "source": "github",
-        "repo": "freshaengineering/claude-plugin-marketplace"
-      }
-    }
-  },
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
@@ -35,5 +24,18 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "datadog@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "elixir-phoenix@oliver-kriska": true
+  },
+  "extraKnownMarketplaces": {
+    "oliver-kriska": {
+      "source": {
+        "source": "github",
+        "repo": "oliver-kriska/claude-elixir-phoenix"
+      }
+    }
   }
 }

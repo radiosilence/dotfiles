@@ -1,7 +1,7 @@
 theme = monokai-pro
 background-opacity = 1
 background-blur = 20
-macos-titlebar-style = tabs
+macos-titlebar-style = transparent
 font-family = Geist Mono
 font-size = 11
 font-style = Regular
@@ -27,6 +27,28 @@ tab-inherit-working-directory = false
 
 cursor-click-to-move = true
 notify-on-command-finish = unfocused
-window-save-state = always
 link-previews = true
 confirm-close-surface = false
+
+# The first surface attaches to the persistent herdr session, so layout resumes
+# from herdr's session.json rather than from restored ghostty tabs. Only the
+# first — cmd+t still gives a plain shell. Must be `-i`, not `-l`: mise activates
+# from .zshrc, which only runs for interactive shells, and herdr is a mise shim.
+initial-command = zsh -ic herdr
+
+# Starts as one bare window — nothing restored on launch — but cmd+t still
+# makes a ghostty tab when one is actually wanted. Day to day, tabs and panes
+# come from herdr (ctrl+t), which doesn't collide with cmd+t.
+window-save-state = never
+resize-overlay = never
+window-padding-x = 4
+window-padding-y = 4
+window-padding-balance = true
+
+# cmd+left/right default to text:\x01 / \x05 (ctrl+a / ctrl+e). ctrl+a is
+# herdr's prefix, so cmd+left opened prefix mode instead of jumping to line
+# start. Home/End escape sequences carry no control byte for a multiplexer to
+# claim; zsh binds them in conf.d/interactive.zsh.
+keybind = super+arrow_left=text:\x1b[H
+keybind = super+arrow_right=text:\x1b[F
+

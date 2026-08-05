@@ -4,18 +4,41 @@ onboarding = false
 name = "terminal"
 auto_switch = false
 
+[theme.custom]
+# Derived from Zedokai (slymax/zedokai), the Monokai Pro port used as the Zed
+# theme, so herdr's chrome matches the editor rather than approximating it.
+# herdr wants 16 semantic slots but only 7 are hues, and Monokai Pro has no
+# blue — Zedokai itself maps terminal.ansi.blue to orange — so blue takes cyan.
+panel_bg = "#2d2a2e" # matches the terminal bg; Zedokai's lighter panel made herdr chrome float above it
+surface0 = "#2d2a2e" # background / tab.active_background
+surface1 = "#403e41" # element.background
+surface_dim = "#262427" # Zedokai Darker panel.background
+overlay0 = "#6a686b" # perceptual midpoint (OKLCH L 0.526) between too-dim and too-bright
+overlay1 = "#c1c0c0" # lifted off Zedokai's border.focused (#727072) for legibility
+text = "#fcfcfa" # text
+subtext0 = "#c1c0c0" # lifted off Zedokai's text.muted (#939293) for legibility
+accent = "#ffd866" # text.accent
+mauve = "#ab9df2"
+green = "#a9dc76"
+yellow = "#ffd866"
+red = "#ff6188"
+peach = "#fc9867"
+teal = "#78dce8"
+blue = "#78dce8"
+
 [ui.toast]
-delivery = "system"
+delivery = "terminal"
 
 [ui]
 show_agent_labels_on_pane_borders = true
 agent_panel_sort = "spaces"
+sidebar_max_width = 80
 
 # Pane keys follow the zellij muscle memory (hjkl focus, d/r splits, f zoom);
 # the tab and workspace keys people reach for constantly are bound direct so
 # they don't cost a prefix. alt+b/f/d/t/. are left alone — readline owns those.
 [keys]
-prefix = "ctrl+b"
+prefix = "ctrl+a"
 
 # zellij pane mode: hjkl move focus
 focus_pane_left = "prefix+h"
@@ -32,14 +55,12 @@ navigate_pane_right = "l"
 # zellij pane mode: d = NewPane down, r = NewPane right. herdr has no generic
 # "new pane" — panes only come from a split, so alt+n is the default one and
 # alt+shift+n the other axis.
-split_horizontal = ["prefix+d", "alt+n"]
-split_vertical = ["prefix+r", "alt+shift+n"]
+split_vertical = "alt+n"
+split_horizontal = "alt+shift+n"
 
 cycle_pane_next = "alt+tab"
 cycle_pane_previous = "alt+shift+tab"
-zoom = "prefix+f" # zellij: f = ToggleFocusFullscreen
-last_pane = "prefix+p" # zellij: p = SwitchFocus
-rename_pane = "prefix+c" # zellij: c = renamepane
+rename_pane = "prefix+shift+r" # zellij: c = renamepane
 close_pane = "prefix+x"
 
 # tabs — browser semantics, direct
@@ -47,23 +68,23 @@ new_tab = "ctrl+t"
 # NOT ctrl+w: ghostty maps alt+backspace to \x17 (ctrl+w) so backward-kill-word
 # works in shells, so binding ctrl+w here closes a tab every time a word is
 # rubbed out — see keybind line in config.d/ghostty/config.
-close_tab = "ctrl+shift+w"
+close_tab = "ctrl+w"
 next_tab = "ctrl+tab"
 previous_tab = "ctrl+shift+tab"
-rename_tab = "prefix+shift+r"
+rename_tab = "prefix+r"
 switch_tab = "prefix+1..9"
 
 # git worktrees — the thing actually switched between day to day, so direct
-open_worktree = "alt+w"
-new_worktree = "alt+shift+w"
+open_worktree = "prefix+shift+o" # native; uses herdr's global [worktrees] dir — prefer alt+w
+new_worktree = "prefix+shift+n" # ditto
 remove_worktree = "prefix+shift+backspace"
 
 # herdr workspaces (its own tab/pane grouping, unrelated to git worktrees).
 # close_workspace is bound explicitly to keep it off the default, which sits on
 # alt+backspace — readline's backward-kill-word, so it fires while typing.
-new_workspace = "prefix+n"
+new_workspace = ["prefix+n", "alt+shift+o"]
 close_workspace = "prefix+shift+x"
-workspace_picker = "prefix+w"
+workspace_picker = ["prefix+w", "alt+o"]
 switch_workspace = "alt+shift+1..9"
 
 # no zellij equivalent — herdr's agent supervision. focus_agent is an indexed
@@ -72,8 +93,8 @@ focus_agent = "prefix+alt+1..9"
 next_agent = "prefix+tab"
 previous_agent = "prefix+shift+tab"
 
-toggle_sidebar = "prefix+b"
-detach = "prefix+e"
+toggle_sidebar = "prefix+s"
+detach = "prefix+d"
 reload_config = "prefix+shift+c"
 
 # Everything below is bound purely to displace herdr's built-in defaults — one
@@ -82,7 +103,7 @@ reload_config = "prefix+shift+c"
 copy_mode = "prefix+u"
 edit_scrollback = "prefix+shift+e"
 goto = "prefix+g"
-help = "prefix+shift+h"
+help = "prefix+?"
 settings = "prefix+comma"
 next_workspace = "alt+]"
 previous_workspace = "alt+["
@@ -94,3 +115,30 @@ swap_pane_left = "prefix+alt+h"
 swap_pane_down = "prefix+alt+j"
 swap_pane_up = "prefix+alt+k"
 swap_pane_right = "prefix+alt+l"
+
+# Ephemeral popups (type=popup: modal overlay, closes on exit). Commands inherit
+# HERDR_ACTIVE_PANE_CWD, so they act on the pane you launched from.
+[[keys.command]]
+key = "alt+shift+p"
+type = "popup"
+command = "zsh -ic 'wtpr-pick'"
+description = "pick a PR -> worktree"
+width = "80%"
+height = "70%"
+
+[[keys.command]]
+key = "prefix+semicolon"
+type = "popup"
+command = "zsh -i"
+description = "scratch shell in the pane's cwd"
+width = "80%"
+height = "60%"
+
+
+[[keys.command]]
+key = "alt+w"
+type = "popup"
+command = "zsh -ic 'wth-pick'"
+description = "worktree picker (per-org paths)"
+width = "80%"
+height = "70%"
