@@ -142,7 +142,7 @@ wt()  { _wt_core _wt_cd "$@"; }
 wtt() { _wt_core _wt_tab "$@"; }
 
 # Local checkout for an owner/repo. GitHub owner matches the directory under
-# ~/workspace, so freshaengineering/app-reviews lives at the same path.
+# ~/workspace, so <org>/<repo> lives at the same path.
 _wt_repo_root() {
   local owner=$1 repo=$2 p
   for p in "$HOME/workspace/$owner/$repo" "$HOME/workspace"/*/"$repo"; do
