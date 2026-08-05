@@ -6,6 +6,37 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### August
+
+**Zed worktree scan — `node_modules` excluded:**
+
+- Zed's own diagnostics reported **16,020,592 tracked entries against 15,193 visible** in one monorepo checkout, with the process resident at ~18 GB. Excluding `**/node_modules` took it to 15,265 entries / 0.34 GB — a ~1000× drop in tracked entries and ~40× in memory, and the file picker went back to being instant
+- The ratio is the tell: 99.9% of what Zed tracked was gitignored. Zed honours LSP `workspace/didChangeWatchedFiles` requests **regardless of gitignore**, and `tsgo` watches `node_modules` because that is where the type definitions live. So gitignore stopped being load-bearing the moment LSP watch support got good, which is why this repo was fast a year ago at a larger size
+- VS Code ships `**/node_modules/**` in `files.watcherExclude` by default; Zed does not. That difference, not repo size, is the whole story
+- The cost is real and deliberate: files under `node_modules` can no longer be opened, so go-to-definition into dependency types will not resolve
+- `file_scan_exclusions` **replaces** the defaults rather than merging, so every default entry is repeated in the list. It also only applies at worktree scan time — editing it does nothing until Zed fully restarts
+
+**Terminal keys: escape sequences over control bytes:**
+
+- Three separate bugs, one shape. Ghostty translated `alt+backspace` → `\x17` (ctrl+w) and `cmd+left` → `\x01` (ctrl+a); herdr had `close_tab` on ctrl+w and its prefix on ctrl+a. Deleting a word closed a tab; jumping to line start opened prefix mode. Once a control byte leaves the terminal nothing downstream can tell it from a real keypress
+- `alt+backspace` remap deleted outright — zsh already bound `^[^?` to `backward-kill-word`, so it was redundant *and* harmful. `cmd+left`/`cmd+right` moved onto `\x1b[H`/`\x1b[F`, which no multiplexer claims
+- Symbol remaps (`alt+2` → `€` etc.) stay: they restore printable characters that `macos-option-as-alt` breaks, and produce nothing any tool interprets as a command. The distinction is character-restoration versus key-translation
+- `cmd+k` → `\x0c` remains as the last control-byte remap, safe only while nothing binds bare ctrl+l
+- Alt+digit `digit-argument` unbound — an emacs repeat count where `alt+4` then a key repeats it 4×, and only some alt-digits reached zsh anyway
+
+**herdr adopted; zellij autoattach guarded:**
+
+- `zellij-autoattach.zsh` now requires an explicit `ZELLIJ_AUTOATTACH=1`. It `exec`s the shell into zellij and gated only on `TERM_PROGRAM`, which children inherit — so herdr's spawned panes matched, replaced themselves with zellij, and died instantly (`exit 1`, no shell left to fall back to)
+- herdr config lives in `config.d/herdr/config.toml`, per-file symlinked rather than whole-dir: `~/.config/herdr` also holds sockets, logs and `session.json`, and `link:config` does `rm -rf` on its target
+- Keybindings mirror the zellij muscle memory where it transfers. Every action is bound explicitly, including ones never used — leaving one unbound leaves its default live, and one of those defaults sat on `alt+backspace`
+- The daemon reads config only at startup and restarts whenever a session dies, so it kept re-reading whatever existed at that instant. `herdr server reload-config` is the only reliable way to apply an edit
+- `initial-command = zsh -ic herdr` resumes the persistent session on launch. Must be `-i`, not `-l`: mise activates from `.zshrc`, which only runs for interactive shells
+
+**Claude profiles — `.claude/` renamed to `.claude-work/`:**
+
+- `.dotfiles/.claude/` was the work profile source, but Claude Code also treats `.claude/` in any repo as *project* config. One directory doing both jobs meant herdr installed a session hook into the tracked work profile. `.claude/` is now gitignored so tools writing there land somewhere harmless
+- Hook paths use `${CLAUDE_CONFIG_DIR:-…}` rather than an absolute path, so they follow the active profile instead of pinning personal sessions at the work directory
+
 ### July
 
 **`16-shadows.zsh` — system tools replaced with current Homebrew builds:**
