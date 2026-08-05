@@ -29,13 +29,17 @@ _wt_herdr() {
 # No args: fzf picker over existing worktrees, or type a name to create one.
 wth() { _wt_core _wt_herdr "$@"; }
 
-# ── wtpr <PR-number|PR-url|owner/repo#N> ────────────────────────────
-# Opens the PR's worktree as a herdr workspace, creating either if absent.
+# ── wtpr <PR-or-issue ref> ──────────────────────────────────────────
+# Takes a PR or an issue: a URL disambiguates itself (/pull/ vs /issues/), and
+# a bare number is probed — `gh pr view` fails on an issue, so a failure means
+# issue. Issues route to wti, which slugs the title and primes claude.
 wtpr() {
   command -v gh >/dev/null || { echo "gh not found"; return 1; }
   command -v herdr >/dev/null || { echo "herdr not found"; return 1; }
   local arg=$1
-  [[ -z $arg ]] && { echo "usage: wtpr <PR-number|PR-url|owner/repo#N>"; return 1; }
+  [[ -z $arg ]] && { echo "usage: wtpr <number|url|owner/repo#N>  (PR or issue)"; return 1; }
+
+  [[ $arg == *"/issues/"* ]] && { wti "$arg"; return; }
 
   local owner repo pr root
   if [[ $arg =~ '^https?://[^/]+/([^/]+)/([^/]+)/pull/([0-9]+)' ]]; then
@@ -46,10 +50,20 @@ wtpr() {
     root=$(_wt_repo_root "$owner" "$repo") || return 1
   elif [[ $arg == <-> ]]; then
     pr=$arg
-    root=$(_wt_root) || { echo "not in a git repo — pass a PR url"; return 1; }
+    root=$(_wt_root) || { echo "not in a git repo — pass a url"; return 1; }
   else
-    echo "unrecognised PR reference: $arg"; return 1
+    echo "unrecognised reference: $arg"; return 1
   fi
+
+  # GitHub numbers PRs and issues from one sequence, so a bare number is
+  # ambiguous. gh pr view only resolves PRs.
+  local probe
+  if [[ -n $owner ]]; then
+    probe=$(gh pr view "$pr" --repo "$owner/$repo" --json number -q .number 2>/dev/null)
+  else
+    probe=$(builtin cd "$root" && gh pr view "$pr" --json number -q .number 2>/dev/null)
+  fi
+  [[ -n $probe ]] || { wti "$arg"; return; }
 
   local branch
   if [[ -n $owner ]]; then
