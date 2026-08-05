@@ -69,3 +69,35 @@ wth-pick() {
     print -u2 "any key to close"; read -k1; return 1
   fi
 }
+
+# Issue picker → worktree. Same shape as wtpr-pick: --print-query means a pasted
+# URL falls through untouched when it matches no row.
+wti-pick() {
+  command -v gh >/dev/null || { echo "gh not found"; read -k1; return 1; }
+  builtin cd "$(_herdr_cwd)" 2>/dev/null
+
+  local me=${GH_LOGIN:-$(gh api user -q .login 2>/dev/null)}
+  local out
+  out=$(gh issue list --limit 200 --json number,assignees,labels,title \
+          -q '.[] | "\(.number)\t\(if (.assignees|length)>0 then "@"+.assignees[0].login else "-" end)\t\([.labels[].name]|join(","))\t\(.title)"' 2>/dev/null \
+        | column -t -s $'\t' \
+        | fzf --print-query --query="$me " --prompt='issue or URL > ' \
+              --height=100% --border --nth=1,2,3 \
+              --header='enter on a row · clear query for all · or paste an issue url' \
+              --preview='gh issue view {1} --comments 2>/dev/null | head -80')
+
+  local -a lines=("${(@f)out}")
+  local query=${lines[1]} sel=${lines[2]} ref
+  if [[ -n $sel ]]; then
+    ref=${sel%% *}
+  elif [[ $query =~ '(https?://[^[:space:]]+)' ]]; then ref=$match[1]
+  elif [[ $query =~ '([^[:space:]/]+/[^[:space:]#]+#[0-9]+)' ]]; then ref=$match[1]
+  elif [[ $query =~ '([0-9]+)' ]]; then ref=$match[1]
+  fi
+  [[ -n $ref ]] || return 0
+
+  if ! wti "$ref"; then
+    print -u2 "\nwti failed for: $ref"
+    print -u2 "any key to close"; read -k1; return 1
+  fi
+}

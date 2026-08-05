@@ -142,3 +142,11 @@ command = "zsh -ic 'wth-pick'"
 description = "worktree picker (per-org paths)"
 width = "80%"
 height = "70%"
+
+[[keys.command]]
+key = "alt+i"
+type = "popup"
+command = "zsh -ic 'wti-pick'"
+description = "issue -> worktree + /ticket"
+width = "80%"
+height = "70%"

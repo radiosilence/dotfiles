@@ -34,6 +34,7 @@ local = "~/.dotfiles/zsh-plugins/wt-herdr"
 | --- | --- |
 | `wth [-b] <name> [base]` | upsert worktree, open as a herdr workspace. No args: fzf picker |
 | `wtpr <n\|url\|owner/repo#n>` | check out a PR's branch into a worktree and open it |
+| `wti <n\|url\|owner/repo#n>` | worktree for a GitHub issue, named `<n>-<slug>`, with claude primed on `/ticket <n>` |
 
 `wtpr` takes a PR number (repo from `$PWD`), a full URL, or `owner/repo#n`. URLs
 resolve the local checkout themselves, so it works from anywhere — the GitHub
@@ -54,7 +55,17 @@ key = "alt+shift+p"
 type = "popup"
 command = "zsh -ic 'wtpr-pick'"
 description = "PR picker"
+
+[[keys.command]]
+key = "alt+i"
+type = "popup"
+command = "zsh -ic 'wti-pick'"
+description = "issue picker"
 ```
+
+`wti` primes the new pane by way of `herdr pane send-text`. `claude <prompt>`
+starts an **interactive** session — `-p`/`--print` is what makes it batch — so
+the agent comes up live with the skill already invoked.
 
 Popups close the moment the command returns, so a wrapper that holds the window
 open on failure is worth having — otherwise errors flash past unseen.
