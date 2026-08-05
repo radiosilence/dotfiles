@@ -279,7 +279,7 @@ tasks:
           case "$name" in
             .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
             .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json|\
-            .claude|.omp|.omp-personal|.claude-personal)
+            .claude|.claude-work|.omp|.omp-personal|.claude-personal)
               continue ;;
           esac
           target="$HOME/$name"
@@ -317,9 +317,11 @@ tasks:
           mkdir -p "$(dirname "$dst")"; rm -f "$dst"
           ln -s "$src" "$dst"; printf "{{.LINK}} %s\n" "$dst"
         }
-        linkto .claude/CLAUDE.md     "$HOME/.claude-work/CLAUDE.md"
-        linkto .claude/skills        "$HOME/.claude-work/skills"
-        linkto .claude/settings.json "$HOME/.claude-work/settings.json"
+        linkto .claude-work/CLAUDE.md     "$HOME/.claude-work/CLAUDE.md"
+        linkto .claude-work/skills        "$HOME/.claude-work/skills"
+        linkto .claude-work/settings.json "$HOME/.claude-work/settings.json"
+        # herdr — config only; sockets/logs/session.json stay in ~/.config/herdr
+        linkto config.d/herdr/config.toml "$HOME/.config/herdr/config.toml"
 
   link:config:
     desc: Symlink config dirs (config.d/* → ~/.config/*)
@@ -330,6 +332,8 @@ tasks:
         for f in "{{.DOTFILES}}/config.d"/*; do
           [ -e "$f" ] || continue
           name=$(basename "$f")
+          # herdr keeps sockets/logs alongside its config; per-file linked in link:agent-configs
+          [ "$name" = "herdr" ] && continue
           target="$HOME/.config/$name"
           [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
           rm -rf "$target"

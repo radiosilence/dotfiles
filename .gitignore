@@ -18,3 +18,6 @@ Brewfile.local
 *.zwc
 *.bak
 docs-local
+
+# Tools (herdr, etc.) write project-scoped config here; work config lives in .claude-work/
+.claude/

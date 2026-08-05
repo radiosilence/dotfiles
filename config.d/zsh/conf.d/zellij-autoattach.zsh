@@ -2,6 +2,11 @@
 # Lets ghostty's `window-save-state = always` round-trip: restored tabs retain
 # their CWD via shell-integration OSC 7, this hops them back into the matching
 # session. Fresh tabs (cmd+t) land in $HOME (per ghostty config) and skip below.
+#
+# Disabled: the exec below replaces the shell, which breaks agent runners that
+# spawn their own shells with TERM_PROGRAM inherited from the parent terminal.
+# Set ZELLIJ_AUTOATTACH=1 to opt back in.
+[[ -n "$ZELLIJ_AUTOATTACH" ]] || return
 command -v zellij >/dev/null || return
 [[ -o interactive && -z "$ZELLIJ" && -z "$TMUX" && -t 1 ]] || return
 [[ "$PWD" == "$HOME" || "$PWD" == "/" ]] && return
