@@ -1,0 +1,96 @@
+onboarding = false
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+[ui.toast]
+delivery = "system"
+
+[ui]
+show_agent_labels_on_pane_borders = true
+agent_panel_sort = "spaces"
+
+# Pane keys follow the zellij muscle memory (hjkl focus, d/r splits, f zoom);
+# the tab and workspace keys people reach for constantly are bound direct so
+# they don't cost a prefix. alt+b/f/d/t/. are left alone — readline owns those.
+[keys]
+prefix = "ctrl+b"
+
+# zellij pane mode: hjkl move focus
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# navigate mode rejects prefix+/esc/enter/tab/arrows/bare digits — plain keys only
+navigate_pane_left = "h"
+navigate_pane_down = "j"
+navigate_pane_up = "k"
+navigate_pane_right = "l"
+
+# zellij pane mode: d = NewPane down, r = NewPane right. herdr has no generic
+# "new pane" — panes only come from a split, so alt+n is the default one and
+# alt+shift+n the other axis.
+split_horizontal = ["prefix+d", "alt+n"]
+split_vertical = ["prefix+r", "alt+shift+n"]
+
+cycle_pane_next = "alt+tab"
+cycle_pane_previous = "alt+shift+tab"
+zoom = "prefix+f" # zellij: f = ToggleFocusFullscreen
+last_pane = "prefix+p" # zellij: p = SwitchFocus
+rename_pane = "prefix+c" # zellij: c = renamepane
+close_pane = "prefix+x"
+
+# tabs — browser semantics, direct
+new_tab = "ctrl+t"
+# NOT ctrl+w: ghostty maps alt+backspace to \x17 (ctrl+w) so backward-kill-word
+# works in shells, so binding ctrl+w here closes a tab every time a word is
+# rubbed out — see keybind line in config.d/ghostty/config.
+close_tab = "ctrl+shift+w"
+next_tab = "ctrl+tab"
+previous_tab = "ctrl+shift+tab"
+rename_tab = "prefix+shift+r"
+switch_tab = "prefix+1..9"
+
+# git worktrees — the thing actually switched between day to day, so direct
+open_worktree = "alt+w"
+new_worktree = "alt+shift+w"
+remove_worktree = "prefix+shift+backspace"
+
+# herdr workspaces (its own tab/pane grouping, unrelated to git worktrees).
+# close_workspace is bound explicitly to keep it off the default, which sits on
+# alt+backspace — readline's backward-kill-word, so it fires while typing.
+new_workspace = "prefix+n"
+close_workspace = "prefix+shift+x"
+workspace_picker = "prefix+w"
+switch_workspace = "alt+shift+1..9"
+
+# no zellij equivalent — herdr's agent supervision. focus_agent is an indexed
+# jump, so it takes the 1..9 range form rather than a single key.
+focus_agent = "prefix+alt+1..9"
+next_agent = "prefix+tab"
+previous_agent = "prefix+shift+tab"
+
+toggle_sidebar = "prefix+b"
+detach = "prefix+e"
+reload_config = "prefix+shift+c"
+
+# Everything below is bound purely to displace herdr's built-in defaults — one
+# of which sits on alt+backspace (readline's backward-kill-word) and quits the
+# client. Leaving an action unbound leaves its default live.
+copy_mode = "prefix+u"
+edit_scrollback = "prefix+shift+e"
+goto = "prefix+g"
+help = "prefix+shift+h"
+settings = "prefix+comma"
+next_workspace = "alt+]"
+previous_workspace = "alt+["
+rename_workspace = "prefix+shift+w"
+navigate_workspace_up = "shift+k"
+navigate_workspace_down = "shift+j"
+open_notification_target = "prefix+o"
+swap_pane_left = "prefix+alt+h"
+swap_pane_down = "prefix+alt+j"
+swap_pane_up = "prefix+alt+k"
+swap_pane_right = "prefix+alt+l"
