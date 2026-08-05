@@ -1,57 +1,77 @@
 {
-  "cli_default_open_behavior": "existing_window",
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
   "collaboration_panel": {
     "dock": "left",
   },
-  "context_servers": {
-    "folk": {
-      "command": "mise",
-      "args": ["x", "--", "mainlymcpfolk"],
-    },
-    "fastmail": {
-      "command": "mise",
-      "args": ["x", "--", "fastmail-cli", "mcp"],
-    },
-  },
-  "restore_on_startup": "last_workspace",
+  "disable_ai": true,
+  "cli_default_open_behavior": "new_window",
+  "restore_on_startup": "last_session",
   "tab_size": 2,
-  "toolbar": {
-    "code_actions": true,
-  },
-  "hover_popover_delay": 200,
+  "hover_popover_delay": 100,
   "ui_font_family": "Geist Mono",
-  "auto_update": false,
-  "agent_servers": {
-    "claude-acp": {
-      "type": "registry",
-      "default_mode": "bypassPermissions",
-      "default_config_options": {
-        "mode": "bypassPermissions",
-        "model": "opus[1m]",
-      },
-      "favorite_config_option_values": {
-        "mode": ["bypassPermissions"],
-        "model": ["opus[1m]"],
-      },
-    },
-  },
+  "auto_update": true,
   "project_panel": {
     "dock": "left",
+  },
+  "file_finder": {
+    "modal_max_width": "xlarge",
+    // "smart" heuristically pulls in gitignored files; "indexed" restricts the
+    // picker to what Zed has already scanned.
+    "include_ignored": "indexed",
+  },
+  // Overrides the defaults wholesale, so the default entries are repeated here.
+  // node_modules is excluded because pnpm's symlink store pushed this repo's
+  // worktree to 16M tracked entries (15k visible) and ~18GB resident.
+  // Cost: files under node_modules cannot be opened, so go-to-definition into
+  // dependency types will not resolve.
+  "file_scan_exclusions": [
+    "**/node_modules",
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/.jj",
+    "**/.sl",
+    "**/.repo",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    "**/.turbo",
+    "**/.next/cache",
+    "**/coverage",
+    "**/dist",
+    "**/build",
+    "**/_build",
+    "**/target",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/.gradle",
+  ],
+  "lsp_document_colors": "none",
+  "git": {
+    "inline_blame": {
+      "enabled": false,
+    },
   },
   "outline_panel": {
     "dock": "left",
   },
   "git_panel": {
-    "dock": "right",
+    "dock": "left",
   },
   "edit_predictions": {
-    "provider": "zed",
+    "provider": "none",
     "mode": "subtle",
   },
   "inlay_hints": {
     "enabled": true,
-    "edit_debounce_ms": 0,
-    "scroll_debounce_ms": 0,
+    "edit_debounce_ms": 400,
+    "scroll_debounce_ms": 400,
     "show_background": true,
     "show_other_hints": true,
     "show_parameter_hints": true,
@@ -65,54 +85,31 @@
       "shift": true,
     },
   },
-  "use_system_prompts": true,
   "auto_install_extensions": {
-    "ansible": true,
     "astro": true,
     "basher": true,
     "csv": true,
-    "docker-compose": true,
     "dockerfile": true,
     "elixir": true,
-    "emmet": false,
-    "git-firefly": true,
-    "graphql": false,
-    "helm": true,
     "html": true,
     "oxc": true,
     "ruby": true,
     "jsonl": true,
     "kotlin": true,
-    "lua": true,
-    "nix": true,
-    "nginx": true,
     "proto": true,
     "scss": true,
-    "stylelint": false,
     "terraform": true,
     "toml": true,
-    "tombi": true,
     "tsgo": true,
     "zedokai": true,
-    "codeowners": true,
   },
   "agent": {
     "tool_permissions": {
       "default": "allow",
     },
-    "dock": "left",
+    "dock": "right",
     "play_sound_when_agent_done": "when_hidden",
     "default_profile": "write",
-    "inline_assistant_model": {
-      "provider": "zed.dev",
-      "model": "claude-sonnet-4",
-    },
-    "default_model": {
-      "effort": "medium",
-      "enable_thinking": true,
-      "provider": "zed.dev",
-      "model": "claude-opus-4-7",
-    },
   },
   "agent_ui_font_size": 12.0,
   "ui_font_size": 12.0,
@@ -135,15 +132,9 @@
     "light": "One Light",
     "dark": "Zedokai",
   },
-  "minimap": {
-    "display_in": "active_editor",
-    "thumb": "always",
-    "show": "never",
-  },
   "wrap_guides": [80, 100],
   "soft_wrap": "none",
   "format_on_save": "on",
-  "ensure_final_newline_on_save": false,
   "sticky_scroll": {
     "enabled": true,
   },
@@ -160,7 +151,7 @@
     "TypeScript": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "tsgo",
+        "typescript-ls",
         "!vtsls",
         "!typescript-language-server",
         "!eslint",
@@ -178,7 +169,7 @@
     "TSX": {
       // If you don't disable them runs all of them which breaks shit
       "language_servers": [
-        "tsgo",
+        "typescript-ls",
         "!vtsls",
         "!typescript-language-server",
         "!eslint",

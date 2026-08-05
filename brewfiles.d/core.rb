@@ -14,6 +14,7 @@ cask 'font-departure-mono'
 cask 'font-departure-mono-nerd-font'
 
 cask 'betterdisplay'
+cask 'raycast'
 
 brew 'curl'
 brew 'coreutils'
