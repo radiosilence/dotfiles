@@ -6,7 +6,7 @@ set -o pipefail
 export CLICOLOR_FORCE=1
 export GH_FORCE_TTY=1
 
-preview="$HOME/.dotfiles/scripts/wt-preview {1}"
+preview="${WT_CORE_BIN:?wt-core plugin not loaded}/wt-preview {1}"
 
 root=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
 root="${root%/.git}"
@@ -115,7 +115,7 @@ case "$key" in
     if zellij action query-tab-names 2>/dev/null | grep -qxF "$name"; then
       zellij action go-to-tab-name "$name"
     else
-      zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- ~/.dotfiles/scripts/wt-shell "$wt" "$name"
+      zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- "$(dirname "$0")/wt-shell" "$wt" "$name"
     fi
     ;;
 esac
