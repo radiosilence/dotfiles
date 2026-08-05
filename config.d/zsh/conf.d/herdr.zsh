@@ -53,3 +53,19 @@ wtpr-pick() {
     return 1
   fi
 }
+
+# Popup entry for the worktree picker. herdr's native open_worktree/new_worktree
+# are prefix-gated instead: they use its global [worktrees] directory, which
+# cannot express the per-org layout the profile split depends on.
+wth-pick() {
+  local cwd=$(_herdr_cwd)
+  builtin cd "$cwd" 2>/dev/null || { print -u2 "cannot cd: $cwd"; read -k1; return 1; }
+  if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    print -u2 "not a git repo: $cwd"
+    print -u2 "any key to close"; read -k1; return 1
+  fi
+  if ! wth; then
+    print -u2 "\nwth failed in: $cwd"
+    print -u2 "any key to close"; read -k1; return 1
+  fi
+}

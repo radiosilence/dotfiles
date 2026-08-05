@@ -49,6 +49,26 @@ _wt_tab() {
   fi
 }
 
+# herdr's own worktree management is unusable here: [worktrees] directory is a
+# single global root with no {org} placeholder, so it cannot reproduce the
+# per-org layout, and its default (~/.herdr/worktrees) sits outside ~/workspace
+# where the work mise.toml never applies — agents there would run on the
+# personal Claude profile. Paths computed here derive from the repo, so they
+# land in the right org tree and inherit the right profile.
+# --cwd must be the main checkout: herdr rejects a linked worktree as the source
+# ("New and open worktree actions start from the repo parent workspace"). It
+# also reports errors as JSON with exit 0, so the payload has to be inspected.
+_wt_herdr() {
+  local wt=$2 root out
+  root=$(git -C "$wt" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || return 1
+  root=${root%/.git}
+  out=$(herdr worktree open --cwd "$root" --path "$wt" --focus 2>&1)
+  if [[ $out == *'"error"'* ]]; then
+    print -u2 "herdr: ${out}"
+    return 1
+  fi
+}
+
 _wt_fzf_preview='~/.dotfiles/scripts/wt-preview {1}'
 
 # ── Core upsert logic ───────────────────────────────────────────────
@@ -140,6 +160,10 @@ wt()  { _wt_core _wt_cd "$@"; }
 
 # ── wtt — upsert worktree + zellij tab ──────────────────────────────
 wtt() { _wt_core _wt_tab "$@"; }
+
+# ── wth — upsert worktree + herdr workspace ─────────────────────────
+# No args: fzf picker over existing worktrees, or type a name to create one.
+wth() { _wt_core _wt_herdr "$@"; }
 
 # Local checkout for an owner/repo. GitHub owner matches the directory under
 # ~/workspace, so <org>/<repo> lives at the same path.

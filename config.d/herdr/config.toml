@@ -31,7 +31,8 @@ delivery = "terminal"
 
 [ui]
 show_agent_labels_on_pane_borders = true
-agent_panel_sort = "priority"
+agent_panel_sort = "spaces"
+sidebar_max_width = 80
 
 # Pane keys follow the zellij muscle memory (hjkl focus, d/r splits, f zoom);
 # the tab and workspace keys people reach for constantly are bound direct so
@@ -74,8 +75,8 @@ rename_tab = "prefix+r"
 switch_tab = "prefix+1..9"
 
 # git worktrees — the thing actually switched between day to day, so direct
-open_worktree = "alt+w"
-new_worktree = "alt+shift+w"
+open_worktree = "prefix+shift+o" # native; uses herdr's global [worktrees] dir — prefer alt+w
+new_worktree = "prefix+shift+n" # ditto
 remove_worktree = "prefix+shift+backspace"
 
 # herdr workspaces (its own tab/pane grouping, unrelated to git worktrees).
@@ -132,3 +133,12 @@ command = "zsh -i"
 description = "scratch shell in the pane's cwd"
 width = "80%"
 height = "60%"
+
+
+[[keys.command]]
+key = "alt+w"
+type = "popup"
+command = "zsh -ic 'wth-pick'"
+description = "worktree picker (per-org paths)"
+width = "80%"
+height = "70%"

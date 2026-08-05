@@ -24,5 +24,18 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "datadog@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "elixir-phoenix@oliver-kriska": true
+  },
+  "extraKnownMarketplaces": {
+    "oliver-kriska": {
+      "source": {
+        "source": "github",
+        "repo": "oliver-kriska/claude-elixir-phoenix"
+      }
+    }
   }
 }
