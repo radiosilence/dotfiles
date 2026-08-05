@@ -6,6 +6,56 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### August
+
+**Zed worktree scan — `node_modules` excluded:**
+
+- Zed's own diagnostics reported **16,020,592 tracked entries against 15,193 visible** in one monorepo checkout, with the process resident at ~18 GB. Excluding `**/node_modules` took it to 15,265 entries / 0.34 GB — a ~1000× drop in tracked entries and ~40× in memory, and the file picker went back to being instant
+- The ratio is the tell: 99.9% of what Zed tracked was gitignored. Zed honours LSP `workspace/didChangeWatchedFiles` requests **regardless of gitignore**, and `tsgo` watches `node_modules` because that is where the type definitions live. So gitignore stopped being load-bearing the moment LSP watch support got good, which is why this repo was fast a year ago at a larger size
+- VS Code ships `**/node_modules/**` in `files.watcherExclude` by default; Zed does not. That difference, not repo size, is the whole story
+- The cost is real and deliberate: files under `node_modules` can no longer be opened, so go-to-definition into dependency types will not resolve
+- `file_scan_exclusions` **replaces** the defaults rather than merging, so every default entry is repeated in the list. It also only applies at worktree scan time — editing it does nothing until Zed fully restarts
+
+**Terminal keys: escape sequences over control bytes:**
+
+- Three separate bugs, one shape. Ghostty translated `alt+backspace` → `\x17` (ctrl+w) and `cmd+left` → `\x01` (ctrl+a); herdr had `close_tab` on ctrl+w and its prefix on ctrl+a. Deleting a word closed a tab; jumping to line start opened prefix mode. Once a control byte leaves the terminal nothing downstream can tell it from a real keypress
+- `alt+backspace` remap deleted outright — zsh already bound `^[^?` to `backward-kill-word`, so it was redundant *and* harmful. `cmd+left`/`cmd+right` moved onto `\x1b[H`/`\x1b[F`, which no multiplexer claims
+- Symbol remaps (`alt+2` → `€` etc.) stay: they restore printable characters that `macos-option-as-alt` breaks, and produce nothing any tool interprets as a command. The distinction is character-restoration versus key-translation
+- `cmd+k` → `\x0c` remains as the last control-byte remap, safe only while nothing binds bare ctrl+l
+- Alt+digit `digit-argument` unbound — an emacs repeat count where `alt+4` then a key repeats it 4×, and only some alt-digits reached zsh anyway
+
+**herdr adopted; zellij autoattach guarded:**
+
+- `zellij-autoattach.zsh` now requires an explicit `ZELLIJ_AUTOATTACH=1`. It `exec`s the shell into zellij and gated only on `TERM_PROGRAM`, which children inherit — so herdr's spawned panes matched, replaced themselves with zellij, and died instantly (`exit 1`, no shell left to fall back to)
+- herdr config lives in `config.d/herdr/config.toml`, per-file symlinked rather than whole-dir: `~/.config/herdr` also holds sockets, logs and `session.json`, and `link:config` does `rm -rf` on its target
+- Keybindings mirror the zellij muscle memory where it transfers. Every action is bound explicitly, including ones never used — leaving one unbound leaves its default live, and one of those defaults sat on `alt+backspace`
+- The daemon reads config only at startup and restarts whenever a session dies, so it kept re-reading whatever existed at that instant. `herdr server reload-config` is the only reliable way to apply an edit
+- `initial-command = zsh -ic herdr` resumes the persistent session on launch. Must be `-i`, not `-l`: mise activates from `.zshrc`, which only runs for interactive shells
+
+**herdr themed to match Zed:**
+
+- `[theme.custom]` overrides individual slots on top of `name = "terminal"`, so the terminal palette still drives pane contents while herdr's own chrome is explicit
+- `struct CustomThemeColors` has 16 slots, but they are *semantic*, not ANSI: nine are UI (`panel_bg`, three surfaces, two overlays, `text`, `subtext0`, `accent`) and only seven are hues. Monokai Pro offers six — red, green, yellow, orange, purple, cyan — and **no blue**; Zedokai itself maps `terminal.ansi.blue` to orange. Since herdr has a separate `peach`, `blue` takes the cyan so it collides with `teal` rather than with orange
+- Values come from Zedokai rather than ghostty's theme file: ghostty exposes only the 16 ANSI entries plus background/foreground, so every surface and overlay would have been invented. Zedokai has real ones — `panel.background`, `border`, `border.focused`, `text.muted`
+- Greys were then tuned by contrast rather than by eye. `overlay0` carries section labels and branch names, not just borders, and at Zedokai's `#474448` it sat at **1.5:1** — invisible. Settled at `#6a686b`, the OKLCH-L midpoint between that and an over-corrected `#939293`
+- `panel_bg` follows the terminal background, not Zedokai's lighter `#333034`: herdr chrome sitting a shade above the terminal reads as a colour bug rather than as layering
+- ghostty's `macos-titlebar-style` returned to `transparent`. `tabs` and `transparent` tint the titlebar to the terminal background; `native` does not, which is what made the window look mismatched
+
+**`wtpr` rebuilt on herdr; PR picker popup:**
+
+- `wtpr` takes a PR number, a full URL, or `owner/repo#N`. A URL resolves the local checkout itself, so it works from anywhere rather than only inside the target repo — GitHub owner matches the directory under `~/workspace`
+- Workspace lookup is not reimplemented: `herdr worktree open --cwd <root> --branch <b>` lets herdr resolve the repo and own workspace creation, falling back to `worktree create`. That is why this is ~20 lines rather than grovelling through `workspace list` JSON
+- Fetches via `refs/pull/N/head`, so fork PRs work without the branch existing on origin
+- `alt+shift+p` opens an fzf picker (number / author / branch / title) in a herdr `type = "popup"`. `--print-query` returns what was typed when nothing matches, so a pasted URL falls through to `wtpr` untouched — including for repos other than the one the popup was opened in
+- `${${(f)out}[1]}` **indexes characters, not lines** — the nested expansion collapses to a scalar first, yielding `h` and `t` rather than the query and the selected row. Needs `local -a lines=("${(@f)out}")`. Cost an hour; the tell was `t` appearing as a "PR reference"
+- A `wt-runcmd` wrapper for vim-style `:!cmd` was written and then deleted — `vared` only imitates what an interactive shell already does, and it could not run a follow-up command. The popup runs plain `zsh -i` instead
+- Popups close the moment the command returns, so failures must hold the window open or the error is never seen
+
+**Claude profiles — `.claude/` renamed to `.claude-work/`:**
+
+- `.dotfiles/.claude/` was the work profile source, but Claude Code also treats `.claude/` in any repo as *project* config. One directory doing both jobs meant herdr installed a session hook into the tracked work profile. `.claude/` is now gitignored so tools writing there land somewhere harmless
+- Hook paths use `${CLAUDE_CONFIG_DIR:-…}` rather than an absolute path, so they follow the active profile instead of pinning personal sessions at the work directory
+
 ### July
 
 **`16-shadows.zsh` — system tools replaced with current Homebrew builds:**

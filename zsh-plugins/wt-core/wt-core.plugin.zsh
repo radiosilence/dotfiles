@@ -1,7 +1,14 @@
+# wt-core — git worktree management, backend-agnostic.
+# Worktrees live at <repo-parent>/worktrees/<repo>/<name>, derived from the
+# repo itself so per-org layouts (and any mise env scoped to them) hold.
 # Git worktree management (wt*)
 # Worktrees live in <repo-parent>/worktrees/<repo>/<name>/ — outside the repo
 # so editors / file watchers don't recursively index them.
 command -v git >/dev/null || return
+
+# Exported so sibling backends and the bin/ scripts locate shared helpers
+# without hardcoding a dotfiles path.
+typeset -gx WT_CORE_BIN=${0:A:h}/bin
 
 # ── Helpers ──────────────────────────────────────────────────────────
 
@@ -36,20 +43,7 @@ _wt_find() {
 
 _wt_cd() { cd "$2"; }
 
-_wt_tab() {
-  local name=$1 wt=$2
-  if [[ -n $ZELLIJ ]]; then
-    if zellij action query-tab-names 2>/dev/null | grep -qxF "$name"; then
-      zellij action go-to-tab-name "$name"
-    else
-      zellij action new-tab --name "$name" --cwd "$wt" --close-on-exit -- ~/.dotfiles/scripts/wt-shell "$wt" "$name"
-    fi
-  else
-    cd "$wt"
-  fi
-}
-
-_wt_fzf_preview='~/.dotfiles/scripts/wt-preview {1}'
+_wt_fzf_preview='$WT_CORE_BIN/wt-preview {1}'
 
 # ── Core upsert logic ───────────────────────────────────────────────
 # _wt_core <go_fn> [--branch] [name] [base]
@@ -138,37 +132,15 @@ _wt_core() {
 # ── wt — upsert worktree + cd ───────────────────────────────────────
 wt()  { _wt_core _wt_cd "$@"; }
 
-# ── wtt — upsert worktree + zellij tab ──────────────────────────────
-wtt() { _wt_core _wt_tab "$@"; }
-
-# ── wtpr <PR-number> ────────────────────────────────────────────────
-wtpr() {
-  command -v gh >/dev/null || { echo "gh not found"; return 1; }
-  local pr=$1
-  [[ -z $pr ]] && { echo "usage: wtpr <PR-number>"; return 1; }
-
-  local branch
-  branch=$(gh pr view "$pr" --json headRefName -q .headRefName) || return 1
-  local wt=$(_wt_path "$branch")
-
-  if [[ -d $wt ]]; then
-    _wt_tab "$branch" "$wt"
-    return
-  fi
-
-  local existing=$(_wt_find "$branch")
-  if [[ -n $existing ]]; then
-    _wt_tab "$branch" "$existing"
-    return
-  fi
-
-  _wt_ensure_dir
-
-  git fetch origin "pull/${pr}/head:${branch}" --quiet 2>/dev/null \
-    || git fetch origin "$branch" --quiet || return 1
-
-  git worktree add "$wt" "$branch" || return 1
-  _wt_tab "$branch" "$wt"
+# Local checkout for an owner/repo. GitHub owner matches the directory under
+# ~/workspace, so <org>/<repo> lives at the same path.
+_wt_repo_root() {
+  local owner=$1 repo=$2 p
+  for p in "$HOME/workspace/$owner/$repo" "$HOME/workspace"/*/"$repo"; do
+    [[ -d $p/.git ]] && { echo "$p"; return 0; }
+  done
+  echo "no local checkout for $owner/$repo under ~/workspace" >&2
+  return 1
 }
 
 # ── wtd <name> ──────────────────────────────────────────────────────
@@ -283,12 +255,10 @@ _wt_comp() {
     '1:branch:_wt_branches' '2:base:'
 }
 compdef _wt_comp wt
-compdef _wt_comp wtt
 compdef '_arguments "1:branch:_wt_branches"' wtd
 compdef '_arguments "1:branch:_wt_branches"' wtrm
 
 # ── fzf-tab previews ────────────────────────────────────────────────
-zstyle ':fzf-tab:complete:wt:*'   fzf-preview '~/.dotfiles/scripts/wt-preview $word'
-zstyle ':fzf-tab:complete:wtt:*'  fzf-preview '~/.dotfiles/scripts/wt-preview $word'
-zstyle ':fzf-tab:complete:wtd:*'  fzf-preview '~/.dotfiles/scripts/wt-preview $word'
-zstyle ':fzf-tab:complete:wtrm:*' fzf-preview '~/.dotfiles/scripts/wt-preview $word'
+zstyle ':fzf-tab:complete:wt:*'   fzf-preview "$WT_CORE_BIN/wt-preview $word"
+zstyle ':fzf-tab:complete:wtd:*'  fzf-preview "$WT_CORE_BIN/wt-preview $word"
+zstyle ':fzf-tab:complete:wtrm:*' fzf-preview "$WT_CORE_BIN/wt-preview $word"

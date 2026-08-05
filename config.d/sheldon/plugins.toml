@@ -34,3 +34,17 @@ github = "1160054/claude-code-zsh-completion"
 # Use ↑/↓ to search history entries that match your current partial command
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
+
+# ============================================================================
+# Local worktree plugins (zsh-plugins/) — sheldon handles sourcing; see each
+# plugin's README. wt-core is backend-agnostic; the backends are additive.
+# ============================================================================
+
+[plugins.wt-core]
+local = "~/.dotfiles/zsh-plugins/wt-core"
+
+[plugins.wt-herdr]
+local = "~/.dotfiles/zsh-plugins/wt-herdr"
+
+[plugins.wt-zellij]
+local = "~/.dotfiles/zsh-plugins/wt-zellij"
