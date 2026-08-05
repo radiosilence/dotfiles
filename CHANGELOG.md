@@ -32,6 +32,15 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - The daemon reads config only at startup and restarts whenever a session dies, so it kept re-reading whatever existed at that instant. `herdr server reload-config` is the only reliable way to apply an edit
 - `initial-command = zsh -ic herdr` resumes the persistent session on launch. Must be `-i`, not `-l`: mise activates from `.zshrc`, which only runs for interactive shells
 
+**herdr themed to match Zed:**
+
+- `[theme.custom]` overrides individual slots on top of `name = "terminal"`, so the terminal palette still drives pane contents while herdr's own chrome is explicit
+- `struct CustomThemeColors` has 16 slots, but they are *semantic*, not ANSI: nine are UI (`panel_bg`, three surfaces, two overlays, `text`, `subtext0`, `accent`) and only seven are hues. Monokai Pro offers six — red, green, yellow, orange, purple, cyan — and **no blue**; Zedokai itself maps `terminal.ansi.blue` to orange. Since herdr has a separate `peach`, `blue` takes the cyan so it collides with `teal` rather than with orange
+- Values come from Zedokai rather than ghostty's theme file: ghostty exposes only the 16 ANSI entries plus background/foreground, so every surface and overlay would have been invented. Zedokai has real ones — `panel.background`, `border`, `border.focused`, `text.muted`
+- Greys were then tuned by contrast rather than by eye. `overlay0` carries section labels and branch names, not just borders, and at Zedokai's `#474448` it sat at **1.5:1** — invisible. Settled at `#6a686b`, the OKLCH-L midpoint between that and an over-corrected `#939293`
+- `panel_bg` follows the terminal background, not Zedokai's lighter `#333034`: herdr chrome sitting a shade above the terminal reads as a colour bug rather than as layering
+- ghostty's `macos-titlebar-style` returned to `transparent`. `tabs` and `transparent` tint the titlebar to the terminal background; `native` does not, which is what made the window look mismatched
+
 **`wtpr` rebuilt on herdr; PR picker popup:**
 
 - `wtpr` takes a PR number, a full URL, or `owner/repo#N`. A URL resolves the local checkout itself, so it works from anywhere rather than only inside the target repo — GitHub owner matches the directory under `~/workspace`

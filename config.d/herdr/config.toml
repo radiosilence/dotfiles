@@ -4,6 +4,28 @@ onboarding = false
 name = "terminal"
 auto_switch = false
 
+[theme.custom]
+# Derived from Zedokai (slymax/zedokai), the Monokai Pro port used as the Zed
+# theme, so herdr's chrome matches the editor rather than approximating it.
+# herdr wants 16 semantic slots but only 7 are hues, and Monokai Pro has no
+# blue — Zedokai itself maps terminal.ansi.blue to orange — so blue takes cyan.
+panel_bg = "#2d2a2e" # matches the terminal bg; Zedokai's lighter panel made herdr chrome float above it
+surface0 = "#2d2a2e" # background / tab.active_background
+surface1 = "#403e41" # element.background
+surface_dim = "#262427" # Zedokai Darker panel.background
+overlay0 = "#6a686b" # perceptual midpoint (OKLCH L 0.526) between too-dim and too-bright
+overlay1 = "#c1c0c0" # lifted off Zedokai's border.focused (#727072) for legibility
+text = "#fcfcfa" # text
+subtext0 = "#c1c0c0" # lifted off Zedokai's text.muted (#939293) for legibility
+accent = "#ffd866" # text.accent
+mauve = "#ab9df2"
+green = "#a9dc76"
+yellow = "#ffd866"
+red = "#ff6188"
+peach = "#fc9867"
+teal = "#78dce8"
+blue = "#78dce8"
+
 [ui.toast]
 delivery = "terminal"
 
