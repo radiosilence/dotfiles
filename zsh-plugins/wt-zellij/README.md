@@ -20,8 +20,18 @@ local = "~/.dotfiles/zsh-plugins/wt-zellij"
 | Command | Does |
 | --- | --- |
 | `wtt [-b] <name> [base]` | upsert worktree, open in a zellij tab. No args: fzf picker |
+| `wttpr <n\|url\|owner/repo#n>` | PR **or** issue — a URL disambiguates, a bare number is probed |
+| `wtti <n\|url\|owner/repo#n>` | worktree for an issue, named `<n>-<slug>`, claude primed on `/ticket <n>` |
+| `wttpr-pick` | fzf over open PRs and issues, then as above |
 
 Tabs are named after the branch and reused if one already exists.
+
+## Picker
+
+`alt+w` opens `bin/wt-picker` in a floating pane: enter opens or creates,
+`^x` removes, `^r` pulls, and `^v`/`^y`/`^d`/`^l` are PR view / checks / diff /
+create. It only picks — creating and removing shell out to `wtt` and `wtrm`,
+since its own copy of the create path had already drifted from `wt-core`'s.
 
 ## Cleanup on exit
 

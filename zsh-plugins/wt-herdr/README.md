@@ -35,6 +35,10 @@ local = "~/.dotfiles/zsh-plugins/wt-herdr"
 | `wth [-b] <name> [base]` | upsert worktree, open as a herdr workspace. No args: fzf picker |
 | `wtpr <n\|url\|owner/repo#n>` | PR **or** issue — a URL disambiguates, a bare number is probed |
 | `wti <n\|url\|owner/repo#n>` | worktree for a GitHub issue, named `<n>-<slug>`, with claude primed on `/ticket <n>` |
+| `wtpr-pick` | fzf over open PRs and issues, then as above |
+
+The logic lives in `wt-core`; these are bindings of `_wt_pr` / `_wt_issue` /
+`_wt_pr_pick` to the herdr backend, so the zellij backend has the same set.
 
 `wtpr` is the single entry point for both. A URL disambiguates itself (`/pull/` vs `/issues/`); a bare number is ambiguous because GitHub numbers PRs and issues from one sequence, so it probes with `gh pr view` and falls through to `wti` when that fails.
 
@@ -56,13 +60,7 @@ description = "worktree picker"
 key = "alt+shift+p"
 type = "popup"
 command = "zsh -ic 'wtpr-pick'"
-description = "PR picker"
-
-[[keys.command]]
-key = "alt+i"
-type = "popup"
-command = "zsh -ic 'wti-pick'"
-description = "issue picker"
+description = "PR / issue picker"
 ```
 
 `wti` primes the new pane by way of `herdr pane send-text`. `claude <prompt>`

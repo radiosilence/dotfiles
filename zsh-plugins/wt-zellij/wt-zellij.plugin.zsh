@@ -17,7 +17,19 @@ _wt_tab() {
   fi
 }
 
+# write-chars targets the focused pane, which new-tab just made current. The
+# tab's shell is still starting, hence the wait.
+_wt_tab_prime() {
+  [[ -n $ZELLIJ ]] || return 0
+  sleep 0.5
+  zellij action write-chars "claude \"/ticket $1\""
+  zellij action write 13
+}
+
 # ── wtt — upsert worktree + zellij tab ──────────────────────────────
-wtt() { _wt_core _wt_tab "$@"; }
-compdef _wt_comp wtt
-zstyle ':fzf-tab:complete:wtt:*'  fzf-preview '~/.dotfiles/scripts/wt-preview $word'
+wtt()        { _wt_core    _wt_tab "$@"; }
+wttpr()      { _wt_pr      _wt_tab _wt_tab_prime "$@"; }
+wtti()       { _wt_issue   _wt_tab _wt_tab_prime "$@"; }
+wttpr-pick() { _wt_pr_pick _wt_tab _wt_tab_prime; }
+(( $+functions[compdef] )) && compdef _wt_comp wtt
+zstyle ':fzf-tab:complete:wtt:*'  fzf-preview "$WT_CORE_BIN/wt-preview $word"
