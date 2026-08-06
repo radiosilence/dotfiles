@@ -38,10 +38,3 @@ _wt_herdr_prime() {
 # ── wtpr <PR-or-issue ref> / wti <issue ref> ────────────────────────
 wtpr() { _wt_pr    _wt_herdr _wt_herdr_prime "$@"; }
 wti()  { _wt_issue _wt_herdr _wt_herdr_prime "$@"; }
-
-# Popups inherit HERDR_ACTIVE_PANE_CWD, so they act on the pane you launched
-# from rather than wherever the popup shell happens to start.
-wtpr-pick() {
-  builtin cd "${HERDR_ACTIVE_PANE_CWD:-$PWD}" 2>/dev/null
-  _wt_pr_pick _wt_herdr _wt_herdr_prime
-}

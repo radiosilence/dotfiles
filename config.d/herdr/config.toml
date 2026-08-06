@@ -138,7 +138,7 @@ height = "60%"
 [[keys.command]]
 key = "alt+w"
 type = "popup"
-command = "zsh -ic 'wth'"
+command = "zsh -ic 'wth-pick'"
 description = "worktree picker (per-org paths)"
 width = "80%"
 height = "70%"

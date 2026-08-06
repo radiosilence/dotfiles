@@ -27,9 +27,8 @@ _wt_tab_prime() {
 }
 
 # ── wtt — upsert worktree + zellij tab ──────────────────────────────
-wtt()        { _wt_core    _wt_tab "$@"; }
-wttpr()      { _wt_pr      _wt_tab _wt_tab_prime "$@"; }
-wtti()       { _wt_issue   _wt_tab _wt_tab_prime "$@"; }
-wttpr-pick() { _wt_pr_pick _wt_tab _wt_tab_prime; }
+wtt()   { _wt_core  _wt_tab "$@"; }
+wttpr() { _wt_pr    _wt_tab _wt_tab_prime "$@"; }
+wtti()  { _wt_issue _wt_tab _wt_tab_prime "$@"; }
 (( $+functions[compdef] )) && compdef _wt_comp wtt
 zstyle ':fzf-tab:complete:wtt:*'  fzf-preview "$WT_CORE_BIN/wt-preview $word"

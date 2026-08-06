@@ -22,7 +22,6 @@ local = "~/.dotfiles/zsh-plugins/wt-zellij"
 | `wtt [-b] <name> [base]` | upsert worktree, open in a zellij tab. No args: fzf picker |
 | `wttpr <n\|url\|owner/repo#n>` | PR **or** issue — a URL disambiguates, a bare number is probed |
 | `wtti <n\|url\|owner/repo#n>` | worktree for an issue, named `<n>-<slug>`, claude primed on `/ticket <n>` |
-| `wttpr-pick` | fzf over open PRs and issues, then as above |
 
 Tabs are named after the branch and reused if one already exists.
 

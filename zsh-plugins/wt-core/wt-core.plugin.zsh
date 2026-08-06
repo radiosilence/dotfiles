@@ -237,56 +237,6 @@ _wt_issue() {
   "$prime_fn" "$num"
 }
 
-# ── _wt_pr_pick <go_fn> <prime_fn> ──────────────────────────────────
-# fzf over open PRs and issues, or paste any reference _wt_pr understands
-# (URL / owner/repo#N / number). --print-query returns what was typed when it
-# matches no row, so a pasted URL falls straight through — which also means it
-# works for repos other than the one the picker was opened in.
-_wt_pr_pick() {
-  command -v gh  >/dev/null || { echo "gh not found"; read -k1; return 1; }
-  command -v fzf >/dev/null || { echo "fzf not found"; read -k1; return 1; }
-
-  # Author is its own column so fzf can filter on it; the query starts on your
-  # own login, so it opens showing your work and backspacing reveals everyone's.
-  local me=${GH_LOGIN:-$(gh api user -q .login 2>/dev/null)}
-
-  local out
-  out=$({
-    gh pr list --limit 200 --json number,author,title,isDraft \
-      -q '.[] | "\(.number)\t@\(.author.login)\tPR\t\(if .isDraft then "[draft] " else "" end)\(.title)"' 2>/dev/null
-    gh issue list --limit 200 --json number,author,title \
-      -q '.[] | "\(.number)\t@\(.author.login)\tissue\t\(.title)"' 2>/dev/null
-  } | column -t -s $'\t' \
-    | fzf --print-query --query="$me " --prompt='PR / issue / URL > ' \
-          --height=100% --border \
-          --header='enter on a row · clear the query for all authors · or paste a url / owner/repo#N' \
-          --preview='gh pr view {1} --comments 2>/dev/null || gh issue view {1} --comments 2>/dev/null')
-
-  # line 1 is the query, line 2 the selected row (absent when nothing matched).
-  # Must split into a real array — ${${(f)out}[1]} indexes characters, not lines.
-  local -a lines=("${(@f)out}")
-  local query=${lines[1]} sel=${lines[2]} ref
-  if [[ -n $sel ]]; then
-    ref=${sel%% *}
-  elif [[ $query =~ '(https?://[^[:space:]]+)' ]]; then
-    ref=$match[1]                      # a paste lands after the author query
-  elif [[ $query =~ '([^[:space:]/]+/[^[:space:]#]+#[0-9]+)' ]]; then
-    ref=$match[1]
-  elif [[ $query =~ '([0-9]+)' ]]; then
-    ref=$match[1]
-  fi
-  [[ -n $ref ]] || return 0
-
-  # A herdr popup dies the moment this returns, so hold it open on failure —
-  # otherwise the error flashes and vanishes.
-  if ! _wt_pr "$1" "$2" "$ref"; then
-    print -u2 "\nfailed for: $ref"
-    print -u2 "any key to close"
-    read -k1
-    return 1
-  fi
-}
-
 # ── wtrm [name] ─────────────────────────────────────────────────────
 # No args: remove the worktree you're currently inside, cd to repo root
 wtrm() {

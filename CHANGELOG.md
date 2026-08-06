@@ -17,7 +17,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 **wt-\* plugins: dead paths and drifted copies:**
 
-- The plugin split (#76) left `scripts/wt-picker` and `scripts/wt-preview` behind. The zellij `alt+w` binding and the `wtt` completion preview had been pointing at nothing ever since — the latter single-quoted, so `$word` never expanded either. herdr's popups were bound to `wtpr-pick` and `wth-pick`, neither of which had ever existed
+- The plugin split (#76) left `scripts/wt-picker` and `scripts/wt-preview` behind. The zellij `alt+w` binding and the `wtt` completion preview had been pointing at nothing ever since — the latter single-quoted, so `$word` never expanded either
 - `wt-shell` counted unpushed commits with `@{upstream}..HEAD`. A branch created with `-b` and never pushed has no upstream, so git errored and the count came back zero — reading as clean in the exact case where commits were about to be lost. `wtt -b foo`, commit, close the tab, gone. Now falls back to the remote default branch
 - `wt-picker` carried its own copy of the create path — fetch plus the three-way `worktree add` fallback — and it had drifted from `wt-core`'s. It shells into the plugin functions now. Parsing `worktree list --porcelain` went from four copies to one `wt-list` script
 - `wtpr`/`wti` were welded to herdr, so the zellij backend couldn't open a PR at all. Ref parsing, the PR-vs-issue probe, fork fetching via `refs/pull/N/head` and slugging moved to `wt-core`; a backend is now two one-line bindings and gets `wttpr`/`wtti`/`wttpr-pick` for nothing. wt-herdr: 140 lines → 41

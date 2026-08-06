@@ -60,7 +60,6 @@ the new pane — pass `:` to skip):
 ```zsh
 wtmpr()      { _wt_pr      _wt_mine _wt_mine_prime "$@"; }  # PR or issue
 wtmi()       { _wt_issue   _wt_mine _wt_mine_prime "$@"; }  # issue -> <n>-<slug>
-wtmpr-pick() { _wt_pr_pick _wt_mine _wt_mine_prime; }       # fzf over both
 ```
 
 Ref parsing, the PR/issue probe, fork fetching and slugging all live here, so a
