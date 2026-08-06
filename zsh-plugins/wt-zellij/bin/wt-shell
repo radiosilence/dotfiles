@@ -29,7 +29,16 @@ echo "  ${bold}Exiting worktree session${reset}"
 
 # Check for dirty state
 dirty_files=$(git -C "$wt" status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-unpushed=$(git -C "$wt" log --oneline "@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
+
+# A branch created with -b and never pushed has no upstream, so @{upstream}..HEAD
+# errors and counts zero — reading as clean in the one case where commits are
+# about to be lost. Fall back to the remote default branch.
+if upstream=$(git -C "$wt" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null); then
+  unpushed=$(git -C "$wt" rev-list --count "${upstream}..HEAD" 2>/dev/null || echo 0)
+else
+  base=$(git -C "$wt" symbolic-ref refs/remotes/origin/HEAD 2>/dev/null || echo refs/remotes/origin/main)
+  unpushed=$(git -C "$wt" rev-list --count "${base##refs/remotes/}..HEAD" 2>/dev/null || echo 0)
+fi
 
 if [[ $dirty_files -eq 0 && $unpushed -eq 0 ]]; then
   # Clean — just remove silently
