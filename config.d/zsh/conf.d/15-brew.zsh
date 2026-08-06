@@ -1,8 +1,11 @@
 # Homebrew configuration
+# Nothing here applies on Linux, where mise owns every tool brew would provide.
 if [[ -d /opt/homebrew ]]; then
   export BREW_PREFIX=/opt/homebrew
-else
+elif [[ -x /usr/local/bin/brew ]]; then
   export BREW_PREFIX=/usr/local
+else
+  return
 fi
 
 path=("$BREW_PREFIX/bin" "$BREW_PREFIX/sbin" $path)
