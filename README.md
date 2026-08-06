@@ -1,14 +1,30 @@
 # dotfiles
 
-Personal dev environment. macOS, zsh, Rust tooling.
+Personal dev environment. macOS and headless Linux, zsh, Rust tooling.
 
 ## Setup
+
+**macOS:**
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
 ```
 
 Sequential bootstrap (xcode → Touch ID for sudo → brew → 1Password → clone) and then hands off to `task converge` for everything else — mise, symlinks, Rust binaries, completions, fonts, gh auth. Idempotent; re-running skips what's already done.
+
+**Linux (Ubuntu/Debian, headless):**
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-linux | bash
+```
+
+bash, because zsh isn't installed yet. Shorter path — apt base packages → mise → clone → gh device-flow auth → `task converge`. Same Taskfile, same `upd`; the darwin-only tasks (brew, casks, Touch ID, 1Password, `use-ssh`, `secrets:populate`) skip themselves.
+
+No 1Password on a headless box, so git auth is gh's credential helper over HTTPS and secrets aren't populated. If you want signed commits there, `ssh -A` in from a machine that has the agent.
+
+**Where root is allowed:** bootstrap may install system packages; the Taskfile may not. `converge` runs unattended, so on Linux it stays entirely under `$HOME` — mise in `~/.local`, tools in `~/.local/share/mise`, configs symlinked into `~`. `apt:core`, `apt:upgrade` and `dnf:upgrade` exist but you run them by hand. brew is the exception that isn't one: it's user-owned and installs formulae without root, so `brew:bundle` stays in converge.
+
+The apt list is short by design: `zsh git curl ca-certificates gh rsync gnupg unzip aria2`, plus `build-essential` to compile `crates/`. Nothing there is in mise's registry, and everything that *is* comes from mise. `core.rb`'s `coreutils`/`findutils`/`openssl`/`make` are macOS un-BSD-ing and have no Linux equivalent worth installing.
 
 Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth poll silently until ready.
 
