@@ -36,6 +36,10 @@ local = "~/.dotfiles/zsh-plugins/wt-herdr"
 | `wtpr <n\|url\|owner/repo#n>` | PR **or** issue — a URL disambiguates, a bare number is probed |
 | `wti <n\|url\|owner/repo#n>` | worktree for a GitHub issue, named `<n>-<slug>`, with claude primed on `/ticket <n>` |
 
+The logic lives in `wt-core`; these are bindings of `_wt_pr` / `_wt_issue` to
+the herdr backend, so the zellij backend has the same set. The popup wrappers
+(`wtpr-pick`, `wth-pick`, `wti-pick`) live in `config.d/zsh/conf.d/herdr.zsh`.
+
 `wtpr` is the single entry point for both. A URL disambiguates itself (`/pull/` vs `/issues/`); a bare number is ambiguous because GitHub numbers PRs and issues from one sequence, so it probes with `gh pr view` and falls through to `wti` when that fails.
 
 It takes a number (repo from `$PWD`), a full URL, or `owner/repo#n`. URLs
@@ -49,28 +53,24 @@ owner is matched against directory names under `~/workspace`. Fetches via
 [[keys.command]]
 key = "alt+w"
 type = "popup"
-command = "zsh -ic 'wth'"
-description = "worktree picker"
+command = "zsh -ic 'wth-pick'"
+description = "worktree picker (per-org paths)"
 
 [[keys.command]]
 key = "alt+shift+p"
 type = "popup"
 command = "zsh -ic 'wtpr-pick'"
-description = "PR picker"
-
-[[keys.command]]
-key = "alt+i"
-type = "popup"
-command = "zsh -ic 'wti-pick'"
-description = "issue picker"
+description = "PR / issue picker"
 ```
 
 `wti` primes the new pane by way of `herdr pane send-text`. `claude <prompt>`
 starts an **interactive** session — `-p`/`--print` is what makes it batch — so
 the agent comes up live with the skill already invoked.
 
-Popups close the moment the command returns, so a wrapper that holds the window
-open on failure is worth having — otherwise errors flash past unseen.
+Popups close the moment the command returns, so the `-pick` wrappers in
+`config.d/zsh/conf.d/herdr.zsh` hold the window open on failure — otherwise
+errors flash past unseen. `wth-pick` also refuses early when the pane's cwd
+isn't a git repo; `wtpr-pick` doesn't, so there it looks like nothing happened.
 
 ## Gotcha
 
