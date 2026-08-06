@@ -21,6 +21,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Verified: `converge --dry` on a fresh Ubuntu 26.04 box reaches no task that shells out to `sudo`. `crates/` also builds with plain `build-essential` — `git2` is vendored and `reqwest` is on rustls, so no `pkg-config`, no `libssl-dev`
 - `config.d/btop` is symlinked into `~/.config` on every machine `link:config` touches, but `btop` is a brew formula, so on Linux the config lands pointing at nothing. Left that way deliberately: aqua declares btop `supported_envs ["linux"]` and upstream ships no darwin asset, so moving it to mise would have traded a missing binary on Linux for a broken one on macOS. `tokei`'s latest release is source-only — mise would compile it via the cargo backend. Neither is worth the split; both stay on brew
 - `15-brew.zsh` set `BREW_PREFIX=/usr/local` on any machine without `/opt/homebrew`, including ones with no brew at all, and prepended two nonexistent dirs to `PATH`. Returns early now
+- `upd` still prompted for a sudo password on Linux after all that. The `converge` shell function pre-warmed sudo before handing off, so the prompt wouldn't get buried in parallel task output — correct while `apt:upgrade` was a converge dep, and pure noise once nothing in the DAG needed root. The audit missed it because it looked at the Taskfile, and this lives in `utils.zsh`
 
 **Worktree cleanup asks GitHub, not git:**
 
