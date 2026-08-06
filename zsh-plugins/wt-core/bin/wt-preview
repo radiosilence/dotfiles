@@ -5,8 +5,7 @@
 set -euo pipefail
 
 branch="${1%%$'\t'*}"
-path=$(git worktree list --porcelain 2>/dev/null \
-  | awk -v b="refs/heads/$branch" '/^worktree /{ wt=$2 } /^branch /{ if($2==b) print wt }')
+path=$("$(dirname "${BASH_SOURCE[0]}")/wt-list" "$branch")
 [[ -n $path ]] || exit 0
 
 # Try PR view first — shows title, status, checks, reviewers

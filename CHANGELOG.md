@@ -8,6 +8,21 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**Worktree cleanup asks GitHub, not git:**
+
+- `git branch --merged` never reclaimed anything, because everything is squash-merged: the local branch shares no commit with what actually landed, so git calls it unmerged forever. `wtclean` now asks `gh` for PR state — merged or closed means the worktree and its branch go, along with orphaned branches whose worktree is already gone. Without `gh` a deleted upstream stands in, which means the same thing in practice
+- One `gh pr list` up front instead of a query per branch. A dozen worktrees is a second, not a minute — it's meant to run from cron
+- Five verbs collapsed to two. `wtd` was `wtrm` with a different argument, `wtp` was an alias for `git worktree prune`, and `wtpb` skipped every branch it existed to prune, because `-d` refuses on a squash-merged branch
+- Dirty worktrees, the one you're standing in, and detached checkouts are never touched. `-n` dry-runs — and did not, on the first cut, which cost two already-merged branches
+
+**wt-\* plugins: dead paths and drifted copies:**
+
+- The plugin split (#76) left `scripts/wt-picker` and `scripts/wt-preview` behind. The zellij `alt+w` binding and the `wtt` completion preview had been pointing at nothing ever since — the latter single-quoted, so `$word` never expanded either
+- `wt-shell` counted unpushed commits with `@{upstream}..HEAD`. A branch created with `-b` and never pushed has no upstream, so git errored and the count came back zero — reading as clean in the exact case where commits were about to be lost. `wtt -b foo`, commit, close the tab, gone. Now falls back to the remote default branch
+- `wt-picker` carried its own copy of the create path — fetch plus the three-way `worktree add` fallback — and it had drifted from `wt-core`'s. It shells into the plugin functions now. Parsing `worktree list --porcelain` went from four copies to one `wt-list` script
+- `wtpr`/`wti` were welded to herdr, so the zellij backend couldn't open a PR at all. Ref parsing, the PR-vs-issue probe, fork fetching via `refs/pull/N/head` and slugging moved to `wt-core`; a backend is now two one-line bindings and gets `wttpr`/`wtti`/`wttpr-pick` for nothing. wt-herdr: 140 lines → 41
+- `_wt_repo_root` aborted on an unmatched glob instead of reporting no local checkout, and `wtrm`'s zellij tab close fired on whichever tab was current rather than the worktree's
+
 **Zed worktree scan — `node_modules` excluded:**
 
 - Zed's own diagnostics reported **16,020,592 tracked entries against 15,193 visible** in one monorepo checkout, with the process resident at ~18 GB. Excluding `**/node_modules` took it to 15,265 entries / 0.34 GB — a ~1000× drop in tracked entries and ~40× in memory, and the file picker went back to being instant
