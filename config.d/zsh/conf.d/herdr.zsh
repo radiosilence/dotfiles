@@ -19,14 +19,16 @@ wtpr-pick() {
   local me=${GH_LOGIN:-$(gh api user -q .login 2>/dev/null)}
 
   local out
-  out=$(gh pr list --limit 200 \
-          --json number,author,headRefName,title,isDraft \
-          -q '.[] | "\(.number)\t@\(.author.login)\t\(.headRefName)\t\(if .isDraft then "[draft] " else "" end)\(.title)"' 2>/dev/null \
+  out=$({ gh pr list --limit 100 --json number,author,headRefName,title,isDraft \
+            -q '.[] | "\(.number)\tPR\t@\(.author.login)\t\(if .isDraft then "[draft] " else "" end)\(.title)"'
+          gh issue list --limit 100 --json number,assignees,title \
+            -q '.[] | "\(.number)\tissue\t\(if (.assignees|length)>0 then "@"+.assignees[0].login else "-" end)\t\(.title)"'
+        } 2>/dev/null \
         | column -t -s $'\t' \
-        | fzf --print-query --query="$me " --prompt='PR or URL > ' \
-              --height=100% --border --nth=1,2,3 \
-              --header='enter on a row · clear query for all authors · or paste a PR url / owner/repo#N' \
-              --preview='gh pr view {1} --comments 2>/dev/null | head -80')
+        | fzf --print-query --query="$me " --prompt='PR/issue or URL > ' \
+              --height=100% --border --nth=1,2,3,4 \
+              --header='enter on a row · clear query for all · or paste any PR/issue url' \
+              --preview='gh pr view {1} --comments 2>/dev/null || gh issue view {1} --comments 2>/dev/null | head -80')
 
   # line 1 is the query, line 2 the selected row (absent when nothing matched).
   # Must split into a real array — ${${(f)out}[1]} indexes characters, not lines.
@@ -66,6 +68,38 @@ wth-pick() {
   fi
   if ! wth; then
     print -u2 "\nwth failed in: $cwd"
+    print -u2 "any key to close"; read -k1; return 1
+  fi
+}
+
+
+# URL falls through untouched when it matches no row.
+wti-pick() {
+  command -v gh >/dev/null || { echo "gh not found"; read -k1; return 1; }
+  builtin cd "$(_herdr_cwd)" 2>/dev/null
+
+  local me=${GH_LOGIN:-$(gh api user -q .login 2>/dev/null)}
+  local out
+  out=$(gh issue list --limit 200 --json number,assignees,labels,title \
+          -q '.[] | "\(.number)\t\(if (.assignees|length)>0 then "@"+.assignees[0].login else "-" end)\t\([.labels[].name]|join(","))\t\(.title)"' 2>/dev/null \
+        | column -t -s $'\t' \
+        | fzf --print-query --query="$me " --prompt='issue or URL > ' \
+              --height=100% --border --nth=1,2,3 \
+              --header='enter on a row · clear query for all · or paste an issue url' \
+              --preview='gh issue view {1} --comments 2>/dev/null | head -80')
+
+  local -a lines=("${(@f)out}")
+  local query=${lines[1]} sel=${lines[2]} ref
+  if [[ -n $sel ]]; then
+    ref=${sel%% *}
+  elif [[ $query =~ '(https?://[^[:space:]]+)' ]]; then ref=$match[1]
+  elif [[ $query =~ '([^[:space:]/]+/[^[:space:]#]+#[0-9]+)' ]]; then ref=$match[1]
+  elif [[ $query =~ '([0-9]+)' ]]; then ref=$match[1]
+  fi
+  [[ -n $ref ]] || return 0
+
+  if ! wti "$ref"; then
+    print -u2 "\nwti failed for: $ref"
     print -u2 "any key to close"; read -k1; return 1
   fi
 }
