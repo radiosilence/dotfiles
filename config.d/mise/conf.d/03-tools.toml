@@ -21,6 +21,7 @@ fzf = "latest" # Fuzzy finder
 git-lfs = "latest" # Large file storage
 gh = "latest"
 glow = "latest" # Terminal Markdown renderer
+hcloud = "latest"
 helix = "latest" # Terminal text editor (nightly)
 herdr = "latest"
 hyperfine = "latest" # Benchmarking

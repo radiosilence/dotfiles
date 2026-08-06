@@ -113,7 +113,7 @@ tasks:
 
   gh:auth:
     desc: Authenticate GitHub CLI
-    deps: [1password:setup]
+    deps: [1password:setup, gh:ensure]
     status: ["gh auth status 2>/dev/null"]
     cmds:
       - printf "{{.WARN}} gh is not authenticated — run 'gh auth login' in another terminal\n"
@@ -190,14 +190,53 @@ tasks:
       - sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
       - printf "{{.OK}} sudo timeout\n"
 
+  apt:core:
+    desc: Install base packages (Debian/Ubuntu) — manual, never part of converge
+    # Deliberately outside the converge DAG. converge runs unattended and must
+    # never need root on Linux; everything it touches lives under $HOME. These
+    # are the packages that can't — nothing here is in mise's registry — and
+    # they're setup-linux's job, once, at bootstrap. Re-run by hand if needed.
+    #
+    # aria2/unzip: parallel-dl-extract execs `aria2c` and `unzip` directly.
+    platforms: [linux]
+    # One expression, not two: separate status entries are ANDed, so a dnf box
+    # would satisfy "no apt-get" and still fail the tools check, then run apt-get.
+    status:
+      - '! command -v apt-get >/dev/null || { command -v zsh && command -v git && command -v curl && command -v rsync; } >/dev/null'
+    cmds:
+      - sudo apt-get update -qq
+      - sudo apt-get install -y -qq zsh git curl ca-certificates gh rsync gnupg unzip aria2
+      - printf "{{.OK}} base packages\n"
+
   mise:ensure:
     desc: Ensure mise is installed
-    platforms: [darwin]
+    # brew:install is darwin-gated and skipped on Linux, where the official
+    # installer drops mise in ~/.local/bin — user-owned, no root.
     deps: [brew:install]
     status: ["command -v mise"]
     cmds:
-      - brew install mise
+      - |
+        if command -v brew >/dev/null 2>&1; then
+          brew install mise
+        else
+          curl -fsSL https://mise.run | sh
+        fi
       - printf "{{.OK}} mise installed\n"
+
+  gh:ensure:
+    desc: Ensure gh is installed
+    # mise reads tokens from gh's hosts.yml, so gh has to exist before the
+    # bulk `mise install` or every release lookup hits the anonymous rate limit.
+    # On macOS brew:bundle covers this; on Linux nothing else does.
+    #
+    # link:config, and `mise install gh` rather than gh@latest: a shim only
+    # resolves if some config declares the tool, so 03-tools.toml has to be
+    # linked first or the shim errors with "No version is set".
+    deps: [mise:ensure, link:config]
+    status: ["command -v gh"]
+    cmds:
+      - mise install gh
+      - printf "{{.OK}} gh installed\n"
 
   uv:ensure:
     desc: Ensure uv is installed
@@ -228,6 +267,12 @@ tasks:
     desc: Converge system to desired state
     # Most tasks below are reached transitively via the DAG. They're listed
     # here as explicit entry points — order does not matter, deps decide it.
+    #
+    # Nothing here touches the system package manager on Linux. brew is
+    # user-owned and installs formulae without root; apt is not, and `upd`
+    # running unattended is the wrong place to be asking for a sudo password
+    # or moving system packages under the user. apt:core / apt:upgrade /
+    # dnf:upgrade stay available to run by hand.
     deps:
       - brew:roles
       - rosetta:install
@@ -239,8 +284,6 @@ tasks:
       - link
       - check:auth
       - brew:bundle
-      - apt:upgrade
-      - dnf:upgrade
       - mise:upgrade
       - uv:ensure
       - reinstall-bins
@@ -463,6 +506,9 @@ tasks:
 
   use-ssh:
     desc: Switch dotfiles remote from HTTPS to SSH
+    # darwin-only: the key lives in the 1Password desktop agent. Headless Linux
+    # boxes stay on HTTPS via gh's credential helper.
+    platforms: [darwin]
     deps: [dotfiles:clone, 1password:setup]
     dir: "{{.DOTFILES}}"
     status:
@@ -486,7 +532,6 @@ tasks:
 
   check:auth:gh:
     desc: Check GitHub CLI auth
-    platforms: [darwin]
     # gh:auth blocks until the user runs `gh auth login`, so by the time this
     # status check fires, gh either auths cleanly or really is broken.
     deps: [gh:auth]

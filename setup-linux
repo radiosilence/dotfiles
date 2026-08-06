@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# Bootstrap script — run this on a fresh headless Linux box (Ubuntu/Debian).
+# Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-linux | bash
+#
+# bash, not zsh: zsh isn't installed yet. Sequential and interactive for the
+# same reason as setup-macos — sudo and GitHub auth can't race the pipeline.
+# Once this finishes, `task converge` parallelises everything else.
+#
+# No brew, no casks, no 1Password: a headless box has no GUI to run the app,
+# so git auth goes through gh's credential helper over HTTPS and secrets stay
+# on the machines that have the desktop agent.
+set -e
+
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+
+OK=$'\033[32m󰄬\033[0m'
+WARN=$'\033[33m\033[0m'
+WORK=$'\033[35m󱁤\033[0m'
+BOLD=$'\033[1m'
+RESET=$'\033[0m'
+
+printf "\n  %s\033[35m⟢%s %sdotfiles bootstrap (linux)%s\n\n" "$BOLD" "$RESET" "$BOLD" "$RESET"
+
+# ---------------------------------------------------------------------------
+# 1. Base packages — the only root in the whole setup, and the only step that
+#    touches anything outside $HOME. zsh, git and curl aren't in mise's
+#    registry; everything else in the stack is, so this list stays this short.
+#    gh is the exception that earns its place — see step 2.
+#
+#    rsync and gnupg aren't in mise's registry either. aria2 and unzip are here
+#    because parallel-dl-extract execs `aria2c` and `unzip` directly.
+#
+#    Deliberately absent: coreutils, findutils, openssl, make, curl-the-formula
+#    — core.rb carries those to un-BSD macOS and Ubuntu already has GNU ones.
+#    build-essential is separate below; it's only needed to compile crates/.
+# ---------------------------------------------------------------------------
+if ! command -v zsh >/dev/null 2>&1 || ! command -v git >/dev/null 2>&1 ||
+  ! command -v gh >/dev/null 2>&1; then
+  printf "  %s installing base packages (sudo)\n" "$WORK"
+  sudo apt-get update -qq
+  sudo apt-get install -y -qq \
+    zsh git curl ca-certificates gh rsync gnupg unzip aria2
+fi
+printf "  %s base packages\n" "$OK"
+
+# Rust binaries in crates/ vendor libgit2, so `task reinstall-bins` needs a C
+# compiler. Skippable: DOTFILES_NO_RUST=1 leaves it out and converge warns.
+if [ -z "${DOTFILES_NO_RUST:-}" ] && ! command -v cc >/dev/null 2>&1; then
+  printf "  %s installing build-essential (for crates/)\n" "$WORK"
+  sudo apt-get install -y -qq build-essential
+fi
+
+# ---------------------------------------------------------------------------
+# 2. GitHub auth, before mise touches the network. mise reads gh's hosts.yml
+#    directly (github.gh_cli_tokens, on by default), so authing here means every
+#    release lookup from here on is authenticated and the anonymous rate limit
+#    never enters into it — which is the whole reason gh comes from apt rather
+#    than from mise. apt's gh is older, but it only has to survive bootstrap;
+#    03-tools.toml installs a current one and the shim takes over on PATH.
+#
+#    Device flow: gh prints a code you paste on whatever machine you're sitting
+#    at, so a box with no browser still works.
+# ---------------------------------------------------------------------------
+if ! gh auth status &>/dev/null; then
+  printf "  %s authenticating gh (device flow — no browser needed here)\n" "$WARN"
+  gh auth login --hostname github.com --git-protocol https --web
+fi
+gh auth setup-git
+printf "  %s gh authed\n" "$OK"
+
+# ---------------------------------------------------------------------------
+# 3. mise — everything else comes from here. No brew on Linux; the official
+#    installer drops it in ~/.local/bin.
+# ---------------------------------------------------------------------------
+if ! command -v mise >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/mise" ]; then
+  printf "  %s installing mise\n" "$WORK"
+  curl -fsSL https://mise.run | sh
+fi
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+printf "  %s mise\n" "$OK"
+
+# ---------------------------------------------------------------------------
+# 4. Clone (or fast-forward) dotfiles. HTTPS stays HTTPS: `use-ssh` is
+#    macOS-only because the SSH key lives in the 1Password desktop agent.
+# ---------------------------------------------------------------------------
+if [ ! -d "$DOTFILES" ]; then
+  git clone https://github.com/radiosilence/dotfiles "$DOTFILES"
+else
+  git -C "$DOTFILES" pull --ff-only --quiet origin main 2>/dev/null ||
+    printf "  %s couldn't fast-forward — using existing checkout\n" "$WARN"
+fi
+printf "  %s dotfiles at %s\n" "$OK" "$DOTFILES"
+
+# ---------------------------------------------------------------------------
+# 5. Link the mise config before installing anything. A shim only resolves if
+#    some config file declares the tool — `mise install task@latest` alone
+#    leaves a shim that errors with "No version is set". conf.d/03-tools.toml
+#    is that declaration, so it has to be in place first. `task link:config`
+#    later sees the symlink already correct and no-ops.
+# ---------------------------------------------------------------------------
+mkdir -p "$HOME/.config"
+if [ "$(readlink "$HOME/.config/mise" 2>/dev/null)" != "$DOTFILES/config.d/mise" ]; then
+  rm -rf "$HOME/.config/mise"
+  ln -s "$DOTFILES/config.d/mise" "$HOME/.config/mise"
+fi
+printf "  %s mise config linked\n" "$OK"
+
+# ---------------------------------------------------------------------------
+# 6. task + aube — what converge itself runs on. Versions come from
+#    03-tools.toml; `mise install` in converge sees them done and skips.
+# ---------------------------------------------------------------------------
+printf "  %s installing task + aube via mise\n" "$WORK"
+mise install task aube >/dev/null
+printf "  %s task + aube\n" "$OK"
+
+# ---------------------------------------------------------------------------
+# 7. Make zsh the login shell
+# ---------------------------------------------------------------------------
+zsh_path="$(command -v zsh)"
+if [ "$SHELL" != "$zsh_path" ]; then
+  grep -qxF "$zsh_path" /etc/shells || echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
+  sudo chsh -s "$zsh_path" "$USER"
+  printf "  %s login shell → zsh (takes effect next login)\n" "$OK"
+else
+  printf "  %s login shell is zsh\n" "$OK"
+fi
+
+# ---------------------------------------------------------------------------
+# 8. Hand off — task converge handles everything else (parallel from here)
+# ---------------------------------------------------------------------------
+printf "  %s bootstrap done — handing off to Taskfile\n\n" "$OK"
+
+cd "$DOTFILES"
+task converge

@@ -107,17 +107,34 @@ fi
 print -P "  ${OK} dotfiles at $DOTFILES"
 
 # ---------------------------------------------------------------------------
-# 8. Install task + aube via mise. task drives `converge`; aube is the
+# 8. Link the mise config before installing anything through it. A shim only
+#    resolves if some config file declares the tool: `mise install task@latest`
+#    on its own leaves a shim that dies with "No version is set for shim: task",
+#    and $DOTFILES/mise.toml only declares lefthook and shellcheck. brew hid
+#    this for gh and mise by installing real binaries at step 4 — task has no
+#    such cover, so converge never started on a genuinely fresh machine.
+#    `task link:config` later sees the symlink already correct and no-ops.
+# ---------------------------------------------------------------------------
+mkdir -p "$HOME/.config"
+if [[ "$(readlink "$HOME/.config/mise" 2>/dev/null)" != "$DOTFILES/config.d/mise" ]]; then
+  rm -rf "$HOME/.config/mise"
+  ln -s "$DOTFILES/config.d/mise" "$HOME/.config/mise"
+fi
+print -P "  ${OK} mise config linked"
+
+# ---------------------------------------------------------------------------
+# 9. Install task + aube via mise. task drives `converge`; aube is the
 #    npm-backend package_manager configured in mise.toml — without it,
-#    `mise install` blows up on any npm: tool.
+#    `mise install` blows up on any npm: tool. Versions come from
+#    conf.d/03-tools.toml, linked above.
 # ---------------------------------------------------------------------------
 print -P "  ${WORK} installing task + aube via mise"
-mise install task@latest aube@latest >/dev/null
+mise install task aube >/dev/null
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 print -P "  ${OK} task + aube installed via mise"
 
 # ---------------------------------------------------------------------------
-# 9. Hand off — task converge handles everything else (parallel from here)
+# 10. Hand off — task converge handles everything else (parallel from here)
 # ---------------------------------------------------------------------------
 print -P "  ${OK} bootstrap done — handing off to Taskfile\n"
 
