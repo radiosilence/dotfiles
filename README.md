@@ -47,7 +47,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 - `git conf-dir` — Set per-directory git config (email, signing, etc.)
 - `fm` / `fr` — Fuzzy merge/rebase with fzf
 
-**Worktrees** (`wt*`) — git worktree management, as local zsh plugins under `zsh-plugins/`: `wt-core` plus a backend per multiplexer (`wt-herdr`, `wt-zellij`). Worktrees live in `<repo-parent>/worktrees/<repo>/<name>/` — outside the repo so editors don't recurse into them.
+**Worktrees** (`wt*`) — git worktree management, as local zsh plugins under `zsh-plugins/`: `wt-core` plus a backend per multiplexer (`wt-herdr`, `wt-zellij`). Worktrees live in `<repo-parent>/worktrees/<repo>/<name>/`, or `~/.worktrees/<repo>/<name>/` for repos sitting directly in `$HOME` — outside the repo either way, so editors don't recurse into them.
 
 - `wt` / `wt <name>` — Upsert worktree + cd (fzf picker with no args)
 - `wtt` / `wth` — Same, opening a Zellij tab / herdr workspace instead

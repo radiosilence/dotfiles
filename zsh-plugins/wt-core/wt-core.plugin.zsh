@@ -1,9 +1,9 @@
 # wt-core — git worktree management, backend-agnostic.
-# Worktrees live at <repo-parent>/worktrees/<repo>/<name>, derived from the
-# repo itself so per-org layouts (and any mise env scoped to them) hold.
-# Git worktree management (wt*)
-# Worktrees live in <repo-parent>/worktrees/<repo>/<name>/ — outside the repo
-# so editors / file watchers don't recursively index them.
+# Worktrees live at <repo-parent>/worktrees/<repo>/<name>, derived from the repo
+# itself so per-org layouts (and any mise env scoped to them) hold. Repos
+# directly in $HOME have no org dir and use ~/.worktrees/<repo> instead.
+# Either way they sit outside the repo, so editors and file watchers don't
+# recursively index them.
 command -v git >/dev/null || return
 
 # Exported so sibling backends and the bin/ scripts locate shared helpers
@@ -24,9 +24,18 @@ _wt_base() {
     && echo "${ref##refs/remotes/origin/}" || echo "main"
 }
 
+# A repo sitting directly in $HOME has no org directory to stay inside, and the
+# sibling layout would put ~/.dotfiles at ~/worktrees/.dotfiles/<name> — a new
+# top-level directory with a dotted one inside it. Those go to ~/.worktrees
+# instead, undotted.
 _wt_dir() {
   local root=$(_wt_root) || return 1
-  echo "$(dirname "$root")/worktrees/$(basename "$root")"
+  local parent=${root:h} name=${root:t}
+  if [[ $parent == "$HOME" ]]; then
+    echo "$HOME/.worktrees/${name#.}"
+  else
+    echo "$parent/worktrees/$name"
+  fi
 }
 
 _wt_path() { echo "$(_wt_dir)/${1}"; }

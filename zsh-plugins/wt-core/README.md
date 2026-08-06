@@ -4,7 +4,10 @@ Git worktree management for zsh. Backend-agnostic — pair it with `wt-zellij` o
 `wt-herdr` to open worktrees in a multiplexer.
 
 Worktrees are created at `<repo-parent>/worktrees/<repo>/<name>`, derived from
-the repo's own location. That matters if you scope environment per directory
+the repo's own location. A repo sitting directly in `$HOME` has no org
+directory to stay inside, so those go to `~/.worktrees/<repo>` (undotted) —
+`~/.dotfiles` gets `~/.worktrees/dotfiles/<name>` rather than a new top-level
+`~/worktrees` with a dotted directory in it. That matters if you scope environment per directory
 (mise, direnv): a worktree stays inside the same tree as its repo, so anything
 scoped there still applies. Tools that use a single global worktree root cannot
 express this.

@@ -15,6 +15,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Five verbs collapsed to two. `wtd` was `wtrm` with a different argument, `wtp` was an alias for `git worktree prune`, and `wtpb` skipped every branch it existed to prune, because `-d` refuses on a squash-merged branch
 - Dirty worktrees, the one you're standing in, and detached checkouts are never touched. `-n` dry-runs — and did not, on the first cut, which cost two already-merged branches
 
+**Worktree paths for repos with no org directory:**
+
+- The layout derives worktree paths from the repo's parent so they stay inside whatever tree scopes the environment — for `~/workspace/<org>/<repo>` that's the org dir, and it's what keeps the work mise env (and therefore the right Claude profile) applying. A repo directly in `$HOME` has no such tree, and the same rule gave `~/.dotfiles` a brand new top-level `~/worktrees/` with a dotted directory inside it. Those now go to `~/.worktrees/<repo>`, undotted
+- Existing worktrees keep working wherever they are: lookup goes through the worktree registry before falling back to the conventional path
+
 **wt-\* plugins: dead paths and drifted copies:**
 
 - The plugin split (#76) left `scripts/wt-picker` and `scripts/wt-preview` behind. The zellij `alt+w` binding and the `wtt` completion preview had been pointing at nothing ever since — the latter single-quoted, so `$word` never expanded either
