@@ -2,10 +2,10 @@
 # Embed cover/disc/back/artist art from each FLAC's own directory.
 set -o pipefail
 
-source "${0:A:h}/lib/common.zsh"
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+autoload +X -Uz zarg _dt_cores _dt_err _dt_fan _dt_files _dt_head \
+             _dt_info _dt_need _dt_ok _dt_step _dt_warn || exit 1
 
-zarg_init embed-art 'Embed artwork into FLAC files'
+zarg embed-art 'Embed artwork into FLAC files'
 zarg_arg paths 'directories to search' variadic default=.
 zarg_go "$@"
 

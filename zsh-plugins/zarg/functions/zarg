@@ -1,0 +1,11 @@
+# zarg <name> <description> — opens a spec.
+#
+# The only name a consumer needs: it pulls in the rest of the API, and declares
+# the state that API reads, so autoloading this one function is enough even
+# when nobody sourced the loader.
+#
+# Records are \x1f-delimited because help text may contain anything else.
+autoload -Uz zarg_arg zarg_completions zarg_flag zarg_go zarg_help zarg_opt zarg_parse zarg_version
+typeset -g  ZARG_SEP=$'\x1f'
+typeset -g  ZARG_NAME=$1 ZARG_DESC=$2
+typeset -ga ZARG_FLAGS=() ZARG_OPTS=() ZARG_ARGS=()

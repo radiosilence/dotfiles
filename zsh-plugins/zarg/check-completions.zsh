@@ -6,6 +6,13 @@
 # Run bare to sweep scripts/ and every plugin bin/, or pass specific files.
 set -o pipefail
 
+# Point FPATH at THIS checkout, then export it so the scripts we invoke inherit
+# it. An interactive shell would have done this already, but CI has no such
+# shell — and a worktree must test its own libraries, not ~/.dotfiles'.
+local root=${0:A:h:h:h}
+fpath=($root/zsh-plugins/*/functions(N) $root/scripts/lib/functions(N) $fpath)
+export FPATH
+
 local -a targets
 if (( $# )); then
   targets=("$@")
@@ -13,7 +20,6 @@ else
   # Executable regular files only: the README documents zarg and would other-
   # wise match the grep below, then get run. Plugin bin/ dirs are in scope too
   # — wtclean is a zarg script that just doesn't live on $PATH.
-  local root=${0:A:h:h:h}
   targets=($root/scripts/*(N-.x) $root/zsh-plugins/*/bin/*(N-.x))
 fi
 

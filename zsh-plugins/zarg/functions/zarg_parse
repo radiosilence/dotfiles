@@ -1,3 +1,4 @@
+autoload -Uz _zarg_die _zarg_f _zarg_lookup
 local rec dest tok val envvar
 local -a rest
 

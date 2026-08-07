@@ -1,0 +1,9 @@
+# Fan a snippet (its item arrives as "$1") over NUL-delimited stdin. GNU
+# parallel when it's installed, xargs -P otherwise. Both pass the item as a
+# real argument instead of substituting it textually, so paths survive intact;
+# NUL because every caller here fans over filenames.
+if command -v parallel >/dev/null 2>&1; then
+  parallel -0 --will-cite -q sh -c "$1" _ {}
+else
+  xargs -0 -P 8 -I {} sh -c "$1" _ {}
+fi

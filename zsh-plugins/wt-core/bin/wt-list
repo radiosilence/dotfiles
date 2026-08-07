@@ -3,12 +3,10 @@
 # `worktree list --porcelain` lived in four places and drifted; this is the
 # one copy. Branch is empty for detached worktrees — callers that display it
 # filter those.
-source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
-  print -u2 "wt-list: cannot load zarg"
-  exit 1
-}
 
-zarg_init wt-list 'List worktrees as "branch<TAB>path", or resolve one branch to its path'
+autoload +X -Uz zarg _wt_branches || exit 1
+
+zarg wt-list 'List worktrees as "branch<TAB>path", or resolve one branch to its path'
 zarg_arg branch 'print only this branch, as a bare path' complete=_wt_branches
 zarg_go "$@"
 

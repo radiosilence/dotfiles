@@ -286,7 +286,7 @@ See `Brewfile` for full package list.
 ```
 ~/.dotfiles/
 ├── scripts/                # Standalone commands (zsh)
-│   └── lib/common.zsh     # Shared output helpers
+│   └── lib/functions/     # Shared output helpers, autoloaded
 ├── zsh-plugins/            # Local zsh plugins (zarg, wt-*)
 ├── config/
 │   └── zsh/

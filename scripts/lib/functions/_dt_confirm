@@ -1,0 +1,8 @@
+# Ask before destructive work. $DT_YES (set by every -y flag) skips the ask;
+# no tty answers "no", so a script piped into something never guesses yes.
+(( ${DT_YES:-0} )) && return 0
+[[ -t 0 ]] || return 1
+local reply
+read -q "reply?  $1 [y/N] "
+print -r -- ""
+[[ $reply == y ]]

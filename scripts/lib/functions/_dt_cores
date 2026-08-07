@@ -1,0 +1,3 @@
+if [[ $OSTYPE == darwin* ]]; then sysctl -n hw.ncpu 2>/dev/null || print 1
+else nproc 2>/dev/null || print 1
+fi
