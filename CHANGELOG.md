@@ -8,6 +8,15 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**Three scripts deleted:**
+
+- **`prune-gen`** — a test fixture generator that shipped as a command on `$PATH` and had a shell completion generated for it. It only ever existed to exercise `prune`
+- **`git-trigger`** — amend + force push to re-trigger CI, which force pushes, which is blocked on most branches now
+- **`git-conf-dir`** — per-directory git config is moving to mise's per-directory `[env]`. Deleting the script removes only the tool: the `includeIf` stanzas in `~/.gitconfig` and the files under `~/.local/git.d/` it already wrote keep working untouched
+
+`GIT_CONFIG_COUNT` with numbered `GIT_CONFIG_KEY_n`/`VALUE_n` pairs sets arbitrary config from the environment, and `GIT_AUTHOR_EMAIL`/`GIT_COMMITTER_EMAIL` override commit identity — both verified on git 2.55. The catch worth knowing before leaning on it: `GIT_CONFIG_GLOBAL` is cleaner than the numbered form but *replaces* the global config rather than layering onto it, so a per-directory file would need to `include` `~/.gitconfig` back. And mise env only reaches processes descended from a mise-activated shell, which `includeIf` does not care about.
+
+
 **`zarg` and `dt` are the names you autoload:**
 
 ```zsh

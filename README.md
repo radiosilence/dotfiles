@@ -59,8 +59,6 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 
 - `git sync` — Delete merged local branches
 - `git squash` — Squash commits for clean PRs
-- `git trigger` — Re-trigger CI with amend + force push
-- `git conf-dir` — Set per-directory git config (email, signing, etc.)
 - `fm` / `fr` — Fuzzy merge/rebase with fzf
 
 **Worktrees** (`wt*`) — git worktree management, as local zsh plugins under `zsh-plugins/`: `wt-core` plus a backend per multiplexer (`wt-herdr`, `wt-zellij`). Worktrees live in `<repo-parent>/worktrees/<repo>/<name>/` — outside the repo so editors don't recurse into them.
@@ -90,18 +88,6 @@ a script just names the functions it wants. Output helpers live in
 [zarg](zsh-plugins/zarg/README.md), which derives parsing, `--help`, `--version`
 and `--completions zsh|fish|bash` from that one declaration, so a script's
 completions cannot drift from the flags it actually accepts.
-
-## Per-Directory Git Config
-
-Set git config overrides for all repos under a directory:
-
-```sh
-cd ~/workspace/acme/any-repo
-git conf-dir user.email you@acme.example
-git conf-dir user.name "Your Name (Acme)"
-```
-
-Stores config in `~/.local/git.d/<path>.conf` and adds an `includeIf` to `~/.gitconfig`. Idempotent.
 
 ## Architecture Notes
 
