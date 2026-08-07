@@ -3,11 +3,11 @@
 # log plus a file tree. fzf-tab sends the whole "branch<TAB>path" line, so the
 # branch is taken up to the first tab.
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init || exit 1
 
-zarg init wt-preview 'Render the fzf preview for a worktree'
-zarg arg branch 'worktree branch to preview' required complete=_wt_branches
-zarg go "$@"
+zarg_init wt-preview 'Render the fzf preview for a worktree'
+zarg_arg branch 'worktree branch to preview' required complete=_wt_branches
+zarg_go "$@"
 
 set -euo pipefail
 

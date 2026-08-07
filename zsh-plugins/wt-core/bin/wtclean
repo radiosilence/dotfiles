@@ -13,11 +13,11 @@ autoload +X -Uz _wt_root _wt_base _wt_named _wt_pr_state
 # ${_wt_prs[feat/x]} an arithmetic subscript, where "feat/x" is a division.
 typeset -gA _wt_prs
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init || exit 1
 
-zarg init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
-zarg flag -n --dry-run 'show what would be removed without touching anything'
-zarg go "$@"
+zarg_init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
+zarg_flag -n --dry-run 'show what would be removed without touching anything'
+zarg_go "$@"
 
 set -o pipefail
 

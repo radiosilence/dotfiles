@@ -1,5 +1,5 @@
 # NUL-delimited paths under ROOTS matching any extension, case-insensitively.
-# Usage: _dt_files "wav aiff m4a" path...
+# Usage: dt_files "wav aiff m4a" path...
 local -a exts=(${=1}); shift
 local -a expr; local e
 for e in $exts; do expr+=(-iname "*.$e" -o); done

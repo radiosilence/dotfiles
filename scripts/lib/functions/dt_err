@@ -1,3 +1,1 @@
-autoload -Uz _dt_colors
-_dt_colors
 print -ru2 -- "  ${_dt_red}󰅖${_dt_off} $*"

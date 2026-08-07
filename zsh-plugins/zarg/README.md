@@ -16,16 +16,16 @@ from one declaration makes that failure mode unrepresentable.
 # Back up a directory somewhere, with the usual knobs.
 set -o pipefail
 
-autoload +X -Uz zarg || exit 1
+autoload +X -Uz zarg_init || exit 1
 
-zarg init backup 'Back up a directory'
-zarg flag -n --dry-run  'show what would be copied, copy nothing'
-zarg flag -v --verbose  'list every file'
-zarg opt  -c --compress 'compression to use'   default=zstd values='none gzip zstd'
-zarg opt  -k --keep     'how many to retain'   default=7 env=BACKUP_KEEP metavar=N
-zarg arg  source  'directory to back up'       required
-zarg arg  targets 'where to put it'            variadic default=/backup
-zarg go "$@"
+zarg_init backup 'Back up a directory'
+zarg_flag -n --dry-run  'show what would be copied, copy nothing'
+zarg_flag -v --verbose  'list every file'
+zarg_opt  -c --compress 'compression to use'   default=zstd values='none gzip zstd'
+zarg_opt  -k --keep     'how many to retain'   default=7 env=BACKUP_KEEP metavar=N
+zarg_arg  source  'directory to back up'       required
+zarg_arg  targets 'where to put it'            variadic default=/backup
+zarg_go "$@"
 
 print -r -- "source=$source  targets=(${(j:, :)targets})"
 print -r -- "compress=$compress  keep=$keep"
@@ -89,10 +89,10 @@ long form with dashes turned to underscores:
 
 | Declared | Variable | Value |
 | --- | --- | --- |
-| `zarg flag -n --dry-run` | `$dry_run` | `0` or `1` |
-| `zarg opt -k --keep` | `$keep` | the string |
-| `zarg arg source` | `$source` | the string |
-| `zarg arg targets … variadic` | `$targets` | an array |
+| `zarg_flag -n --dry-run` | `$dry_run` | `0` or `1` |
+| `zarg_opt -k --keep` | `$keep` | the string |
+| `zarg_arg source` | `$source` | the string |
+| `zarg_arg targets … variadic` | `$targets` | an array |
 
 Plain variables rather than an associative array (`$zarg[keep]`) is a
 deliberate trade: `(( dry_run ))` and `$keep` read better in the body than the
@@ -101,7 +101,7 @@ zarg writes into your namespace, so a spec is refused if it would bind a name
 zsh reserves:
 
 ```console
-$ zarg opt -p --path 'where'
+$ zarg_opt -p --path 'where'
 zarg: cannot bind 'path' — zsh reserves it for shell state
 ```
 
@@ -115,7 +115,7 @@ Declared default, then environment, then the command line — each overriding th
 last:
 
 ```zsh
-zarg opt -k --keep 'how many to retain' default=7 env=BACKUP_KEEP
+zarg_opt -k --keep 'how many to retain' default=7 env=BACKUP_KEEP
 ```
 
 ```console
@@ -128,11 +128,11 @@ $ BACKUP_KEEP=90 backup -k 30 ~/D   # keep=30   (command line wins)
 
 | Builder | Purpose |
 | --- | --- |
-| `zarg init <name> <description>` | start a spec |
-| `zarg flag <short> <long> <help>` | boolean, `0` or `1` |
-| `zarg opt <short> <long> <help> [extras]` | takes a value |
-| `zarg arg <name> <help> [extras]` | positional |
-| `zarg go "$@"` | handle built-ins, parse, exit on error |
+| `zarg_init <name> <description>` | start a spec |
+| `zarg_flag <short> <long> <help>` | boolean, `0` or `1` |
+| `zarg_opt <short> <long> <help> [extras]` | takes a value |
+| `zarg_arg <name> <help> [extras]` | positional |
+| `zarg_go "$@"` | handle built-ins, parse, exit on error |
 
 Extras are `key=value` pairs, or bare words for the boolean ones:
 
@@ -146,7 +146,7 @@ Extras are `key=value` pairs, or bare words for the boolean ones:
 | `required` | arg | error if absent |
 | `variadic` | arg | collect the rest into an array; declare it last |
 
-`zarg go` exits the script itself for `--help`, `--version` and
+`zarg_go` exits the script itself for `--help`, `--version` and
 `--completions`, and on a parse error. Once it returns, the parse succeeded —
 scripts do not check its result.
 
