@@ -1,0 +1,16 @@
+# The scripts' shared toolkit — one name to autoload, the verb says the rest:
+#
+#   dt head <title>              the ⟢ banner
+#   dt info|step|ok|warn|err     one output line
+#   dt confirm <question>        y/N, honours $DT_YES
+#   dt need <cmd>...             fail naming every missing dependency
+#   dt files '<ext ext>' <path>… NUL-delimited matches
+#   dt fan '<snippet>'           run it over NUL stdin, in parallel
+#   dt cores                     CPU count
+#   dt results <ok> <failed> <verb>
+#
+# Each helper is a separate file loaded on first use, so a script that only
+# ever prints two lines never parses the rest.
+local cmd=$1; shift
+autoload -Uz _dt_$cmd
+_dt_$cmd "$@"

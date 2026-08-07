@@ -2,7 +2,7 @@
 # Strip scene-release garbage (nfo/sfv/sample/junk) out of a download tree.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_confirm _dt_err _dt_head _dt_info _dt_ok _dt_warn || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg clean-dls 'Clean scene release garbage'
 zarg_flag -n --dry-run 'show what would be deleted'
@@ -34,7 +34,7 @@ _is_garbage() {
   return 1
 }
 
-_dt_head clean-dls
+dt head clean-dls
 
 local -a all_files=("${(0)$(find "${paths[@]}" -type f -print0 2>/dev/null)}")
 local -a garbage=()
@@ -44,27 +44,27 @@ for f in $all_files; do
 done
 
 if (( ! $#garbage )); then
-  _dt_ok "No garbage files found"
+  dt ok "No garbage files found"
   exit 0
 fi
 
-_dt_warn "Found $#garbage garbage files"
+dt warn "Found $#garbage garbage files"
 for f in $garbage; do print -r -- "  $f"; done
 
 if (( dry_run )); then
-  _dt_info "Mode: dry-run"
+  dt info "Mode: dry-run"
   exit 0
 fi
 
 print -r -- ""
-_dt_confirm 'Delete these files?' || { _dt_err "Cancelled"; exit 0 }
+dt confirm 'Delete these files?' || { dt err "Cancelled"; exit 0 }
 
 local ok=0 err
 for f in $garbage; do
   if err=$(rm -f "$f" 2>&1 >/dev/null); then (( ok++ ))
-  else _dt_warn "$f: $err"; fi
+  else dt warn "$f: $err"; fi
 done
-_dt_ok "Deleted $ok files"
+dt ok "Deleted $ok files"
 
 # Best effort — clear out directories the deletions just emptied.
 "${0:A:h}/prune" -y "${paths[@]}" >/dev/null 2>&1 || true

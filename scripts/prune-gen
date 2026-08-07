@@ -2,7 +2,7 @@
 # Build a throwaway directory tree to exercise prune against.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_err _dt_head _dt_info _dt_ok || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg prune-gen 'Generate a test directory structure for prune'
 zarg_go "$@"
@@ -14,11 +14,11 @@ zarg_go "$@"
 # PATH ahead of BSD dd here.
 _fill() {
   dd if=/dev/zero of="$1" bs=1M count="$2" 2>/dev/null \
-    || { _dt_err "could not write $1"; exit 1 }
+    || { dt err "could not write $1"; exit 1 }
 }
 
-_dt_head prune-gen
-_dt_info "action: generating test structure"
+dt head prune-gen
+dt info "action: generating test structure"
 
 # Output is this script's return value, so it must outlive the process.
 local dir=$(mktemp -d)
@@ -47,7 +47,7 @@ _fill "$dir/largedir2/subdir1/large2.aiff" 50
 : >"$dir/dir1/file_with_underscore.txt"
 : >"$dir/dir1/file-with-dashes.txt"
 
-_dt_info "path: $dir"
-_dt_ok "test structure created"
+dt info "path: $dir"
+dt ok "test structure created"
 
 print -r -- "$dir"

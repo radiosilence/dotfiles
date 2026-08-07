@@ -251,15 +251,15 @@ Copy the shape of [`kill-port`](kill-port) — it is the reference:
 # One line on WHY this exists.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_head _dt_info || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg my-tool 'What it does'
 zarg_flag -n --dry-run 'show what would happen'
 zarg_arg  target 'thing to act on' required
 zarg_go "$@"
 
-_dt_head my-tool
-(( dry_run )) && { _dt_info "would act on $target"; exit 0 }
+dt head my-tool
+(( dry_run )) && { dt info "would act on $target"; exit 0 }
 ```
 
 Then `chmod +x`, and add the name to the zarg block of

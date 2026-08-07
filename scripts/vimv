@@ -2,25 +2,25 @@
 # Batch rename by editing a file list in $EDITOR, mv/git-mv-ing the diff back.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_err _dt_head _dt_info _dt_ok _dt_warn || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg vimv 'Batch rename files using your $EDITOR'
 zarg_arg  files 'files to rename' variadic
 zarg_go "$@"
 
-_dt_head vimv
+dt head vimv
 
 (( $#files )) || files=(*(N.))
-(( $#files )) || { _dt_warn "No files found"; exit 0 }
+(( $#files )) || { dt warn "No files found"; exit 0 }
 
-_dt_info "files: $#files"
+dt info "files: $#files"
 
 local tmp=$(mktemp)
 printf '%s\n' $files > $tmp
 
 local -a editor=(${=EDITOR:-vi})
 if ! $editor $tmp; then
-  _dt_err "editor exited with error"
+  dt err "editor exited with error"
   rm -f $tmp
   exit 1
 fi
@@ -29,7 +29,7 @@ local -a new=(${(f)"$(<$tmp)"})
 rm -f $tmp
 
 if (( $#new != $#files )); then
-  _dt_err "Number of files changed ($#files -> $#new). Did you delete a line by accident?"
+  dt err "Number of files changed ($#files -> $#new). Did you delete a line by accident?"
   exit 1
 fi
 
@@ -41,11 +41,11 @@ for (( i = 1; i <= $#files; i++ )); do
   mkdir -p ${new_name:h}
 
   if git ls-files --error-unmatch $old &>/dev/null; then
-    git mv -- $old $new_name && _dt_info "git mv $old → $new_name"
+    git mv -- $old $new_name && dt info "git mv $old → $new_name"
   else
-    mv -- $old $new_name && _dt_info "mv $old → $new_name"
+    mv -- $old $new_name && dt info "mv $old → $new_name"
   fi
   (( renamed++ ))
 done
 
-_dt_ok "$renamed files renamed"
+dt ok "$renamed files renamed"

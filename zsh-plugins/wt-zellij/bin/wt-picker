@@ -2,7 +2,7 @@
 # Worktree picker for the Zellij alt+w binding.
 # Pager commands (view/checks/diff) display in the floating pane via less.
 
-autoload +X -Uz zarg wt wtrm || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg wt-picker 'fzf over worktrees: enter opens or creates, ^x removes, ^r pulls, ^v/^y/^d/^l are PR view/checks/diff/create'
 zarg_go "$@"

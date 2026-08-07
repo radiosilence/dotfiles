@@ -2,8 +2,7 @@
 # Bulk audio conversion — replaces the old separate flac/opus subcommands.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_cores _dt_fan _dt_files _dt_head \
-             _dt_info _dt_need _dt_results _dt_step _dt_warn || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg to-audio 'Convert audio files to FLAC or Opus'
 zarg_flag -k --keep    'keep original files'
@@ -13,32 +12,32 @@ zarg_arg  format 'output format' required values='flac opus'
 zarg_arg  paths  'directories to search' variadic default=.
 zarg_go "$@"
 
-_dt_need ffmpeg || exit 1
+dt need ffmpeg || exit 1
 
 local -a exts
 if [[ $format == flac ]]; then
   exts=(wav aiff m4a)
-  _dt_head 'flac conversion'
+  dt head 'flac conversion'
 else
   exts=(wav aiff flac m4a)
-  _dt_head 'opus conversion'
+  dt head 'opus conversion'
 fi
 
-local -a files=(${(0)"$(_dt_files "${exts[*]}" "${paths[@]}")"})
-(( $#files )) || { _dt_warn "No audio files found"; exit 0 }
+local -a files=(${(0)"$(dt files "${exts[*]}" "${paths[@]}")"})
+(( $#files )) || { dt warn "No audio files found"; exit 0 }
 
-_dt_info "Files: $#files"
+dt info "Files: $#files"
 if [[ $format == flac ]]; then
-  _dt_info "Format: FLAC (lossless)"
+  dt info "Format: FLAC (lossless)"
 else
-  _dt_info "Format: Opus @ ${bitrate}kbps"
+  dt info "Format: Opus @ ${bitrate}kbps"
 fi
-_dt_info "Cores: $(_dt_cores)"
+dt info "Cores: $(dt cores)"
 
-(( keep )) || _dt_warn "Original files will be deleted"
+(( keep )) || dt warn "Original files will be deleted"
 
 if (( dry_run )); then
-  _dt_step "Dry run - files that would be converted:"
+  dt step "Dry run - files that would be converted:"
   local f
   for f in $files; do print -r -- "    $f"; done
   exit 0
@@ -55,9 +54,9 @@ local rm_orig=''
 (( keep )) || rm_orig='rm -f "$1";'
 local snippet="if $convert >/dev/null 2>&1; then $rm_orig echo ok; else echo fail; fi"
 
-local -a results=(${(f)"$(printf '%s\0' $files | _dt_fan "$snippet")"})
+local -a results=(${(f)"$(printf '%s\0' $files | dt fan "$snippet")"})
 local ok=0 failed=0 r
 for r in $results; do
   if [[ $r == ok ]]; then (( ok++ )); else (( failed++ )); fi
 done
-_dt_results $ok $failed Converted
+dt results $ok $failed Converted
