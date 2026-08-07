@@ -1,0 +1,42 @@
+#!/usr/bin/env zsh
+# Fan a batch of URLs through aria2c's own multi-connection queue, then unzip
+# whatever lands. Fetching serially wastes the per-download connection cap.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init parallel-dl-extract 'Parallel download and extract URLs using aria2c'
+zarg_arg urls 'URLs to download' required variadic
+zarg_go "$@"
+
+_dt_need aria2c unzip || exit 1
+_dt_head 'parallel dl+extract'
+
+# Not trap-cleaned — this directory is the script's output.
+local dst=$(mktemp -d)
+_dt_info "temp dir: $dst"
+_dt_info "urls: $#urls"
+
+# One subdirectory per URL so same-named downloads (dl.zip) don't collide.
+local -i i=0
+local u
+: > "$dst/urls.txt"
+for u in $urls; do
+  (( i++ ))
+  {
+    print -r -- "$u"
+    print -r -- "  dir=$i"
+    print -r -- "  out=dl.zip"
+  } >> "$dst/urls.txt"
+done
+
+_dt_step "downloading with aria2c"
+( cd "$dst" && aria2c -i urls.txt -j 8 -x 8 -d "$dst" ) \
+  || { _dt_err "aria2c download failed"; exit 1 }
+
+_dt_step "extracting archives"
+_dt_files zip "$dst" | _dt_fan 'unzip -q "$1" -d "$(dirname "$1")" && rm -f "$1"'
+
+_dt_ok "download & extract complete"
+print -r -- "$dst"

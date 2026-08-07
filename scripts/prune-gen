@@ -1,0 +1,54 @@
+#!/usr/bin/env zsh
+# Build a throwaway directory tree to exercise prune against.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init prune-gen 'Generate a test directory structure for prune'
+zarg_go "$@"
+
+# Real bytes, not a sparse allocation: prune sizes directories with `du`, which
+# counts blocks on disk. A sparse 210M file reports as ~16K and the fixture
+# would silently stop exercising the threshold it exists to test.
+# 1M rather than 1m: GNU dd rejects the lowercase suffix, and coreutils is on
+# PATH ahead of BSD dd here.
+_fill() {
+  dd if=/dev/zero of="$1" bs=1M count="$2" 2>/dev/null \
+    || { _dt_err "could not write $1"; exit 1 }
+}
+
+_dt_head prune-gen
+_dt_info "action: generating test structure"
+
+# Output is this script's return value, so it must outlive the process.
+local dir=$(mktemp -d)
+
+mkdir -p \
+  "$dir/dir1/subdir1" \
+  "$dir/largdir1" \
+  "$dir/largedir2/subdir1" \
+  "$dir/dir with spaces1/subdir2" \
+  "$dir/dir1/subdir2 with spaces" \
+  "$dir/dir2/subdir1/2/3/4" \
+  "$dir/emptydir" \
+  "$dir/.stfolder" \
+  "$dir/.git"
+
+print -r -- "Small file 1" >"$dir/dir1/small1.txt"
+print -r -- "Small file 2" >"$dir/dir1/subdir1/small2.txt"
+print -r -- "Small file 3" >"$dir/dir2/small3.txt"
+
+_fill "$dir/largdir1/large1.wav" 210
+_fill "$dir/dir1/small1.jpg" 1
+_fill "$dir/dir1/subdir1/small2.jpg" 2
+_fill "$dir/largedir2/subdir1/large2.aiff" 50
+
+: >"$dir/dir1/file with spaces.txt"
+: >"$dir/dir1/file_with_underscore.txt"
+: >"$dir/dir1/file-with-dashes.txt"
+
+_dt_info "path: $dir"
+_dt_ok "test structure created"
+
+print -r -- "$dir"

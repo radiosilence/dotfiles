@@ -1,0 +1,43 @@
+#!/usr/bin/env zsh
+# Strip EXIF (and XMP/IPTC/ICC) metadata from images before sharing them.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init clean-exif 'Strip EXIF metadata from images'
+zarg_flag -n --dry-run 'show what would be cleaned'
+zarg_arg  paths 'directories to search' variadic default=.
+zarg_go "$@"
+
+_dt_need exiftool || exit 1
+_dt_head clean-exif
+
+local -a files=(${(0)"$(_dt_files 'jpg jpeg png' $paths)"})
+(( $#files )) || { _dt_warn "No image files found"; exit 0 }
+
+_dt_info "Found: $#files images"
+_dt_info "Cores: $(_dt_cores)"
+_dt_info "Stripping: all EXIF metadata"
+print -r -- ""
+
+if (( dry_run )); then
+  _dt_info "Dry run - files that would be cleaned:"
+  local f
+  for f in $files; do print -r -- "    $f"; done
+  exit 0
+fi
+
+# -all= rather than a raw EXIF-chunk strip: it also clears XMP, IPTC and ICC
+# sidecar data that hand-rolled EXIF removal misses. exiftool batches many
+# files in one process, so pass the whole list at once rather than fanning
+# out a process per file. -q -q leaves exiftool's own "Error:" lines as the
+# only output, one per failed file, so those are what we count against.
+local out
+out=$(exiftool -all= -overwrite_original -q -q $files 2>&1)
+local failed=$(print -r -- "$out" | grep -c '^Error:')
+local ok=$(( $#files - failed ))
+
+[[ -n $out ]] && print -r -- "$out"
+print -r -- ""
+_dt_results $ok $failed Cleaned
