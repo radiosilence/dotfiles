@@ -2,23 +2,22 @@
 # Check whether art embedded in a FLAC still carries EXIF that should've been stripped.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_err _dt_head _dt_info \
-             _dt_need _dt_ok _dt_step _dt_warn || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg extract-exif-from-flac 'Check FLAC embedded artwork for leftover EXIF data'
 zarg_arg flac_file 'FLAC file to check' required
 zarg_go "$@"
 
-_dt_need metaflac exiftool || exit 1
-[[ -f $flac_file ]] || { _dt_err "File not found: $flac_file"; exit 1 }
-[[ ${flac_file:e:l} == flac ]] || { _dt_err "Not a FLAC file: $flac_file"; exit 1 }
+dt need metaflac exiftool || exit 1
+[[ -f $flac_file ]] || { dt err "File not found: $flac_file"; exit 1 }
+[[ ${flac_file:e:l} == flac ]] || { dt err "Not a FLAC file: $flac_file"; exit 1 }
 
-_dt_head extract-exif-from-flac
-_dt_info "file: $flac_file"
+dt head extract-exif-from-flac
+dt info "file: $flac_file"
 
 local listing
-listing=$(metaflac --list --block-type=PICTURE "$flac_file" 2>/dev/null) || { _dt_err "metaflac failed"; exit 1 }
-[[ -z $listing ]] && { _dt_step "No embedded artwork"; exit 0 }
+listing=$(metaflac --list --block-type=PICTURE "$flac_file" 2>/dev/null) || { dt err "metaflac failed"; exit 1 }
+[[ -z $listing ]] && { dt step "No embedded artwork"; exit 0 }
 
 # Per block: the block number, and the picture type — the SECOND "type:" line
 # (the first is always the block type, 6 = PICTURE).
@@ -26,9 +25,9 @@ local -a blocks=(${(f)"$(print -r -- "$listing" | awk '
   /^METADATA block #/ { blocknum=$3; sub(/^#/,"",blocknum); typecount=0; next }
   /^[[:space:]]*type:/ { typecount++; if (typecount==2) print blocknum, $2; next }
 ')"})
-(( $#blocks )) || { _dt_step "No picture blocks parsed"; exit 0 }
+(( $#blocks )) || { dt step "No picture blocks parsed"; exit 0 }
 
-_dt_pic_desc() {
+_pic_desc() {
   case $1 in
     0)  print 'Other' ;;
     1)  print '32x32 pixels file icon' ;;
@@ -71,23 +70,23 @@ local i=1 block blocknum ptype desc img json
 for block in $blocks; do
   blocknum=${block%% *}
   ptype=${block#* }
-  desc=$(_dt_pic_desc $ptype)
+  desc=$(_pic_desc $ptype)
   img="$tmpdir/picture_${i}.jpg"
   (( i++ ))
 
   if ! metaflac --block-number=$blocknum --export-picture-to="$img" "$flac_file" >/dev/null 2>&1; then
-    _dt_err "$desc - Failed to extract"
+    dt err "$desc - Failed to extract"
     continue
   fi
 
   if ! json=$(exiftool -json -q $sensitive "$img" 2>/dev/null); then
-    _dt_ok "$desc - Clean (no EXIF data)"
+    dt ok "$desc - Clean (no EXIF data)"
     continue
   fi
 
   if (( $(print -r -- "$json" | grep -cE '^\s*"[A-Za-z0-9]+":' | tr -d ' ') > 1 )); then
-    _dt_warn "$desc - Contains sensitive EXIF data"
+    dt warn "$desc - Contains sensitive EXIF data"
   else
-    _dt_ok "$desc - Clean"
+    dt ok "$desc - Clean"
   fi
 done

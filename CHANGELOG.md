@@ -8,6 +8,14 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**`dt` — one name for the scripts' toolkit:**
+
+- The output helpers were `_dt_head`, `_dt_ok`, `_dt_fan` and nine more, every one named in every prelude. They are now subcommands of a single `dt`, so a script autoloads two things and gets both libraries: `autoload +X -Uz zarg dt || exit 1`
+- It reads better at the call site too. `dt head kill-port`, `dt ok "killed PID $pid"`, `dt need lsof` — the verb carries the meaning, where `_dt_` carried none
+- A barrel that merely *declares* the rest cannot work: `autoload +X` loads a function's definition but does not run it, so the declarations inside would never fire. A dispatcher is the shape that does, and it keeps the laziness — each helper is still its own file, loaded on first use
+- `extract-exif-from-flac` had a script-local `_dt_pic_desc` squatting on the library's prefix; renamed to `_pic_desc`
+
+
 **Scripts autoload their libraries — no paths anywhere:**
 
 - `FPATH` is a real environment variable tied to `$fpath`, exactly as `PATH` is to `$path`. A script runs in its own zsh and inherits no *functions*, but it does inherit the environment, so one `export FPATH` after the plugins load hands every script the same libraries the shell has. `conf.d/zzzz-fpath.zsh`, named to sort last, is the entire mechanism
