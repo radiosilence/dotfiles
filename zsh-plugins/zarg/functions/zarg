@@ -1,4 +1,4 @@
-# zarg_init <name> <description> — opens a spec and declares the rest of the
+# zarg <name> <description> — opens a spec and declares the rest of the
 # family, so a consumer autoloads this one name.
 #
 # It also declares the state the API reads, which is what lets a consumer skip

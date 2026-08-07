@@ -2,16 +2,14 @@
 # Kill whatever holds a port — the "address already in use" fix.
 set -o pipefail
 
-autoload +X -Uz zarg_init dt_init || exit 1
+autoload +X -Uz zarg dt && dt || exit 1
 
-zarg_init kill-port 'Kill process listening on specified port'
+zarg kill-port 'Kill process listening on specified port'
 zarg_flag -n --dry-run 'show what would be killed without doing it'
 zarg_opt  -s --signal  'signal to send' default=TERM metavar=SIGNAL \
           values='TERM KILL INT HUP QUIT USR1 USR2'
 zarg_arg  port 'port number' required
 zarg_go "$@"
-
-dt_init
 
 dt_need lsof || exit 1
 dt_head kill-port

@@ -2,13 +2,11 @@
 # Check whether art embedded in a FLAC still carries EXIF that should've been stripped.
 set -o pipefail
 
-autoload +X -Uz zarg_init dt_init || exit 1
+autoload +X -Uz zarg dt && dt || exit 1
 
-zarg_init extract-exif-from-flac 'Check FLAC embedded artwork for leftover EXIF data'
+zarg extract-exif-from-flac 'Check FLAC embedded artwork for leftover EXIF data'
 zarg_arg flac_file 'FLAC file to check' required
 zarg_go "$@"
-
-dt_init
 
 dt_need metaflac exiftool || exit 1
 [[ -f $flac_file ]] || { dt_err "File not found: $flac_file"; exit 1 }

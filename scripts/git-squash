@@ -2,14 +2,12 @@
 # Squash a branch's commits into one before opening a PR.
 set -o pipefail
 
-autoload +X -Uz zarg_init dt_init || exit 1
+autoload +X -Uz zarg dt && dt || exit 1
 
-zarg_init git-squash 'Squash commits for clean PR history'
+zarg git-squash 'Squash commits for clean PR history'
 zarg_flag -n --dry-run 'show what would be squashed'
 zarg_arg  parent 'parent branch to squash onto' default=main
 zarg_go "$@"
-
-dt_init
 
 git rev-parse --git-dir >/dev/null 2>&1 || { dt_err "not a git repository"; exit 1 }
 dt_head git-squash
