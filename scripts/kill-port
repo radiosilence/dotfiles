@@ -4,12 +4,12 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg kill-port 'Kill process listening on specified port'
-zarg_flag -n --dry-run 'show what would be killed without doing it'
-zarg_opt  -s --signal  'signal to send' default=TERM metavar=SIGNAL \
+zarg init kill-port 'Kill process listening on specified port'
+zarg flag -n --dry-run 'show what would be killed without doing it'
+zarg opt  -s --signal  'signal to send' default=TERM metavar=SIGNAL \
           values='TERM KILL INT HUP QUIT USR1 USR2'
-zarg_arg  port 'port number' required
-zarg_go "$@"
+zarg arg  port 'port number' required
+zarg go "$@"
 
 dt need lsof || exit 1
 dt head kill-port

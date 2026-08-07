@@ -4,8 +4,8 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg prune-gen 'Generate a test directory structure for prune'
-zarg_go "$@"
+zarg init prune-gen 'Generate a test directory structure for prune'
+zarg go "$@"
 
 # Real bytes, not a sparse allocation: prune sizes directories with `du`, which
 # counts blocks on disk. A sparse 210M file reports as ~16K and the fixture

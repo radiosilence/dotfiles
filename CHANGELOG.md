@@ -8,6 +8,13 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**zarg is a dispatcher too, matching `dt`:**
+
+- `zarg init`, `zarg flag`, `zarg opt`, `zarg arg`, `zarg go` — one autoloadable name, verb after it, same shape as `dt`
+- The two were barrelled differently for a circumstantial reason, not a principled one: `zarg` was always the first call, so it could declare its siblings as a side effect, while `dt` had no such entry point and needed a dispatcher. Making both dispatchers removes the asymmetry
+- `zarg parse` is the verb a shell *function* wants — it returns rather than exiting, where `zarg go` would take the user's shell down with it
+
+
 **`dt` — one name for the scripts' toolkit:**
 
 - The output helpers were `_dt_head`, `_dt_ok`, `_dt_fan` and nine more, every one named in every prelude. They are now subcommands of a single `dt`, so a script autoloads two things and gets both libraries: `autoload +X -Uz zarg dt || exit 1`
@@ -22,7 +29,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - All 39 relative `source "${0:A:h:h}/..."` lines are gone. A script now says what it wants and nothing about where it lives: `autoload -Uz zarg _dt_head _dt_info`. One name covers zarg — `zarg` is always the first call, so it declares the rest of the API
 - Two dead ends on the way. A `~/.zshenv` works but has to hardcode `~/.dotfiles` — `.zshenv` cannot self-locate, `$0` is `zsh` — so a worktree's scripts would silently load main's libraries. And no plugin manager can help: sheldon, antigen and oh-my-zsh all run at `.zshrc` time, which a `#!/usr/bin/env zsh` script never reaches
 - `scripts/lib/common.zsh` split into `scripts/lib/functions/`, same treatment. Colours moved into an idempotent `_dt_colors` every output helper calls, since there is no longer a load-time block to set them
-- zarg had to survive being autoloaded without its loader: `zarg` now declares the state the rest of the library reads, and `zarg_version` finds the repo through `$functions_source` rather than a `ZARG_HOME` set at source time. Every function declares its own private helpers, so autoloading the public names is enough
+- zarg had to survive being autoloaded without its loader: `zarg` now declares the state the rest of the library reads, and `zarg version` finds the repo through `$functions_source` rather than a `ZARG_HOME` set at source time. Every function declares its own private helpers, so autoloading the public names is enough
 - `wtclean` was the last holdout — it needed `WT_CORE_BIN` from the plugin. `autoload +X` loads a function immediately rather than on first call, which populates `$functions_source`, so it derives its sibling `bin/` from where `_wt_root` came from
 
 **What this costs:** a script with no zsh ancestor — cron, a systemd unit, CI — inherits no `FPATH` and must set one. `check-completions.zsh` does that from its own location, which also means a worktree tests its own libraries rather than `~/.dotfiles`'.
@@ -81,7 +88,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 **`wtclean` uses zarg too:**
 
 - It was already a script rather than a function — a GC pass has no reason to mutate the calling shell — so it drops its hand-rolled `[[ $1 == -n ]]` and gains `--help`, `--version`, a typo-correcting parser and the first completion it has ever had
-- The rest of `wt-*` deliberately doesn't. `wt` and `wtrm` `cd`, so they must stay functions, and zarg is wrong for functions on two counts: `zarg_go` calls `exit`, which in an interactive function kills the user's shell rather than the command, and `typeset -g` would leak parsed values and the `ZARG_*` spec arrays into the session. They keep `compdef` at load time
+- The rest of `wt-*` deliberately doesn't. `wt` and `wtrm` `cd`, so they must stay functions, and zarg is wrong for functions on two counts: `zarg go` calls `exit`, which in an interactive function kills the user's shell rather than the command, and `typeset -g` would leak parsed values and the `ZARG_*` spec arrays into the session. They keep `compdef` at load time
 - Needed a `generate:completions:plugin` task: `wtclean` is reached through a shell function, so `command -v wtclean` finds nothing from inside a task and the usual generator would have skipped it silently
 
 **Behaviour that deliberately changed:**

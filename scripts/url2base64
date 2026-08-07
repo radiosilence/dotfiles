@@ -4,11 +4,11 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg url2base64 'Convert URLs to base64 data URLs'
-zarg_opt -t --mime-type 'MIME type for the data URL' default=image/svg+xml metavar=TYPE
-zarg_opt -T --timeout   'timeout in seconds' default=30 metavar=SECS
-zarg_arg url 'URL to fetch' required
-zarg_go "$@"
+zarg init url2base64 'Convert URLs to base64 data URLs'
+zarg opt -t --mime-type 'MIME type for the data URL' default=image/svg+xml metavar=TYPE
+zarg opt -T --timeout   'timeout in seconds' default=30 metavar=SECS
+zarg arg url 'URL to fetch' required
+zarg go "$@"
 
 dt need curl || exit 1
 
