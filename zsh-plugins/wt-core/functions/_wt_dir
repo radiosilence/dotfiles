@@ -1,0 +1,2 @@
+local root=$(_wt_root) || return 1
+echo "$(dirname "$root")/worktrees/$(basename "$root")"

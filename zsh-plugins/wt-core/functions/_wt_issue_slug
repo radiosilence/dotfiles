@@ -1,0 +1,9 @@
+# Slug matching the convention already used across these repos:
+# <issue-number>-<kebab-title>, e.g. 931-rating-reconciliation
+local n=$1 title=$2 slug
+slug=${title:l}
+slug=${slug//[^a-z0-9]/-}          # non-alnum -> dash
+while [[ $slug == *--* ]]; do slug=${slug//--/-}; done
+slug=${slug##-}; slug=${slug%%-}
+slug=${slug[1,48]}; slug=${slug%%-}
+print -r -- "${n}-${slug}"
