@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # zarg's test suite. Run: zsh zsh-plugins/zarg/test.zsh
 #
-# Each case runs a fixture script in a subshell, because zarg go exits the
+# Each case runs a fixture script in a subshell, because zarg_go exits the
 # process for --help, errors and the like — which is exactly the behaviour
 # under test.
 
@@ -12,14 +12,14 @@ trap 'rm -rf ${fixture:h}' EXIT
 cat > "$fixture" <<EOF
 #!/usr/bin/env zsh
 source "$here/zarg.plugin.zsh"
-zarg init spec 'a test spec'
-zarg flag -n --dry-run 'do nothing'
-zarg flag -k --keep    'keep things'
-zarg opt  -s --signal  'a signal' default=TERM values='TERM KILL INT'
-zarg opt  -b --bitrate 'a bitrate' default=160 env=BITRATE
-zarg arg  port  'a port' required
-zarg arg  paths 'some paths' variadic default=.
-zarg go "\$@"
+zarg_init spec 'a test spec'
+zarg_flag -n --dry-run 'do nothing'
+zarg_flag -k --keep    'keep things'
+zarg_opt  -s --signal  'a signal' default=TERM values='TERM KILL INT'
+zarg_opt  -b --bitrate 'a bitrate' default=160 env=BITRATE
+zarg_arg  port  'a port' required
+zarg_arg  paths 'some paths' variadic default=.
+zarg_go "\$@"
 print -r -- "dry_run=\$dry_run keep=\$keep signal=\$signal bitrate=\$bitrate port=\$port paths=\${(j:,:)paths}"
 EOF
 chmod +x "$fixture"
@@ -104,7 +104,7 @@ fi
 reserved() {
   local name=$1 decl=$2
   local got; got=$(zsh -c "source '$here/zarg.plugin.zsh'
-    zarg init t 'x'
+    zarg_init t 'x'
     $decl
     print -r -- \"PATH_OK=\$(( \${#path} > 0 ))\"" 2>&1)
   if [[ $got == *"cannot bind '$name'"* && $got == *PATH_OK=1* ]]; then (( pass++ ))
@@ -112,9 +112,9 @@ reserved() {
   got: $got"
   fi
 }
-reserved path  'zarg opt -p --path "boom"'
-reserved fpath 'zarg arg fpath "boom"'
-reserved PATH  'zarg flag -P --PATH "boom"'
+reserved path  'zarg_opt -p --path "boom"'
+reserved fpath 'zarg_arg fpath "boom"'
+reserved PATH  'zarg_flag -P --PATH "boom"'
 
 print -r -- "zarg: $pass passed, $fail failed"
 (( fail == 0 ))

@@ -2,26 +2,28 @@
 # Strip EXIF (and XMP/IPTC/ICC) metadata from images before sharing them.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init clean-exif 'Strip EXIF metadata from images'
-zarg flag -n --dry-run 'show what would be cleaned'
-zarg arg  paths 'directories to search' variadic default=.
-zarg go "$@"
+zarg_init clean-exif 'Strip EXIF metadata from images'
+zarg_flag -n --dry-run 'show what would be cleaned'
+zarg_arg  paths 'directories to search' variadic default=.
+zarg_go "$@"
 
-dt need exiftool || exit 1
-dt head clean-exif
+dt_init
 
-local -a files=(${(0)"$(dt files 'jpg jpeg png' $paths)"})
-(( $#files )) || { dt warn "No image files found"; exit 0 }
+dt_need exiftool || exit 1
+dt_head clean-exif
 
-dt info "Found: $#files images"
-dt info "Cores: $(dt cores)"
-dt info "Stripping: all EXIF metadata"
+local -a files=(${(0)"$(dt_files 'jpg jpeg png' $paths)"})
+(( $#files )) || { dt_warn "No image files found"; exit 0 }
+
+dt_info "Found: $#files images"
+dt_info "Cores: $(dt_cores)"
+dt_info "Stripping: all EXIF metadata"
 print -r -- ""
 
 if (( dry_run )); then
-  dt info "Dry run - files that would be cleaned:"
+  dt_info "Dry run - files that would be cleaned:"
   local f
   for f in $files; do print -r -- "    $f"; done
   exit 0
@@ -39,4 +41,4 @@ local ok=$(( $#files - failed ))
 
 [[ -n $out ]] && print -r -- "$out"
 print -r -- ""
-dt results $ok $failed Cleaned
+dt_results $ok $failed Cleaned

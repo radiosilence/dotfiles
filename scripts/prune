@@ -2,13 +2,15 @@
 # Find and delete small directories cluttering a tree.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init prune 'Find and delete small directories'
-zarg flag -y --yes      'delete without confirmation'
-zarg opt  -s --min-size 'directories smaller than this are candidates, in KB' default=3072 env=MIN_SIZE metavar=KB
-zarg arg  paths 'directories to search' variadic default=.
-zarg go "$@"
+zarg_init prune 'Find and delete small directories'
+zarg_flag -y --yes      'delete without confirmation'
+zarg_opt  -s --min-size 'directories smaller than this are candidates, in KB' default=3072 env=MIN_SIZE metavar=KB
+zarg_arg  paths 'directories to search' variadic default=.
+zarg_go "$@"
+
+dt_init
 
 DT_YES=$yes
 
@@ -22,8 +24,8 @@ _human() {
   else printf '%.2f %s\n' "$bytes" "${units[u]}"; fi
 }
 
-dt head prune
-dt info "threshold: $(_human $(( min_size * 1024 )))"
+dt_head prune
+dt_info "threshold: $(_human $(( min_size * 1024 )))"
 
 local -a candidates=()
 local dir size
@@ -48,7 +50,7 @@ for c in $candidates; do
 done
 
 if (( ! $#kept )); then
-  dt ok "No directories found below $(_human $(( min_size * 1024 )))"
+  dt_ok "No directories found below $(_human $(( min_size * 1024 )))"
   exit 0
 fi
 
@@ -62,7 +64,7 @@ for c in $kept; do
 done
 kept=("${(@f)$(for c in $kept; do print -r -- "${sizes[$c]}"$'\t'"$c"; done | sort -n | cut -f2)}")
 
-dt info "Found $#kept candidates"
+dt_info "Found $#kept candidates"
 print -r -- ""
 printf '  %-50s %12s\n' PATH SIZE
 printf '  %s\n' "${(l:64::─:)}"
@@ -73,20 +75,20 @@ for c in $kept; do
 done
 
 print -r -- ""
-dt info "total: $(_human $(( total * 1024 )))"
+dt_info "total: $(_human $(( total * 1024 )))"
 print -r -- ""
 
-dt confirm 'Delete these directories?' || { dt warn "Operation cancelled"; exit 0 }
+dt_confirm 'Delete these directories?' || { dt_warn "Operation cancelled"; exit 0 }
 
 print -r -- ""
 local failed=0 err
 for c in $kept; do
   if err=$(rm -rf "$c" 2>&1 >/dev/null); then
-    dt ok "$c"
+    dt_ok "$c"
   else
-    dt err "$c: $err"; (( failed++ ))
+    dt_err "$c: $err"; (( failed++ ))
   fi
 done
 
 print -r -- ""
-dt ok "Deleted $(( $#kept - failed )) directories"
+dt_ok "Deleted $(( $#kept - failed )) directories"

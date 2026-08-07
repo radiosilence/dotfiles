@@ -40,6 +40,14 @@ HISTFILE=~/.zsh_history
 HISTSIZE=50000
 SAVEHIST=50000
 
+# The scripts' shared toolkit, so conf.d files can use dt_warn/dt_need rather
+# than hand-rolling printf. Declarations don't cross into child processes, so
+# scripts autoload it themselves; this is purely for the interactive shell.
+if [[ -d ~/.dotfiles/scripts/lib/functions ]]; then
+  fpath=(~/.dotfiles/scripts/lib/functions $fpath)
+  autoload -Uz dt_init && dt_init
+fi
+
 # Add custom completions to fpath before compinit
 if [[ -d ~/.config/zsh/completions ]]; then
   fpath=(~/.config/zsh/completions $fpath)

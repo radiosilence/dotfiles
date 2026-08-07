@@ -3,19 +3,21 @@
 # whatever lands. Fetching serially wastes the per-download connection cap.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init parallel-dl-extract 'Parallel download and extract URLs using aria2c'
-zarg arg urls 'URLs to download' required variadic
-zarg go "$@"
+zarg_init parallel-dl-extract 'Parallel download and extract URLs using aria2c'
+zarg_arg urls 'URLs to download' required variadic
+zarg_go "$@"
 
-dt need aria2c unzip || exit 1
-dt head 'parallel dl+extract'
+dt_init
+
+dt_need aria2c unzip || exit 1
+dt_head 'parallel dl+extract'
 
 # Not trap-cleaned — this directory is the script's output.
 local dst=$(mktemp -d)
-dt info "temp dir: $dst"
-dt info "urls: $#urls"
+dt_info "temp dir: $dst"
+dt_info "urls: $#urls"
 
 # One subdirectory per URL so same-named downloads (dl.zip) don't collide.
 local -i i=0
@@ -30,12 +32,12 @@ for u in $urls; do
   } >> "$dst/urls.txt"
 done
 
-dt step "downloading with aria2c"
+dt_step "downloading with aria2c"
 ( cd "$dst" && aria2c -i urls.txt -j 8 -x 8 -d "$dst" ) \
-  || { dt err "aria2c download failed"; exit 1 }
+  || { dt_err "aria2c download failed"; exit 1 }
 
-dt step "extracting archives"
-dt files zip "$dst" | dt fan 'unzip -q "$1" -d "$(dirname "$1")" && rm -f "$1"'
+dt_step "extracting archives"
+dt_files zip "$dst" | dt_fan 'unzip -q "$1" -d "$(dirname "$1")" && rm -f "$1"'
 
-dt ok "download & extract complete"
+dt_ok "download & extract complete"
 print -r -- "$dst"
