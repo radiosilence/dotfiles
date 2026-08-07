@@ -611,6 +611,22 @@ tasks:
         vars:
           TOOL: wtclean
           BIN: "{{.DOTFILES}}/zsh-plugins/wt-core/bin/wtclean"
+      - task: generate:completions:plugin
+        vars:
+          TOOL: wt-list
+          BIN: "{{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-list"
+      - task: generate:completions:plugin
+        vars:
+          TOOL: wt-preview
+          BIN: "{{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-preview"
+      - task: generate:completions:plugin
+        vars:
+          TOOL: wt-picker
+          BIN: "{{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-picker"
+      - task: generate:completions:plugin
+        vars:
+          TOOL: wt-shell
+          BIN: "{{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-shell"
       # Custom completion commands
       - task: generate:completions:gen
         vars: { TOOL: aube, CMD: "aube completion zsh" }
