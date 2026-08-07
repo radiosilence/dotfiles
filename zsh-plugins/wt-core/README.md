@@ -42,6 +42,15 @@ detritus and always go.
 One `gh pr list` up front rather than a query per branch, which is the
 difference between a second and a minute. Safe to run from cron.
 
+The two per-worktree costs are fanned out with GNU parallel, falling back to
+`xargs -P`: `git status` (which walks the whole working tree — the expensive
+part on a monorepo) and the removal itself (mostly `rm -rf`). Concurrent
+`git worktree remove` is safe because each touches only its own admin
+directory. Branch deletion goes the other way and is *batched* into a single
+`git branch -D` — many refs is one `packed-refs` rewrite, where racing
+deletions would contend for its lock. On a handful of small worktrees none of
+this is measurable; it's for the checkouts with `node_modules` in them.
+
 ## Extending
 
 A backend is one function taking `(name, path)`, passed to `_wt_core`:

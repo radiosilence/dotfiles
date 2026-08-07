@@ -8,6 +8,14 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**`wtclean` fans out the per-worktree work:**
+
+- The two costs that scale with worktree count are `git status` and the removal itself. Both are per-worktree independent, so they go through GNU parallel, or `xargs -P` where it isn't installed. Concurrent `git worktree remove` turns out to be safe — each touches only its own directory under `.git/worktrees`, verified 12-way with a clean `fsck` after
+- Branch deletion went the opposite way: **batched**, not parallelised. `git branch -D` takes many refs in one invocation, which is a single `packed-refs` rewrite instead of a pile of processes contending for its lock
+- Both fan-out backends pass the path as a real argument rather than substituting it into a command string, so a worktree path with a space in it survives. GNU parallel needs `-q` for that, without which it re-tokenises the snippet and `sh -c` gets only the first word
+- Classification now happens before any of it, so the expensive probe only runs on worktrees that are still candidates — the one you're standing in, detached checkouts and agent worktrees never get walked at all
+
+
 **wt-\* helpers are zsh; `wtclean` is a script:**
 
 - These are zsh plugins, so the `bin/` helpers had no business being bash — zsh is guaranteed present here and macOS still ships bash 3.2. Not purely cosmetic: bash's single-char read in `wt-shell`'s keep/remove prompt is `read -rsn1`, which zsh spells `read -rsk1`, and `${BASH_SOURCE[0]}` becomes `${0:A}`
