@@ -1,6 +1,6 @@
 # _wt_core <go_fn> [--branch] [name] [base]
 # go_fn is called with (name, path) — either _wt_cd or _wt_tab
-autoload -Uz _wt_base _wt_cd _wt_ensure_dir _wt_find _wt_named _wt_path wt
+autoload -Uz _wt_base _wt_cd _wt_ensure_dir _wt_find _wt_named _wt_path
 local go_fn=$1; shift
 local from_branch=0
 while [[ $# -gt 0 ]]; do
