@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # Emits "branch<TAB>path", one worktree per line. With an argument, prints only
 # the path of that branch. Parsing `worktree list --porcelain` lived in four
 # places and drifted; this is the one copy.

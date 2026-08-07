@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # Worktree picker for the Zellij keybinding.
 # Pager commands (view/checks/diff) display in the floating pane via less.
 set -o pipefail
@@ -6,7 +6,7 @@ set -o pipefail
 export CLICOLOR_FORCE=1
 export GH_FORCE_TTY=1
 
-plugins=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
+plugins=${0:A:h:h:h}
 export WT_CORE_BIN="${WT_CORE_BIN:-$plugins/wt-core/bin}"
 
 # Creating and removing worktrees lives in wt-core. The picker only picks —
@@ -29,6 +29,7 @@ input=$("$WT_CORE_BIN"/wt-list | awk -F'\t' '$1 != ""')
 current_line=0
 if [[ -n $current ]]; then
   current_line=$(echo "$input" | awk -F'\t' -v b="$current" '{ if($1==b) { print NR; exit } }')
+  current_line=${current_line:-0}
 fi
 
 fzf_args=(
@@ -41,7 +42,7 @@ fzf_args=(
   --print-query --expect="ctrl-x,ctrl-r,ctrl-v,ctrl-y,ctrl-d,ctrl-l"
 )
 
-if [[ $current_line -gt 0 ]]; then
+if (( current_line > 0 )); then
   fzf_args+=(--scroll-off=0 --pointer='▶' --bind "start:pos($current_line)")
 fi
 
