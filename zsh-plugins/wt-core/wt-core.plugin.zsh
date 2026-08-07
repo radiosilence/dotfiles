@@ -308,6 +308,19 @@ _wt_pr_state() {
     && echo MERGED || echo NONE
 }
 
+# Fan a snippet (which reads its item as "$1") over stdin lines. GNU parallel
+# when it's installed, xargs -P otherwise. Both pass the item as a real
+# argument rather than substituting it textually, so paths survive intact.
+# -k/-I keep output in input order.
+_wt_fan() {
+  local snippet=$1
+  if command -v parallel >/dev/null; then
+    parallel --will-cite -k -q sh -c "$snippet" _ {}
+  else
+    xargs -P 8 -I {} sh -c "$snippet" _ {}
+  fi
+}
+
 _wt_clean() {
   local root=$(_wt_root)
   [[ -z $root ]] && { echo "not in a git repo"; return 1; }
@@ -320,9 +333,11 @@ _wt_clean() {
   git -C "$root" fetch --prune --quiet 2>/dev/null
   _wt_pr_cache "$repo"
 
+  # Classify on cheap facts only — nothing here touches the working tree.
   # Split by hand: tab is IFS-whitespace, so `read` would collapse the empty
   # branch field of a detached worktree and shift the path into it.
-  local line wt branch label state removed=0 kept=0
+  local line wt branch label removed=0 kept=0
+  local -a agents candidates cand_branch
   while IFS= read -r line; do
     branch=${line%%$'\t'*}
     wt=${line#*$'\t'}
@@ -330,38 +345,70 @@ _wt_clean() {
     label=${branch:-$wt}
     git worktree unlock "$wt" 2>/dev/null
 
-    # Agent worktrees are session detritus — always force.
-    if [[ $wt == */.claude/worktrees/* ]]; then
-      (( dry )) && { echo "  would nuke (agent): $wt"; continue }
-      git worktree remove --force "$wt" 2>/dev/null \
-        && { echo "  removed (agent): $wt"; ((removed++)) }
-      continue
-    fi
-
+    # Agent worktrees are session detritus — always force, never probed.
+    [[ $wt == */.claude/worktrees/* ]] && { agents+=("$wt"); continue }
     [[ $wt == "$here" ]] && { echo "  kept:    $label (you're in it)"; ((kept++)); continue }
-    if [[ -n $(git -C "$wt" status --porcelain 2>/dev/null) ]]; then
-      echo "  kept:    $label (uncommitted changes)"; ((kept++)); continue
-    fi
     [[ -z $branch ]] && { echo "  kept:    $label (detached)"; ((kept++)); continue }
+    candidates+=("$wt"); cand_branch+=("$branch")
+  done < <("$WT_CORE_BIN"/wt-list)
 
+  # `git status` walks the whole working tree, which on a monorepo is the
+  # expensive part of the run. Each worktree is independent, so fan them out.
+  local -A dirty
+  local d
+  if (( ${#candidates} )); then
+    while IFS=$'\t' read -r wt d; do
+      dirty[$wt]=$d
+    done < <(printf '%s\n' $candidates \
+      | _wt_fan 'printf "%s\t%s\n" "$1" "$(git -C "$1" status --porcelain 2>/dev/null | wc -l | tr -d " ")"')
+  fi
+
+  local -a doomed doomed_branch
+  local i state
+  for (( i = 1; i <= ${#candidates}; i++ )); do
+    wt=$candidates[i]; branch=$cand_branch[i]
+    if (( ${dirty[$wt]:-0} > 0 )); then
+      echo "  kept:    $branch (uncommitted changes)"; ((kept++)); continue
+    fi
     state=$(_wt_pr_state "$branch" "$repo")
     case $state in
       MERGED|CLOSED)
-        (( dry )) && { echo "  would remove: $branch (PR $state)"; continue }
-        if git worktree remove "$wt" 2>/dev/null; then
-          git -C "$root" branch -D "$branch" >/dev/null 2>&1
-          echo "  removed: $branch (PR $state)"; ((removed++))
+        if (( dry )); then
+          echo "  would remove: $branch (PR $state)"
         else
-          echo "  kept:    $branch (in use)"; ((kept++))
+          doomed+=("$wt"); doomed_branch+=("$branch")
         fi ;;
       OPEN) echo "  kept:    $branch (PR open)"; ((kept++)) ;;
       *)    echo "  kept:    $branch (no PR)"; ((kept++)) ;;
     esac
-  done < <("$WT_CORE_BIN"/wt-list)
+  done
 
-  # Branches whose worktree is already gone.
+  # Removal is almost entirely rm -rf, and concurrent `git worktree remove`
+  # touches only its own admin directory — no shared lock to contend on.
+  if (( dry )); then
+    (( ${#agents} )) && printf '  would nuke (agent): %s\n' $agents
+  else
+    (( ${#agents} )) && printf '%s\n' $agents | _wt_fan 'git worktree remove --force "$1" 2>/dev/null'
+    (( ${#doomed} )) && printf '%s\n' $doomed | _wt_fan 'git worktree remove "$1" 2>/dev/null'
+
+    # Report on what actually went: removal still refuses on a locked or
+    # in-use worktree, and a fanned-out exit status won't tell us which.
+    for wt in $agents; do
+      [[ -d $wt ]] || { echo "  removed (agent): $wt"; ((removed++)) }
+    done
+    for (( i = 1; i <= ${#doomed}; i++ )); do
+      if [[ -d $doomed[i] ]]; then
+        echo "  kept:    $doomed_branch[i] (in use)"; ((kept++))
+      else
+        echo "  removed: $doomed_branch[i]"; ((removed++))
+      fi
+    done
+  fi
+
+  # Branches whose worktree is gone — including the ones just removed, since
+  # this reads the registry fresh.
   local base=$(_wt_base) b dropped=0
-  local -a live
+  local -a live drop
   live=(${(f)"$(_wt_named | cut -f1)"})
   for b in ${(f)"$(git -C "$root" for-each-ref --format='%(refname:short)' refs/heads/)"}; do
     [[ $b == "$base" ]] && continue
@@ -369,14 +416,21 @@ _wt_clean() {
     state=$(_wt_pr_state "$b" "$repo")
     if [[ $state == MERGED || $state == CLOSED ]]; then
       (( dry )) && { echo "  would drop branch: $b (PR $state)"; continue }
-      git -C "$root" branch -D "$b" >/dev/null 2>&1 \
-        && { echo "  dropped branch: $b (PR $state)"; ((dropped++)) }
+      drop+=("$b")
     elif git -C "$root" merge-base --is-ancestor "$b" "origin/$base" 2>/dev/null; then
       (( dry )) && { echo "  would drop branch: $b (merged)"; continue }
-      git -C "$root" branch -D "$b" >/dev/null 2>&1 \
-        && { echo "  dropped branch: $b (merged)"; ((dropped++)) }
+      drop+=("$b")
     fi
   done
+  # One invocation, not one per branch: many refs is a single packed-refs
+  # rewrite, and racing deletions would contend for its lock.
+  if (( ${#drop} )); then
+    git -C "$root" branch -D $drop >/dev/null 2>&1
+    for b in $drop; do
+      git -C "$root" show-ref --verify --quiet "refs/heads/$b" \
+        || { echo "  dropped branch: $b"; ((dropped++)) }
+    done
+  fi
 
   local -a pruneargs=(-v); (( dry )) && pruneargs+=(-n)
   git worktree prune $pruneargs
