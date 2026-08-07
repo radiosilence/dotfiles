@@ -2,8 +2,7 @@
 # Batch rename by editing a file list in $EDITOR, mv/git-mv-ing the diff back.
 set -o pipefail
 
-autoload -Uz _dt_err _dt_head _dt_info _dt_ok \
-             _dt_warn zarg_arg zarg_go zarg_init
+autoload -Uz zarg_init _dt_err _dt_head _dt_info _dt_ok _dt_warn
 
 zarg_init vimv 'Batch rename files using your $EDITOR'
 zarg_arg  files 'files to rename' variadic

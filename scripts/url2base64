@@ -2,7 +2,7 @@
 # Fetch a URL and emit it as a base64 data URL — for inlining assets in CSS/HTML.
 set -o pipefail
 
-autoload -Uz _dt_err _dt_need zarg_arg zarg_go zarg_init zarg_opt
+autoload -Uz zarg_init _dt_err _dt_need
 
 zarg_init url2base64 'Convert URLs to base64 data URLs'
 zarg_opt -t --mime-type 'MIME type for the data URL' default=image/svg+xml metavar=TYPE

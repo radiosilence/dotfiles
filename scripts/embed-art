@@ -2,8 +2,8 @@
 # Embed cover/disc/back/artist art from each FLAC's own directory.
 set -o pipefail
 
-autoload -Uz _dt_cores _dt_err _dt_fan _dt_files _dt_head _dt_info _dt_need \
-             _dt_ok _dt_step _dt_warn zarg_arg zarg_go zarg_init
+autoload -Uz zarg_init _dt_cores _dt_err _dt_fan _dt_files _dt_head \
+             _dt_info _dt_need _dt_ok _dt_step _dt_warn
 
 zarg_init embed-art 'Embed artwork into FLAC files'
 zarg_arg paths 'directories to search' variadic default=.

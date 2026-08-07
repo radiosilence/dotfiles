@@ -1,6 +1,9 @@
+# Pulls in the rest of the API, so a consumer only ever has to name this one:
+#   autoload -Uz zarg_init
 # Also declares the state the rest of the library reads, so a consumer that
 # only autoloads these functions — never sourcing the loader — still works.
 # Records are \x1f-delimited because help text may contain anything else.
+autoload -Uz zarg_arg zarg_completions zarg_flag zarg_go zarg_help zarg_opt zarg_parse zarg_version
 typeset -g  ZARG_SEP=$'\x1f'
 typeset -g  ZARG_NAME=$1 ZARG_DESC=$2
 typeset -ga ZARG_FLAGS=() ZARG_OPTS=() ZARG_ARGS=()

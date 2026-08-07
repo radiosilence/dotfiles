@@ -16,7 +16,7 @@ from one declaration makes that failure mode unrepresentable.
 # Back up a directory somewhere, with the usual knobs.
 set -o pipefail
 
-autoload -Uz zarg_init zarg_flag zarg_opt zarg_arg zarg_go
+autoload -Uz zarg_init
 
 zarg_init backup 'Back up a directory'
 zarg_flag -n --dry-run  'show what would be copied, copy nothing'
@@ -217,7 +217,7 @@ the interactive shell loaded. Consumers then need no path to anything:
 
 ```zsh
 #!/usr/bin/env zsh
-autoload -Uz zarg_init zarg_flag zarg_opt zarg_arg zarg_go
+autoload -Uz zarg_init
 ```
 
 Each function declares its own private helpers, so autoloading the public names

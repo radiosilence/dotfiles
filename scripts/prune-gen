@@ -2,7 +2,7 @@
 # Build a throwaway directory tree to exercise prune against.
 set -o pipefail
 
-autoload -Uz _dt_err _dt_head _dt_info _dt_ok zarg_go zarg_init
+autoload -Uz zarg_init _dt_err _dt_head _dt_info _dt_ok
 
 zarg_init prune-gen 'Generate a test directory structure for prune'
 zarg_go "$@"

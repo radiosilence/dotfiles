@@ -2,8 +2,7 @@
 # Find and delete small directories cluttering a tree.
 set -o pipefail
 
-autoload -Uz _dt_confirm _dt_err _dt_head _dt_info _dt_ok _dt_warn \
-             zarg_arg zarg_flag zarg_go zarg_init zarg_opt
+autoload -Uz zarg_init _dt_confirm _dt_err _dt_head _dt_info _dt_ok _dt_warn
 
 zarg_init prune 'Find and delete small directories'
 zarg_flag -y --yes      'delete without confirmation'

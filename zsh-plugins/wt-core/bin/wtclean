@@ -4,7 +4,6 @@
 # commit with what landed — so gh is the source of truth for whether a
 # worktree is finished.
 
-autoload -Uz zarg_flag zarg_go zarg_init
 # +X loads now rather than on first call, so functions_source is populated and
 # this can find its sibling bin/ without a path back to the plugin.
 autoload +X -Uz _wt_root _wt_base _wt_named _wt_pr_state
@@ -13,6 +12,8 @@ autoload +X -Uz _wt_root _wt_base _wt_named _wt_pr_state
 # Filled by _wt_pr_cache below. Must be declared: an *undeclared* _wt_prs makes
 # ${_wt_prs[feat/x]} an arithmetic subscript, where "feat/x" is a division.
 typeset -gA _wt_prs
+
+autoload -Uz zarg_init
 
 zarg_init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
 zarg_flag -n --dry-run 'show what would be removed without touching anything'

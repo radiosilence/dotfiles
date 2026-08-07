@@ -3,8 +3,8 @@
 # whatever lands. Fetching serially wastes the per-download connection cap.
 set -o pipefail
 
-autoload -Uz _dt_err _dt_fan _dt_files _dt_head _dt_info _dt_need \
-             _dt_ok _dt_step zarg_arg zarg_go zarg_init
+autoload -Uz zarg_init _dt_err _dt_fan _dt_files _dt_head \
+             _dt_info _dt_need _dt_ok _dt_step
 
 zarg_init parallel-dl-extract 'Parallel download and extract URLs using aria2c'
 zarg_arg urls 'URLs to download' required variadic

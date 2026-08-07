@@ -2,8 +2,7 @@
 # Squash a branch's commits into one before opening a PR.
 set -o pipefail
 
-autoload -Uz _dt_err _dt_head _dt_info _dt_ok _dt_warn \
-             zarg_arg zarg_flag zarg_go zarg_init
+autoload -Uz zarg_init _dt_err _dt_head _dt_info _dt_ok _dt_warn
 
 zarg_init git-squash 'Squash commits for clean PR history'
 zarg_flag -n --dry-run 'show what would be squashed'
