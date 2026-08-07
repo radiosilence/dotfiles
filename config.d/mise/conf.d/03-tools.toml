@@ -1,7 +1,6 @@
 [tools]
 1password = "latest"
 aube = "latest"                                # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
-aria2 = "latest"
 aws-vault = "latest"
 bat = "latest"                                 # Cat with wings
 beets = "latest"                               # Music organizer
