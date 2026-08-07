@@ -1,0 +1,10 @@
+# A wrong flag is nearly always a typo or a half-remembered name, so lead with
+# the closest match rather than making them read the whole help.
+local bad=${1#-} cand
+for cand in $(_zarg_known); do
+  [[ ${#bad} -ge 2 && ${cand#-} == ${bad}* ]] && { print -r -- "$cand"; return 0 }
+done
+for cand in $(_zarg_known); do
+  [[ ${#bad} -ge 3 && ${cand#-} == *${bad[1,3]}* ]] && { print -r -- "$cand"; return 0 }
+done
+return 1

@@ -8,6 +8,21 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**zarg is a loader plus a function per file:**
+
+- `zarg.plugin.zsh` is now three working lines — it locates itself with `${0:A:h}`, adds its own `functions/` to `fpath`, and autoloads by globbing basenames so adding a function needs no edit to the loader. That is the ordinary plugin convention; `zsh-completions` and `claude-code-zsh-completion` in the sheldon tree both do the same thing, and sheldon itself emits no `fpath` lines at all
+- `completions.zsh` is gone. The emitters are autoloaded functions now, so a script that never asks for fish completions never loads the fish emitter — laziness for free, instead of a hand-rolled deferred `source`
+- **Not a speed win.** Measured over 30 runs the split made no observable difference: autoload trades parsing 242 lines for a stat per function. The reason to do it is structure and being consumable from outside this repo
+- The 39 relative `source "${0:A:h:h:h}/zarg/..."` lines survive. Removing them needs a `~/.zshenv`, because that is the only startup file a `#!/usr/bin/env zsh` script reads — sheldon, antigen and oh-my-zsh all run at `.zshrc` time and cannot help a script. Deliberately not reached for: it runs on every zsh invocation, which is a lot of blast radius for one wart
+
+**zarg refuses to bind zsh's own parameters:**
+
+- The spec drops values straight into the script's namespace, so `--path` would bind `$path` — which zsh ties to `$PATH`. Parsing would empty `PATH` and every command after it would vanish. That exact bug already happened here once in a `prune` loop variable, so the spec is now rejected up front with `zarg: cannot bind 'path' — zsh reserves it for shell state`
+- Covers the whole family: `path`, `fpath`, `cdpath`, `manpath`, `argv`, `status`, `dirstack`, `IFS`, `HOME`, `PWD` and friends, plus zarg's own `ZARG_*`
+
+**Autoload function bodies carry neither a shebang nor an extension**, so CI's syntax sweep and the pre-push hook both skipped them silently. Both now name `*/functions/*` explicitly — verified by planting a deliberately broken one and confirming it fails.
+
+
 **The rest of the wt bins parse with zarg:**
 
 - `wtclean` moved to zarg in #82; the other four were still hand-rolled, which is the drift zarg exists to prevent. All five now derive `--help`, the parser and the completions from one declaration, and unknown flags are refused with a did-you-mean rather than ignored

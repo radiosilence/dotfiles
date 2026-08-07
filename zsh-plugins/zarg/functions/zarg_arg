@@ -1,0 +1,5 @@
+# zarg_arg paths 'help' [required] [variadic] [default=X] [values='a b'] [complete=_fn]
+local name=$1 help=$2; shift 2
+_zarg_reserved "$name" && return 1
+local -A _zarg_x; _zarg_extras "$@"
+ZARG_ARGS+=("${name}${ZARG_SEP}${help}${ZARG_SEP}${_zarg_x[required]:-0}${ZARG_SEP}${_zarg_x[variadic]:-0}${ZARG_SEP}${_zarg_x[default]}${ZARG_SEP}${_zarg_x[values]}${ZARG_SEP}${_zarg_x[complete]}")

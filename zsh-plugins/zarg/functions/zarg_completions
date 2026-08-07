@@ -1,0 +1,6 @@
+case $1 in
+  zsh)  _zarg_comp_zsh ;;
+  fish) _zarg_comp_fish ;;
+  bash) _zarg_comp_bash ;;
+  *) print -ru2 -- "$ZARG_NAME: unknown shell '$1' (want: zsh, fish, bash)"; return 1 ;;
+esac

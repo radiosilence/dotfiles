@@ -1,0 +1,6 @@
+# The ":metavar:action" tail shared by zsh options and positionals.
+local metavar=$1 values=$2 complete=$3
+if   [[ -n $values ]];   then print -r -- ":${metavar}:(${values})"
+elif [[ -n $complete ]]; then print -r -- ":${metavar}:${complete}"
+else                          print -r -- ":${metavar}: "
+fi

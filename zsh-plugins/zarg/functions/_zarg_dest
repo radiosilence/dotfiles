@@ -1,0 +1,2 @@
+# --dry-run / paths -> dry_run / paths
+local s=${1#--}; print -r -- "${s//-/_}"

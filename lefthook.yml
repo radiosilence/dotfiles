@@ -34,7 +34,11 @@ pre-push:
       run: |
         for f in {staged_files}; do
           [ -f "$f" ] || continue
-          head -1 "$f" | grep -q 'zsh' || case "$f" in *.zsh) ;; *) continue ;; esac
+          case "$f" in
+            */functions/*) ;;
+            *.zsh) ;;
+            *) head -1 "$f" | grep -q 'zsh' || continue ;;
+          esac
           zsh -n "$f" || exit 1
         done
 

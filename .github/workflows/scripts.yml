@@ -31,13 +31,20 @@ jobs:
       - name: Install shells
         run: sudo apt-get update -qq && sudo apt-get install -y -qq zsh fish
 
-      # Executables and .zsh sources only — these directories also hold READMEs.
+      # Executables, .zsh sources, and autoload function bodies — which carry
+      # neither a shebang nor an extension, so they need naming explicitly.
+      # READMEs live in these directories too, hence the filter.
       - name: Syntax
         run: |
           fail=0
-          for f in scripts/* scripts/lib/* zsh-plugins/*/bin/* zsh-plugins/*/*.zsh; do
+          for f in scripts/* scripts/lib/* zsh-plugins/*/bin/* zsh-plugins/*/*.zsh \
+                   zsh-plugins/*/functions/*; do
             [ -f "$f" ] || continue
-            [ -x "$f" ] || case "$f" in *.zsh) ;; *) continue ;; esac
+            case "$f" in
+              */functions/*) ;;
+              *.zsh) ;;
+              *) [ -x "$f" ] || continue ;;
+            esac
             zsh -n "$f" || { echo "syntax: $f"; fail=1; }
           done
           exit $fail

@@ -1,0 +1,18 @@
+# Handle the built-ins, then parse. Scripts call this instead of zarg_parse; it
+# exits on its own for --help/--version/--completions and on a parse error, so
+# a script may assume a good parse once it returns.
+local i
+for (( i = 1; i <= $#; i++ )); do
+  case ${@[i]} in
+    --) break ;;
+    -h|--help) zarg_help; exit 0 ;;
+    --version) zarg_version; exit 0 ;;
+    --completions|--completions=*)
+      local shell=${${@[i]}#--completions}
+      shell=${shell#=}
+      [[ -n $shell ]] || shell=${@[i+1]}
+      zarg_completions "${shell:-zsh}" || exit 1
+      exit 0 ;;
+  esac
+done
+zarg_parse "$@" || exit $?

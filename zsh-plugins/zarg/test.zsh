@@ -99,5 +99,22 @@ if command -v fish >/dev/null 2>&1; then
   else (( fail++ )); print -ru2 -- "FAIL fish completion does not parse"; fi
 fi
 
+# ── Reserved names ───────────────────────────────────────────────────
+# Binding $path would empty $PATH mid-parse, so the spec must be refused.
+reserved() {
+  local name=$1 decl=$2
+  local got; got=$(zsh -c "source '$here/zarg.plugin.zsh'
+    zarg_init t 'x'
+    $decl
+    print -r -- \"PATH_OK=\$(( \${#path} > 0 ))\"" 2>&1)
+  if [[ $got == *"cannot bind '$name'"* && $got == *PATH_OK=1* ]]; then (( pass++ ))
+  else (( fail++ )); print -ru2 -- "FAIL reserved:$name
+  got: $got"
+  fi
+}
+reserved path  'zarg_opt -p --path "boom"'
+reserved fpath 'zarg_arg fpath "boom"'
+reserved PATH  'zarg_flag -P --PATH "boom"'
+
 print -r -- "zarg: $pass passed, $fail failed"
 (( fail == 0 ))

@@ -1,0 +1,13 @@
+# Refuse to bind a name zsh ties to shell state. $path is the dangerous one:
+# it is $PATH, so a `--path` option would empty PATH the moment parsing runs
+# and every command after it would vanish. Cheaper to reject the spec than to
+# debug that at 2am.
+case $1 in
+  path|PATH|fpath|FPATH|cdpath|CDPATH|manpath|MANPATH|argv|status|pipestatus|\
+  options|functions|parameters|commands|aliases|galiases|dis_aliases|signals|\
+  jobstates|jobtexts|dirstack|histchars|IFS|HOME|PWD|OLDPWD|REPLY|reply|\
+  LANG|TERM|SHLVL|ZARG_*|zarg_*)
+    print -ru2 -- "zarg: cannot bind '$1' — zsh reserves it for shell state"
+    return 0 ;;
+esac
+return 1
