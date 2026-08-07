@@ -1,0 +1,18 @@
+# <n> | <url> | owner/repo#<n> → "owner<TAB>repo<TAB>num<TAB>root". A bare
+# number resolves against the current repo; qualified forms find the checkout
+# under ~/workspace. owner/repo stay empty for the bare form.
+autoload -Uz _wt_repo_root _wt_root
+local arg=$1 owner repo num root
+if [[ $arg =~ '^https?://[^/]+/([^/]+)/([^/]+)/(pull|issues)/([0-9]+)' ]]; then
+  owner=$match[1] repo=$match[2] num=$match[4]
+  root=$(_wt_repo_root "$owner" "$repo") || return 1
+elif [[ $arg =~ '^([^/]+)/([^#]+)#([0-9]+)$' ]]; then
+  owner=$match[1] repo=$match[2] num=$match[3]
+  root=$(_wt_repo_root "$owner" "$repo") || return 1
+elif [[ $arg == <-> ]]; then
+  num=$arg
+  root=$(_wt_root) || { echo "not in a git repo — pass a url" >&2; return 1; }
+else
+  echo "unrecognised reference: $arg" >&2; return 1
+fi
+print -r -- "$owner"$'\t'"$repo"$'\t'"$num"$'\t'"$root"

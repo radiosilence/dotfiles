@@ -12,7 +12,7 @@ trap 'rm -rf ${fixture:h}' EXIT
 cat > "$fixture" <<EOF
 #!/usr/bin/env zsh
 source "$here/zarg.plugin.zsh"
-zarg_init spec 'a test spec'
+zarg spec 'a test spec'
 zarg_flag -n --dry-run 'do nothing'
 zarg_flag -k --keep    'keep things'
 zarg_opt  -s --signal  'a signal' default=TERM values='TERM KILL INT'
@@ -104,7 +104,7 @@ fi
 reserved() {
   local name=$1 decl=$2
   local got; got=$(zsh -c "source '$here/zarg.plugin.zsh'
-    zarg_init t 'x'
+    zarg t 'x'
     $decl
     print -r -- \"PATH_OK=\$(( \${#path} > 0 ))\"" 2>&1)
   if [[ $got == *"cannot bind '$name'"* && $got == *PATH_OK=1* ]]; then (( pass++ ))

@@ -1,0 +1,3 @@
+autoload -Uz _wt_branches
+_arguments '--branch[derive from current branch]' '-b[derive from current branch]' \
+  '1:branch:_wt_branches' '2:base:'

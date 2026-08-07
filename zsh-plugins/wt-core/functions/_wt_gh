@@ -1,0 +1,7 @@
+# gh against an explicit repo when the ref named one, else against root's remote
+local root=$1 owner=$2 repo=$3; shift 3
+if [[ -n $owner ]]; then
+  gh "$@" --repo "$owner/$repo"
+else
+  (builtin cd "$root" && gh "$@")
+fi

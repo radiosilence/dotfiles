@@ -2,10 +2,9 @@
 # Delete local branches whose upstream got deleted after a merge.
 set -o pipefail
 
-source "${0:A:h}/lib/common.zsh"
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+autoload +X -Uz zarg _dt_confirm _dt_err _dt_head _dt_info _dt_ok _dt_warn || exit 1
 
-zarg_init git-sync 'Clean up merged branches'
+zarg git-sync 'Clean up merged branches'
 zarg_flag -y --yes 'delete without confirmation'
 zarg_go "$@"
 

@@ -1,4 +1,5 @@
 # zarg_opt -s --signal 'help' [default=X] [env=VAR] [values='a b'] [complete=_fn] [metavar=SIG]
+autoload -Uz _zarg_dest _zarg_extras _zarg_reserved
 local short=$1 long=$2 help=$3; shift 3
 local -A _zarg_x; _zarg_extras "$@"
 local dest=$(_zarg_dest $long)

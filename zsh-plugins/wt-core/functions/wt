@@ -1,0 +1,2 @@
+autoload -Uz _wt_cd _wt_core
+_wt_core _wt_cd "$@"

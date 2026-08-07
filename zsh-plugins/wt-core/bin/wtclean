@@ -1,22 +1,165 @@
 #!/usr/bin/env zsh
 # Garbage-collect worktrees and branches against GitHub PR state.
-# The logic lives in the plugin next door so wtrm can share _wt_pr_state;
-# this runner exists so the code executed is always the code on disk.
-set -o pipefail
+# Squash merges make `git branch --merged` useless — a merged branch shares no
+# commit with what landed — so gh is the source of truth for whether a
+# worktree is finished.
 
-source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
-  print -u2 "wtclean: cannot load zarg"
-  exit 1
-}
-source "${0:A:h:h}/wt-core.plugin.zsh" || {
-  print -u2 "wtclean: cannot load wt-core.plugin.zsh"
-  exit 1
-}
+# +X loads now rather than on first call, so functions_source is populated and
+# this can find its sibling bin/ without a path back to the plugin.
+autoload +X -Uz _wt_root _wt_base _wt_named _wt_pr_state
+: ${WT_CORE_BIN:=${functions_source[_wt_root]:h:h}/bin}
 
-zarg_init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
+# Filled by _wt_pr_cache below. Must be declared: an *undeclared* _wt_prs makes
+# ${_wt_prs[feat/x]} an arithmetic subscript, where "feat/x" is a division.
+typeset -gA _wt_prs
+
+autoload +X -Uz zarg || exit 1
+
+zarg wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
 zarg_flag -n --dry-run 'show what would be removed without touching anything'
 zarg_go "$@"
 
-# Not ${dry_run:+-n}: zarg sets flags to the string 0 or 1, and 0 is non-empty.
-local -a args; (( dry_run )) && args=(-n)
-_wt_clean $args
+set -o pipefail
+
+# Fan a snippet (which reads its item as "$1") over stdin lines. GNU parallel
+# when it's installed, xargs -P otherwise. Both pass the item as a real
+# argument rather than substituting it textually, so paths survive intact.
+# -k/-I keep output in input order.
+_wt_fan() {
+  local snippet=$1
+  if command -v parallel >/dev/null; then
+    parallel --will-cite -k -q sh -c "$snippet" _ {}
+  else
+    xargs -P 8 -I {} sh -c "$snippet" _ {}
+  fi
+}
+
+# One list call up front — a query per branch turns a sweep into a minute of
+# round trips. Branches past the window fall through to a direct query.
+_wt_pr_cache() {
+  local repo=$1 branch state
+  _wt_prs=()
+  [[ -z $repo ]] && return
+  while IFS=$'\t' read -r branch state; do
+    [[ -n $branch ]] && _wt_prs[$branch]=$state
+  done < <(gh pr list -R "$repo" --state all --limit 200 \
+    --json headRefName,state --jq '.[] | [.headRefName, .state] | @tsv' 2>/dev/null)
+}
+
+_wt_clean() {
+  local root=$(_wt_root)
+  [[ -z $root ]] && { echo "not in a git repo"; return 1; }
+  local dry=$dry_run
+
+  local here=$(git rev-parse --show-toplevel 2>/dev/null)
+  local repo=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null)
+  [[ -z $repo ]] && echo "  no gh — falling back to deleted-upstream detection"
+  git -C "$root" fetch --prune --quiet 2>/dev/null
+  _wt_pr_cache "$repo"
+
+  # Classify on cheap facts only — nothing here touches the working tree.
+  # Split by hand: tab is IFS-whitespace, so `read` would collapse the empty
+  # branch field of a detached worktree and shift the path into it.
+  local line wt branch label removed=0 kept=0
+  local -a agents candidates cand_branch
+  while IFS= read -r line; do
+    branch=${line%%$'\t'*}
+    wt=${line#*$'\t'}
+    [[ -z $wt || $wt == "$root" ]] && continue
+    label=${branch:-$wt}
+    git worktree unlock "$wt" 2>/dev/null
+
+    # Agent worktrees are session detritus — always force, never probed.
+    [[ $wt == */.claude/worktrees/* ]] && { agents+=("$wt"); continue }
+    [[ $wt == "$here" ]] && { echo "  kept:    $label (you're in it)"; ((kept++)); continue }
+    [[ -z $branch ]] && { echo "  kept:    $label (detached)"; ((kept++)); continue }
+    candidates+=("$wt"); cand_branch+=("$branch")
+  done < <("$WT_CORE_BIN"/wt-list)
+
+  # `git status` walks the whole working tree, which on a monorepo is the
+  # expensive part of the run. Each worktree is independent, so fan them out.
+  local -A dirty
+  local d
+  if (( ${#candidates} )); then
+    while IFS=$'\t' read -r wt d; do
+      dirty[$wt]=$d
+    done < <(printf '%s\n' $candidates \
+      | _wt_fan 'printf "%s\t%s\n" "$1" "$(git -C "$1" status --porcelain 2>/dev/null | wc -l | tr -d " ")"')
+  fi
+
+  local -a doomed doomed_branch
+  local i state
+  for (( i = 1; i <= ${#candidates}; i++ )); do
+    wt=$candidates[i]; branch=$cand_branch[i]
+    if (( ${dirty[$wt]:-0} > 0 )); then
+      echo "  kept:    $branch (uncommitted changes)"; ((kept++)); continue
+    fi
+    state=$(_wt_pr_state "$branch" "$repo")
+    case $state in
+      MERGED|CLOSED)
+        if (( dry )); then
+          echo "  would remove: $branch (PR $state)"
+        else
+          doomed+=("$wt"); doomed_branch+=("$branch")
+        fi ;;
+      OPEN) echo "  kept:    $branch (PR open)"; ((kept++)) ;;
+      *)    echo "  kept:    $branch (no PR)"; ((kept++)) ;;
+    esac
+  done
+
+  # Removal is almost entirely rm -rf, and concurrent `git worktree remove`
+  # touches only its own admin directory — no shared lock to contend on.
+  if (( dry )); then
+    (( ${#agents} )) && printf '  would nuke (agent): %s\n' $agents
+  else
+    (( ${#agents} )) && printf '%s\n' $agents | _wt_fan 'git worktree remove --force "$1" 2>/dev/null'
+    (( ${#doomed} )) && printf '%s\n' $doomed | _wt_fan 'git worktree remove "$1" 2>/dev/null'
+
+    # Report on what actually went: removal still refuses on a locked or
+    # in-use worktree, and a fanned-out exit status won't tell us which.
+    for wt in $agents; do
+      [[ -d $wt ]] || { echo "  removed (agent): $wt"; ((removed++)) }
+    done
+    for (( i = 1; i <= ${#doomed}; i++ )); do
+      if [[ -d $doomed[i] ]]; then
+        echo "  kept:    $doomed_branch[i] (in use)"; ((kept++))
+      else
+        echo "  removed: $doomed_branch[i]"; ((removed++))
+      fi
+    done
+  fi
+
+  # Branches whose worktree is gone — including the ones just removed, since
+  # this reads the registry fresh.
+  local base=$(_wt_base) b dropped=0
+  local -a live drop
+  live=(${(f)"$(_wt_named | cut -f1)"})
+  for b in ${(f)"$(git -C "$root" for-each-ref --format='%(refname:short)' refs/heads/)"}; do
+    [[ $b == "$base" ]] && continue
+    (( ${live[(Ie)$b]} )) && continue
+    state=$(_wt_pr_state "$b" "$repo")
+    if [[ $state == MERGED || $state == CLOSED ]]; then
+      (( dry )) && { echo "  would drop branch: $b (PR $state)"; continue }
+      drop+=("$b")
+    elif git -C "$root" merge-base --is-ancestor "$b" "origin/$base" 2>/dev/null; then
+      (( dry )) && { echo "  would drop branch: $b (merged)"; continue }
+      drop+=("$b")
+    fi
+  done
+  # One invocation, not one per branch: many refs is a single packed-refs
+  # rewrite, and racing deletions would contend for its lock.
+  if (( ${#drop} )); then
+    git -C "$root" branch -D $drop >/dev/null 2>&1
+    for b in $drop; do
+      git -C "$root" show-ref --verify --quiet "refs/heads/$b" \
+        || { echo "  dropped branch: $b"; ((dropped++)) }
+    done
+  fi
+
+  local -a pruneargs=(-v); (( dry )) && pruneargs+=(-n)
+  git worktree prune $pruneargs
+  _wt_prs=()   # scoped to the run — a stale map misclassifies later calls
+  echo "wtclean: removed $removed, kept $kept, dropped $dropped branch(es)"
+}
+
+_wt_clean

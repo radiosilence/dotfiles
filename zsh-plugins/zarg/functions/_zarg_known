@@ -1,4 +1,5 @@
 # Every option the user could have meant, for the did-you-mean hint.
+autoload -Uz _zarg_f
 local rec
 for rec in "$ZARG_FLAGS[@]" "$ZARG_OPTS[@]"; do
   print -r -- "$(_zarg_f "$rec" 1)"; print -r -- "$(_zarg_f "$rec" 2)"

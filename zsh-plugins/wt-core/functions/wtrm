@@ -1,0 +1,33 @@
+# No args: remove the worktree you're currently inside, cd to repo root
+autoload -Uz _wt_find _wt_path _wt_pr_state _wt_root
+local root=$(_wt_root)
+local here=$(git rev-parse --show-toplevel 2>/dev/null)
+local name wt
+
+if [[ -n $1 ]]; then
+  name=$1
+  # Registered location wins: a worktree moved off the convention still dies.
+  wt=$(_wt_find "$name"); [[ -n $wt ]] || wt=$(_wt_path "$name")
+else
+  wt=$here
+  [[ -z $wt || $wt == "$root" ]] && { echo "not inside a worktree"; return 1; }
+  name=$(basename "$wt")
+fi
+
+[[ -d $wt ]] || { echo "no worktree at $wt"; return 1; }
+builtin cd "$root"
+git worktree remove "$wt" || return 1
+# -d refuses on squash-merged branches, which is most of them.
+if ! git branch -d "$name" 2>/dev/null; then
+  local repo=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null)
+  case $(_wt_pr_state "$name" "$repo") in
+    MERGED|CLOSED) git branch -D "$name" 2>/dev/null ;;
+  esac
+fi
+echo "removed: $name"
+
+# Only when the tab being closed is the one we were standing in — otherwise
+# close-tab kills whichever tab is current, which is the wrong one.
+if [[ -n $ZELLIJ && $here == "$wt" ]]; then
+  zellij action close-tab
+fi

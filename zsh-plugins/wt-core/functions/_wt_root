@@ -1,0 +1,3 @@
+local common
+common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || return 1
+echo "${common%/.git}"

@@ -1,0 +1,25 @@
+# Takes a PR or an issue: a URL disambiguates itself (/pull/ vs /issues/), and
+# a bare number is probed — GitHub numbers both from one sequence, and
+# `gh pr view` only resolves PRs, so a failure means issue.
+autoload -Uz _wt_core _wt_gh _wt_issue _wt_ref_parse
+local go_fn=$1 prime_fn=$2 arg=$3
+command -v gh >/dev/null || { echo "gh not found"; return 1; }
+[[ -z $arg ]] && { echo "usage: <number|url|owner/repo#N>  (PR or issue)"; return 1; }
+[[ $arg == *"/issues/"* ]] && { _wt_issue "$go_fn" "$prime_fn" "$arg"; return; }
+
+local parsed; parsed=$(_wt_ref_parse "$arg") || return 1
+local owner repo num root
+IFS=$'\t' read -r owner repo num root <<< "$parsed"
+
+_wt_gh "$root" "$owner" "$repo" pr view "$num" --json number -q .number >/dev/null 2>&1 \
+  || { _wt_issue "$go_fn" "$prime_fn" "$arg"; return; }
+
+local branch
+branch=$(_wt_gh "$root" "$owner" "$repo" pr view "$num" --json headRefName -q .headRefName)
+[[ -n $branch ]] || { echo "could not resolve PR #$num"; return 1; }
+
+# PR head may not exist locally; refs/pull works for forks too
+git -C "$root" fetch origin "pull/${num}/head:${branch}" --quiet 2>/dev/null \
+  || git -C "$root" fetch origin "$branch" --quiet 2>/dev/null
+
+(builtin cd "$root" && _wt_core "$go_fn" "$branch")

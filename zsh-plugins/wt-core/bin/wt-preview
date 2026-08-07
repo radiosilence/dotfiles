@@ -2,12 +2,10 @@
 # Preview for the wt fzf pickers: PR details when a PR exists, otherwise git
 # log plus a file tree. fzf-tab sends the whole "branch<TAB>path" line, so the
 # branch is taken up to the first tab.
-source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
-  print -u2 "wt-preview: cannot load zarg"
-  exit 1
-}
 
-zarg_init wt-preview 'Render the fzf preview for a worktree'
+autoload +X -Uz zarg _wt_branches wt || exit 1
+
+zarg wt-preview 'Render the fzf preview for a worktree'
 zarg_arg branch 'worktree branch to preview' required complete=_wt_branches
 zarg_go "$@"
 

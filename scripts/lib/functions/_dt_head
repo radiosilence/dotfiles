@@ -1,0 +1,5 @@
+autoload -Uz _dt_colors
+_dt_colors
+print -r -- ""
+print -r -- "  ${_dt_mag}${_dt_bold}⟢${_dt_off} ${_dt_bold}$1${_dt_off}"
+print -r -- ""

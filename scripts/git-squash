@@ -2,10 +2,9 @@
 # Squash a branch's commits into one before opening a PR.
 set -o pipefail
 
-source "${0:A:h}/lib/common.zsh"
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+autoload +X -Uz zarg _dt_err _dt_head _dt_info _dt_ok _dt_warn || exit 1
 
-zarg_init git-squash 'Squash commits for clean PR history'
+zarg git-squash 'Squash commits for clean PR history'
 zarg_flag -n --dry-run 'show what would be squashed'
 zarg_arg  parent 'parent branch to squash onto' default=main
 zarg_go "$@"
