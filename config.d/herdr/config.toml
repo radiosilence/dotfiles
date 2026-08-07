@@ -1,7 +1,6 @@
 onboarding = false
 
 [theme]
-name = "terminal"
 auto_switch = false
 
 [theme.custom]
@@ -9,15 +8,15 @@ auto_switch = false
 # theme, so herdr's chrome matches the editor rather than approximating it.
 # herdr wants 16 semantic slots but only 7 are hues, and Monokai Pro has no
 # blue — Zedokai itself maps terminal.ansi.blue to orange — so blue takes cyan.
-panel_bg = "#2d2a2e" # matches the terminal bg; Zedokai's lighter panel made herdr chrome float above it
-surface0 = "#2d2a2e" # background / tab.active_background
-surface1 = "#403e41" # element.background
+panel_bg = "#2d2a2e"    # matches the terminal bg; Zedokai's lighter panel made herdr chrome float above it
+surface0 = "#2d2a2e"    # background / tab.active_background
+surface1 = "#403e41"    # element.background
 surface_dim = "#262427" # Zedokai Darker panel.background
-overlay0 = "#6a686b" # perceptual midpoint (OKLCH L 0.526) between too-dim and too-bright
-overlay1 = "#c1c0c0" # lifted off Zedokai's border.focused (#727072) for legibility
-text = "#fcfcfa" # text
-subtext0 = "#c1c0c0" # lifted off Zedokai's text.muted (#939293) for legibility
-accent = "#ffd866" # text.accent
+overlay0 = "#6a686b"    # perceptual midpoint (OKLCH L 0.526) between too-dim and too-bright
+overlay1 = "#c1c0c0"    # lifted off Zedokai's border.focused (#727072) for legibility
+text = "#fcfcfa"        # text
+subtext0 = "#c1c0c0"    # lifted off Zedokai's text.muted (#939293) for legibility
+accent = "#ffd866"      # text.accent
 mauve = "#ab9df2"
 green = "#a9dc76"
 yellow = "#ffd866"
@@ -60,7 +59,7 @@ split_horizontal = "alt+shift+n"
 
 cycle_pane_next = "alt+tab"
 cycle_pane_previous = "alt+shift+tab"
-rename_pane = "prefix+shift+r" # zellij: c = renamepane
+rename_pane = "prefix+shift+r"        # zellij: c = renamepane
 close_pane = "prefix+x"
 
 # tabs — browser semantics, direct
@@ -75,8 +74,8 @@ rename_tab = "prefix+r"
 switch_tab = "prefix+1..9"
 
 # git worktrees — the thing actually switched between day to day, so direct
-open_worktree = "prefix+shift+o" # native; uses herdr's global [worktrees] dir — prefer alt+w
-new_worktree = "prefix+shift+n" # ditto
+open_worktree = "prefix+shift+o"           # native; uses herdr's global [worktrees] dir — prefer alt+w
+new_worktree = "prefix+shift+n"            # ditto
 remove_worktree = "prefix+shift+backspace"
 
 # herdr workspaces (its own tab/pane grouping, unrelated to git worktrees).
@@ -142,4 +141,3 @@ command = "zsh -ic 'wth-pick'"
 description = "worktree picker (per-org paths)"
 width = "80%"
 height = "70%"
-
