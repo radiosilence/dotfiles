@@ -1,0 +1,2 @@
+local dir=$(_wt_dir)
+[[ -d $dir ]] || mkdir -p "$dir"
