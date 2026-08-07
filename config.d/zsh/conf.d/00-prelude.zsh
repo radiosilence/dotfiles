@@ -45,7 +45,7 @@ SAVEHIST=50000
 # scripts autoload it themselves; this is purely for the interactive shell.
 if [[ -d ~/.dotfiles/scripts/lib/functions ]]; then
   fpath=(~/.dotfiles/scripts/lib/functions $fpath)
-  autoload -Uz dt_init && dt_init
+  autoload -Uz dt && dt
 fi
 
 # Add custom completions to fpath before compinit

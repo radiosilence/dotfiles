@@ -2,9 +2,9 @@
 # Wrapper shell for worktree tabs — auto-cleans or prompts on exit.
 # Invoked by wtt, not by hand.
 
-autoload +X -Uz zarg_init || exit 1
+autoload +X -Uz zarg || exit 1
 
-zarg_init wt-shell 'Run a shell in a worktree tab, then remove the worktree on exit if it is clean'
+zarg wt-shell 'Run a shell in a worktree tab, then remove the worktree on exit if it is clean'
 zarg_arg worktree 'worktree path' required
 zarg_arg branch 'branch name' required complete=_wt_branches
 zarg_go "$@"
