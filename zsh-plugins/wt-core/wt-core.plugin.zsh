@@ -274,6 +274,9 @@ wtrm() {
 }
 
 # ── wtclean [-n] ────────────────────────────────────────────────────
+# Runs as bin/wtclean, not as this function: it mutates no shell state, so
+# there is no reason for a shell that was started three commits ago to be the
+# thing executing it. The shim below re-reads the script every invocation.
 # Everything is squash-merged, so a merged branch still looks unmerged to
 # `git branch --merged` and nothing ever gets reclaimed. GitHub's PR state is
 # the only reliable signal; without gh, a deleted upstream stands in for it.
@@ -305,7 +308,7 @@ _wt_pr_state() {
     && echo MERGED || echo NONE
 }
 
-wtclean() {
+_wt_clean() {
   local root=$(_wt_root)
   [[ -z $root ]] && { echo "not in a git repo"; return 1; }
   local dry=0
@@ -380,6 +383,8 @@ wtclean() {
   _wt_prs=()   # scoped to the run — a stale map misclassifies later calls
   echo "wtclean: removed $removed, kept $kept, dropped $dropped branch(es)"
 }
+
+wtclean() { "$WT_CORE_BIN"/wtclean "$@"; }
 
 # ── Completions ─────────────────────────────────────────────────────
 _wt_branches() {

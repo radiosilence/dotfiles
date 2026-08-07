@@ -175,7 +175,7 @@ keybinds clear-defaults=true {
         bind "Alt Shift p" { ToggleGroupMarking; }
         bind "Ctrl q" { Quit; }
         bind "Alt w" {
-            Run "bash" "-c" "$HOME/.dotfiles/zsh-plugins/wt-zellij/bin/wt-picker" {
+            Run "zsh" "-c" "$HOME/.dotfiles/zsh-plugins/wt-zellij/bin/wt-picker" {
                 floating true
                 hold_on_close false
                 x "5%"

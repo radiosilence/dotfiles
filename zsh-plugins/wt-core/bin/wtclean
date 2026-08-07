@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+# Garbage-collect worktrees and branches against GitHub PR state.
+# The logic lives in the plugin next door so wtrm can share _wt_pr_state;
+# this runner exists so the code executed is always the code on disk.
+set -o pipefail
+
+source "${0:A:h:h}/wt-core.plugin.zsh" || {
+  print -u2 "wtclean: cannot load wt-core.plugin.zsh"
+  exit 1
+}
+_wt_clean "$@"

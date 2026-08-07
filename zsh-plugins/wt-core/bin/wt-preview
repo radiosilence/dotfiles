@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # Preview for wt fzf picker
 # Shows PR details if one exists, otherwise git log + file tree
 # Args: $1 = "branch\tpath" or just "branch" (fzf-tab sends $word)
 set -euo pipefail
 
 branch="${1%%$'\t'*}"
-path=$("$(dirname "${BASH_SOURCE[0]}")/wt-list" "$branch")
+path=$("${0:A:h}/wt-list" "$branch")
 [[ -n $path ]] || exit 0
 
 # Try PR view first — shows title, status, checks, reviewers

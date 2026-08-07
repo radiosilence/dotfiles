@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # Wrapper shell for worktree tabs — auto-cleans or prompts on exit
 # Args: $1 = worktree path, $2 = branch name
 set -euo pipefail
@@ -22,7 +22,9 @@ zsh -i || true
 # Guard: never touch the main worktree
 root=$(git -C "$wt" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
 root="${root%/.git}"
-[[ "$wt" == "$root" ]] && exit 0
+if [[ "$wt" == "$root" ]]; then
+  exit 0
+fi
 
 echo ""
 echo "  ${bold}Exiting worktree session${reset}"
@@ -40,7 +42,7 @@ else
   unpushed=$(git -C "$wt" rev-list --count "${base##refs/remotes/}..HEAD" 2>/dev/null || echo 0)
 fi
 
-if [[ $dirty_files -eq 0 && $unpushed -eq 0 ]]; then
+if (( dirty_files == 0 && unpushed == 0 )); then
   # Clean — just remove silently
   if git worktree remove "$wt" 2>/dev/null; then
     git -C "$root" branch -d "$name" 2>/dev/null
@@ -51,10 +53,10 @@ if [[ $dirty_files -eq 0 && $unpushed -eq 0 ]]; then
 fi
 
 # Dirty — show warnings and prompt
-if [[ $dirty_files -gt 0 ]]; then
+if (( dirty_files > 0 )); then
   echo "  ${yellow}You have ${dirty_files} uncommitted file(s). These will be lost if you remove the worktree.${reset}"
 fi
-if [[ $unpushed -gt 0 ]]; then
+if (( unpushed > 0 )); then
   echo "  ${yellow}You have ${unpushed} unpushed commit(s). These will be lost if you remove the worktree.${reset}"
 fi
 
@@ -65,7 +67,8 @@ echo ""
 printf "  ${dim}press 1 or 2${reset} "
 
 while true; do
-  read -rsn1 answer
+  # zsh spells bash's `read -n1` as -k1; -s keeps it off the screen
+  read -rsk1 answer
   case "$answer" in
     1)
       echo ""

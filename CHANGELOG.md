@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**wt-\* helpers are zsh; `wtclean` is a script:**
+
+- These are zsh plugins, so the `bin/` helpers had no business being bash — zsh is guaranteed present here and macOS still ships bash 3.2. Not purely cosmetic: bash's single-char read in `wt-shell`'s keep/remove prompt is `read -rsn1`, which zsh spells `read -rsk1`, and `${BASH_SOURCE[0]}` becomes `${0:A}`
+- `wtclean` moved out of the plugin into `bin/wtclean`; the plugin keeps a one-line shim onto it. A function is only worth defining when it has to mutate the shell — `wt` and `wtrm` cd, a GC pass doesn't. The distinction has teeth: a shell started before an update ran a stale `wtclean` against a `wt-list` that didn't exist on disk yet, silently processed zero worktrees while reporting `removed 0, kept 0`, and still went on to delete seven branches. A script is re-read every invocation, so it cannot half-run
+
+
 **`setup-linux` — headless Ubuntu/Debian boxes:**
 
 - Everything load-bearing already lived in mise, so the port was mostly gating rather than porting. brew's real job here is casks — ghostty, fonts, 1Password, raycast — none of which a headless box wants
