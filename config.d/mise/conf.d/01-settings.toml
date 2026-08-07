@@ -19,7 +19,7 @@ minimum_release_age_excludes = [
   "watchwoman",
   "fastmail",
   "codeowners-lsp",
-  "caldav"
+  "caldav",
 ]
 
 [settings.github]
