@@ -3,16 +3,16 @@
 # Squash merges make `git branch --merged` useless — a merged branch shares no
 # commit with what landed — so gh is the source of truth for whether a
 # worktree is finished.
-source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
-  print -u2 "wtclean: cannot load zarg"
-  exit 1
-}
-# For _wt_root / _wt_base / _wt_named / _wt_pr_state, which wtrm and the
-# picker share. Everything below is used only here.
-source "${0:A:h:h}/wt-core.plugin.zsh" || {
-  print -u2 "wtclean: cannot load wt-core.plugin.zsh"
-  exit 1
-}
+
+autoload -Uz zarg_flag zarg_go zarg_init
+# +X loads now rather than on first call, so functions_source is populated and
+# this can find its sibling bin/ without a path back to the plugin.
+autoload +X -Uz _wt_root _wt_base _wt_named _wt_pr_state
+: ${WT_CORE_BIN:=${functions_source[_wt_root]:h:h}/bin}
+
+# Filled by _wt_pr_cache below. Must be declared: an *undeclared* _wt_prs makes
+# ${_wt_prs[feat/x]} an arithmetic subscript, where "feat/x" is a division.
+typeset -gA _wt_prs
 
 zarg_init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
 zarg_flag -n --dry-run 'show what would be removed without touching anything'

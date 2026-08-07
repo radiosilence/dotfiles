@@ -1,4 +1,5 @@
 # No args: remove the worktree you're currently inside, cd to repo root
+autoload -Uz _wt_find _wt_path _wt_pr_state _wt_root wt
 local root=$(_wt_root)
 local here=$(git rev-parse --show-toplevel 2>/dev/null)
 local name wt

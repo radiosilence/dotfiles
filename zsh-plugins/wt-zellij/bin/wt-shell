@@ -1,10 +1,8 @@
 #!/usr/bin/env zsh
 # Wrapper shell for worktree tabs — auto-cleans or prompts on exit.
 # Invoked by wtt, not by hand.
-source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
-  print -u2 "wt-shell: cannot load zarg"
-  exit 1
-}
+
+autoload -Uz zarg_arg zarg_go zarg_init
 
 zarg_init wt-shell 'Run a shell in a worktree tab, then remove the worktree on exit if it is clean'
 zarg_arg worktree 'worktree path' required

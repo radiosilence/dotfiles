@@ -16,7 +16,7 @@ from one declaration makes that failure mode unrepresentable.
 # Back up a directory somewhere, with the usual knobs.
 set -o pipefail
 
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+autoload -Uz zarg_init zarg_flag zarg_opt zarg_arg zarg_go
 
 zarg_init backup 'Back up a directory'
 zarg_flag -n --dry-run  'show what would be copied, copy nothing'
@@ -195,25 +195,40 @@ per function.
 
 ## Install
 
-Interactive shells, via sheldon:
+Sheldon (or any manager) sources the plugin, which puts its `functions/` on
+`fpath`:
 
 ```toml
 [plugins.zarg]
 local = "~/.dotfiles/zsh-plugins/zarg"
 ```
 
-Scripts source it directly, because `.zshrc` — and therefore every plugin
-manager — never runs for a `#!/usr/bin/env zsh` script:
+Then one `export FPATH` after the plugins have loaded — `conf.d/zzzz-fpath.zsh`
+here. That is the whole mechanism:
 
 ```zsh
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+export FPATH
 ```
 
-That relative path is the one wart. The way to remove it is a `~/.zshenv`
-adding `functions/` to `fpath`, since `.zshenv` is the only startup file a
-script reads; consumers would then just `autoload -Uz zarg_init zarg_flag
-zarg_opt zarg_arg zarg_go` with no path at all. Not done here — it is a file
-that runs on every zsh invocation and it was not worth the reach for one wart.
+`FPATH` is a real environment variable tied to `$fpath`, exactly as `PATH` is
+to `$path`. A script runs in its own zsh and inherits no *functions*, but it
+does inherit the environment — so exporting `FPATH` hands it the same libraries
+the interactive shell loaded. Consumers then need no path to anything:
+
+```zsh
+#!/usr/bin/env zsh
+autoload -Uz zarg_init zarg_flag zarg_opt zarg_arg zarg_go
+```
+
+Each function declares its own private helpers, so autoloading the public names
+is enough.
+
+Two consequences worth knowing. A script run with no zsh ancestor — cron, a
+systemd unit, CI — has no `FPATH` and must set one; `check-completions.zsh`
+does exactly that from its own location. And the libraries a script gets are
+whichever ones the *shell* loaded, so a worktree's scripts use `~/.dotfiles`'
+copy unless you prepend the worktree's own `functions/` to `FPATH` in that
+shell.
 
 ## Tests
 

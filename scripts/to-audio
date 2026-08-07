@@ -2,8 +2,8 @@
 # Bulk audio conversion — replaces the old separate flac/opus subcommands.
 set -o pipefail
 
-source "${0:A:h}/lib/common.zsh"
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+autoload -Uz _dt_cores _dt_fan _dt_files _dt_head _dt_info _dt_need _dt_results \
+             _dt_step _dt_warn zarg_arg zarg_flag zarg_go zarg_init zarg_opt
 
 zarg_init to-audio 'Convert audio files to FLAC or Opus'
 zarg_flag -k --keep    'keep original files'

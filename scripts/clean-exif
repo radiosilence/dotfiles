@@ -2,8 +2,8 @@
 # Strip EXIF (and XMP/IPTC/ICC) metadata from images before sharing them.
 set -o pipefail
 
-source "${0:A:h}/lib/common.zsh"
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+autoload -Uz _dt_cores _dt_files _dt_head _dt_info _dt_need _dt_results \
+             _dt_warn zarg_arg zarg_flag zarg_go zarg_init
 
 zarg_init clean-exif 'Strip EXIF metadata from images'
 zarg_flag -n --dry-run 'show what would be cleaned'

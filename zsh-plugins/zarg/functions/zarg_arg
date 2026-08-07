@@ -1,4 +1,5 @@
 # zarg_arg paths 'help' [required] [variadic] [default=X] [values='a b'] [complete=_fn]
+autoload -Uz _zarg_extras _zarg_reserved
 local name=$1 help=$2; shift 2
 _zarg_reserved "$name" && return 1
 local -A _zarg_x; _zarg_extras "$@"

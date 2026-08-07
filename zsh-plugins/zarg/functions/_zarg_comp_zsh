@@ -1,3 +1,4 @@
+autoload -Uz _zarg_action_zsh _zarg_esc_zsh _zarg_f
 local rec short long i=1
 local -a lines
 
