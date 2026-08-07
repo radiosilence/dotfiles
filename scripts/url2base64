@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+# Fetch a URL and emit it as a base64 data URL — for inlining assets in CSS/HTML.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init url2base64 'Convert URLs to base64 data URLs'
+zarg_opt -t --mime-type 'MIME type for the data URL' default=image/svg+xml metavar=TYPE
+zarg_opt -T --timeout   'timeout in seconds' default=30 metavar=SECS
+zarg_arg url 'URL to fetch' required
+zarg_go "$@"
+
+_dt_need curl || exit 1
+
+# Pipe filter: only the data URL goes to stdout, nothing else.
+local encoded
+encoded=$(curl -fsSL --max-time "$timeout" "$url" | base64 | tr -d '\n') \
+  || { _dt_err "failed to fetch $url"; exit 1 }
+
+print -rn -- "data:${mime_type};base64,${encoded}"

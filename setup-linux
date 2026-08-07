@@ -28,27 +28,22 @@ printf "\n  %s\033[35m⟢%s %sdotfiles bootstrap (linux)%s\n\n" "$BOLD" "$RESET"
 #    gh is the exception that earns its place — see step 2.
 #
 #    rsync and gnupg aren't in mise's registry either. aria2 and unzip are here
-#    because parallel-dl-extract execs `aria2c` and `unzip` directly.
+#    because parallel-dl-extract execs `aria2c` and `unzip` directly; lsof and
+#    exiftool likewise back kill-port and clean-exif, which used to do that
+#    work in-process.
 #
 #    Deliberately absent: coreutils, findutils, openssl, make, curl-the-formula
 #    — core.rb carries those to un-BSD macOS and Ubuntu already has GNU ones.
-#    build-essential is separate below; it's only needed to compile crates/.
 # ---------------------------------------------------------------------------
 if ! command -v zsh >/dev/null 2>&1 || ! command -v git >/dev/null 2>&1 ||
   ! command -v gh >/dev/null 2>&1; then
   printf "  %s installing base packages (sudo)\n" "$WORK"
   sudo apt-get update -qq
   sudo apt-get install -y -qq \
-    zsh git curl ca-certificates gh rsync gnupg unzip aria2
+    zsh git curl ca-certificates gh rsync gnupg unzip aria2 lsof \
+    libimage-exiftool-perl
 fi
 printf "  %s base packages\n" "$OK"
-
-# Rust binaries in crates/ vendor libgit2, so `task reinstall-bins` needs a C
-# compiler. Skippable: DOTFILES_NO_RUST=1 leaves it out and converge warns.
-if [ -z "${DOTFILES_NO_RUST:-}" ] && ! command -v cc >/dev/null 2>&1; then
-  printf "  %s installing build-essential (for crates/)\n" "$WORK"
-  sudo apt-get install -y -qq build-essential
-fi
 
 # ---------------------------------------------------------------------------
 # 2. GitHub auth, before mise touches the network. mise reads gh's hosts.yml

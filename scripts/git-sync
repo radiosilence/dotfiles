@@ -1,0 +1,43 @@
+#!/usr/bin/env zsh
+# Delete local branches whose upstream got deleted after a merge.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init git-sync 'Clean up merged branches'
+zarg_flag -y --yes 'delete without confirmation'
+zarg_go "$@"
+
+DT_YES=$yes
+
+git rev-parse --git-dir >/dev/null 2>&1 || { _dt_err "not a git repository"; exit 1 }
+_dt_head git-sync
+
+_dt_info "Pruning and fetching from origin"
+git fetch --prune origin || { _dt_err "git fetch --prune failed"; exit 1 }
+
+local -a stale
+local line branch track
+for line in ${(f)"$(git for-each-ref --format='%(refname:short)%09%(upstream:track)' refs/heads/)"}; do
+  branch=${line%%$'\t'*}
+  track=${line#*$'\t'}
+  [[ $track == *gone* ]] && stale+=("$branch")
+done
+
+(( $#stale )) || { _dt_ok "No stale branches found"; exit 0 }
+
+_dt_info "Found stale branches: $#stale"
+print -r -- ""
+for branch in $stale; do print -r -- "    $branch"; done
+print -r -- ""
+
+_dt_confirm 'Delete these branches?' || { _dt_warn Cancelled; exit 0 }
+
+_dt_info "Deleting branches"
+for branch in $stale; do
+  git branch -D "$branch" >/dev/null
+  print -r -- "    $branch"
+done
+
+_dt_ok "Deleted $#stale branches"

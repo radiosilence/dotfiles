@@ -1,0 +1,93 @@
+#!/usr/bin/env zsh
+# Check whether art embedded in a FLAC still carries EXIF that should've been stripped.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init extract-exif-from-flac 'Check FLAC embedded artwork for leftover EXIF data'
+zarg_arg flac_file 'FLAC file to check' required
+zarg_go "$@"
+
+_dt_need metaflac exiftool || exit 1
+[[ -f $flac_file ]] || { _dt_err "File not found: $flac_file"; exit 1 }
+[[ ${flac_file:e:l} == flac ]] || { _dt_err "Not a FLAC file: $flac_file"; exit 1 }
+
+_dt_head extract-exif-from-flac
+_dt_info "file: $flac_file"
+
+local listing
+listing=$(metaflac --list --block-type=PICTURE "$flac_file" 2>/dev/null) || { _dt_err "metaflac failed"; exit 1 }
+[[ -z $listing ]] && { _dt_step "No embedded artwork"; exit 0 }
+
+# Per block: the block number, and the picture type — the SECOND "type:" line
+# (the first is always the block type, 6 = PICTURE).
+local -a blocks=(${(f)"$(print -r -- "$listing" | awk '
+  /^METADATA block #/ { blocknum=$3; sub(/^#/,"",blocknum); typecount=0; next }
+  /^[[:space:]]*type:/ { typecount++; if (typecount==2) print blocknum, $2; next }
+')"})
+(( $#blocks )) || { _dt_step "No picture blocks parsed"; exit 0 }
+
+_dt_pic_desc() {
+  case $1 in
+    0)  print 'Other' ;;
+    1)  print '32x32 pixels file icon' ;;
+    2)  print 'Other file icon' ;;
+    3)  print 'Cover (front)' ;;
+    4)  print 'Cover (back)' ;;
+    5)  print 'Leaflet page' ;;
+    6)  print 'Media (e.g. label side of CD)' ;;
+    7)  print 'Lead artist/lead performer/soloist' ;;
+    8)  print 'Artist/performer' ;;
+    9)  print 'Conductor' ;;
+    10) print 'Band/Orchestra' ;;
+    11) print 'Composer' ;;
+    12) print 'Lyricist/text writer' ;;
+    13) print 'Recording Location' ;;
+    14) print 'During recording' ;;
+    15) print 'During performance' ;;
+    16) print 'Movie/video screen capture' ;;
+    17) print 'A bright coloured fish' ;;
+    18) print 'Illustration' ;;
+    19) print 'Band/artist logotype' ;;
+    20) print 'Publisher/Studio logotype' ;;
+    *)  print 'Unknown' ;;
+  esac
+}
+
+# Ask for only the tags that matter, so their presence in the reply IS the
+# finding. Grepping the full report for these names cannot work: exiftool
+# always emits "SourceFile", and that contains "Source".
+local -a sensitive=(
+  -GPS:all -CameraSerialNumber -LensSerialNumber -BodySerialNumber
+  -InternalSerialNumber -UniqueImageID -Artist -Copyright -Creator
+  -Contact -Credit -Source -Comment -UserComment
+)
+
+local tmpdir; tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+
+local i=1 block blocknum ptype desc img json
+for block in $blocks; do
+  blocknum=${block%% *}
+  ptype=${block#* }
+  desc=$(_dt_pic_desc $ptype)
+  img="$tmpdir/picture_${i}.jpg"
+  (( i++ ))
+
+  if ! metaflac --block-number=$blocknum --export-picture-to="$img" "$flac_file" >/dev/null 2>&1; then
+    _dt_err "$desc - Failed to extract"
+    continue
+  fi
+
+  if ! json=$(exiftool -json -q $sensitive "$img" 2>/dev/null); then
+    _dt_ok "$desc - Clean (no EXIF data)"
+    continue
+  fi
+
+  if (( $(print -r -- "$json" | grep -cE '^\s*"[A-Za-z0-9]+":' | tr -d ' ') > 1 )); then
+    _dt_warn "$desc - Contains sensitive EXIF data"
+  else
+    _dt_ok "$desc - Clean"
+  fi
+done

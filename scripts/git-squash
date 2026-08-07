@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+# Squash a branch's commits into one before opening a PR.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init git-squash 'Squash commits for clean PR history'
+zarg_flag -n --dry-run 'show what would be squashed'
+zarg_arg  parent 'parent branch to squash onto' default=main
+zarg_go "$@"
+
+git rev-parse --git-dir >/dev/null 2>&1 || { _dt_err "not a git repository"; exit 1 }
+_dt_head git-squash
+
+local current=$(git rev-parse --abbrev-ref HEAD)
+[[ $current == $parent ]] && { _dt_err "Already on parent branch '$parent'"; exit 1 }
+
+_dt_info "Current branch: $current"
+_dt_info "Parent branch: $parent"
+
+git rev-parse --verify --quiet "refs/heads/$parent" >/dev/null \
+  || { _dt_err "Parent branch '$parent' not found"; exit 1 }
+
+local base=$(git merge-base HEAD "$parent")
+[[ -n $base ]] || { _dt_err "Failed to find merge base"; exit 1 }
+_dt_info "Merge base: ${base[1,7]}"
+
+local -a commits=(${(f)"$(git log --format='%h %s (%an)' --reverse "$base..HEAD")"})
+(( $#commits )) || { _dt_ok "No commits to squash"; exit 0 }
+
+print -r -- ""
+_dt_info "Found $#commits commits to squash:"
+local i=1 c
+for c in $commits; do
+  print -r -- "    $i. $c"
+  (( i++ ))
+done
+print -r -- ""
+
+(( dry_run )) && { _dt_info "Dry run - no changes made"; exit 0 }
+
+local msg=$(git log --format=%s --reverse "$base..HEAD")
+
+_dt_info "Squashing commits..."
+git reset --soft "$base"
+git commit -e -m "$msg" || { _dt_err "Failed to create squashed commit"; exit 1 }
+
+_dt_ok "Squashed $#commits commits into one"
+_dt_warn "Force push required: git push --force"

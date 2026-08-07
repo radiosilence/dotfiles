@@ -4,8 +4,19 @@
 # this runner exists so the code executed is always the code on disk.
 set -o pipefail
 
+source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
+  print -u2 "wtclean: cannot load zarg"
+  exit 1
+}
 source "${0:A:h:h}/wt-core.plugin.zsh" || {
   print -u2 "wtclean: cannot load wt-core.plugin.zsh"
   exit 1
 }
-_wt_clean "$@"
+
+zarg_init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
+zarg_flag -n --dry-run 'show what would be removed without touching anything'
+zarg_go "$@"
+
+# Not ${dry_run:+-n}: zarg sets flags to the string 0 or 1, and 0 is non-empty.
+local -a args; (( dry_run )) && args=(-n)
+_wt_clean $args

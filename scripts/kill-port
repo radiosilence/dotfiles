@@ -1,0 +1,39 @@
+#!/usr/bin/env zsh
+# Kill whatever holds a port — the "address already in use" fix.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init kill-port 'Kill process listening on specified port'
+zarg_flag -n --dry-run 'show what would be killed without doing it'
+zarg_opt  -s --signal  'signal to send' default=TERM metavar=SIGNAL \
+          values='TERM KILL INT HUP QUIT USR1 USR2'
+zarg_arg  port 'port number' required
+zarg_go "$@"
+
+_dt_need lsof || exit 1
+_dt_head kill-port
+
+# Every socket with that local port, listening or established — the same set
+# the netstat-based version matched.
+local -a pids=(${(f)"$(lsof -ti :$port 2>/dev/null)"})
+(( $#pids )) || { _dt_err "no process found on port $port"; exit 1 }
+
+local pid
+for pid in $pids; do _dt_info "found: PID $pid on port $port"; done
+
+if (( dry_run )); then
+  for pid in $pids; do _dt_info "dry-run: would kill PID $pid with signal $signal"; done
+  exit 0
+fi
+
+local failed=0
+for pid in $pids; do
+  if kill -$signal $pid 2>/dev/null; then
+    _dt_ok "killed PID $pid"
+  else
+    _dt_err "could not kill PID $pid"; (( failed++ ))
+  fi
+done
+exit $(( failed > 0 ))

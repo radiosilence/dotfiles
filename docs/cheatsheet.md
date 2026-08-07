@@ -1,16 +1,16 @@
 # Cheatsheet
 
-Comprehensive reference for this dotfiles setup - custom binaries, aliases, functions, and tooling.
+Comprehensive reference for this dotfiles setup - custom scripts, aliases, functions, and tooling.
 
-## Custom Binaries (`~/.dotfiles/bin/`)
+## Custom Scripts (`~/.dotfiles/scripts/`)
 
-All written in Rust, built via `cargo install`. Run any with `--help` for full options.
+zsh, on `$PATH` directly — nothing to build. Run any with `--help` for full options.
 
 ### System & Maintenance
 
 | Command                      | Description                                                            |
 | ---------------------------- | ---------------------------------------------------------------------- |
-| `upd [-v]`                   | Update everything - pulls dotfiles, rebuilds rust bins, runs brew/mise |
+| `upd [-v]`                   | Update everything - pulls dotfiles, runs brew/mise, regenerates completions |
 | `kill-port <port> [-n]`      | Kill process on port (`-n` dry-run, `-s` signal)                       |
 | `prune [paths] [-s kb] [-y]` | Find and delete small directories (default 3MB threshold)              |
 | `unfuck-xcode`               | Reset Xcode CLI tools when they're corrupted                           |
@@ -30,7 +30,6 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | `embed-art [paths]`             | Embed cover.jpg/png into FLAC files                      |
 | `clean-exif [paths]`            | Strip EXIF data from images                              |
 | `extract-exif-from-flac <file>` | Check FLAC embedded art for EXIF data                    |
-| `update-ffmpeg [-s] [-n]`       | Update ffmpeg URLs in mise config (`-s` snapshot builds) |
 
 ### File Operations
 
@@ -48,6 +47,13 @@ All written in Rust, built via `cargo install`. Run any with `--help` for full o
 | `imp <urls>`                 | Download + extract + beets music import (aria2c parallel) |
 | `parallel-dl-extract <urls>` | Parallel download and extract archives                    |
 
+Everything above lives in `scripts/` as zsh and takes `--help`, `--version` and
+`--completions zsh|fish|bash`. All three come from the same
+[zarg](../zsh-plugins/zarg/README.md) declaration the script parses with, so the
+completions always match the flags on offer.
+
+**[scripts/README.md](../scripts/README.md)** covers each one properly, with examples.
+
 ---
 
 ## Shell Functions
@@ -64,7 +70,7 @@ Located in `~/.config/zsh/functions/`.
 | `using <cmd>`        | Check if command exists (returns 0/1)                          |
 | `fonts! [-f] <urls>` | Elegant font installer with progress (`-f` force overwrite)    |
 | `install-terminfo <host>` | Install terminfo entries (ghostty, etc) to remote host via SSH |
-| `upd`                | Wrapper that pulls dotfiles, builds bins, then runs upd binary |
+| `upd`                | Alias for `converge` - the whole system-convergence run          |
 
 ---
 
@@ -279,9 +285,9 @@ See `Brewfile` for full package list.
 
 ```
 ~/.dotfiles/
-├── bin/                    # Compiled Rust binaries
-├── crates/                 # Rust source
-│   └── src/bin/           # Binary implementations
+├── scripts/                # Standalone commands (zsh)
+│   └── lib/common.zsh     # Shared output helpers
+├── zsh-plugins/            # Local zsh plugins (zarg, wt-*)
 ├── config/
 │   └── zsh/
 │       ├── conf.d/        # Modular zsh configs, loaded alphabetically

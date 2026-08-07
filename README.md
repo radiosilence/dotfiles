@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal dev environment. macOS and headless Linux, zsh, Rust tooling.
+Personal dev environment. macOS and headless Linux, zsh throughout.
 
 ## Setup
 
@@ -10,7 +10,7 @@ Personal dev environment. macOS and headless Linux, zsh, Rust tooling.
 curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
 ```
 
-Sequential bootstrap (xcode → Touch ID for sudo → brew → 1Password → clone) and then hands off to `task converge` for everything else — mise, symlinks, Rust binaries, completions, fonts, gh auth. Idempotent; re-running skips what's already done.
+Sequential bootstrap (xcode → Touch ID for sudo → brew → 1Password → clone) and then hands off to `task converge` for everything else — mise, symlinks, completions, fonts, gh auth. Idempotent; re-running skips what's already done.
 
 **Linux (Ubuntu/Debian, headless):**
 
@@ -24,14 +24,14 @@ No 1Password on a headless box, so git auth is gh's credential helper over HTTPS
 
 **Where root is allowed:** bootstrap may install system packages; the Taskfile may not. `converge` runs unattended, so on Linux it stays entirely under `$HOME` — mise in `~/.local`, tools in `~/.local/share/mise`, configs symlinked into `~`. `apt:core`, `apt:upgrade` and `dnf:upgrade` exist but you run them by hand. brew is the exception that isn't one: it's user-owned and installs formulae without root, so `brew:bundle` stays in converge.
 
-The apt list is short by design: `zsh git curl ca-certificates gh rsync gnupg unzip aria2`, plus `build-essential` to compile `crates/`. Nothing there is in mise's registry, and everything that *is* comes from mise. `core.rb`'s `coreutils`/`findutils`/`openssl`/`make` are macOS un-BSD-ing and have no Linux equivalent worth installing.
+The apt list is short by design: `zsh git curl ca-certificates gh rsync gnupg unzip aria2 lsof libimage-exiftool-perl`. Nothing there is in mise's registry, and everything that *is* comes from mise. `core.rb`'s `coreutils`/`findutils`/`openssl`/`make` are macOS un-BSD-ing and have no Linux equivalent worth installing.
 
 Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth poll silently until ready.
 
 ## What's Here
 
 - **Shell configs** — Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
-- **Rust binaries** — System maintenance, git workflow, media processing, file operations
+- **`scripts/`** — System maintenance, git workflow, media processing, file operations, in zsh
 - **Taskfile.yml** — DAG-based system management (bootstrap, update, completions, fonts)
 - **Tool management** — mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
 - **Terminal configs** — zellij, ghostty, starship prompt
@@ -83,7 +83,11 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 - `vimv` — Batch rename in $EDITOR
 - `clean-dls` — Remove scene release garbage
 
-All binaries support `--help` and have shell completions.
+These live in [`scripts/`](scripts/README.md) as zsh — see there for what each one
+does, with examples. They share output helpers in `scripts/lib/common.zsh` and
+declare their interface with [zarg](zsh-plugins/zarg/README.md), which derives
+parsing, `--help`, `--version` and `--completions zsh|fish|bash` from one declaration —
+so a script's completions cannot drift from the flags it actually accepts.
 
 ## Per-Directory Git Config
 

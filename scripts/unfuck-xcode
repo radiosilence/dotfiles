@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+# Nuke and reinstall Xcode CLI Tools when they get stuck in a broken state.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init unfuck-xcode 'Fix Xcode CLI Tools'
+zarg_flag -n --dry-run 'show what would be done'
+zarg_go "$@"
+
+[[ $OSTYPE == darwin* ]] || { _dt_err "macOS only"; exit 1 }
+_dt_head 'xcode unfucker'
+
+if [[ $USER == root ]]; then
+  _dt_warn "Already running as root"
+else
+  _dt_info "Requires sudo - you'll be prompted"
+fi
+
+if (( dry_run )); then
+  _dt_info "DRY RUN - no changes made"
+  _dt_info "Remove: /Library/Developer/CommandLineTools"
+  _dt_info "Reset: xcode-select"
+  exit 0
+fi
+
+_dt_info "Removing: /Library/Developer/CommandLineTools"
+sudo rm -rf /Library/Developer/CommandLineTools || { _dt_err "Failed to remove CommandLineTools"; exit 1 }
+
+_dt_info "Resetting: xcode-select"
+sudo xcode-select --reset || { _dt_err "Failed to reset xcode-select"; exit 1 }
+
+_dt_ok "Xcode unfucked - GUI installer will prompt for CLI Tools"

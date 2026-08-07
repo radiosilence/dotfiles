@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+# Download a batch of URLs, each into its own album dir, and hand them to
+# beets one at a time — beets' importer is interactive and expects one album.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init imp 'Import music from URLs'
+zarg_arg urls 'URLs to download and import' required variadic
+zarg_go "$@"
+
+_dt_need aria2c beet || exit 1
+_dt_head 'music importer'
+
+local dest=$(mktemp -d)
+_dt_info "temp dir: $dest"
+_dt_info "urls: $#urls"
+
+local -i i=0
+local url album_dir
+for url in $urls; do
+  (( i++ ))
+  album_dir="$dest/album_$i"
+  mkdir -p "$album_dir"
+
+  print -r -- ""
+  _dt_step "[$i/$#urls] Downloading $url"
+  if ! aria2c -x 8 -d "$album_dir" "$url"; then
+    _dt_err "Download failed"
+    continue
+  fi
+  _dt_ok Downloaded
+
+  local -a zips=("$album_dir"/*.zip(N))
+  if (( $#zips )); then
+    _dt_step "Extracting..."
+    unzip -q "$zips[1]" -d "$album_dir" && rm -f "$zips[1]"
+    _dt_ok Extracted
+  fi
+
+  _dt_step "Files:"
+  if command -v lsd >/dev/null 2>&1; then
+    lsd --tree "$album_dir"
+  elif command -v tree >/dev/null 2>&1; then
+    tree "$album_dir"
+  fi
+
+  # Interactive — stdin must stay attached, so no redirection here.
+  _dt_step "Importing to beets..."
+  if beet import "$album_dir"; then
+    _dt_ok "Import complete"
+  else
+    _dt_err "Beets import failed for this album"
+  fi
+done

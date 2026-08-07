@@ -1,0 +1,71 @@
+#!/usr/bin/env zsh
+# Strip scene-release garbage (nfo/sfv/sample/junk) out of a download tree.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init clean-dls 'Clean scene release garbage'
+zarg_flag -n --dry-run 'show what would be deleted'
+zarg_arg  paths 'directories to clean' variadic default=.
+zarg_go "$@"
+
+# Word-boundary sample match on the stem (basename minus its last extension),
+# lowercased: exact "sample", sample- / sample_ / "sample " prefixes,
+# -sample / _sample suffixes, and -sample-/_sample_/mixed infixes. This is
+# what keeps resampled.flac and downsample.aiff out of the net.
+_is_sample() {
+  local stem=${1:l}
+  [[ $stem == sample ]] && return 0
+  [[ $stem == sample-* || $stem == sample_* || $stem == 'sample '* ]] && return 0
+  [[ $stem == *-sample || $stem == *_sample ]] && return 0
+  [[ $stem == *-sample-* || $stem == *_sample_* || $stem == *-sample_* || $stem == *_sample-* ]] && return 0
+  return 1
+}
+
+_is_garbage() {
+  local base=${1:t} lbase stem
+  lbase=${base:l}
+  [[ $lbase == .ds_store ]] && return 0
+  [[ $lbase == *.nfo || $lbase == *.png || $lbase == *.jpg || $lbase == *.jpeg || $lbase == *.sfv ]] && return 0
+  [[ $lbase == ._* ]] && return 0
+  [[ $lbase == readme.txt || $lbase == info.txt || $lbase == nfo.txt || $lbase == file_id.diz ]] && return 0
+  stem=${lbase%.*}
+  _is_sample "$stem" && return 0
+  return 1
+}
+
+_dt_head clean-dls
+
+local -a all_files=("${(0)$(find "${paths[@]}" -type f -print0 2>/dev/null)}")
+local -a garbage=()
+local f
+for f in $all_files; do
+  _is_garbage "$f" && garbage+=("$f")
+done
+
+if (( ! $#garbage )); then
+  _dt_ok "No garbage files found"
+  exit 0
+fi
+
+_dt_warn "Found $#garbage garbage files"
+for f in $garbage; do print -r -- "  $f"; done
+
+if (( dry_run )); then
+  _dt_info "Mode: dry-run"
+  exit 0
+fi
+
+print -r -- ""
+_dt_confirm 'Delete these files?' || { _dt_err "Cancelled"; exit 0 }
+
+local ok=0 err
+for f in $garbage; do
+  if err=$(rm -f "$f" 2>&1 >/dev/null); then (( ok++ ))
+  else _dt_warn "$f: $err"; fi
+done
+_dt_ok "Deleted $ok files"
+
+# Best effort — clear out directories the deletions just emptied.
+"${0:A:h}/prune" -y "${paths[@]}" >/dev/null 2>&1 || true

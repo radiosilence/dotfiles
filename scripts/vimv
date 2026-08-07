@@ -1,0 +1,52 @@
+#!/usr/bin/env zsh
+# Batch rename by editing a file list in $EDITOR, mv/git-mv-ing the diff back.
+set -o pipefail
+
+source "${0:A:h}/lib/common.zsh"
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+
+zarg_init vimv 'Batch rename files using your $EDITOR'
+zarg_arg  files 'files to rename' variadic
+zarg_go "$@"
+
+_dt_head vimv
+
+(( $#files )) || files=(*(N.))
+(( $#files )) || { _dt_warn "No files found"; exit 0 }
+
+_dt_info "files: $#files"
+
+local tmp=$(mktemp)
+printf '%s\n' $files > $tmp
+
+local -a editor=(${=EDITOR:-vi})
+if ! $editor $tmp; then
+  _dt_err "editor exited with error"
+  rm -f $tmp
+  exit 1
+fi
+
+local -a new=(${(f)"$(<$tmp)"})
+rm -f $tmp
+
+if (( $#new != $#files )); then
+  _dt_err "Number of files changed ($#files -> $#new). Did you delete a line by accident?"
+  exit 1
+fi
+
+local i old new_name renamed=0
+for (( i = 1; i <= $#files; i++ )); do
+  old=$files[i]; new_name=$new[i]
+  [[ $old == $new_name ]] && continue
+
+  mkdir -p ${new_name:h}
+
+  if git ls-files --error-unmatch $old &>/dev/null; then
+    git mv -- $old $new_name && _dt_info "git mv $old → $new_name"
+  else
+    mv -- $old $new_name && _dt_info "mv $old → $new_name"
+  fi
+  (( renamed++ ))
+done
+
+_dt_ok "$renamed files renamed"
