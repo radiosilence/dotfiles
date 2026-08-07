@@ -45,7 +45,7 @@ jobs:
       # Every script is exercised through zarg here, so a spec that parses but
       # renders a broken completion fails the build rather than the shell.
       - name: Completions
-        run: zsh scripts/lib/check-completions
+        run: zsh zsh-plugins/zarg/check-completions.zsh
 
   zarg:
     name: zarg behaviour

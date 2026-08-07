@@ -28,7 +28,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - Handles `--long value`, `--long=value`, `-s value`, attached shorts (`-b192`), clustered flags (`-nk`), `--`, defaults, `env=` fallbacks, `required`, `variadic`, and `values=` sets validated before the script body runs. Unknown flags get a did-you-mean
 - Fidelity across shells is uneven and that is the shells' doing: `complete=` names a zsh completion function, so fish and bash fall back to file completion there. Declared value sets work in all three
 - The emitters live in a separate `completions.zsh` sourced only on demand — scripts load zarg on every invocation and generate completions about once per converge
-- 32 tests in `zsh-plugins/zarg/test.zsh`, plus `scripts/lib/check-completions`, which asserts every script's emitted completion actually parses in zsh, bash and fish. Both run in CI and on pre-push; the old `rust-tests.yml` is now `scripts.yml`
+- 32 tests in `zsh-plugins/zarg/test.zsh`, plus `zsh-plugins/zarg/check-completions.zsh`, which asserts every script's emitted completion actually parses in zsh, bash and fish. Both run in CI and on pre-push; the old `rust-tests.yml` is now `scripts.yml`
 
 **`wtclean` uses zarg too:**
 

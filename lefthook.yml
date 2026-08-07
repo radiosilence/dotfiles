@@ -42,4 +42,4 @@ pre-push:
     # prevent, so prove all three shells still accept what it emits.
     completions:
       glob: "{scripts/**,zsh-plugins/zarg/**}"
-      run: scripts/lib/check-completions
+      run: zsh-plugins/zarg/check-completions.zsh
