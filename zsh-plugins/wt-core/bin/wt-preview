@@ -1,10 +1,19 @@
 #!/usr/bin/env zsh
-# Preview for wt fzf picker
-# Shows PR details if one exists, otherwise git log + file tree
-# Args: $1 = "branch\tpath" or just "branch" (fzf-tab sends $word)
+# Preview for the wt fzf pickers: PR details when a PR exists, otherwise git
+# log plus a file tree. fzf-tab sends the whole "branch<TAB>path" line, so the
+# branch is taken up to the first tab.
+source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
+  print -u2 "wt-preview: cannot load zarg"
+  exit 1
+}
+
+zarg_init wt-preview 'Render the fzf preview for a worktree'
+zarg_arg branch 'worktree branch to preview' required complete=_wt_branches
+zarg_go "$@"
+
 set -euo pipefail
 
-branch="${1%%$'\t'*}"
+branch="${branch%%$'\t'*}"
 path=$("${0:A:h}/wt-list" "$branch")
 [[ -n $path ]] || exit 0
 

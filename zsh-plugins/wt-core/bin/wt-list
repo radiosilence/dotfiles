@@ -1,11 +1,20 @@
 #!/usr/bin/env zsh
-# Emits "branch<TAB>path", one worktree per line. With an argument, prints only
-# the path of that branch. Parsing `worktree list --porcelain` lived in four
-# places and drifted; this is the one copy.
-# Branch is empty for detached worktrees — callers that display it filter those.
+# Emits "branch<TAB>path", one worktree per line. Parsing
+# `worktree list --porcelain` lived in four places and drifted; this is the
+# one copy. Branch is empty for detached worktrees — callers that display it
+# filter those.
+source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
+  print -u2 "wt-list: cannot load zarg"
+  exit 1
+}
+
+zarg_init wt-list 'List worktrees as "branch<TAB>path", or resolve one branch to its path'
+zarg_arg branch 'print only this branch, as a bare path' complete=_wt_branches
+zarg_go "$@"
+
 set -o pipefail
 
-git worktree list --porcelain 2>/dev/null | awk -v want="${1:-}" '
+git worktree list --porcelain 2>/dev/null | awk -v want="${branch:-}" '
   function emit() {
     if (want == "") printf "%s\t%s\n", b, p
     else if (b == want) print p

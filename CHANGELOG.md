@@ -8,6 +8,13 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**The rest of the wt bins parse with zarg:**
+
+- `wtclean` moved to zarg in #82; the other four were still hand-rolled, which is the drift zarg exists to prevent. All five now derive `--help`, the parser and the completions from one declaration, and unknown flags are refused with a did-you-mean rather than ignored
+- Branch arguments declare `complete=_wt_branches`, reusing the function already backing the `wt` and `wtrm` compdefs instead of a second list of worktrees
+- Registered in `generate:completions:plugin`, the by-path variant — plugin internals aren't on `PATH`, so the `command -v` gate the ordinary tools use would skip them silently
+
+
 **`crates/` is gone — 15 binaries become 15 zsh scripts:**
 
 - 3097 lines of Rust and **326 transitive crates** for tools that mostly shuffled argv. Ten of the fifteen shelled out to `ffmpeg`, `metaflac`, `aria2c`, `unzip`, `beet` or `exiftool` anyway, so the Rust was a progress bar wrapped around someone else's program. `git2` vendored libgit2, which is the only reason `setup-linux` installed `build-essential`; `reqwest` + rustls came along for two HTTP GETs that `curl` already does. The replacements total roughly 250 lines and need nothing that wasn't already installed
