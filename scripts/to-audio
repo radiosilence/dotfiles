@@ -2,10 +2,10 @@
 # Bulk audio conversion — replaces the old separate flac/opus subcommands.
 set -o pipefail
 
-autoload -Uz zarg_init _dt_cores _dt_fan _dt_files _dt_head \
+autoload -Uz zarg _dt_cores _dt_fan _dt_files _dt_head \
              _dt_info _dt_need _dt_results _dt_step _dt_warn
 
-zarg_init to-audio 'Convert audio files to FLAC or Opus'
+zarg to-audio 'Convert audio files to FLAC or Opus'
 zarg_flag -k --keep    'keep original files'
 zarg_flag -n --dry-run 'show what would be converted'
 zarg_opt  -b --bitrate 'output bitrate in kbps (opus only)' default=160 env=BITRATE metavar=KBPS

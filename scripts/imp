@@ -3,9 +3,9 @@
 # beets one at a time — beets' importer is interactive and expects one album.
 set -o pipefail
 
-autoload -Uz zarg_init _dt_err _dt_head _dt_info _dt_need _dt_ok _dt_step
+autoload -Uz zarg _dt_err _dt_head _dt_info _dt_need _dt_ok _dt_step
 
-zarg_init imp 'Import music from URLs'
+zarg imp 'Import music from URLs'
 zarg_arg urls 'URLs to download and import' required variadic
 zarg_go "$@"
 

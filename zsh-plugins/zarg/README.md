@@ -16,9 +16,9 @@ from one declaration makes that failure mode unrepresentable.
 # Back up a directory somewhere, with the usual knobs.
 set -o pipefail
 
-autoload -Uz zarg_init
+autoload -Uz zarg
 
-zarg_init backup 'Back up a directory'
+zarg backup 'Back up a directory'
 zarg_flag -n --dry-run  'show what would be copied, copy nothing'
 zarg_flag -v --verbose  'list every file'
 zarg_opt  -c --compress 'compression to use'   default=zstd values='none gzip zstd'
@@ -128,7 +128,7 @@ $ BACKUP_KEEP=90 backup -k 30 ~/D   # keep=30   (command line wins)
 
 | Builder | Purpose |
 | --- | --- |
-| `zarg_init <name> <description>` | start a spec |
+| `zarg <name> <description>` | start a spec |
 | `zarg_flag <short> <long> <help>` | boolean, `0` or `1` |
 | `zarg_opt <short> <long> <help> [extras]` | takes a value |
 | `zarg_arg <name> <help> [extras]` | positional |
@@ -217,7 +217,7 @@ the interactive shell loaded. Consumers then need no path to anything:
 
 ```zsh
 #!/usr/bin/env zsh
-autoload -Uz zarg_init
+autoload -Uz zarg
 ```
 
 Each function declares its own private helpers, so autoloading the public names
