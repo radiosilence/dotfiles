@@ -8,6 +8,11 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**`wtclean`'s logic moved into the script:**
+
+- The plugin defined `_wt_clean`, `_wt_pr_cache` and `_wt_fan` with `bin/wtclean` as their only caller, so every interactive shell parsed ~150 lines it would never run. The split also meant zarg parsed `--dry-run` into `$dry_run` and the script re-encoded it back into `-n` for the function to parse again — a round trip that existed purely because of the file boundary, and that needed a comment to explain its own gotcha
+- Only the helpers `wtrm` and the pickers share stayed behind
+- `_wt_prs` deliberately keeps its declaration beside `_wt_pr_state` rather than travelling with the code that fills it. An *undeclared* associative array turns `${_wt_prs[feat/x]}` into an arithmetic subscript, where `feat/x` is a division — so every slashed branch name died with "division by zero". Caught by testing `wtrm`'s path, not by reading
 **zarg is a loader plus a function per file:**
 
 - `zarg.plugin.zsh` is now three working lines — it locates itself with `${0:A:h}`, adds its own `functions/` to `fpath`, and autoloads by globbing basenames so adding a function needs no edit to the loader. That is the ordinary plugin convention; `zsh-completions` and `claude-code-zsh-completion` in the sheldon tree both do the same thing, and sheldon itself emits no `fpath` lines at all
