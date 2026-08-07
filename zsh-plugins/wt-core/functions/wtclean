@@ -1,0 +1,4 @@
+# Runs as bin/wtclean, not as this function: it mutates no shell state, so
+# there is no reason for a shell that was started three commits ago to be the
+# thing executing it. The shim re-reads the script every invocation.
+"$WT_CORE_BIN"/wtclean "$@"

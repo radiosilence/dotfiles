@@ -100,6 +100,24 @@ mutate the shell — `wt` and `wtrm` cd, so they qualify; a GC pass doesn't. The
 difference matters: a shell started before an update will happily run a stale
 function against changed helpers and half-succeed, which is exactly how a run
 once reported `removed 0, kept 0` while still deleting seven branches.
+## Layout
+
+```
+wt-core.plugin.zsh   loader: fpath + autoload, exports, compdef, zstyle
+functions/           one function per file, autoloaded on first call
+bin/                 helpers that run as scripts, not shell functions
+```
+
+The plugin file locates itself with `${0:A:h}`, adds its own `functions/` to
+`fpath`, and autoloads by globbing, so adding a command needs no edit to the
+loader. A shell that never touches a worktree keeps all 21 as stubs rather than
+parsing their bodies — verified, though the wall-clock difference is inside the
+noise of starting zsh at all, so treat it as structure rather than speed.
+
+What must stay eager lives in the loader: `WT_CORE_BIN`, the `_wt_prs` map (an
+*undeclared* one turns `${_wt_prs[feat/x]}` into an arithmetic subscript where
+`feat/x` is a division), the `compdef` registrations, and the fzf-tab `zstyle`s.
+
 ## Exports
 
 `WT_CORE_BIN` — this plugin's `bin/`, for sibling plugins and previews.

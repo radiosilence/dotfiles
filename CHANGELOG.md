@@ -8,6 +8,14 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**wt-core is a loader plus a function per file:**
+
+- Same shape as zarg: the plugin locates itself with `${0:A:h}`, adds its own `functions/` to `fpath`, and autoloads by globbing, so adding a command needs no edit to the loader. 21 commands that were defined on every shell start are now stubs until something calls them — verified by checking `$functions[wt]` reads `builtin autoload -XU` rather than a body
+- **Structure, not speed.** 14.2ms vs 13.9ms per source across 200 runs, which is inside the noise of starting zsh at all. The first attempt to measure this was wrong: `[[ -n $functions[$f] ]]` is true for an unloaded stub too, so it reported all 21 as loaded in both versions
+- What has to stay eager stays in the loader: `WT_CORE_BIN`, the `_wt_prs` map, the `compdef` registrations and the fzf-tab `zstyle`s. `_wt_fzf_preview` moved there as an explicit `typeset -g`, still single-quoted — the expansion belongs to fzf's preview shell, not to load time
+- `wt-herdr` and `wt-zellij` stay as they are. Thirty lines and five functions each; splitting them would be ceremony
+
+
 **`wtclean`'s logic moved into the script:**
 
 - The plugin defined `_wt_clean`, `_wt_pr_cache` and `_wt_fan` with `bin/wtclean` as their only caller, so every interactive shell parsed ~150 lines it would never run. The split also meant zarg parsed `--dry-run` into `$dry_run` and the script re-encoded it back into `-n` for the function to parse again — a round trip that existed purely because of the file boundary, and that needed a comment to explain its own gotcha

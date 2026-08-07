@@ -1,0 +1,2 @@
+# branch<TAB>path, minus detached worktrees — picker fodder.
+"$WT_CORE_BIN"/wt-list | awk -F'\t' '$1 != ""'

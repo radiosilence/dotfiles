@@ -1,0 +1,10 @@
+# MERGED | CLOSED | OPEN | NONE
+local branch=$1 repo=$2 state=${_wt_prs[$1]}
+[[ -n $state ]] && { echo "$state"; return }
+if [[ -n $repo ]]; then
+  state=$(gh pr list -R "$repo" --head "$branch" --state all --limit 1 \
+    --json state --jq '.[0].state // "NONE"' 2>/dev/null)
+  [[ -n $state ]] && { echo "$state"; return }
+fi
+[[ $(git for-each-ref --format='%(upstream:track)' "refs/heads/$branch") == *gone* ]] \
+  && echo MERGED || echo NONE
