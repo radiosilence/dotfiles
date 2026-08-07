@@ -115,3 +115,17 @@ sets (`values=`) work everywhere.
 The emitters live in `completions.zsh` and are sourced only when asked for.
 Scripts load zarg on every invocation and generate completions roughly once per
 converge, so keeping them out of the hot path is worth the extra file.
+
+## Tests
+
+```sh
+zsh zsh-plugins/zarg/test.zsh                # zarg itself, against a fixture
+zsh zsh-plugins/zarg/check-completions.zsh   # every real consumer
+```
+
+`test.zsh` covers parsing, precedence, errors, help and the shape of all three
+emitters. `check-completions.zsh` sweeps `scripts/` and every plugin `bin/`,
+and pipes each script's emitted completion into the shell it targets — so a
+spec that parses but renders a broken compdef fails here rather than the next
+time you press tab. Both run on pre-push and in CI, where fish is installed so
+its output is parsed rather than merely generated.

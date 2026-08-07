@@ -7,8 +7,9 @@ the repo is cloned — nothing to build.
 Every script takes `--help`, `--version` and `--completions zsh|fish|bash`, all
 derived from the same [zarg](../zsh-plugins/zarg/README.md) declaration it
 parses with. Shared output helpers live in [`lib/common.zsh`](lib/common.zsh);
-[`lib/check-completions`](lib/check-completions) asserts every emitted
-completion actually parses in its target shell, and runs on pre-push and in CI.
+zarg's [`check-completions.zsh`](../zsh-plugins/zarg/check-completions.zsh)
+asserts every emitted completion actually parses in its target shell, and runs
+on pre-push and in CI.
 
 ---
 
