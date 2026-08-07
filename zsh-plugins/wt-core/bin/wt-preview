@@ -5,9 +5,9 @@
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg wt-preview 'Render the fzf preview for a worktree'
-zarg_arg branch 'worktree branch to preview' required complete=_wt_branches
-zarg_go "$@"
+zarg init wt-preview 'Render the fzf preview for a worktree'
+zarg arg branch 'worktree branch to preview' required complete=_wt_branches
+zarg go "$@"
 
 set -euo pipefail
 

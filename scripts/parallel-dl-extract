@@ -5,9 +5,9 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg parallel-dl-extract 'Parallel download and extract URLs using aria2c'
-zarg_arg urls 'URLs to download' required variadic
-zarg_go "$@"
+zarg init parallel-dl-extract 'Parallel download and extract URLs using aria2c'
+zarg arg urls 'URLs to download' required variadic
+zarg go "$@"
 
 dt need aria2c unzip || exit 1
 dt head 'parallel dl+extract'

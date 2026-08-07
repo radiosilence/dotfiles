@@ -4,9 +4,9 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg git-sync 'Clean up merged branches'
-zarg_flag -y --yes 'delete without confirmation'
-zarg_go "$@"
+zarg init git-sync 'Clean up merged branches'
+zarg flag -y --yes 'delete without confirmation'
+zarg go "$@"
 
 DT_YES=$yes
 

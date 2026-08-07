@@ -4,9 +4,9 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg vimv 'Batch rename files using your $EDITOR'
-zarg_arg  files 'files to rename' variadic
-zarg_go "$@"
+zarg init vimv 'Batch rename files using your $EDITOR'
+zarg arg  files 'files to rename' variadic
+zarg go "$@"
 
 dt head vimv
 

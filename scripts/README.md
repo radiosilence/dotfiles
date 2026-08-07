@@ -253,10 +253,10 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg my-tool 'What it does'
-zarg_flag -n --dry-run 'show what would happen'
-zarg_arg  target 'thing to act on' required
-zarg_go "$@"
+zarg init my-tool 'What it does'
+zarg flag -n --dry-run 'show what would happen'
+zarg arg  target 'thing to act on' required
+zarg go "$@"
 
 dt head my-tool
 (( dry_run )) && { dt info "would act on $target"; exit 0 }

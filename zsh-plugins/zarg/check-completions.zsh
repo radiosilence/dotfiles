@@ -30,7 +30,7 @@ _fail() { print -ru2 -- "  FAIL  $1"; (( failures++ )) }
 
 for f in $targets; do
   [[ -f $f && -x $f ]] || continue
-  grep -q '^zarg_go' "$f" 2>/dev/null || continue
+  grep -q '^zarg go' "$f" 2>/dev/null || continue
   name=${f:t}
 
   zsh -n "$f"                 || _fail "$name: syntax"

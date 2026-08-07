@@ -4,9 +4,9 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg extract-exif-from-flac 'Check FLAC embedded artwork for leftover EXIF data'
-zarg_arg flac_file 'FLAC file to check' required
-zarg_go "$@"
+zarg init extract-exif-from-flac 'Check FLAC embedded artwork for leftover EXIF data'
+zarg arg flac_file 'FLAC file to check' required
+zarg go "$@"
 
 dt need metaflac exiftool || exit 1
 [[ -f $flac_file ]] || { dt err "File not found: $flac_file"; exit 1 }

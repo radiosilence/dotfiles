@@ -4,9 +4,9 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg embed-art 'Embed artwork into FLAC files'
-zarg_arg paths 'directories to search' variadic default=.
-zarg_go "$@"
+zarg init embed-art 'Embed artwork into FLAC files'
+zarg arg paths 'directories to search' variadic default=.
+zarg go "$@"
 
 dt need metaflac clean-exif || exit 1
 dt head embed-art

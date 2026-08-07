@@ -4,8 +4,8 @@
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg wt-picker 'fzf over worktrees: enter opens or creates, ^x removes, ^r pulls, ^v/^y/^d/^l are PR view/checks/diff/create'
-zarg_go "$@"
+zarg init wt-picker 'fzf over worktrees: enter opens or creates, ^x removes, ^r pulls, ^v/^y/^d/^l are PR view/checks/diff/create'
+zarg go "$@"
 
 set -o pipefail
 export CLICOLOR_FORCE=1

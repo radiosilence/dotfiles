@@ -6,9 +6,9 @@
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg wt-list 'List worktrees as "branch<TAB>path", or resolve one branch to its path'
-zarg_arg branch 'print only this branch, as a bare path' complete=_wt_branches
-zarg_go "$@"
+zarg init wt-list 'List worktrees as "branch<TAB>path", or resolve one branch to its path'
+zarg arg branch 'print only this branch, as a bare path' complete=_wt_branches
+zarg go "$@"
 
 set -o pipefail
 

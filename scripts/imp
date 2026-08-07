@@ -5,9 +5,9 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg imp 'Import music from URLs'
-zarg_arg urls 'URLs to download and import' required variadic
-zarg_go "$@"
+zarg init imp 'Import music from URLs'
+zarg arg urls 'URLs to download and import' required variadic
+zarg go "$@"
 
 dt need aria2c beet || exit 1
 dt head 'music importer'
