@@ -1,0 +1,6 @@
+# zarg_opt -s --signal 'help' [default=X] [env=VAR] [values='a b'] [complete=_fn] [metavar=SIG]
+local short=$1 long=$2 help=$3; shift 3
+local -A _zarg_x; _zarg_extras "$@"
+local dest=$(_zarg_dest $long)
+_zarg_reserved "$dest" && return 1
+ZARG_OPTS+=("${short}${ZARG_SEP}${long}${ZARG_SEP}${help}${ZARG_SEP}${dest}${ZARG_SEP}${_zarg_x[default]}${ZARG_SEP}${_zarg_x[env]}${ZARG_SEP}${_zarg_x[values]}${ZARG_SEP}${_zarg_x[complete]}${ZARG_SEP}${_zarg_x[metavar]:-${dest:u}}")

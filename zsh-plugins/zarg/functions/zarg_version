@@ -1,0 +1,4 @@
+# These scripts ship with the dotfiles and are versioned by them, so the repo's
+# own description is the only honest answer.
+local v=${ZARG_VERSION:-$(git -C "${ZARG_HOME:h:h}" describe --tags --always --dirty 2>/dev/null)}
+print -r -- "$ZARG_NAME ${v:-unknown} (dotfiles)"
