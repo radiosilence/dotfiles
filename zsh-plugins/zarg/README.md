@@ -66,6 +66,25 @@ Extras are `key=value` pairs, or bare words for the boolean ones:
 `--completions`, and on a parse error. Once it returns, the parse succeeded —
 scripts do not check its result.
 
+## Using it from another plugin
+
+Any **script** can, wherever it lives. `wt-core`'s `wtclean` does:
+
+```zsh
+source "${0:A:h:h:h}/zarg/zarg.plugin.zsh"
+
+zarg_init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
+zarg_flag -n --dry-run 'show what would be removed without touching anything'
+zarg_go "$@"
+
+local -a args; (( dry_run )) && args=(-n)
+_wt_clean $args
+```
+
+A plugin script that isn't on `$PATH` needs the `generate:completions:plugin` task rather than the usual one, because `command -v` can't see a command reached through a shell function.
+
+**Not for shell functions.** `zarg_go` calls `exit` for `--help`, `--version` and parse errors — in an interactive function that kills the user's shell rather than the command. It also assigns with `typeset -g`, so parsed values and the `ZARG_*` spec arrays would leak into the session and any two functions using it would clobber each other. This is why `wt` and `wtrm` still parse by hand and register their completions with `compdef` at load time: they must mutate the calling shell, so they cannot be scripts, so zarg is the wrong tool. `wtclean` only garbage-collects, which is why it *is* a script and can use this.
+
 ## What you get
 
 Parsing covers `--long value`, `--long=value`, `-s value`, attached shorts

@@ -23,6 +23,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 - The emitters live in a separate `completions.zsh` sourced only on demand — scripts load zarg on every invocation and generate completions about once per converge
 - 32 tests in `zsh-plugins/zarg/test.zsh`, plus `scripts/lib/check-completions`, which asserts every script's emitted completion actually parses in zsh, bash and fish. Both run in CI and on pre-push; the old `rust-tests.yml` is now `scripts.yml`
 
+**`wtclean` uses zarg too:**
+
+- It was already a script rather than a function — a GC pass has no reason to mutate the calling shell — so it drops its hand-rolled `[[ $1 == -n ]]` and gains `--help`, `--version`, a typo-correcting parser and the first completion it has ever had
+- The rest of `wt-*` deliberately doesn't. `wt` and `wtrm` `cd`, so they must stay functions, and zarg is wrong for functions on two counts: `zarg_go` calls `exit`, which in an interactive function kills the user's shell rather than the command, and `typeset -g` would leak parsed values and the `ZARG_*` spec arrays into the session. They keep `compdef` at load time
+- Needed a `generate:completions:plugin` task: `wtclean` is reached through a shell function, so `command -v wtclean` finds nothing from inside a task and the usual generator would have skipped it silently
+
 **Behaviour that deliberately changed:**
 
 - **`to-audio flac|opus` is a positional, not a subcommand.** The two differed by exactly one option (`--bitrate`, meaningless for lossless), so the subcommand machinery was buying nothing. `--bitrate` is now ignored for flac rather than absent

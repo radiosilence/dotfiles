@@ -10,8 +10,11 @@ local -a targets
 if (( $# )); then
   targets=("$@")
 else
-  # zarg scripts are the ones that source it — lib/ and plain scripts are not.
-  targets=(${0:A:h:h}/*(N-.^/))
+  # Executable regular files only: the README documents zarg and would other-
+  # wise match the grep below, then get run. Plugin bin/ dirs are in scope too
+  # — wtclean is a zarg script that just doesn't live on $PATH.
+  local root=${0:A:h:h:h}
+  targets=($root/scripts/*(N-.x) $root/zsh-plugins/*/bin/*(N-.x))
 fi
 
 local -i failures=0
@@ -20,8 +23,8 @@ local f name
 _fail() { print -ru2 -- "  FAIL  $1"; (( failures++ )) }
 
 for f in $targets; do
-  [[ -f $f ]] || continue
-  grep -q 'zarg.plugin.zsh' "$f" 2>/dev/null || continue
+  [[ -f $f && -x $f ]] || continue
+  grep -q '^zarg_go' "$f" 2>/dev/null || continue
   name=${f:t}
 
   zsh -n "$f"                 || _fail "$name: syntax"

@@ -52,6 +52,8 @@ Everything above lives in `scripts/` as zsh and takes `--help`, `--version` and
 [zarg](../zsh-plugins/zarg/README.md) declaration the script parses with, so the
 completions always match the flags on offer.
 
+**[scripts/README.md](../scripts/README.md)** covers each one properly, with examples.
+
 ---
 
 ## Shell Functions

@@ -607,6 +607,10 @@ tasks:
         vars:
           TOOL: "{{.ITEM}}"
           CMD: "{{.ITEM}} --completions zsh"
+      - task: generate:completions:plugin
+        vars:
+          TOOL: wtclean
+          BIN: "{{.DOTFILES}}/zsh-plugins/wt-core/bin/wtclean"
       # Custom completion commands
       - task: generate:completions:gen
         vars: { TOOL: aube, CMD: "aube completion zsh" }
@@ -685,6 +689,32 @@ tasks:
       - |
         new=$(mktemp)
         if {{.CMD}} > "$new" 2>/dev/null && [ -s "$new" ]; then
+          if ! cmp -s "$new" "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null; then
+            mv "$new" "{{.COMP_DIR}}/_{{.TOOL}}"
+            printf "{{.OK}} %s\n" "{{.TOOL}}"
+            echo "{{.TOOL}}" >> {{.STATE}}
+          else
+            rm -f "$new"
+          fi
+        else
+          rm -f "$new"
+        fi
+
+  # zarg scripts that live in a plugin rather than on $PATH. wtclean is reached
+  # interactively through a shell function, so `command -v` can't see it from
+  # here and the usual gen task would skip it.
+  generate:completions:plugin:
+    internal: true
+    run: always
+    deps: [generate:completions:setup]
+    status: ["! test -x {{.BIN}}"]
+    vars:
+      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+      STATE: "/tmp/.task-completions-changed"
+    cmds:
+      - |
+        new=$(mktemp)
+        if {{.BIN}} --completions zsh > "$new" 2>/dev/null && [ -s "$new" ]; then
           if ! cmp -s "$new" "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null; then
             mv "$new" "{{.COMP_DIR}}/_{{.TOOL}}"
             printf "{{.OK}} %s\n" "{{.TOOL}}"
