@@ -96,17 +96,6 @@ creates parent directories — so rewriting a line to `2024/holiday.jpg` moves t
 file there. If the number of lines changes it refuses and touches nothing: a
 shifted list would rename every file to its neighbour's name.
 
-### `prune-gen`
-
-Builds a throwaway directory tree for testing `prune` and prints its path.
-
-```sh
-prune "$(prune-gen | tail -1)"   # answer n at the prompt
-```
-
-Writes real bytes rather than sparse files, because `prune` measures blocks — a
-sparse fixture reads as near-zero and stops exercising the threshold.
-
 ---
 
 ## Git
