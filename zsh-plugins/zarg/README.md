@@ -9,38 +9,122 @@ hand-written pairs drift apart the moment you add a flag — the parser accepts
 something the completion never offers, or worse, the reverse. Deriving both
 from one declaration makes that failure mode unrepresentable.
 
-## Install (sheldon)
-
-```toml
-[plugins.zarg]
-local = "~/.dotfiles/zsh-plugins/zarg"
-```
-
-Scripts source it directly rather than relying on the interactive shell, so
-they behave the same under `env -i`:
+## A whole script
 
 ```zsh
+#!/usr/bin/env zsh
+# Back up a directory somewhere, with the usual knobs.
+set -o pipefail
+
 source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
-```
 
-## Use
-
-```zsh
-zarg_init kill-port 'Kill process listening on specified port'
-zarg_flag -n --dry-run 'show what would be killed without doing it'
-zarg_opt  -s --signal  'signal to send' default=TERM metavar=SIGNAL \
-          values='TERM KILL INT HUP QUIT USR1 USR2'
-zarg_arg  port 'port number' required
+zarg_init backup 'Back up a directory'
+zarg_flag -n --dry-run  'show what would be copied, copy nothing'
+zarg_flag -v --verbose  'list every file'
+zarg_opt  -c --compress 'compression to use'   default=zstd values='none gzip zstd'
+zarg_opt  -k --keep     'how many to retain'   default=7 env=BACKUP_KEEP metavar=N
+zarg_arg  source  'directory to back up'       required
+zarg_arg  targets 'where to put it'            variadic default=/backup
 zarg_go "$@"
 
-(( dry_run )) && ...
-kill -$signal $pid
+print -r -- "source=$source  targets=(${(j:, :)targets})"
+print -r -- "compress=$compress  keep=$keep"
+(( dry_run )) && print -r -- "(dry run — nothing copied)"
 ```
 
-Each declaration binds a variable named after its long form, dashes turned to
-underscores: `--dry-run` sets `$dry_run` (`0` or `1`), `--signal` sets
-`$signal`, the `port` positional sets `$port`. A `variadic` positional sets an
-array.
+That is the entire interface. Running it:
+
+```console
+$ backup ~/Documents
+source=/Users/you/Documents  targets=(/backup)
+compress=zstd  keep=7
+
+$ backup -n ~/Documents /nas/a --compress=gzip /nas/b -vk 30
+source=/Users/you/Documents  targets=(/nas/a, /nas/b)
+compress=gzip  keep=30
+(dry run — nothing copied)
+
+$ BACKUP_KEEP=90 backup ~/Documents
+compress=zstd  keep=90
+
+$ backup -c lzma ~/Documents
+backup: --compress: 'lzma' is not one of: none gzip zstd
+  try 'backup --help'
+
+$ backup
+backup: missing argument: source
+  try 'backup --help'
+```
+
+Note the second one: flags, an `=` option, a clustered `-vk` whose `k` takes a
+value, and two positionals, all interleaved. Order never matters — options and
+positionals may appear in any arrangement, and everything after `--` is
+positional no matter what it looks like.
+
+And the `--help` nobody wrote:
+
+```
+  Back up a directory
+
+  usage: backup [options] <source> [targets]...
+
+  arguments:
+    source                   directory to back up
+    targets                  where to put it
+
+  options:
+    -n, --dry-run            show what would be copied, copy nothing
+    -v, --verbose            list every file
+    -c, --compress COMPRESS  compression to use (default: zstd)
+    -k, --keep N             how many to retain (default: 7) ($BACKUP_KEEP)
+    -h, --help               show this help
+    --version                show version
+    --completions SHELL      emit completions (zsh, fish, bash)
+```
+
+## Where the values land
+
+Each declaration binds a plain variable in the calling script, named after the
+long form with dashes turned to underscores:
+
+| Declared | Variable | Value |
+| --- | --- | --- |
+| `zarg_flag -n --dry-run` | `$dry_run` | `0` or `1` |
+| `zarg_opt -k --keep` | `$keep` | the string |
+| `zarg_arg source` | `$source` | the string |
+| `zarg_arg targets … variadic` | `$targets` | an array |
+
+Plain variables rather than an associative array (`$zarg[keep]`) is a
+deliberate trade: `(( dry_run ))` and `$keep` read better in the body than the
+subscripted form, and the body is what you spend your time in. The cost is that
+zarg writes into your namespace, so a spec is refused if it would bind a name
+zsh reserves:
+
+```console
+$ zarg_opt -p --path 'where'
+zarg: cannot bind 'path' — zsh reserves it for shell state
+```
+
+`$path` is the one that matters — zsh ties it to `$PATH`, so binding it would
+empty `PATH` mid-parse and every command afterwards would vanish. That bug
+happened here once already, in a loop variable, before this check existed.
+
+## Precedence
+
+Declared default, then environment, then the command line — each overriding the
+last:
+
+```zsh
+zarg_opt -k --keep 'how many to retain' default=7 env=BACKUP_KEEP
+```
+
+```console
+$ backup ~/D                        # keep=7    (default)
+$ BACKUP_KEEP=90 backup ~/D         # keep=90   (environment)
+$ BACKUP_KEEP=90 backup -k 30 ~/D   # keep=30   (command line wins)
+```
+
+## Spec API
 
 | Builder | Purpose |
 | --- | --- |
@@ -66,37 +150,15 @@ Extras are `key=value` pairs, or bare words for the boolean ones:
 `--completions`, and on a parse error. Once it returns, the parse succeeded —
 scripts do not check its result.
 
-## Using it from another plugin
-
-Any **script** can, wherever it lives. `wt-core`'s `wtclean` does:
-
-```zsh
-source "${0:A:h:h:h}/zarg/zarg.plugin.zsh"
-
-zarg_init wtclean 'Remove worktrees whose PR is merged or closed, keeping anything dirty'
-zarg_flag -n --dry-run 'show what would be removed without touching anything'
-zarg_go "$@"
-
-local -a args; (( dry_run )) && args=(-n)
-_wt_clean $args
-```
-
-A plugin script that isn't on `$PATH` needs the `generate:completions:plugin` task rather than the usual one, because `command -v` can't see a command reached through a shell function.
-
-**Not for shell functions.** `zarg_go` calls `exit` for `--help`, `--version` and parse errors — in an interactive function that kills the user's shell rather than the command. It also assigns with `typeset -g`, so parsed values and the `ZARG_*` spec arrays would leak into the session and any two functions using it would clobber each other. This is why `wt` and `wtrm` still parse by hand and register their completions with `compdef` at load time: they must mutate the calling shell, so they cannot be scripts, so zarg is the wrong tool. `wtclean` only garbage-collects, which is why it *is* a script and can use this.
-
-## What you get
-
 Parsing covers `--long value`, `--long=value`, `-s value`, attached shorts
-(`-b192`), clustered flags (`-nk`), and `--` to stop option processing.
+(`-b192`), clustered flags (`-nk`), and `--` to stop option processing. Unknown
+flags get a did-you-mean:
 
-Bad input is rejected before the script runs, with the closest match offered:
-
-```
-$ kill-port --dry-ru 3000
-kill-port: unknown option: --dry-ru
+```console
+$ backup --dry-ru ~/D
+backup: unknown option: --dry-ru
   did you mean '--dry-run'?
-  try 'kill-port --help'
+  try 'backup --help'
 ```
 
 `--version` reports the dotfiles checkout these scripts ship with, since that
@@ -112,20 +174,57 @@ here: `complete=` names a zsh completion function, so only zsh can honour it —
 fish and bash fall back to file completion at that position. Declared value
 sets (`values=`) work everywhere.
 
-The emitters live in `completions.zsh` and are sourced only when asked for.
-Scripts load zarg on every invocation and generate completions roughly once per
-converge, so keeping them out of the hot path is worth the extra file.
+## Layout
+
+```
+zarg.plugin.zsh    loader: fpath + autoload, nothing else
+functions/         one function per file, autoloaded on first call
+test.zsh           zarg against a fixture
+check-completions.zsh   zarg against every real consumer
+```
+
+`zarg.plugin.zsh` follows the usual plugin convention — it locates itself with
+`${0:A:h}`, adds its own `functions/` to `fpath`, and autoloads by globbing, so
+adding a function needs no edit to the loader. Sourcing zarg therefore costs a
+handful of lines instead of the whole library, and a script that never asks for
+fish completions never loads the fish emitter.
+
+This is a structural win, not a speed one — measured across 30 runs the split
+made no observable difference, since autoload trades file parsing for a stat
+per function.
+
+## Install
+
+Interactive shells, via sheldon:
+
+```toml
+[plugins.zarg]
+local = "~/.dotfiles/zsh-plugins/zarg"
+```
+
+Scripts source it directly, because `.zshrc` — and therefore every plugin
+manager — never runs for a `#!/usr/bin/env zsh` script:
+
+```zsh
+source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+```
+
+That relative path is the one wart. The way to remove it is a `~/.zshenv`
+adding `functions/` to `fpath`, since `.zshenv` is the only startup file a
+script reads; consumers would then just `autoload -Uz zarg_init zarg_flag
+zarg_opt zarg_arg zarg_go` with no path at all. Not done here — it is a file
+that runs on every zsh invocation and it was not worth the reach for one wart.
 
 ## Tests
 
 ```sh
-zsh zsh-plugins/zarg/test.zsh                # zarg itself, against a fixture
+zsh zsh-plugins/zarg/test.zsh                # 35 tests, zarg against a fixture
 zsh zsh-plugins/zarg/check-completions.zsh   # every real consumer
 ```
 
-`test.zsh` covers parsing, precedence, errors, help and the shape of all three
-emitters. `check-completions.zsh` sweeps `scripts/` and every plugin `bin/`,
-and pipes each script's emitted completion into the shell it targets — so a
-spec that parses but renders a broken compdef fails here rather than the next
-time you press tab. Both run on pre-push and in CI, where fish is installed so
-its output is parsed rather than merely generated.
+`test.zsh` covers parsing, precedence, reserved names, errors, help and the
+shape of all three emitters. `check-completions.zsh` sweeps `scripts/` and every
+plugin `bin/`, piping each script's emitted completion into the shell it targets
+— so a spec that parses but renders a broken compdef fails there rather than the
+next time you press tab. Both run on pre-push and in CI, where fish is installed
+so its output is parsed rather than merely generated.

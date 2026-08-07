@@ -1,0 +1,2 @@
+# Field <index> of a \x1f record.
+local -a p=("${(@ps:$ZARG_SEP:)1}"); print -r -- "${p[$2]}"

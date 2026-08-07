@@ -1,0 +1,39 @@
+local rec name
+local -a usage=("$ZARG_NAME")
+(( $#ZARG_FLAGS || $#ZARG_OPTS )) && usage+=("[options]")
+for rec in "$ZARG_ARGS[@]"; do
+  name=$(_zarg_f "$rec" 1)
+  if (( $(_zarg_f "$rec" 3) )); then usage+=("<$name>"); else usage+=("[$name]"); fi
+  (( $(_zarg_f "$rec" 4) )) && usage[-1]="${usage[-1]}..."
+done
+
+print -r -- ""
+print -r -- "  $ZARG_DESC"
+print -r -- ""
+print -r -- "  usage: ${usage[*]}"
+
+if (( $#ZARG_ARGS )); then
+  print -r -- ""
+  print -r -- "  arguments:"
+  for rec in "$ZARG_ARGS[@]"; do
+    printf '    %-24s %s\n' "$(_zarg_f "$rec" 1)" "$(_zarg_f "$rec" 2)"
+  done
+fi
+
+print -r -- ""
+print -r -- "  options:"
+for rec in "$ZARG_FLAGS[@]"; do
+  printf '    %-24s %s\n' "$(_zarg_f "$rec" 1), $(_zarg_f "$rec" 2)" "$(_zarg_f "$rec" 3)"
+done
+local def envvar note
+for rec in "$ZARG_OPTS[@]"; do
+  def=$(_zarg_f "$rec" 5); envvar=$(_zarg_f "$rec" 6); note=
+  [[ -n $def ]]    && note=" (default: $def)"
+  [[ -n $envvar ]] && note="$note (\$$envvar)"
+  printf '    %-24s %s%s\n' \
+    "$(_zarg_f "$rec" 1), $(_zarg_f "$rec" 2) $(_zarg_f "$rec" 9)" "$(_zarg_f "$rec" 3)" "$note"
+done
+printf '    %-24s %s\n' "-h, --help" "show this help"
+printf '    %-24s %s\n' "--version" "show version"
+printf '    %-24s %s\n' "--completions SHELL" "emit completions (zsh, fish, bash)"
+print -r -- ""

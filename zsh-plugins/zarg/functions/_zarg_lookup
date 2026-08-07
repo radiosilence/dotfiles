@@ -1,0 +1,5 @@
+local tok=$1 rec
+for rec in "${(@P)2}"; do
+  [[ $tok == $(_zarg_f "$rec" 1) || $tok == $(_zarg_f "$rec" 2) ]] && { print -r -- "$rec"; return 0 }
+done
+return 1
