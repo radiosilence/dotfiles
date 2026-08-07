@@ -8,25 +8,43 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
-**One shape for both libraries: `zarg_init` and `dt_init`.**
+**`zarg` and `dt` are the names you autoload:**
 
-- Each is the single name a consumer autoloads; calling it sets up that library's state and declares the rest of its family. `autoload +X -Uz zarg_init dt_init || exit 1` is the whole prelude
+```zsh
+autoload +X -Uz zarg dt && dt || exit 1
+
+zarg kill-port 'Kill process listening on specified port'
+zarg_flag -n --dry-run 'show what would be killed without doing it'
+zarg_go "$@"
+
+dt_need lsof || exit 1
+dt_head kill-port
+```
+
+- The init function *is* the library name, and `&& dt` folds its call into the line that was already there. All three branches checked: both present, zarg missing, dt missing — the last two exit 1
+- Individual functions still autoload on their own: `autoload +X -Uz dt_need || exit 1` then `dt_need myapp` works, because each is a self-contained file that declares its own helpers
+- That exposed a gap worth closing: skipping `dt` left the colour parameters unset, so a stand-alone helper printed uncoloured. The six output helpers now fall back to calling `dt` themselves — one parameter test, and only on the path where nothing has initialised yet
+
+
+**One shape for both libraries: `zarg` and `dt`.**
+
+- Each is the single name a consumer autoloads; calling it sets up that library's state and declares the rest of its family. `autoload +X -Uz zarg dt || exit 1` is the whole prelude
 - Snake case throughout — `zarg_flag`, `dt_need` — so a name says which library it belongs to. The dispatcher form (`zarg flag`, `dt need`) read fine but severed that link
-- `dt_init` earns the call it costs: colours are computed once there instead of every output helper re-checking them, which is what the old `_dt_colors` guard did on every printed line
+- `dt` earns the call it costs: colours are computed once there instead of every output helper re-checking them, which is what the old `_dt_colors` guard did on every printed line
 - A load-time barrel is not possible, which is what forced the shape. `autoload +X` loads a function's definition without running it, under both `-Uz` and `-Uk`, so declarations inside a barrel never fire — the entry point has to actually be called
-- `00-prelude.zsh` now autoloads and calls `dt_init` for the interactive shell, so conf.d files can use `dt_warn`/`dt_need` instead of hand-rolled printf. Declarations do not cross into child processes, so scripts still autoload it themselves
+- `00-prelude.zsh` now autoloads and calls `dt` for the interactive shell, so conf.d files can use `dt_warn`/`dt_need` instead of hand-rolled printf. Declarations do not cross into child processes, so scripts still autoload it themselves
 
 
 **zarg is a dispatcher too, matching `dt`:**
 
-- `zarg_init`, `zarg_flag`, `zarg_opt`, `zarg_arg`, `zarg_go` — one autoloadable name, verb after it, same shape as `dt`
+- `zarg`, `zarg_flag`, `zarg_opt`, `zarg_arg`, `zarg_go` — one autoloadable name, verb after it, same shape as `dt`
 - The two were barrelled differently for a circumstantial reason, not a principled one: `zarg` was always the first call, so it could declare its siblings as a side effect, while `dt` had no such entry point and needed a dispatcher. Making both dispatchers removes the asymmetry
 - `zarg_parse` is the verb a shell *function* wants — it returns rather than exiting, where `zarg_go` would take the user's shell down with it
 
 
 **`dt` — one name for the scripts' toolkit:**
 
-- The output helpers were `_dt_head`, `_dt_ok`, `_dt_fan` and nine more, every one named in every prelude. They are now subcommands of a single `dt`, so a script autoloads two things and gets both libraries: `autoload +X -Uz zarg_init dt_init || exit 1`
+- The output helpers were `_dt_head`, `_dt_ok`, `_dt_fan` and nine more, every one named in every prelude. They are now subcommands of a single `dt`, so a script autoloads two things and gets both libraries: `autoload +X -Uz zarg dt || exit 1`
 - It reads better at the call site too. `dt_head kill-port`, `dt_ok "killed PID $pid"`, `dt_need lsof` — the verb carries the meaning, where `_dt_` carried none
 - A barrel that merely *declares* the rest cannot work: `autoload +X` loads a function's definition but does not run it, so the declarations inside would never fire. A dispatcher is the shape that does, and it keeps the laziness — each helper is still its own file, loaded on first use
 - `extract-exif-from-flac` had a script-local `_dt_pic_desc` squatting on the library's prefix; renamed to `_pic_desc`

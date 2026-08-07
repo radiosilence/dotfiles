@@ -2,14 +2,12 @@
 # Strip scene-release garbage (nfo/sfv/sample/junk) out of a download tree.
 set -o pipefail
 
-autoload +X -Uz zarg_init dt_init || exit 1
+autoload +X -Uz zarg dt && dt || exit 1
 
-zarg_init clean-dls 'Clean scene release garbage'
+zarg clean-dls 'Clean scene release garbage'
 zarg_flag -n --dry-run 'show what would be deleted'
 zarg_arg  paths 'directories to clean' variadic default=.
 zarg_go "$@"
-
-dt_init
 
 # Word-boundary sample match on the stem (basename minus its last extension),
 # lowercased: exact "sample", sample- / sample_ / "sample " prefixes,

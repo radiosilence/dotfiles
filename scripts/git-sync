@@ -2,13 +2,11 @@
 # Delete local branches whose upstream got deleted after a merge.
 set -o pipefail
 
-autoload +X -Uz zarg_init dt_init || exit 1
+autoload +X -Uz zarg dt && dt || exit 1
 
-zarg_init git-sync 'Clean up merged branches'
+zarg git-sync 'Clean up merged branches'
 zarg_flag -y --yes 'delete without confirmation'
 zarg_go "$@"
-
-dt_init
 
 DT_YES=$yes
 

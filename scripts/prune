@@ -2,15 +2,13 @@
 # Find and delete small directories cluttering a tree.
 set -o pipefail
 
-autoload +X -Uz zarg_init dt_init || exit 1
+autoload +X -Uz zarg dt && dt || exit 1
 
-zarg_init prune 'Find and delete small directories'
+zarg prune 'Find and delete small directories'
 zarg_flag -y --yes      'delete without confirmation'
 zarg_opt  -s --min-size 'directories smaller than this are candidates, in KB' default=3072 env=MIN_SIZE metavar=KB
 zarg_arg  paths 'directories to search' variadic default=.
 zarg_go "$@"
-
-dt_init
 
 DT_YES=$yes
 

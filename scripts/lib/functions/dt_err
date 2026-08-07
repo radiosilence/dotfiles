@@ -1,1 +1,5 @@
+# Stand-alone use (`autoload -Uz dt_ok; dt_ok x`) skips dt, so colours
+# would be unset. One parameter test is cheaper than getting it wrong.
+autoload -Uz dt
+(( ${+_dt_off} )) || dt
 print -ru2 -- "  ${_dt_red}󰅖${_dt_off} $*"

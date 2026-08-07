@@ -2,12 +2,10 @@
 # Build a throwaway directory tree to exercise prune against.
 set -o pipefail
 
-autoload +X -Uz zarg_init dt_init || exit 1
+autoload +X -Uz zarg dt && dt || exit 1
 
-zarg_init prune-gen 'Generate a test directory structure for prune'
+zarg prune-gen 'Generate a test directory structure for prune'
 zarg_go "$@"
-
-dt_init
 
 # Real bytes, not a sparse allocation: prune sizes directories with `du`, which
 # counts blocks on disk. A sparse 210M file reports as ~16K and the fixture
