@@ -1,3 +1,4 @@
+autoload -Uz _wt_named
 local -a branches
 branches=(${(f)"$(_wt_named | cut -f1)"})
 _describe 'worktree' branches

@@ -1,6 +1,7 @@
 # Worktree named <n>-<slug>, then prime_fn gets the issue number to hand off to
 # claude. `claude <prompt>` starts interactively — -p is what makes it batch —
 # so the session that lands in the pane is live.
+autoload -Uz _wt_core _wt_gh _wt_issue_slug _wt_ref_parse
 local go_fn=$1 prime_fn=$2 arg=$3
 command -v gh >/dev/null || { echo "gh not found"; return 1; }
 [[ -z $arg ]] && { echo "usage: <issue-number|issue-url>"; return 1; }

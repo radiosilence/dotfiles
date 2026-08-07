@@ -1,3 +1,4 @@
+autoload -Uz _zarg_suggest
 print -ru2 -- "$ZARG_NAME: $1"
 local hint
 [[ -n $2 ]] && hint=$(_zarg_suggest "$2") && print -ru2 -- "  did you mean '$hint'?"

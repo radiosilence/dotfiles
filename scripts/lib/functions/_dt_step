@@ -1,0 +1,3 @@
+autoload -Uz _dt_colors
+_dt_colors
+print -r -- "  ${_dt_grey}·${_dt_off} $*"

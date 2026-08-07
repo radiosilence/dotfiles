@@ -1,6 +1,7 @@
 # Takes a PR or an issue: a URL disambiguates itself (/pull/ vs /issues/), and
 # a bare number is probed — GitHub numbers both from one sequence, and
 # `gh pr view` only resolves PRs, so a failure means issue.
+autoload -Uz _wt_core _wt_gh _wt_issue _wt_ref_parse
 local go_fn=$1 prime_fn=$2 arg=$3
 command -v gh >/dev/null || { echo "gh not found"; return 1; }
 [[ -z $arg ]] && { echo "usage: <number|url|owner/repo#N>  (PR or issue)"; return 1; }
