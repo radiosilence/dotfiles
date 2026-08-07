@@ -4,13 +4,13 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg to-audio 'Convert audio files to FLAC or Opus'
-zarg_flag -k --keep    'keep original files'
-zarg_flag -n --dry-run 'show what would be converted'
-zarg_opt  -b --bitrate 'output bitrate in kbps (opus only)' default=160 env=BITRATE metavar=KBPS
-zarg_arg  format 'output format' required values='flac opus'
-zarg_arg  paths  'directories to search' variadic default=.
-zarg_go "$@"
+zarg init to-audio 'Convert audio files to FLAC or Opus'
+zarg flag -k --keep    'keep original files'
+zarg flag -n --dry-run 'show what would be converted'
+zarg opt  -b --bitrate 'output bitrate in kbps (opus only)' default=160 env=BITRATE metavar=KBPS
+zarg arg  format 'output format' required values='flac opus'
+zarg arg  paths  'directories to search' variadic default=.
+zarg go "$@"
 
 dt need ffmpeg || exit 1
 

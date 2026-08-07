@@ -4,9 +4,9 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg unfuck-xcode 'Fix Xcode CLI Tools'
-zarg_flag -n --dry-run 'show what would be done'
-zarg_go "$@"
+zarg init unfuck-xcode 'Fix Xcode CLI Tools'
+zarg flag -n --dry-run 'show what would be done'
+zarg go "$@"
 
 [[ $OSTYPE == darwin* ]] || { dt err "macOS only"; exit 1 }
 dt head 'xcode unfucker'

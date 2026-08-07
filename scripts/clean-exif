@@ -4,10 +4,10 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg clean-exif 'Strip EXIF metadata from images'
-zarg_flag -n --dry-run 'show what would be cleaned'
-zarg_arg  paths 'directories to search' variadic default=.
-zarg_go "$@"
+zarg init clean-exif 'Strip EXIF metadata from images'
+zarg flag -n --dry-run 'show what would be cleaned'
+zarg arg  paths 'directories to search' variadic default=.
+zarg go "$@"
 
 dt need exiftool || exit 1
 dt head clean-exif

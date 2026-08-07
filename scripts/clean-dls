@@ -4,10 +4,10 @@ set -o pipefail
 
 autoload +X -Uz zarg dt || exit 1
 
-zarg clean-dls 'Clean scene release garbage'
-zarg_flag -n --dry-run 'show what would be deleted'
-zarg_arg  paths 'directories to clean' variadic default=.
-zarg_go "$@"
+zarg init clean-dls 'Clean scene release garbage'
+zarg flag -n --dry-run 'show what would be deleted'
+zarg arg  paths 'directories to clean' variadic default=.
+zarg go "$@"
 
 # Word-boundary sample match on the stem (basename minus its last extension),
 # lowercased: exact "sample", sample- / sample_ / "sample " prefixes,
