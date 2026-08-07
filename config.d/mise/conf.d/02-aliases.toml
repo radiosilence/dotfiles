@@ -1,4 +1,5 @@
 [tool_alias]
+aria2 = "github:radiosilence/aria2"
 beets = "pipx:beets[uvx_args=--with requests --with beets-yearfixer --with beets[discogs]]"
 broot = "github:Canop/broot"
 caldav = "github:radiosilence/caldav-cli"
