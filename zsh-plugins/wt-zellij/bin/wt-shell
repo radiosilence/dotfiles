@@ -1,10 +1,20 @@
 #!/usr/bin/env zsh
-# Wrapper shell for worktree tabs — auto-cleans or prompts on exit
-# Args: $1 = worktree path, $2 = branch name
+# Wrapper shell for worktree tabs — auto-cleans or prompts on exit.
+# Invoked by wtt, not by hand.
+source "${0:A:h:h:h}/zarg/zarg.plugin.zsh" || {
+  print -u2 "wt-shell: cannot load zarg"
+  exit 1
+}
+
+zarg_init wt-shell 'Run a shell in a worktree tab, then remove the worktree on exit if it is clean'
+zarg_arg worktree 'worktree path' required
+zarg_arg branch 'branch name' required complete=_wt_branches
+zarg_go "$@"
+
 set -euo pipefail
 
-wt="$1"
-name="$2"
+wt="$worktree"
+name="$branch"
 
 dim=$'\033[2m'
 bold=$'\033[1m'
