@@ -1,0 +1,10 @@
+# Idempotent: every output helper calls this, and only the first does work.
+# Colour only when stdout is a terminal, so piped output stays greppable.
+(( ${+_dt_off} )) && return
+if [[ -t 1 ]]; then
+  typeset -g _dt_mag=$'\e[35m'    _dt_cyan=$'\e[36m'  _dt_green=$'\e[32m'
+  typeset -g _dt_yellow=$'\e[33m' _dt_red=$'\e[31m'   _dt_grey=$'\e[90m'
+  typeset -g _dt_bold=$'\e[1m'    _dt_off=$'\e[0m'
+else
+  typeset -g _dt_mag= _dt_cyan= _dt_green= _dt_yellow= _dt_red= _dt_grey= _dt_bold= _dt_off=
+fi

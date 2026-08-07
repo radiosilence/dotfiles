@@ -1,0 +1,9 @@
+# Local checkout for an owner/repo. GitHub owner matches the directory under
+# ~/workspace, so <org>/<repo> lives at the same path.
+local owner=$1 repo=$2 p
+# (N) or a miss aborts the loop with "no matches found" before the message below
+for p in "$HOME/workspace/$owner/$repo" "$HOME/workspace"/*/"$repo"(N); do
+  [[ -d $p/.git ]] && { echo "$p"; return 0; }
+done
+echo "no local checkout for $owner/$repo under ~/workspace" >&2
+return 1

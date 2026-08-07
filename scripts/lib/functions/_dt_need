@@ -1,0 +1,9 @@
+# Fail once naming every missing dependency, rather than one round-trip each.
+autoload -Uz _dt_err
+local cmd; local -a missing
+for cmd in "$@"; do
+  command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
+done
+(( $#missing )) || return 0
+_dt_err "not installed: ${(j:, :)missing}"
+return 1

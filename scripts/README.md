@@ -6,7 +6,9 @@ the repo is cloned — nothing to build.
 
 Every script takes `--help`, `--version` and `--completions zsh|fish|bash`, all
 derived from the same [zarg](../zsh-plugins/zarg/README.md) declaration it
-parses with. Shared output helpers live in [`lib/common.zsh`](lib/common.zsh);
+parses with. Nothing is sourced by path: the shell exports `FPATH`, so a script
+just names the functions it wants. Output helpers live in
+[`lib/functions/`](lib/functions);
 zarg's [`check-completions.zsh`](../zsh-plugins/zarg/check-completions.zsh)
 asserts every emitted completion actually parses in its target shell, and runs
 on pre-push and in CI.
@@ -249,10 +251,9 @@ Copy the shape of [`kill-port`](kill-port) — it is the reference:
 # One line on WHY this exists.
 set -o pipefail
 
-source "${0:A:h}/lib/common.zsh"
-source "${0:A:h:h}/zsh-plugins/zarg/zarg.plugin.zsh"
+autoload +X -Uz zarg _dt_head _dt_info || exit 1
 
-zarg_init my-tool 'What it does'
+zarg my-tool 'What it does'
 zarg_flag -n --dry-run 'show what would happen'
 zarg_arg  target 'thing to act on' required
 zarg_go "$@"

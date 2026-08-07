@@ -8,6 +8,31 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**Scripts autoload their libraries — no paths anywhere:**
+
+- `FPATH` is a real environment variable tied to `$fpath`, exactly as `PATH` is to `$path`. A script runs in its own zsh and inherits no *functions*, but it does inherit the environment, so one `export FPATH` after the plugins load hands every script the same libraries the shell has. `conf.d/zzzz-fpath.zsh`, named to sort last, is the entire mechanism
+- All 39 relative `source "${0:A:h:h}/..."` lines are gone. A script now says what it wants and nothing about where it lives: `autoload -Uz zarg _dt_head _dt_info`. One name covers zarg — `zarg` is always the first call, so it declares the rest of the API
+- Two dead ends on the way. A `~/.zshenv` works but has to hardcode `~/.dotfiles` — `.zshenv` cannot self-locate, `$0` is `zsh` — so a worktree's scripts would silently load main's libraries. And no plugin manager can help: sheldon, antigen and oh-my-zsh all run at `.zshrc` time, which a `#!/usr/bin/env zsh` script never reaches
+- `scripts/lib/common.zsh` split into `scripts/lib/functions/`, same treatment. Colours moved into an idempotent `_dt_colors` every output helper calls, since there is no longer a load-time block to set them
+- zarg had to survive being autoloaded without its loader: `zarg` now declares the state the rest of the library reads, and `zarg_version` finds the repo through `$functions_source` rather than a `ZARG_HOME` set at source time. Every function declares its own private helpers, so autoloading the public names is enough
+- `wtclean` was the last holdout — it needed `WT_CORE_BIN` from the plugin. `autoload +X` loads a function immediately rather than on first call, which populates `$functions_source`, so it derives its sibling `bin/` from where `_wt_root` came from
+
+**What this costs:** a script with no zsh ancestor — cron, a systemd unit, CI — inherits no `FPATH` and must set one. `check-completions.zsh` does that from its own location, which also means a worktree tests its own libraries rather than `~/.dotfiles`'.
+
+
+**wt-core is a loader plus a function per file:**
+
+- Same shape as zarg: the plugin locates itself with `${0:A:h}`, adds its own `functions/` to `fpath`, and autoloads by globbing, so adding a command needs no edit to the loader. 21 commands that were defined on every shell start are now stubs until something calls them — verified by checking `$functions[wt]` reads `builtin autoload -XU` rather than a body
+- **Structure, not speed.** 14.2ms vs 13.9ms per source across 200 runs, which is inside the noise of starting zsh at all. The first attempt to measure this was wrong: `[[ -n $functions[$f] ]]` is true for an unloaded stub too, so it reported all 21 as loaded in both versions
+- What has to stay eager stays in the loader: `WT_CORE_BIN`, the `_wt_prs` map, the `compdef` registrations and the fzf-tab `zstyle`s. `_wt_fzf_preview` moved there as an explicit `typeset -g`, still single-quoted — the expansion belongs to fzf's preview shell, not to load time
+- `wt-herdr` and `wt-zellij` stay as they are. Thirty lines and five functions each; splitting them would be ceremony
+
+
+**`wtclean`'s logic moved into the script:**
+
+- The plugin defined `_wt_clean`, `_wt_pr_cache` and `_wt_fan` with `bin/wtclean` as their only caller, so every interactive shell parsed ~150 lines it would never run. The split also meant zarg parsed `--dry-run` into `$dry_run` and the script re-encoded it back into `-n` for the function to parse again — a round trip that existed purely because of the file boundary, and that needed a comment to explain its own gotcha
+- Only the helpers `wtrm` and the pickers share stayed behind
+- `_wt_prs` deliberately keeps its declaration beside `_wt_pr_state` rather than travelling with the code that fills it. An *undeclared* associative array turns `${_wt_prs[feat/x]}` into an arithmetic subscript, where `feat/x` is a division — so every slashed branch name died with "division by zero". Caught by testing `wtrm`'s path, not by reading
 **zarg is a loader plus a function per file:**
 
 - `zarg.plugin.zsh` is now three working lines — it locates itself with `${0:A:h}`, adds its own `functions/` to `fpath`, and autoloads by globbing basenames so adding a function needs no edit to the loader. That is the ordinary plugin convention; `zsh-completions` and `claude-code-zsh-completion` in the sheldon tree both do the same thing, and sheldon itself emits no `fpath` lines at all

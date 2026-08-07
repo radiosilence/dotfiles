@@ -1,6 +1,7 @@
 # Handle the built-ins, then parse. Scripts call this instead of zarg_parse; it
 # exits on its own for --help/--version/--completions and on a parse error, so
 # a script may assume a good parse once it returns.
+autoload -Uz zarg_completions zarg_help zarg_parse zarg_version
 local i
 for (( i = 1; i <= $#; i++ )); do
   case ${@[i]} in

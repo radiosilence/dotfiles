@@ -1,5 +1,6 @@
 # A wrong flag is nearly always a typo or a half-remembered name, so lead with
 # the closest match rather than making them read the whole help.
+autoload -Uz _zarg_known
 local bad=${1#-} cand
 for cand in $(_zarg_known); do
   [[ ${#bad} -ge 2 && ${cand#-} == ${bad}* ]] && { print -r -- "$cand"; return 0 }

@@ -1,3 +1,4 @@
+autoload -Uz _zarg_comp_bash _zarg_comp_fish _zarg_comp_zsh
 case $1 in
   zsh)  _zarg_comp_zsh ;;
   fish) _zarg_comp_fish ;;

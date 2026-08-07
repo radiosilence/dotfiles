@@ -1,3 +1,4 @@
+autoload -Uz _zarg_esc_bash _zarg_f
 local rec fn=_${ZARG_NAME//[^a-zA-Z0-9]/_}
 local -a all
 local -a valued

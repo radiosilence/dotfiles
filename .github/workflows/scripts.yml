@@ -37,11 +37,12 @@ jobs:
       - name: Syntax
         run: |
           fail=0
-          for f in scripts/* scripts/lib/* zsh-plugins/*/bin/* zsh-plugins/*/*.zsh \
-                   zsh-plugins/*/functions/*; do
+          for f in scripts/* scripts/lib/functions/* zsh-plugins/*/bin/* \
+                   zsh-plugins/*/*.zsh zsh-plugins/*/functions/* \
+                   config.d/zsh/conf.d/*.zsh; do
             [ -f "$f" ] || continue
             case "$f" in
-              */functions/*) ;;
+              */functions/*|*/conf.d/*) ;;
               *.zsh) ;;
               *) [ -x "$f" ] || continue ;;
             esac

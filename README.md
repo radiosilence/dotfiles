@@ -84,10 +84,12 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 - `clean-dls` — Remove scene release garbage
 
 These live in [`scripts/`](scripts/README.md) as zsh — see there for what each one
-does, with examples. They share output helpers in `scripts/lib/common.zsh` and
-declare their interface with [zarg](zsh-plugins/zarg/README.md), which derives
-parsing, `--help`, `--version` and `--completions zsh|fish|bash` from one declaration —
-so a script's completions cannot drift from the flags it actually accepts.
+does, with examples. Nothing is sourced by path — the shell exports `FPATH`, so
+a script just names the functions it wants. Output helpers live in
+`scripts/lib/functions/`; the interface is declared with
+[zarg](zsh-plugins/zarg/README.md), which derives parsing, `--help`, `--version`
+and `--completions zsh|fish|bash` from that one declaration, so a script's
+completions cannot drift from the flags it actually accepts.
 
 ## Per-Directory Git Config
 

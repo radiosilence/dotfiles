@@ -1,4 +1,7 @@
 # These scripts ship with the dotfiles and are versioned by them, so the repo's
-# own description is the only honest answer.
-local v=${ZARG_VERSION:-$(git -C "${ZARG_HOME:h:h}" describe --tags --always --dirty 2>/dev/null)}
+# own description is the only honest answer. $functions_source rather than a
+# ZARG_HOME set at load time: an autoloaded function is told which file it came
+# from, so this works whether or not anyone sourced the loader.
+local home=${functions_source[zarg_version]:h:h}
+local v=${ZARG_VERSION:-$(git -C "${home:h:h}" describe --tags --always --dirty 2>/dev/null)}
 print -r -- "$ZARG_NAME ${v:-unknown} (dotfiles)"

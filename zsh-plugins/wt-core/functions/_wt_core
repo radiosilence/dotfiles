@@ -1,0 +1,80 @@
+# _wt_core <go_fn> [--branch] [name] [base]
+# go_fn is called with (name, path) — either _wt_cd or _wt_tab
+autoload -Uz _wt_base _wt_cd _wt_ensure_dir _wt_find _wt_named _wt_path
+local go_fn=$1; shift
+local from_branch=0
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --branch|-b) from_branch=1; shift ;;
+    --) shift; break ;;
+    *) break ;;
+  esac
+done
+
+# No args: fzf picker
+if [[ $# -eq 0 ]] && (( ! from_branch )); then
+  if ! command -v fzf >/dev/null; then
+    git worktree list
+    return
+  fi
+  local output query selected
+  output=$(_wt_named \
+    | fzf --ansi --reverse --delimiter=$'\t' --with-nth=1 \
+           --header="worktrees (type new name to create)" \
+           --popup='center,90%,90%' --preview "$_wt_fzf_preview" --preview-window='right:70%' \
+           --print-query
+  ) || true
+  query=$(echo "$output" | sed -n '1p')
+  selected=$(echo "$output" | sed -n '2p')
+
+  if [[ -n $selected ]]; then
+    $go_fn "$(echo "$selected" | cut -f1)" "$(echo "$selected" | cut -f2)"
+  elif [[ -n $query ]]; then
+    # New name typed — delegate to the create path
+    set -- "$query"
+  else
+    return
+  fi
+  [[ -n $selected ]] && return
+fi
+
+[[ $# -eq 0 ]] && { echo "usage: wt [-b] <name> [base]"; return 1; }
+
+local name=$1 base
+local wt=$(_wt_path "$name")
+
+# Upsert: worktree exists at expected path
+if [[ -d $wt ]]; then
+  $go_fn "$name" "$wt"
+  return
+fi
+
+# Upsert: branch checked out in a different location
+local existing=$(_wt_find "$name")
+if [[ -n $existing ]]; then
+  $go_fn "$name" "$existing"
+  return
+fi
+
+# Resolve base ref
+if (( from_branch )); then
+  base=$(git symbolic-ref --short HEAD 2>/dev/null) || { echo "not on a branch"; return 1; }
+else
+  base=${2:-$(_wt_base)}
+fi
+
+_wt_ensure_dir
+
+if (( from_branch )); then
+  git worktree add "$wt" -b "$name" HEAD || return 1
+else
+  git fetch origin "$base" --quiet || return 1
+  git fetch origin "$name" --quiet 2>/dev/null
+
+  git worktree add "$wt" "$name" 2>/dev/null \
+    || git worktree add "$wt" -b "$name" "origin/$name" 2>/dev/null \
+    || git worktree add "$wt" -b "$name" "origin/$base" \
+    || return 1
+fi
+
+$go_fn "$name" "$wt"
