@@ -2,7 +2,7 @@
 # Kill whatever holds a port — the "address already in use" fix.
 set -o pipefail
 
-autoload -Uz zarg _dt_err _dt_head _dt_info _dt_need _dt_ok
+autoload +X -Uz zarg _dt_err _dt_head _dt_info _dt_need _dt_ok || exit 1
 
 zarg kill-port 'Kill process listening on specified port'
 zarg_flag -n --dry-run 'show what would be killed without doing it'

@@ -3,7 +3,7 @@
 # log plus a file tree. fzf-tab sends the whole "branch<TAB>path" line, so the
 # branch is taken up to the first tab.
 
-autoload -Uz zarg _wt_branches wt
+autoload +X -Uz zarg _wt_branches wt || exit 1
 
 zarg wt-preview 'Render the fzf preview for a worktree'
 zarg_arg branch 'worktree branch to preview' required complete=_wt_branches

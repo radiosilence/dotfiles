@@ -4,7 +4,7 @@
 # one copy. Branch is empty for detached worktrees — callers that display it
 # filter those.
 
-autoload -Uz zarg _wt_branches
+autoload +X -Uz zarg _wt_branches || exit 1
 
 zarg wt-list 'List worktrees as "branch<TAB>path", or resolve one branch to its path'
 zarg_arg branch 'print only this branch, as a bare path' complete=_wt_branches

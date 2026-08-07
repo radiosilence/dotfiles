@@ -251,7 +251,7 @@ Copy the shape of [`kill-port`](kill-port) — it is the reference:
 # One line on WHY this exists.
 set -o pipefail
 
-autoload -Uz zarg _dt_head _dt_info
+autoload +X -Uz zarg _dt_head _dt_info || exit 1
 
 zarg my-tool 'What it does'
 zarg_flag -n --dry-run 'show what would happen'

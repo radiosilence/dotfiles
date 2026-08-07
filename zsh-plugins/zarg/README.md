@@ -16,7 +16,7 @@ from one declaration makes that failure mode unrepresentable.
 # Back up a directory somewhere, with the usual knobs.
 set -o pipefail
 
-autoload -Uz zarg
+autoload +X -Uz zarg || exit 1
 
 zarg backup 'Back up a directory'
 zarg_flag -n --dry-run  'show what would be copied, copy nothing'

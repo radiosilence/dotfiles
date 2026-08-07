@@ -2,7 +2,7 @@
 # Nuke and reinstall Xcode CLI Tools when they get stuck in a broken state.
 set -o pipefail
 
-autoload -Uz zarg _dt_err _dt_head _dt_info _dt_ok _dt_warn
+autoload +X -Uz zarg _dt_err _dt_head _dt_info _dt_ok _dt_warn || exit 1
 
 zarg unfuck-xcode 'Fix Xcode CLI Tools'
 zarg_flag -n --dry-run 'show what would be done'
