@@ -28,10 +28,18 @@ pre-commit:
 pre-push:
   parallel: true
   commands:
-    cargo-clippy:
-      glob: "crates/**/*.rs"
-      run: cd crates && mise x -- cargo clippy --all-targets --all-features -- -D warnings
+    # The scripts have no shebang-driven extension, so glob on the directory.
+    zsh-syntax:
+      glob: "{scripts/**,zsh-plugins/**}"
+      run: |
+        for f in {staged_files}; do
+          [ -f "$f" ] || continue
+          head -1 "$f" | grep -q 'zsh' || case "$f" in *.zsh) ;; *) continue ;; esac
+          zsh -n "$f" || exit 1
+        done
 
-    cargo-test:
-      glob: "crates/**/*.rs"
-      run: cd crates && mise x -- cargo test --all-targets
+    # A completion that no longer parses is the failure mode zarg exists to
+    # prevent, so prove all three shells still accept what it emits.
+    completions:
+      glob: "{scripts/**,zsh-plugins/zarg/**}"
+      run: scripts/lib/check-completions

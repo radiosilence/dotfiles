@@ -40,6 +40,9 @@ github = "zsh-users/zsh-history-substring-search"
 # plugin's README. wt-core is backend-agnostic; the backends are additive.
 # ============================================================================
 
+[plugins.zarg]
+local = "~/.dotfiles/zsh-plugins/zarg"
+
 [plugins.wt-core]
 local = "~/.dotfiles/zsh-plugins/wt-core"
 

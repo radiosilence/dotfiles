@@ -1,12 +1,37 @@
 # Changelog
 
-A history of this dotfiles repo from its inception in May 2018 through February 2026. 1421+ commits across 8 years of terminal tinkering, tool-hopping, and eventual convergence on a Rust-powered setup.
+A history of this dotfiles repo from its inception in May 2018 through February 2026. 1421+ commits across 8 years of terminal tinkering, tool-hopping, and eventual convergence on a zsh-first setup.
 
 ---
 
 ## 2026
 
 ### August
+
+**`crates/` is gone — 15 binaries become 15 zsh scripts:**
+
+- 3097 lines of Rust and **326 transitive crates** for tools that mostly shuffled argv. Ten of the fifteen shelled out to `ffmpeg`, `metaflac`, `aria2c`, `unzip`, `beet` or `exiftool` anyway, so the Rust was a progress bar wrapped around someone else's program. `git2` vendored libgit2, which is the only reason `setup-linux` installed `build-essential`; `reqwest` + rustls came along for two HTTP GETs that `curl` already does. The replacements total roughly 250 lines and need nothing that wasn't already installed
+- **`task reinstall-bins` had not rebuilt anything in a long time.** Its guard was `status: ["test -f {{.DOTFILES}}/bin/clean-dls"]` — true forever after the first install, so every later edit to `crates/` was skipped silently and the cheatsheet's claim that `upd` "rebuilds rust bins" was false. Nobody noticed, which is its own argument
+- `clean-exif` was the one binary doing real in-process work (`img-parts` stripping the EXIF chunk) and it still lost to `exiftool -all= -overwrite_original`, which additionally strips XMP, IPTC and ICC. When the best case for a language is beaten by a one-liner, there isn't a case
+- `extract-exif-from-flac` parsed `metaflac --list` text output with a hand-rolled state machine. It is now awk, which is what awk is for
+
+**zarg — clap for zsh, in `zsh-plugins/zarg`:**
+
+- Every one of these scripts needs a parser *and* a compdef, and hand-written pairs drift the moment a flag is added: the parser accepts something completion never offers, or completion offers something the parser rejects. zarg takes one declaration and derives parsing, `--help`, `--version` and `--completions zsh|fish|bash` from it, which makes that failure mode unrepresentable rather than merely discouraged
+- Handles `--long value`, `--long=value`, `-s value`, attached shorts (`-b192`), clustered flags (`-nk`), `--`, defaults, `env=` fallbacks, `required`, `variadic`, and `values=` sets validated before the script body runs. Unknown flags get a did-you-mean
+- Fidelity across shells is uneven and that is the shells' doing: `complete=` names a zsh completion function, so fish and bash fall back to file completion there. Declared value sets work in all three
+- The emitters live in a separate `completions.zsh` sourced only on demand — scripts load zarg on every invocation and generate completions about once per converge
+- 32 tests in `zsh-plugins/zarg/test.zsh`, plus `scripts/lib/check-completions`, which asserts every script's emitted completion actually parses in zsh, bash and fish. Both run in CI and on pre-push; the old `rust-tests.yml` is now `scripts.yml`
+
+**Behaviour that deliberately changed:**
+
+- **`to-audio flac|opus` is a positional, not a subcommand.** The two differed by exactly one option (`--bitrate`, meaningless for lossless), so the subcommand machinery was buying nothing. `--bitrate` is now ignored for flac rather than absent
+- **`prune` measures blocks, not apparent size.** `du` reports what you get back by deleting, which is the question being asked. This surfaced a matching bug in `prune-gen`, whose fixture files were sparse: a "210MB" directory read as 16KB and the fixture had quietly stopped exercising the threshold it exists to test. It writes real bytes now
+- **`extract-exif-from-flac` could never report "Clean".** It substring-matched the sensitive-field list against the whole `exiftool -json` document, and exiftool always emits `"SourceFile"` — which contains `Source`. Every image came back dirty. It now asks exiftool for only the tags that matter, so an answer beyond `SourceFile` *is* the finding. Verified against a scrubbed image and one carrying GPS + Artist
+- `kill-port -s` takes signal names only; `-s 9` now errors telling you to use `KILL` instead of being quietly accepted
+- The warning glyph was `""` — an empty string in the Rust, so every warning line rendered with colour and no icon. It's `󰀪` now, matching the Material Design set the check and cross already come from
+
+**Fallout:** `link:cargo` and `packager.d/cargo-config.toml` deleted, `rust` dropped from `03-tools.toml`, `~/.dotfiles/bin` off `$PATH`, cargo artefacts out of `.gitignore`. `setup-linux` loses `build-essential` and the `DOTFILES_NO_RUST` escape hatch, and gains `lsof` and `libimage-exiftool-perl` — the two things `kill-port` and `clean-exif` used to do in-process and now delegate.
 
 **`wtclean` fans out the per-worktree work:**
 

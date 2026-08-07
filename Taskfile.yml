@@ -286,7 +286,6 @@ tasks:
       - brew:bundle
       - mise:upgrade
       - uv:ensure
-      - reinstall-bins
       - secrets:populate
       - generate:completions
     cmds:
@@ -310,7 +309,6 @@ tasks:
       - link:claude-hooks
       - link:agent-configs
       - link:sheldon
-      - link:cargo
 
   link:dotfiles:
     desc: Symlink dotfiles (.* → ~)
@@ -321,7 +319,7 @@ tasks:
           name=$(basename "$f")
           case "$name" in
             .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
-            .editorconfig|.codeowners-lsp|.ruby-lsp|.crates.toml|.crates2.json|\
+            .editorconfig|.codeowners-lsp|.ruby-lsp|\
             .claude|.claude-work|.omp|.omp-personal|.claude-personal)
               continue ;;
           esac
@@ -433,7 +431,7 @@ tasks:
   secrets:populate:
     desc: Populate mise conf.d/secrets.toml from 1Password (single op inject call)
     platforms: [darwin]
-    deps: [brew:bundle, reinstall-bins, link:config]
+    deps: [brew:bundle, link:config]
     vars:
       TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
       LOCAL: "$HOME/.config/mise/conf.d/secrets.toml"
@@ -464,22 +462,6 @@ tasks:
         done
         rm -f "$resolved_file"
 
-  link:cargo:
-    desc: Symlink cargo security config
-    deps: [dotfiles:clone]
-    cmds:
-      - |
-        mkdir -p "$HOME/.cargo"
-        target="$HOME/.cargo/config.toml"
-        src="{{.DOTFILES}}/packager.d/cargo-config.toml"
-        [ -L "$target" ] && [ "$(readlink "$target")" = "$src" ] && exit 0
-        if [ -f "$target" ] && [ ! -L "$target" ]; then
-          printf "{{.WARN}} ~/.cargo/config.toml exists — merge %s manually\n" "$src"
-          exit 0
-        fi
-        ln -sf "$src" "$target"
-        printf "{{.LINK}} cargo config\n"
-
   link:sheldon:
     desc: Sheldon plugin manager smoke test
     deps: [brew:bundle]
@@ -492,17 +474,6 @@ tasks:
   # ---------------------------------------------------------------------------
   # Build / utility tasks
   # ---------------------------------------------------------------------------
-
-  reinstall-bins:
-    desc: Build and install rust binaries from crates/
-    deps: [mise:install, dotfiles:clone]
-    status: ["test -f {{.DOTFILES}}/bin/clean-dls"]
-    cmds:
-      - printf "{{.WORK}} building rust binaries\n"
-      - |
-        export PATH="$HOME/.local/share/mise/shims:$PATH"
-        cargo install --path {{.DOTFILES}}/crates --bins --root {{.DOTFILES}}
-      - printf "{{.OK}} binaries installed\n"
 
   use-ssh:
     desc: Switch dotfiles remote from HTTPS to SSH
@@ -588,47 +559,54 @@ tasks:
       - for:
           - argocd
           - buf
-          - clean-dls
-          - clean-exif
           - dagger
           - docker
-          - embed-art
-          - extract-exif-from-flac
           - fcloud
-          - git-squash
-          - git-sync
           - glow
           - golangci-lint
           - gt
           - helm
           - herdr
           - houston
-          - imp
           - k9s
-          - kill-port
           - kubecolor
           - kubectl
           - lefthook
           - nano-web
           - op
           - orbctl
-          - parallel-dl-extract
           - procs
-          - prune
-          - prune-gen
           - pulumi
           - sesh
           - tilt
-          - to-audio
-          - unfuck-xcode
-          - url2base64
-          - vimv
           - watchwoman
           - yq
         task: generate:completions:gen
         vars:
           TOOL: "{{.ITEM}}"
           CMD: "{{.ITEM}} completion zsh"
+      # scripts/ — zarg derives these from the same spec the script parses with,
+      # so they cannot drift from the flags the script actually accepts.
+      - for:
+          - clean-dls
+          - clean-exif
+          - embed-art
+          - extract-exif-from-flac
+          - git-squash
+          - git-sync
+          - imp
+          - kill-port
+          - parallel-dl-extract
+          - prune
+          - prune-gen
+          - to-audio
+          - unfuck-xcode
+          - url2base64
+          - vimv
+        task: generate:completions:gen
+        vars:
+          TOOL: "{{.ITEM}}"
+          CMD: "{{.ITEM}} --completions zsh"
       # Custom completion commands
       - task: generate:completions:gen
         vars: { TOOL: aube, CMD: "aube completion zsh" }
