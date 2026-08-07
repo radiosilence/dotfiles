@@ -1,0 +1,4 @@
+# zarg_flag -n --dry-run 'help'
+local dest=$(_zarg_dest $2)
+_zarg_reserved "$dest" && return 1
+ZARG_FLAGS+=("${1}${ZARG_SEP}${2}${ZARG_SEP}${3}${ZARG_SEP}${dest}")

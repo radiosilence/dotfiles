@@ -1,0 +1,8 @@
+# Pull key=value extras off the end of a declaration into _zarg_x.
+local kv
+_zarg_x=()
+for kv in "$@"; do
+  if [[ $kv == *=* ]]; then _zarg_x[${kv%%=*}]=${kv#*=}
+  else                      _zarg_x[$kv]=1
+  fi
+done

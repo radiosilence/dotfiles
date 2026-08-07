@@ -1,0 +1,95 @@
+local rec dest tok val envvar
+local -a rest
+
+# Defaults, then environment, then the command line — each overriding the
+# last, which is the order a user expects.
+for rec in "$ZARG_FLAGS[@]"; do typeset -g "$(_zarg_f "$rec" 4)"=0; done
+for rec in "$ZARG_OPTS[@]"; do
+  dest=$(_zarg_f "$rec" 4)
+  typeset -g "$dest"="$(_zarg_f "$rec" 5)"
+  envvar=$(_zarg_f "$rec" 6)
+  [[ -n $envvar && -n ${(P)envvar} ]] && typeset -g "$dest"="${(P)envvar}"
+done
+
+while (( $# )); do
+  case $1 in
+    --) shift; rest+=("$@"); break ;;
+
+    --*=*)
+      tok=${1%%=*} val=${1#*=}
+      if rec=$(_zarg_lookup "$tok" ZARG_OPTS); then
+        typeset -g "$(_zarg_f "$rec" 4)"="$val"
+      elif _zarg_lookup "$tok" ZARG_FLAGS >/dev/null; then
+        _zarg_die "$tok is a flag and takes no value"; return 2
+      else
+        _zarg_die "unknown option: $tok" "$tok"; return 2
+      fi
+      shift ;;
+
+    --*|-[a-zA-Z])
+      if rec=$(_zarg_lookup "$1" ZARG_FLAGS); then
+        typeset -g "$(_zarg_f "$rec" 4)"=1; shift
+      elif rec=$(_zarg_lookup "$1" ZARG_OPTS); then
+        (( $# >= 2 )) || { _zarg_die "$1 needs a value"; return 2 }
+        typeset -g "$(_zarg_f "$rec" 4)"="$2"; shift 2
+      else
+        _zarg_die "unknown option: $1" "$1"; return 2
+      fi ;;
+
+    # Clustered shorts (-nk) and attached values (-b192).
+    -[a-zA-Z][a-zA-Z0-9]*)
+      local cluster=${1#-}
+      shift
+      while [[ -n $cluster ]]; do
+        tok="-${cluster[1]}" cluster=${cluster[2,-1]}
+        if rec=$(_zarg_lookup "$tok" ZARG_FLAGS); then
+          typeset -g "$(_zarg_f "$rec" 4)"=1
+        elif rec=$(_zarg_lookup "$tok" ZARG_OPTS); then
+          if [[ -n $cluster ]]; then
+            typeset -g "$(_zarg_f "$rec" 4)"="$cluster"; cluster=
+          else
+            (( $# >= 1 )) || { _zarg_die "$tok needs a value"; return 2 }
+            typeset -g "$(_zarg_f "$rec" 4)"="$1"; shift
+          fi
+        else
+          _zarg_die "unknown option: $tok" "$tok"; return 2
+        fi
+      done ;;
+
+    *) rest+=("$1"); shift ;;
+  esac
+done
+
+# Reject values outside a declared set here rather than in every script.
+local values
+for rec in "$ZARG_OPTS[@]"; do
+  values=$(_zarg_f "$rec" 7); dest=$(_zarg_f "$rec" 4)
+  [[ -n $values && -n ${(P)dest} ]] || continue
+  (( ${${=values}[(I)${(P)dest}]} )) || {
+    _zarg_die "$(_zarg_f "$rec" 2): '${(P)dest}' is not one of: ${values}"; return 2 }
+done
+
+# Positionals. A variadic one swallows what is left, so it must be declared last.
+local i=1 name variadic required default
+for rec in "$ZARG_ARGS[@]"; do
+  name=$(_zarg_f "$rec" 1) required=$(_zarg_f "$rec" 3)
+  variadic=$(_zarg_f "$rec" 4) default=$(_zarg_f "$rec" 5) values=$(_zarg_f "$rec" 6)
+  if (( variadic )); then
+    local -a taken=("${rest[@]:$((i-1))}")
+    (( $#taken )) || taken=(${=default})
+    (( $#taken )) || (( ! required )) || { _zarg_die "missing argument: $name"; return 2 }
+    typeset -ga "$name"; set -A "$name" "${taken[@]}"
+    i=$(( i + $#taken ))
+  else
+    val=${rest[$i]:-$default}
+    if [[ -z $val ]] && (( required )); then _zarg_die "missing argument: $name"; return 2; fi
+    if [[ -n $values && -n $val ]] && (( ! ${${=values}[(I)$val]} )); then
+      _zarg_die "$name: '$val' is not one of: ${values}"; return 2
+    fi
+    typeset -g "$name"="$val"
+    (( i++ ))
+  fi
+done
+
+(( i > $#rest )) || { _zarg_die "unexpected argument: ${rest[$i]}"; return 2 }
+return 0

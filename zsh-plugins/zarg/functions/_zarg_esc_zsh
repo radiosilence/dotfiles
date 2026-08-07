@@ -1,0 +1,4 @@
+# _arguments specs are bracket- and colon-delimited, so anything in help text
+# that looks like structure has to be neutralised.
+local s=${1//\'/\'\\\'\'}; s=${s//\[/\\[}; s=${s//\]/\\]}
+print -r -- "${s//:/\\:}"
