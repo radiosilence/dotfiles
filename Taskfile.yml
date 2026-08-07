@@ -630,6 +630,7 @@ tasks:
           TOOL: "{{.ITEM}}"
           CMD: "{{.ITEM}} completion zsh"
       # Custom completion commands
+      - task: generate:completions:wt
       - task: generate:completions:gen
         vars: { TOOL: aube, CMD: "aube completion zsh" }
       - task: generate:completions:gen
@@ -717,6 +718,34 @@ tasks:
         else
           rm -f "$new"
         fi
+
+  generate:completions:wt:
+    internal: true
+    run: always
+    deps: [generate:completions:setup]
+    vars:
+      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
+      STATE: "/tmp/.task-completions-changed"
+    cmds:
+      # Not on PATH — they are plugin internals — so `command -v` cannot find
+      # them and they are enumerated by path.
+      - |
+        for bin in {{.HOME}}/.dotfiles/zsh-plugins/*/bin/*; do
+          [ -x "$bin" ] || continue
+          name=$(basename "$bin")
+          new=$(mktemp)
+          if "$bin" --completions zsh > "$new" 2>/dev/null && [ -s "$new" ]; then
+            if ! cmp -s "$new" "{{.COMP_DIR}}/_$name" 2>/dev/null; then
+              mv "$new" "{{.COMP_DIR}}/_$name"
+              printf "{{.OK}} %s\n" "$name"
+              echo "$name" >> {{.STATE}}
+            else
+              rm -f "$new"
+            fi
+          else
+            rm -f "$new"
+          fi
+        done
 
   generate:completions:lsd:
     internal: true

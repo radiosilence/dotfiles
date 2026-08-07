@@ -4,6 +4,24 @@
 # this runner exists so the code executed is always the code on disk.
 set -o pipefail
 
+case ${1:-} in
+  -h|--help)
+    print -r -- 'usage: wtclean [-n|--dry-run]
+
+Removes worktrees whose PR is merged or closed, and branches whose
+worktree is already gone, asking gh for PR state — squash merges make
+`git branch --merged` useless. Keeps anything dirty, the worktree you
+are standing in, and detached checkouts. Agent worktrees under
+.claude/worktrees always go.'
+    exit 0 ;;
+  --completions)
+    print -r -- "#compdef wtclean
+_arguments \\
+  '(-n --dry-run)'{-n,--dry-run}'[report what would go, change nothing]' \\
+  '(-h --help)'{-h,--help}'[show usage]'"
+    exit 0 ;;
+esac
+
 source "${0:A:h:h}/wt-core.plugin.zsh" || {
   print -u2 "wtclean: cannot load wt-core.plugin.zsh"
   exit 1

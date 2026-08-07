@@ -43,6 +43,12 @@ This only covers worktrees opened *through* `wtt`. Anything created another way
 — agent worktrees especially — is never wrapped, so `wtclean` from `wt-core` is
 still worth running.
 
+## Bin
+
+`wt-picker` and `wt-shell` are zsh, and answer `--help` and `--completions zsh`
+like the rest. Neither is meant to be run by hand — `alt+w` and `wtt` invoke
+them — but `--help` beats reading the source to find out what they are.
+
 ## Exports
 
 `WT_ZELLIJ_BIN` — this plugin's `bin/`.

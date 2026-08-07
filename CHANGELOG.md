@@ -8,6 +8,13 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**`--help` and `--completions` on the wt bins:**
+
+- Brings them in line with the Rust binaries, which have always answered both. `task generate:completions` enumerates them by path rather than `command -v`, since plugin internals aren't on `PATH` and the existing gate would have skipped them silently
+- The scripts taking a branch emit a completion that shells back to themselves by absolute path, so adding completion didn't reintroduce a copy of the `worktree list --porcelain` parsing that was just deduplicated into `wt-list`
+- `wt-picker` and `wt-shell` are never run by hand, but `--help` still beats reading the source to work out what a file in `bin/` is for
+
+
 **wt-\* helpers are zsh; `wtclean` is a script:**
 
 - These are zsh plugins, so the `bin/` helpers had no business being bash — zsh is guaranteed present here and macOS still ships bash 3.2. Not purely cosmetic: bash's single-char read in `wt-shell`'s keep/remove prompt is `read -rsn1`, which zsh spells `read -rsk1`, and `${BASH_SOURCE[0]}` becomes `${0:A}`

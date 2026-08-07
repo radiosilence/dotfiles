@@ -3,6 +3,21 @@
 # Pager commands (view/checks/diff) display in the floating pane via less.
 set -o pipefail
 
+case ${1:-} in
+  -h|--help)
+    print -r -- 'usage: wt-picker
+
+fzf over worktrees, for the zellij alt+w binding. Takes no arguments.
+  enter  open or create      ^x  remove       ^r  pull --rebase
+  ^v     pr view             ^y  pr checks    ^d  pr diff
+  ^l     create pr'
+    exit 0 ;;
+  --completions)
+    print -r -- "#compdef wt-picker
+_arguments '(-h --help)'{-h,--help}'[show usage]'"
+    exit 0 ;;
+esac
+
 export CLICOLOR_FORCE=1
 export GH_FORCE_TTY=1
 

@@ -4,6 +4,22 @@
 # Args: $1 = "branch\tpath" or just "branch" (fzf-tab sends $word)
 set -euo pipefail
 
+case ${1:-} in
+  -h|--help)
+    print -r -- 'usage: wt-preview <branch>
+
+fzf preview for the worktree pickers: PR details when a PR exists,
+otherwise git log plus a one-level file tree. Accepts "branch<TAB>path"
+as well as a bare branch, since fzf-tab passes the whole line.'
+    exit 0 ;;
+  --completions)
+    print -r -- "#compdef wt-preview
+local -a branches
+branches=(\${(f)\"\$(${0:A:h}/wt-list | cut -f1)\"})
+_describe 'worktree branch' branches"
+    exit 0 ;;
+esac
+
 branch="${1%%$'\t'*}"
 path=$("${0:A:h}/wt-list" "$branch")
 [[ -n $path ]] || exit 0

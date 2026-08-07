@@ -3,6 +3,21 @@
 # Args: $1 = worktree path, $2 = branch name
 set -euo pipefail
 
+case ${1:-} in
+  -h|--help)
+    print -r -- 'usage: wt-shell <worktree-path> <branch>
+
+Wrapper shell for worktree tabs. Runs an interactive zsh, then on exit
+removes the worktree if it is clean, or prompts when there are
+uncommitted changes or unpushed commits. Never touches a main checkout.
+Invoked by wtt, not by hand.'
+    exit 0 ;;
+  --completions)
+    print -r -- "#compdef wt-shell
+_arguments '1:worktree path:_files -/' '2:branch:'"
+    exit 0 ;;
+esac
+
 wt="$1"
 name="$2"
 

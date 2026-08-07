@@ -70,6 +70,12 @@ backend is only ever the two functions above.
 Everything here is zsh — these are zsh plugins, zsh is guaranteed present, and
 macOS still ships bash 3.2.
 
+Each script answers `--help` and `--completions zsh`, matching the convention
+the Rust binaries follow. `task generate:completions` picks them up by path
+rather than `command -v`, since plugin internals aren't on `PATH`. The ones
+taking a branch emit a completion that calls the script back by absolute path,
+so the porcelain parsing stays in one place.
+
 `wt-list` prints `branch<TAB>path` per worktree, or the path of a named branch.
 Parsing `worktree list --porcelain` lived in four places and drifted; this is
 the one copy. `wt-preview` renders the fzf preview: PR details if there's a PR,

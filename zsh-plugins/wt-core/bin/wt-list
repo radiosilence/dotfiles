@@ -5,6 +5,23 @@
 # Branch is empty for detached worktrees — callers that display it filter those.
 set -o pipefail
 
+case ${1:-} in
+  -h|--help)
+    print -r -- 'usage: wt-list [branch]
+
+Prints "branch<TAB>path" for every worktree. Given a branch, prints only
+that worktree'\''s path. Branch is empty for detached worktrees.'
+    exit 0 ;;
+  --completions)
+    # Calls back into itself by absolute path so the porcelain parsing above
+    # stays the only copy.
+    print -r -- "#compdef wt-list
+local -a branches
+branches=(\${(f)\"\$(${0:A} | cut -f1)\"})
+_describe 'worktree branch' branches"
+    exit 0 ;;
+esac
+
 git worktree list --porcelain 2>/dev/null | awk -v want="${1:-}" '
   function emit() {
     if (want == "") printf "%s\t%s\n", b, p
