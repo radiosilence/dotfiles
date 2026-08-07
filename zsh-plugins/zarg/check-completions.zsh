@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
-# Prove every zarg script still parses, renders help, and emits completions the
-# target shells actually accept. zarg exists so a completion cannot drift from
-# its parser; this is what makes that claim testable.
+# zarg's integration test: prove every script using it still parses, renders
+# help, and emits completions the target shells actually accept. test.zsh
+# covers zarg against a fixture; this covers it against real consumers.
 #
-# Run bare to check everything, or pass specific scripts.
+# Run bare to sweep scripts/ and every plugin bin/, or pass specific files.
 set -o pipefail
 
 local -a targets
