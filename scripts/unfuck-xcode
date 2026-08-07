@@ -2,32 +2,34 @@
 # Nuke and reinstall Xcode CLI Tools when they get stuck in a broken state.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init unfuck-xcode 'Fix Xcode CLI Tools'
-zarg flag -n --dry-run 'show what would be done'
-zarg go "$@"
+zarg_init unfuck-xcode 'Fix Xcode CLI Tools'
+zarg_flag -n --dry-run 'show what would be done'
+zarg_go "$@"
 
-[[ $OSTYPE == darwin* ]] || { dt err "macOS only"; exit 1 }
-dt head 'xcode unfucker'
+dt_init
+
+[[ $OSTYPE == darwin* ]] || { dt_err "macOS only"; exit 1 }
+dt_head 'xcode unfucker'
 
 if [[ $USER == root ]]; then
-  dt warn "Already running as root"
+  dt_warn "Already running as root"
 else
-  dt info "Requires sudo - you'll be prompted"
+  dt_info "Requires sudo - you'll be prompted"
 fi
 
 if (( dry_run )); then
-  dt info "DRY RUN - no changes made"
-  dt info "Remove: /Library/Developer/CommandLineTools"
-  dt info "Reset: xcode-select"
+  dt_info "DRY RUN - no changes made"
+  dt_info "Remove: /Library/Developer/CommandLineTools"
+  dt_info "Reset: xcode-select"
   exit 0
 fi
 
-dt info "Removing: /Library/Developer/CommandLineTools"
-sudo rm -rf /Library/Developer/CommandLineTools || { dt err "Failed to remove CommandLineTools"; exit 1 }
+dt_info "Removing: /Library/Developer/CommandLineTools"
+sudo rm -rf /Library/Developer/CommandLineTools || { dt_err "Failed to remove CommandLineTools"; exit 1 }
 
-dt info "Resetting: xcode-select"
-sudo xcode-select --reset || { dt err "Failed to reset xcode-select"; exit 1 }
+dt_info "Resetting: xcode-select"
+sudo xcode-select --reset || { dt_err "Failed to reset xcode-select"; exit 1 }
 
-dt ok "Xcode unfucked - GUI installer will prompt for CLI Tools"
+dt_ok "Xcode unfucked - GUI installer will prompt for CLI Tools"

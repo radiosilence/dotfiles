@@ -2,25 +2,27 @@
 # Embed cover/disc/back/artist art from each FLAC's own directory.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init embed-art 'Embed artwork into FLAC files'
-zarg arg paths 'directories to search' variadic default=.
-zarg go "$@"
+zarg_init embed-art 'Embed artwork into FLAC files'
+zarg_arg paths 'directories to search' variadic default=.
+zarg_go "$@"
 
-dt need metaflac clean-exif || exit 1
-dt head embed-art
+dt_init
 
-dt info "paths: ${(j:, :)paths}"
-dt info "cores: $(dt cores)"
+dt_need metaflac clean-exif || exit 1
+dt_head embed-art
+
+dt_info "paths: ${(j:, :)paths}"
+dt_info "cores: $(dt_cores)"
 
 # Embedded art carries its own EXIF into the FLAC otherwise.
-dt step "cleaning exif data from images"
+dt_step "cleaning exif data from images"
 local p
 for p in $paths; do clean-exif "$p" >/dev/null; done
 
-local -a flacs=(${(0)"$(dt files flac "${paths[@]}")"})
-dt info "flac files: $#flacs"
+local -a flacs=(${(0)"$(dt_files flac "${paths[@]}")"})
+dt_info "flac files: $#flacs"
 (( $#flacs )) || exit 0
 
 # Per FLAC: pick the first match in each art category (front/disc/back/artist),
@@ -71,22 +73,22 @@ else
 fi
 '
 
-local -a out=(${(f)"$(printf '%s\0' $flacs | dt fan "$snippet")"})
+local -a out=(${(f)"$(printf '%s\0' $flacs | dt_fan "$snippet")"})
 
 local embedded=0 failed=0 line kind name
 for line in $out; do
   kind=${line%% *}
   name=${line#* }
   case $kind in
-    ok)   dt ok "$name"; (( embedded++ )) ;;
-    fail) dt err "$name"; (( failed++ )) ;;
-    none) dt warn "no artwork found: $name" ;;
+    ok)   dt_ok "$name"; (( embedded++ )) ;;
+    fail) dt_err "$name"; (( failed++ )) ;;
+    none) dt_warn "no artwork found: $name" ;;
   esac
 done
 
 print -r -- ""
-dt info "embedded: $embedded"
+dt_info "embedded: $embedded"
 if (( failed )); then
-  dt info "failed: $failed"
+  dt_info "failed: $failed"
   exit 1
 fi

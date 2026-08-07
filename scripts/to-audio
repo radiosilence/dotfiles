@@ -2,42 +2,44 @@
 # Bulk audio conversion — replaces the old separate flac/opus subcommands.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init to-audio 'Convert audio files to FLAC or Opus'
-zarg flag -k --keep    'keep original files'
-zarg flag -n --dry-run 'show what would be converted'
-zarg opt  -b --bitrate 'output bitrate in kbps (opus only)' default=160 env=BITRATE metavar=KBPS
-zarg arg  format 'output format' required values='flac opus'
-zarg arg  paths  'directories to search' variadic default=.
-zarg go "$@"
+zarg_init to-audio 'Convert audio files to FLAC or Opus'
+zarg_flag -k --keep    'keep original files'
+zarg_flag -n --dry-run 'show what would be converted'
+zarg_opt  -b --bitrate 'output bitrate in kbps (opus only)' default=160 env=BITRATE metavar=KBPS
+zarg_arg  format 'output format' required values='flac opus'
+zarg_arg  paths  'directories to search' variadic default=.
+zarg_go "$@"
 
-dt need ffmpeg || exit 1
+dt_init
+
+dt_need ffmpeg || exit 1
 
 local -a exts
 if [[ $format == flac ]]; then
   exts=(wav aiff m4a)
-  dt head 'flac conversion'
+  dt_head 'flac conversion'
 else
   exts=(wav aiff flac m4a)
-  dt head 'opus conversion'
+  dt_head 'opus conversion'
 fi
 
-local -a files=(${(0)"$(dt files "${exts[*]}" "${paths[@]}")"})
-(( $#files )) || { dt warn "No audio files found"; exit 0 }
+local -a files=(${(0)"$(dt_files "${exts[*]}" "${paths[@]}")"})
+(( $#files )) || { dt_warn "No audio files found"; exit 0 }
 
-dt info "Files: $#files"
+dt_info "Files: $#files"
 if [[ $format == flac ]]; then
-  dt info "Format: FLAC (lossless)"
+  dt_info "Format: FLAC (lossless)"
 else
-  dt info "Format: Opus @ ${bitrate}kbps"
+  dt_info "Format: Opus @ ${bitrate}kbps"
 fi
-dt info "Cores: $(dt cores)"
+dt_info "Cores: $(dt_cores)"
 
-(( keep )) || dt warn "Original files will be deleted"
+(( keep )) || dt_warn "Original files will be deleted"
 
 if (( dry_run )); then
-  dt step "Dry run - files that would be converted:"
+  dt_step "Dry run - files that would be converted:"
   local f
   for f in $files; do print -r -- "    $f"; done
   exit 0
@@ -54,9 +56,9 @@ local rm_orig=''
 (( keep )) || rm_orig='rm -f "$1";'
 local snippet="if $convert >/dev/null 2>&1; then $rm_orig echo ok; else echo fail; fi"
 
-local -a results=(${(f)"$(printf '%s\0' $files | dt fan "$snippet")"})
+local -a results=(${(f)"$(printf '%s\0' $files | dt_fan "$snippet")"})
 local ok=0 failed=0 r
 for r in $results; do
   if [[ $r == ok ]]; then (( ok++ )); else (( failed++ )); fi
 done
-dt results $ok $failed Converted
+dt_results $ok $failed Converted

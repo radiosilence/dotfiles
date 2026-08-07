@@ -2,19 +2,21 @@
 # Delete local branches whose upstream got deleted after a merge.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init git-sync 'Clean up merged branches'
-zarg flag -y --yes 'delete without confirmation'
-zarg go "$@"
+zarg_init git-sync 'Clean up merged branches'
+zarg_flag -y --yes 'delete without confirmation'
+zarg_go "$@"
+
+dt_init
 
 DT_YES=$yes
 
-git rev-parse --git-dir >/dev/null 2>&1 || { dt err "not a git repository"; exit 1 }
-dt head git-sync
+git rev-parse --git-dir >/dev/null 2>&1 || { dt_err "not a git repository"; exit 1 }
+dt_head git-sync
 
-dt info "Pruning and fetching from origin"
-git fetch --prune origin || { dt err "git fetch --prune failed"; exit 1 }
+dt_info "Pruning and fetching from origin"
+git fetch --prune origin || { dt_err "git fetch --prune failed"; exit 1 }
 
 local -a stale
 local line branch track
@@ -24,19 +26,19 @@ for line in ${(f)"$(git for-each-ref --format='%(refname:short)%09%(upstream:tra
   [[ $track == *gone* ]] && stale+=("$branch")
 done
 
-(( $#stale )) || { dt ok "No stale branches found"; exit 0 }
+(( $#stale )) || { dt_ok "No stale branches found"; exit 0 }
 
-dt info "Found stale branches: $#stale"
+dt_info "Found stale branches: $#stale"
 print -r -- ""
 for branch in $stale; do print -r -- "    $branch"; done
 print -r -- ""
 
-dt confirm 'Delete these branches?' || { dt warn Cancelled; exit 0 }
+dt_confirm 'Delete these branches?' || { dt_warn Cancelled; exit 0 }
 
-dt info "Deleting branches"
+dt_info "Deleting branches"
 for branch in $stale; do
   git branch -D "$branch" >/dev/null
   print -r -- "    $branch"
 done
 
-dt ok "Deleted $#stale branches"
+dt_ok "Deleted $#stale branches"

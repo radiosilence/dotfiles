@@ -2,19 +2,21 @@
 # Fetch a URL and emit it as a base64 data URL — for inlining assets in CSS/HTML.
 set -o pipefail
 
-autoload +X -Uz zarg dt || exit 1
+autoload +X -Uz zarg_init dt_init || exit 1
 
-zarg init url2base64 'Convert URLs to base64 data URLs'
-zarg opt -t --mime-type 'MIME type for the data URL' default=image/svg+xml metavar=TYPE
-zarg opt -T --timeout   'timeout in seconds' default=30 metavar=SECS
-zarg arg url 'URL to fetch' required
-zarg go "$@"
+zarg_init url2base64 'Convert URLs to base64 data URLs'
+zarg_opt -t --mime-type 'MIME type for the data URL' default=image/svg+xml metavar=TYPE
+zarg_opt -T --timeout   'timeout in seconds' default=30 metavar=SECS
+zarg_arg url 'URL to fetch' required
+zarg_go "$@"
 
-dt need curl || exit 1
+dt_init
+
+dt_need curl || exit 1
 
 # Pipe filter: only the data URL goes to stdout, nothing else.
 local encoded
 encoded=$(curl -fsSL --max-time "$timeout" "$url" | base64 | tr -d '\n') \
-  || { dt err "failed to fetch $url"; exit 1 }
+  || { dt_err "failed to fetch $url"; exit 1 }
 
 print -rn -- "data:${mime_type};base64,${encoded}"

@@ -1,9 +1,13 @@
-# zarg init <name> <description> — opens a spec.
+# zarg_init <name> <description> — opens a spec and declares the rest of the
+# family, so a consumer autoloads this one name.
 #
-# Declares the state the rest of the library reads, so a consumer that only
-# autoloads the dispatcher works without anyone sourcing the loader.
+# It also declares the state the API reads, which is what lets a consumer skip
+# the loader entirely and just autoload from fpath.
 #
 # Records are \x1f-delimited because help text may contain anything else.
+autoload -Uz zarg_arg zarg_completions zarg_flag zarg_go zarg_help zarg_opt \
+             zarg_parse zarg_version
+
 typeset -g  ZARG_SEP=$'\x1f'
 typeset -g  ZARG_NAME=$1 ZARG_DESC=$2
 typeset -ga ZARG_FLAGS=() ZARG_OPTS=() ZARG_ARGS=()

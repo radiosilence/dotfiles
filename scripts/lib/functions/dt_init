@@ -1,0 +1,16 @@
+# dt_init — sets up the output layer and declares the rest of the family, so a
+# consumer autoloads this one name. Call it before the first dt_* line.
+#
+# Colours live here rather than in each helper: they are read-only after this
+# runs, and computing them once beats a guard on every printed line. Colour
+# only when stdout is a terminal, so piped output stays greppable.
+autoload -Uz dt_confirm dt_cores dt_err dt_fan dt_files dt_head dt_info \
+             dt_need dt_ok dt_results dt_step dt_warn
+
+if [[ -t 1 ]]; then
+  typeset -g _dt_mag=$'\e[35m'    _dt_cyan=$'\e[36m'  _dt_green=$'\e[32m'
+  typeset -g _dt_yellow=$'\e[33m' _dt_red=$'\e[31m'   _dt_grey=$'\e[90m'
+  typeset -g _dt_bold=$'\e[1m'    _dt_off=$'\e[0m'
+else
+  typeset -g _dt_mag= _dt_cyan= _dt_green= _dt_yellow= _dt_red= _dt_grey= _dt_bold= _dt_off=
+fi
