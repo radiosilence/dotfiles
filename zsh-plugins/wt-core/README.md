@@ -67,10 +67,20 @@ backend is only ever the two functions above.
 
 ## Bin
 
+Everything here is zsh — these are zsh plugins, zsh is guaranteed present, and
+macOS still ships bash 3.2.
+
 `wt-list` prints `branch<TAB>path` per worktree, or the path of a named branch.
 Parsing `worktree list --porcelain` lived in four places and drifted; this is
 the one copy. `wt-preview` renders the fzf preview: PR details if there's a PR,
 otherwise log plus tree.
+
+`wtclean` is a script rather than a function, and `wtclean()` in the plugin is
+a one-line shim onto it. A function is only worth defining when it has to
+mutate the shell — `wt` and `wtrm` cd, so they qualify; a GC pass doesn't. The
+difference matters: a shell started before an update will happily run a stale
+function against changed helpers and half-succeed, which is exactly how a run
+once reported `removed 0, kept 0` while still deleting seven branches.
 
 ## Exports
 
