@@ -1,0 +1,389 @@
+{
+  "node": {
+    "allow_prettier_download": true,
+    "allow_binary_download": true,
+    "allow_npm_install": true
+  },
+  "restore_on_startup": "last_session",
+  "tab_size": 2,
+  "hover_popover_delay": 100,
+  "ui_font_family": "Geist Mono",
+  "project_panel": {
+    "dock": "left",
+  },
+  "file_finder": {
+    "modal_max_width": "xlarge",
+    // "smart" heuristically pulls in gitignored files; "indexed" restricts the
+    // picker to what Zed has already scanned.
+    "include_ignored": "indexed",
+  },
+  // Overrides the defaults wholesale, so the default entries are repeated here.
+  // node_modules is excluded because pnpm's symlink store pushed this repo's
+  // worktree to 16M tracked entries (15k visible) and ~18GB resident.
+  // Cost: files under node_modules cannot be opened, so go-to-definition into
+  // dependency types will not resolve.
+  "file_scan_exclusions": [
+    "**/node_modules",
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/.jj",
+    "**/.sl",
+    "**/.repo",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    "**/.turbo",
+    "**/.next/cache",
+    "**/coverage",
+    "**/dist",
+    "**/build",
+    "**/_build",
+    "**/target",
+    "**/__pycache__",
+    "**/.pytest_cache",
+    "**/.gradle",
+  ],
+  "lsp_document_colors": "none",
+  "git": {
+    "inline_blame": {
+      "enabled": false,
+    },
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "git_panel": {
+    "dock": "left",
+  },
+  "edit_predictions": {
+    "provider": "none",
+    "mode": "subtle",
+  },
+  "inlay_hints": {
+    "enabled": true,
+    "edit_debounce_ms": 400,
+    "scroll_debounce_ms": 400,
+    "show_background": true,
+    "show_other_hints": true,
+    "show_parameter_hints": true,
+    "show_type_hints": false,
+    "show_value_hints": true,
+    "toggle_on_modifiers_press": {
+      "alt": true,
+      "control": true,
+      "function": true,
+      "platform": true,
+      "shift": true,
+    },
+  },
+  "auto_install_extensions": {
+    "astro": true,
+    "basher": true,
+    "csv": true,
+    "dockerfile": true,
+    "elixir": true,
+    "html": true,
+    "oxc": true,
+    "ruby": true,
+    "jsonl": true,
+    "kotlin": true,
+    "proto": true,
+    "scss": true,
+    "terraform": true,
+    "toml": true,
+    "tsgo": true,
+    "zedokai": true,
+  },
+  "ui_font_size": 12.0,
+  "buffer_font_size": 12.0,
+  "buffer_font_family": "Geist Mono",
+  "buffer_font_features": {
+    "ss11": true,
+  },
+  "terminal": {
+    "dock": "bottom",
+    "font_family": "GeistMono Nerd Font Mono",
+    "font_features": {
+      "liga": false,
+    },
+    "cursor_shape": "bar",
+    "minimum_contrast": 0,
+  },
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "Zedokai",
+  },
+  "wrap_guides": [80, 100],
+  "soft_wrap": "none",
+  "format_on_save": "on",
+  "sticky_scroll": {
+    "enabled": true,
+  },
+  "preview_tabs": {
+    "enabled": true,
+    "enable_preview_from_file_finder": true,
+    "enable_keep_preview_on_code_navigation": true,
+  },
+  "languages": {
+    "Shell Script": {
+      "colorize_brackets": true,
+      "format_on_save": "on",
+    },
+    "TypeScript": {
+      // If you don't disable them runs all of them which breaks shit
+      "language_servers": [
+        "typescript-ls",
+        "!vtsls",
+        "!typescript-language-server",
+        "!eslint",
+        "...",
+      ],
+      "colorize_brackets": true,
+      "format_on_save": "on",
+      "prettier": { "allowed": false },
+      "formatter": [
+        // { "code_action": "source.fixAll.eslint" },
+        { "code_action": "source.fixAll.oxc" },
+        { "language_server": { "name": "oxfmt" } },
+      ],
+    },
+    "TSX": {
+      // If you don't disable them runs all of them which breaks shit
+      "language_servers": [
+        "typescript-ls",
+        "!vtsls",
+        "!typescript-language-server",
+        "!eslint",
+        "...",
+      ],
+      "colorize_brackets": true,
+      "format_on_save": "on",
+      "prettier": { "allowed": false },
+      "formatter": [
+        // { "code_action": "source.fixAll.eslint" },
+        { "code_action": "source.fixAll.oxc" },
+        { "language_server": { "name": "oxfmt" } },
+      ],
+    },
+    "Proto": {
+      "language_servers": ["buf", "codeowners-lsp"],
+    },
+    "CSS": {
+      "prettier": { "allowed": false },
+      "code_actions_on_format": {
+        "source.fixAll.stylelint": true,
+      },
+      "formatter": { "language_server": { "name": "oxfmt" } },
+    },
+    "SCSS": {
+      "prettier": { "allowed": false },
+      "code_actions_on_format": {
+        "source.fixAll.stylelint": true,
+      },
+      "formatter": { "language_server": { "name": "oxfmt" } },
+    },
+    "GraphQL": {
+      "prettier": { "allowed": false },
+      "formatter": { "language_server": { "name": "oxfmt" } },
+    },
+    "Elixir": {
+      "colorize_brackets": true,
+      "formatter": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
+      "language_servers": [
+        "dexter",
+        "!expert",
+        "!elixir-ls",
+        "!next-ls",
+        "!lexical",
+        "...",
+      ],
+      "format_on_save": "on",
+    },
+    "EEx": {
+      "colorize_brackets": true,
+      "formatter": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
+      "language_servers": [
+        "dexter",
+        "!expert",
+        "!elixir-ls",
+        "!next-ls",
+        "!lexical",
+        "...",
+      ],
+      "format_on_save": "on",
+    },
+    "HEEx": {
+      "colorize_brackets": true,
+      "formatter": {
+        "external": {
+          "command": "mix",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
+        },
+      },
+      "language_servers": [
+        "dexter",
+        "!expert",
+        "!elixir-ls",
+        "!next-ls",
+        "!lexical",
+        "...",
+      ],
+      "format_on_save": "on",
+    },
+    "Ruby": {
+      "colorize_brackets": true,
+      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."],
+      "formatter": [
+        { "code_action": "source.fixAll.rubocop" },
+        { "language_server": { "name": "rubocop" } },
+      ],
+    },
+    "Python": {
+      "colorize_brackets": true,
+      "language_servers": ["pyright", "ruff", "codeowners-lsp"],
+      "format_on_save": "on",
+      "formatter": [
+        { "code_action": "source.organizeImports.ruff" },
+        { "code_action": "source.fixAll.ruff" },
+        {
+          "language_server": {
+            "name": "ruff",
+          },
+        },
+      ],
+    },
+    "YAML": {
+      "prettier": { "allowed": false },
+      "formatter": { "language_server": { "name": "oxfmt" } },
+    },
+    "Rust": {
+      "colorize_brackets": true,
+    },
+    "Go": {
+      "colorize_brackets": true,
+    },
+    "JSON": {
+      "colorize_brackets": true,
+      "prettier": { "allowed": false },
+      "formatter": { "language_server": { "name": "oxfmt" } },
+    },
+    "TOML": {
+      "language_servers": ["tombi", "..."],
+    },
+    "CODEOWNERS": {
+      "formatter": {
+        "language_server": {
+          "name": "codeowners-lsp",
+        },
+      },
+    },
+    "HTML": {
+      "formatter": "language_server",
+    },
+  },
+  "lsp": {
+    "json-language-server": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true
+      },
+      "enable_lsp_tasks": true
+    },
+    "taplo": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true
+      },
+      "enable_lsp_tasks": true
+    },
+    "tailwindcss-language-server": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true
+      },
+      "enable_lsp_tasks": true
+    },
+    "typescript-ls": {
+      "binary": {
+        "ignore_system_version": false,
+        "enable_auto_updates": true,
+        "allow_binary_download": true
+      },
+      "enable_lsp_tasks": true
+    },
+    "codeowners-lsp": {
+      "initialization_options": {
+        "individual": "@radiosilence",
+        "validate_owners": true,
+        "github_token": "env:GITHUB_TOKEN",
+      },
+    },
+    "rust-analyzer": {
+      "enable_lsp_tasks": true,
+      "binary": {
+        "ignore_system_version": true,
+      },
+      "initialization_options": {
+        "inlayHints": {
+          "maxLength": null,
+          "lifetimeElisionHints": {
+            "enable": "skip_trivial",
+            "useParameterNames": true,
+          },
+          "closureReturnTypeHints": {
+            "enable": "always",
+          },
+        },
+      },
+    },
+    // "stylelint-lsp": {
+    //   "settings": {
+    //     "stylelint": {
+    //       "validate": ["css", "postcss", "scss"],
+    //     },
+    //   },
+    // },
+    "rubocop": {
+      "initialization_options": {
+        "safeAutocorrect": false,
+      },
+    },
+    "ruby-lsp": {
+      "initialization_options": {
+        "enabledFeatures": {
+          "diagnostics": false,
+        },
+      },
+    },
+    "oxlint": {
+      "initialization_options": {
+        "settings": {
+          "run": "onType",
+          "fixKind": "safe_fix",
+        },
+      },
+    },
+    "oxfmt": {
+      "initialization_options": {
+        "settings": {
+          "run": "onSave",
+        },
+      },
+    },
+    "ruff": {},
+  },
+}
