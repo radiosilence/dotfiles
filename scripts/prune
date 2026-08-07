@@ -2,7 +2,7 @@
 # Find and delete small directories cluttering a tree.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_confirm _dt_err _dt_head _dt_info _dt_ok _dt_warn || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg prune 'Find and delete small directories'
 zarg_flag -y --yes      'delete without confirmation'
@@ -22,8 +22,8 @@ _human() {
   else printf '%.2f %s\n' "$bytes" "${units[u]}"; fi
 }
 
-_dt_head prune
-_dt_info "threshold: $(_human $(( min_size * 1024 )))"
+dt head prune
+dt info "threshold: $(_human $(( min_size * 1024 )))"
 
 local -a candidates=()
 local dir size
@@ -48,7 +48,7 @@ for c in $candidates; do
 done
 
 if (( ! $#kept )); then
-  _dt_ok "No directories found below $(_human $(( min_size * 1024 )))"
+  dt ok "No directories found below $(_human $(( min_size * 1024 )))"
   exit 0
 fi
 
@@ -62,7 +62,7 @@ for c in $kept; do
 done
 kept=("${(@f)$(for c in $kept; do print -r -- "${sizes[$c]}"$'\t'"$c"; done | sort -n | cut -f2)}")
 
-_dt_info "Found $#kept candidates"
+dt info "Found $#kept candidates"
 print -r -- ""
 printf '  %-50s %12s\n' PATH SIZE
 printf '  %s\n' "${(l:64::─:)}"
@@ -73,20 +73,20 @@ for c in $kept; do
 done
 
 print -r -- ""
-_dt_info "total: $(_human $(( total * 1024 )))"
+dt info "total: $(_human $(( total * 1024 )))"
 print -r -- ""
 
-_dt_confirm 'Delete these directories?' || { _dt_warn "Operation cancelled"; exit 0 }
+dt confirm 'Delete these directories?' || { dt warn "Operation cancelled"; exit 0 }
 
 print -r -- ""
 local failed=0 err
 for c in $kept; do
   if err=$(rm -rf "$c" 2>&1 >/dev/null); then
-    _dt_ok "$c"
+    dt ok "$c"
   else
-    _dt_err "$c: $err"; (( failed++ ))
+    dt err "$c: $err"; (( failed++ ))
   fi
 done
 
 print -r -- ""
-_dt_ok "Deleted $(( $#kept - failed )) directories"
+dt ok "Deleted $(( $#kept - failed )) directories"

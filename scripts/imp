@@ -3,18 +3,18 @@
 # beets one at a time — beets' importer is interactive and expects one album.
 set -o pipefail
 
-autoload +X -Uz zarg _dt_err _dt_head _dt_info _dt_need _dt_ok _dt_step || exit 1
+autoload +X -Uz zarg dt || exit 1
 
 zarg imp 'Import music from URLs'
 zarg_arg urls 'URLs to download and import' required variadic
 zarg_go "$@"
 
-_dt_need aria2c beet || exit 1
-_dt_head 'music importer'
+dt need aria2c beet || exit 1
+dt head 'music importer'
 
 local dest=$(mktemp -d)
-_dt_info "temp dir: $dest"
-_dt_info "urls: $#urls"
+dt info "temp dir: $dest"
+dt info "urls: $#urls"
 
 local -i i=0
 local url album_dir
@@ -24,21 +24,21 @@ for url in $urls; do
   mkdir -p "$album_dir"
 
   print -r -- ""
-  _dt_step "[$i/$#urls] Downloading $url"
+  dt step "[$i/$#urls] Downloading $url"
   if ! aria2c -x 8 -d "$album_dir" "$url"; then
-    _dt_err "Download failed"
+    dt err "Download failed"
     continue
   fi
-  _dt_ok Downloaded
+  dt ok Downloaded
 
   local -a zips=("$album_dir"/*.zip(N))
   if (( $#zips )); then
-    _dt_step "Extracting..."
+    dt step "Extracting..."
     unzip -q "$zips[1]" -d "$album_dir" && rm -f "$zips[1]"
-    _dt_ok Extracted
+    dt ok Extracted
   fi
 
-  _dt_step "Files:"
+  dt step "Files:"
   if command -v lsd >/dev/null 2>&1; then
     lsd --tree "$album_dir"
   elif command -v tree >/dev/null 2>&1; then
@@ -46,10 +46,10 @@ for url in $urls; do
   fi
 
   # Interactive — stdin must stay attached, so no redirection here.
-  _dt_step "Importing to beets..."
+  dt step "Importing to beets..."
   if beet import "$album_dir"; then
-    _dt_ok "Import complete"
+    dt ok "Import complete"
   else
-    _dt_err "Beets import failed for this album"
+    dt err "Beets import failed for this album"
   fi
 done
