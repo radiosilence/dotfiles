@@ -301,6 +301,13 @@
     },
   },
   "lsp": {
+    "superhtml": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true
+      },
+      "enable_lsp_tasks": true
+    },
     "docker-language-server": {
       "binary": {
         "enable_auto_updates": true,
@@ -375,7 +382,9 @@
     "rust-analyzer": {
       "enable_lsp_tasks": true,
       "binary": {
-        "ignore_system_version": true,
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+        "ignore_system_version": false,
       },
       "initialization_options": {
         "inlayHints": {
