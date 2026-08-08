@@ -306,7 +306,6 @@ tasks:
       - patch:gitconfig
       - patch:ssh
       - link:brewfile
-      - link:claude-hooks
       - link:agent-configs
       - link:sheldon
 
@@ -414,19 +413,6 @@ tasks:
         [ -L "$target" ] && [ "$(readlink "$target")" = "{{.DOTFILES}}/Brewfile" ] && exit 0
         ln -sf "{{.DOTFILES}}/Brewfile" "$target"
         printf "{{.OK}} Brewfile\n"
-
-  link:claude-hooks:
-    desc: Inject the gastown hook into the work profile's local settings overlay
-    deps: [brew:bundle, dotfiles:clone]
-    status: ["! command -v jq"]
-    cmds:
-      - |
-        s="$HOME/.claude-work/settings.local.json"
-        mkdir -p "$HOME/.claude-work"
-        [ -f "$s" ] || echo '{}' > "$s"
-        jq -e '.hooks.PostToolUse[]?.hooks[]? | select(.command | contains("gastown-file-changed"))' "$s" >/dev/null 2>&1 && exit 0
-        jq '.hooks //= {} | .hooks.PostToolUse //= [] | .hooks.PostToolUse += [{"matcher": "Write|Edit", "hooks": [{"type": "command", "command": "~/.dotfiles/hooks/gastown-file-changed.sh"}]}]' "$s" > "$s.tmp" && mv "$s.tmp" "$s"
-        printf "{{.OK}} claude hooks: gastown (work overlay)\n"
 
   secrets:populate:
     desc: Populate mise conf.d/secrets.toml from 1Password (single op inject call)

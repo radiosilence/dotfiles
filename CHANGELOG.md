@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**Gastown removed.**
+
+- The `gastown-file-changed.sh` hook fired on every Write/Edit and no-op'd the moment it found no `gt` on `$PATH` — a fork per edit to discover it had nothing to do
+- Deleting it from `~/.claude-work/settings.local.json` was never enough on its own: `link:claude-hooks` re-injected the same block on the next converge, so the Taskfile entry was the load-bearing one. Anything that writes to the gitignored work overlay has to be removed at the injector, not the overlay
+- Graphite stays gone. It was dropped for colliding with gastown's `gt` binary, but stacked PRs live in the `gh-stack` skill now and graphite was annoying anyway
+
 **Three scripts deleted:**
 
 - **`prune-gen`** — a test fixture generator that shipped as a command on `$PATH` and had a shell completion generated for it. It only ever existed to exercise `prune`
