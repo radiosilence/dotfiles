@@ -242,7 +242,7 @@
     },
     "Ruby": {
       "colorize_brackets": true,
-      "language_servers": ["fuzzy-ruby-server"],
+      "language_servers": [],
       "formatter": [
         { "code_action": "source.fixAll.rubocop" },
         { "language_server": { "name": "rubocop" } },
