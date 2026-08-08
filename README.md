@@ -109,4 +109,3 @@ Web UI at `http://localhost:8384`. Stop: `brew services stop syncthing`.
 ## Related
 
 - [browser-schedule](https://github.com/radiosilence/browser-schedule) — Time-based browser switching for macOS
-- [gastown](https://github.com/steveyegge/gastown) — Multi-agent workspace orchestrator ([setup guide](GASTOWN.md))
