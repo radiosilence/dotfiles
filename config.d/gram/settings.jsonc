@@ -128,6 +128,10 @@
     "enable_preview_from_file_finder": true,
     "enable_keep_preview_on_code_navigation": true,
   },
+  "file_types": {
+    // Strict JSON rejects comments (error 521); JSONC keeps schema validation without it
+    "JSONC": ["**/*.json"],
+  },
   "languages": {
     "Shell Script": {
       "colorize_brackets": true,
@@ -273,6 +277,11 @@
       "colorize_brackets": true,
     },
     "JSON": {
+      "colorize_brackets": true,
+      "prettier": { "allowed": false },
+      "formatter": { "language_server": { "name": "oxfmt" } },
+    },
+    "JSONC": {
       "colorize_brackets": true,
       "prettier": { "allowed": false },
       "formatter": { "language_server": { "name": "oxfmt" } },
