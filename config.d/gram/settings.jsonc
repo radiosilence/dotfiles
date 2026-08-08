@@ -2,7 +2,7 @@
   "node": {
     "allow_prettier_download": true,
     "allow_binary_download": true,
-    "allow_npm_install": true
+    "allow_npm_install": true,
   },
   "restore_on_startup": "last_session",
   "tab_size": 2,
@@ -186,10 +186,6 @@
       },
       "formatter": { "language_server": { "name": "oxfmt" } },
     },
-    "GraphQL": {
-      "prettier": { "allowed": false },
-      "formatter": { "language_server": { "name": "oxfmt" } },
-    },
     "Elixir": {
       "colorize_brackets": true,
       "formatter": {
@@ -246,7 +242,7 @@
     },
     "Ruby": {
       "colorize_brackets": true,
-      "language_servers": ["ruby-lsp", "rubocop", "!solargraph", "..."],
+      "language_servers": ["fuzzy-ruby-server"],
       "formatter": [
         { "code_action": "source.fixAll.rubocop" },
         { "language_server": { "name": "rubocop" } },
@@ -296,34 +292,69 @@
     },
   },
   "lsp": {
+    "docker-language-server": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+      },
+      "enable_lsp_tasks": true,
+    },
+    "bash-language-server": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+      },
+      "enable_lsp_tasks": true,
+    },
+    "yaml-language-server": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+      },
+      "enable_lsp_tasks": true,
+    },
+    "dockerfile-language-server": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+      },
+      "enable_lsp_tasks": true,
+    },
+    "package-version-server": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+      },
+      "enable_lsp_tasks": true,
+    },
     "json-language-server": {
       "binary": {
         "enable_auto_updates": true,
-        "allow_binary_download": true
+        "allow_binary_download": true,
       },
-      "enable_lsp_tasks": true
+      "enable_lsp_tasks": true,
     },
     "taplo": {
       "binary": {
         "enable_auto_updates": true,
-        "allow_binary_download": true
+        "allow_binary_download": true,
       },
-      "enable_lsp_tasks": true
+      "enable_lsp_tasks": true,
     },
     "tailwindcss-language-server": {
       "binary": {
         "enable_auto_updates": true,
-        "allow_binary_download": true
+        "allow_binary_download": true,
       },
-      "enable_lsp_tasks": true
+      "enable_lsp_tasks": true,
     },
     "typescript-ls": {
       "binary": {
         "ignore_system_version": false,
         "enable_auto_updates": true,
-        "allow_binary_download": true
+        "allow_binary_download": true,
       },
-      "enable_lsp_tasks": true
+      "enable_lsp_tasks": true,
     },
     "codeowners-lsp": {
       "initialization_options": {
@@ -350,26 +381,11 @@
         },
       },
     },
-    // "stylelint-lsp": {
-    //   "settings": {
-    //     "stylelint": {
-    //       "validate": ["css", "postcss", "scss"],
-    //     },
-    //   },
-    // },
-    "rubocop": {
-      "initialization_options": {
-        "safeAutocorrect": false,
-      },
-    },
-    "ruby-lsp": {
-      "initialization_options": {
-        "enabledFeatures": {
-          "diagnostics": false,
-        },
-      },
-    },
     "oxlint": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+      },
       "initialization_options": {
         "settings": {
           "run": "onType",
@@ -378,12 +394,15 @@
       },
     },
     "oxfmt": {
+      "binary": {
+        "enable_auto_updates": true,
+        "allow_binary_download": true,
+      },
       "initialization_options": {
         "settings": {
           "run": "onSave",
         },
       },
     },
-    "ruff": {},
   },
 }
