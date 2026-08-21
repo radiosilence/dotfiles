@@ -8,6 +8,12 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**Claude runs in auto mode, not bypass.**
+
+- Both profiles were `defaultMode: bypassPermissions` — every tool call waved through, on the host, with no sandbox. Auto mode still runs read-only and reversible work unprompted; it just stops short of the things worth a second's thought
+- `skipDangerousModePermissionPrompt` went with it. Its only job is silencing the warning on `--dangerously-skip-permissions`, so leaving it set means the one launch where you fat-finger that flag is also the one that never tells you
+- The lima jail keeps `bypassPermissionsModeAccepted`. Throwaway VM, no host filesystem — that is the entire reason it exists
+
 **Gastown removed.**
 
 - The `gastown-file-changed.sh` hook fired on every Write/Edit and no-op'd the moment it found no `gt` on `$PATH` — a fork per edit to discover it had nothing to do
