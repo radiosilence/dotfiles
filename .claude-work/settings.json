@@ -1,16 +1,8 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "auto"
   },
-  "model": "opus[1m]",
-  "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true,
-  "theme": "dark",
-  "editorMode": "normal",
-  "preferredNotifChannel": "ghostty",
-  "teammateMode": "in-process",
-  "remoteControlAtStartup": true,
-  "tui": "fullscreen",
+  "model": "fable",
   "hooks": {
     "SessionStart": [
       {
@@ -37,5 +29,12 @@
         "repo": "oliver-kriska/claude-elixir-phoenix"
       }
     }
-  }
+  },
+  "effortLevel": "high",
+  "tui": "fullscreen",
+  "theme": "dark",
+  "editorMode": "normal",
+  "preferredNotifChannel": "ghostty",
+  "teammateMode": "in-process",
+  "remoteControlAtStartup": true
 }
