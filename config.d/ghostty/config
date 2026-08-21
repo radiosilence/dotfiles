@@ -52,3 +52,12 @@ window-padding-balance = true
 keybind = super+arrow_left=text:\x1b[H
 keybind = super+arrow_right=text:\x1b[F
 
+
+# ssh: ghostty's TERM is xterm-ghostty, which no distro's ncurses ships — not
+# even ncurses-term. A remote that can't look it up loses cub1 and redraws the
+# line with \r instead of \b, so a prompt repainting per keystroke garbles and
+# backspace dies. ssh-env sends xterm-256color + COLORTERM instead, which every
+# box already understands. Not ssh-terminfo: that fixes it by tic'ing a file
+# into ~/.terminfo on every host you ever touch, and the only capability zsh's
+# line editor actually needs from terminfo is one xterm-256color already has.
+shell-integration-features = ssh-env
