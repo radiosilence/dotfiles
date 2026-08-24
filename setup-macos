@@ -24,6 +24,7 @@ if ! command -v git >/dev/null 2>&1; then
   print -P "  ${WARN} installing Xcode Command Line Tools (GUI prompt)"
   xcode-select --install 2>/dev/null || true
   while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
+  exit
 fi
 print -P "  ${OK} xcode cli tools"
 
