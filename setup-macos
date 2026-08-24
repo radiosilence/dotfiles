@@ -60,10 +60,10 @@ print -P "  ${OK} homebrew"
 # 4. Install gh + mise immediately — the rest of bootstrap needs both. brew
 #    bundle (in task converge later) will see them already there and skip.
 # ---------------------------------------------------------------------------
-print -P "  ${WORK} installing gh + mise + 1password"
+print -P "  ${WORK} installing gh + mise + 1password + zen"
 brew install --quiet gh mise
-brew install --cask 1password
-print -P "  ${OK} gh + mise + 1password"
+brew install --cask 1password zen
+print -P "  ${OK} gh + mise + 1password + zen"
 
 # ---------------------------------------------------------------------------
 # 5. GitHub auth — mise reads tokens directly from gh's hosts.yml via its
