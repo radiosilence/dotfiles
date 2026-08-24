@@ -396,6 +396,7 @@ tasks:
           ln -s "$src" "$dst"; printf "{{.LINK}} %s\n" "$dst"
         }
         linkto .claude-work/CLAUDE.md     "$HOME/.claude-work/CLAUDE.md"
+        linkto .claude-work/skills        "$HOME/.claude-work/skills"
         linkto .claude-work/settings.json "$HOME/.claude-work/settings.json"
         # herdr — config only; sockets/logs/session.json stay in ~/.config/herdr
         linkto config.d/herdr/config.toml "$HOME/.config/herdr/config.toml"

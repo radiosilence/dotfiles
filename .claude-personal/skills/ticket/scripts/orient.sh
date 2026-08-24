@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Phase 0 orient: deterministic git/gh probes. No LLM needed.
-# Run from the worktree you intend to work in.
+# Where am I, and has this already been done? Deterministic git/gh probes.
+# Run from the worktree you intend to work in. Optional arg: issue number or URL.
 set -uo pipefail
 
 section() { printf '\n=== %s ===\n' "$1"; }
@@ -27,4 +27,15 @@ if [[ -n "$branch" ]]; then
     || echo "(gh not available or no PR for branch '$branch')"
 else
   echo "(no current branch)"
+fi
+
+issue="${1:-}"
+if [[ -n "$issue" ]]; then
+  section "issue"
+  gh issue view "$issue" --json number,title,state,url,labels,assignees,closedAt 2>/dev/null \
+    || echo "(could not read issue '$issue')"
+
+  section "PRs mentioning the issue"
+  gh pr list --search "$issue" --state all --json number,title,state,url 2>/dev/null \
+    || echo "(none, or gh unavailable)"
 fi
