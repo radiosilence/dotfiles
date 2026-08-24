@@ -8,6 +8,16 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### August
 
+**Git signing converges.**
+
+- `sign.conf` had the signer wired up but nothing set `user.signingkey`, so every
+  machine needed the same three commands typed from memory — and until they were,
+  git happily authored commits as `jc@<hostname>.local`, unsigned
+- `git:signing` reads the pubkey from the 1Password agent and the email from `op`,
+  so the values are derived rather than stored and a new box needs neither
+- It also writes `allowed_signers`. Without it git refuses to check an SSH signature
+  at all, which reads as "signing is broken" rather than "verification is unconfigured"
+
 **Claude runs in auto mode, not bypass.**
 
 - Both profiles were `defaultMode: bypassPermissions` — every tool call waved through, on the host, with no sandbox. Auto mode still runs read-only and reversible work unprompted; it just stops short of the things worth a second's thought

@@ -91,7 +91,10 @@ completions cannot drift from the flags it actually accepts.
 
 ## Architecture Notes
 
-**Git signing** — Commit signing via 1Password SSH agent. `user.signingkey` is per-machine (local git config).
+**Git signing** — `git.d/sign.conf` sets the format, signer program and `commit.gpgsign`;
+the identity half (`user.email`, `user.signingkey`, `allowed_signers`) is per-machine
+and lives in `~/.gitconfig`, written by `task git:signing` from the 1Password agent
+and account. Nothing key-shaped is committed, and a fresh box gets it from `converge`.
 
 **Tool duplication** — Some tools exist in both brew and mise intentionally:
 
