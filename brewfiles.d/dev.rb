@@ -2,8 +2,7 @@
 tap 'withgraphite/tap'
 tap 'metalbear-co/mirrord'
 
-# cask 'zed'
-cask 'gram'
+cask 'zed'
 cask 'fork'
 cask 'lens'
 

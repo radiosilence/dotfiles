@@ -1,3 +1,4 @@
+tap 'radiosilence/koan'
 # Media — audio/video processing and playback
 brew 'ffmpeg'
 brew 'flac'
@@ -7,6 +8,7 @@ brew 'atomicparsley'
 
 cask 'foobar2000'
 cask 'iina'
+cask 'radiosilence/koan/koan-app'
 
 brew 'exiftool'
 mas "Infuse", id: 1136220934
