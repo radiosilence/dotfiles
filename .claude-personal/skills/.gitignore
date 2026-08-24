@@ -1,0 +1,9 @@
+*
+!.gitignore
+!async-ticket/
+!release/
+!ticket/
+!ticket/**
+!slack/
+!slack/**
+!zellij-here/
