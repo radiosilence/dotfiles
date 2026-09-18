@@ -98,5 +98,5 @@ The PR description should include the changelog entry.
 
 - If the project has a CI release workflow triggered by tags, mention it to the user
 - If there are pre-release checks (e.g. `cargo publish --dry-run`), run them
-- For work repos, follow work PR conventions (Jira linking, @claude review)
+- For work repos, follow that org's PR conventions
 - For personal repos, follow personal conventions (changelog, no claude bot)

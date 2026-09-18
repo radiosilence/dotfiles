@@ -6,6 +6,13 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### September
+
+**Employer context out of the public repo.**
+
+- This repo is public, so anything naming internal tooling, endpoints or process belongs in a local overlay, not in tracked files. `.claude-work/` is now gitignored in full (the local dir still feeds `~/.claude-work` via `link:agent-configs`, which no-ops when the source is absent), `mcp.json` is gitignored anywhere it appears, and the personal `CLAUDE.md` keeps only rules that generalise
+- Hardcoded `/Users/<name>/` paths in the suvadu hooks and zellij config became `$HOME`/`~` — a username is machine state, not config
+
 ### August
 
 **Git signing converges.**
@@ -300,16 +307,16 @@ dt_head kill-port
 
 **PR labels rule:**
 
-- CLAUDE.md Git & GitHub gains: apply the repo's labels when creating PRs (e.g. `REDACTED`, `REDACTED`), and any label that waives a safety gate must be justified in the PR description — what it permits and why it's OK for this change. A bare waiver label tells the reviewer nothing
+- CLAUDE.md Git & GitHub gains: apply the repo's labels when creating PRs, and any label that waives a safety gate must be justified in the PR description — what it permits and why it's OK for this change. A bare waiver label tells the reviewer nothing
 - Companion rule: ANY unsafe change (breaking, risky migration, backwards-incompatible) gets justified in the PR description even when no label exists to flag it — the reviewer gets the risk context either way
 
 **Time awareness rule:**
 
 - CLAUDE.md gains a top-of-file rule: on return-from-silence signals ("I'm back", "morning!!") or relative dates ("today", "yesterday"), run `date` and re-anchor before reasoning about time, keeping the previous anchor so relative references resolve against when the last exchange actually happened. Sessions span sleep/weekend breaks; the user shouldn't have to announce that it's the next day
 
-**REDACTED check + Coding Standards section:**
+**Coding Standards section:**
 
-- CLAUDE.md `Code Style` renamed to `Coding Standards` and gains the rule: when the REDACTED is connected, newly written code gets checked against the relevant standards while writing or right after push, in parallel with tests/CI (delegable to an arm). Catches standards violations locally instead of waiting a full cycle for AI review to bounce them back
+- CLAUDE.md `Code Style` renamed to `Coding Standards`
 
 **Octopus Mode 🐙 — CLAUDE.md agent orchestration rewritten:**
 
@@ -717,7 +724,7 @@ Another tool built, iterated, and eventually extracted. Started as a shell scrip
 - Alacritty config re-added (`5c74e3d`)
 - Brewfile AI-assisted reorganization (`55936f5`)
 - Added steam cask (`1f24957`)
-- REDACTED completions (`6fe3177`)
+- Work CLI completions (`6fe3177`)
 
 ### July (early) — upd Improvements
 

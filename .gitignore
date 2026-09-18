@@ -14,3 +14,7 @@ docs-local
 
 # Tools (herdr, etc.) write project-scoped config here; work config lives in .claude-work/
 .claude/
+
+# Work profile + agent endpoint config: local only, never tracked (public repo)
+.claude-work/
+mcp.json
