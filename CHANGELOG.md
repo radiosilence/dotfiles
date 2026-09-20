@@ -8,6 +8,25 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### September
 
+**A better JPEG encoder for cover art.**
+
+- Beets encodes through Pillow, i.e. libjpeg-turbo. Correct, but a modern encoder
+  gets the same fidelity in meaningfully fewer bytes — and art is embedded into
+  *every* track of an album, so it multiplies
+- `bestjpeg` (local plugin) swaps only the final encode: Pillow still does the
+  decode and Lanczos resample, then hands off a lossless PPM so the image is
+  compressed exactly once rather than twice
+- It probes for `cjpegli` first and falls back to mozjpeg's `cjpeg`, then to
+  stock Pillow if neither is installed. jpegli is the better encoder but
+  Homebrew's `jpeg-xl` ships `JPEGXL_ENABLE_JPEGLI=OFF`, so the probe is there to
+  pick it up for free if it ever lands
+- Quality numbers are **not comparable across encoders**. Measured against the
+  source pixels on a real 2048px cover: Pillow q95 was 451 KB at 34.50 dB PSNR,
+  mozjpeg hit the same fidelity at q88 for 295 KB (-34%), and the configured q95
+  now buys 41.36 dB for 593 KB. Same number, substantially better art
+- PNG covers are left alone — the plugin declines any non-JPEG target rather than
+  quietly making a lossless source lossy
+
 **Beets cover art stops running on luck.**
 
 - `fetchart`/`embedart` were loaded but unconfigured, so every knob sat at its

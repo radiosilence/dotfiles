@@ -2,3 +2,4 @@
 *.pickle
 discogs_token.json
 config.yaml
+__pycache__/
