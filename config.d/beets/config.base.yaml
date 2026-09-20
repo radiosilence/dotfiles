@@ -17,6 +17,18 @@ plugins:
   - yearfixer
 discogs:
   index_tracks: true
+fetchart:
+  auto: true
+  minwidth: 500
+  maxwidth: 1200
+  quality: 95
+  enforce_ratio: 10%
+  high_resolution: true
+embedart:
+  auto: true
+  maxwidth: 1200
+  quality: 95
+  remove_art_file: true
 replace:
   '[\\/]': "-"
   '^\.': "-"
