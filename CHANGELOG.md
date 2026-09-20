@@ -8,6 +8,25 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### September
 
+**Beets cover art stops running on luck.**
+
+- `fetchart`/`embedart` were loaded but unconfigured, so every knob sat at its
+  permissive default: no size floor, no ceiling, no quality cap. A sample of the
+  drive found embedded covers ranging from a 4 KB thumbnail to a single 14.4 MB
+  image — and art is duplicated into *every track* of an album
+- `minwidth: 500` and `enforce_ratio: 10%` reject thumbnails and wide promo
+  banners; `maxwidth: 1200` + `quality: 95` bound what gets written. 95 rather
+  than the usual 85 because a 1200px cover is viewed full-bleed on a phone, where
+  85 goes visibly mushy
+- None of those bounds did anything before: beets needs ImageMagick or Pillow to
+  resize and had neither, so it silently skipped. The mise alias now installs
+  `pillow` alongside the other beets extras
+- `remove_art_file: true` — art lives in the tags, not beside them. The 45
+  `cover.*` files already on the drive were checked track-by-track for a matching
+  embedded image and then deleted, and stale `artpath` rows cleared
+- `auto: true` is stated rather than inherited — it was already the default, but
+  the whole point here is that the art path is no longer implicit
+
 **Employer context out of the public repo.**
 
 - This repo is public, so anything naming internal tooling, endpoints or process belongs in a local overlay, not in tracked files. `.claude-work/` is now gitignored in full (the local dir still feeds `~/.claude-work` via `link:agent-configs`, which no-ops when the source is absent), `mcp.json` is gitignored anywhere it appears, and the personal `CLAUDE.md` keeps only rules that generalise
