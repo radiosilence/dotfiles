@@ -8,6 +8,15 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### September
 
+**Claude gets a brief on not sounding like Claude.**
+
+- A "Writing prose" section in the personal CLAUDE.md, built by having Opus
+  subagents answer ten cold prompts and dissecting the output rather than copying
+  a generic "AI words" list. The classic lexical tells were already gone; the
+  tics had migrated into structure (wrappers, contrast framing, kickers, one
+  skeleton for every register, uniform sentence length), so the brief targets
+  shapes, since word bans just relocate the habit
+
 **A better JPEG encoder for cover art.**
 
 - Beets encodes through Pillow, i.e. libjpeg-turbo. Correct, but a modern encoder
