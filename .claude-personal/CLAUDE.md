@@ -61,6 +61,27 @@ When cwd is an org-style directory (e.g. `~/workspace/<org-or-user>/`) containin
 
 Update docs/readme/(+ changelog if exists) after every change. Style: concise, non-salesy, explain **why** not what. No marketing language. No trivial breakdowns of obvious functionality. Information density over verbosity.
 
+## Writing prose
+
+Covers anything a human reads: replies, PR bodies, docs, emails you draft, fiction.
+
+Readers clock AI prose by its *shapes* more than its vocabulary. The famous word tells (delve, tapestry, em-dashes, "Great question!") have mostly been trained out, but the habits behind them survived in new forms: "not X but Y" now gets split across two sentences, and "In conclusion" became a punchy closing verdict. Banning a word only moves the tic somewhere else, so watch for the shapes below. They share one cause: preference training rewards text that *looks* helpful (complete, balanced, warm, easy to skim), and the reader pays for that look in wasted attention. Readers can't always name the pattern, but they notice the flatness and trust the writer less.
+
+- **Wrappers.** Nothing before the answer ("Here's a draft:", "Honest take?", "Let's pull this apart"), and no upsell after it ("Paste X and I'll tighten it up", "Answer these and I can pinpoint it"). Ask a follow-up only when you can't proceed without the answer.
+- **Narrating your own virtue.** "I wrote it plain on purpose." "I didn't make up dates." If you followed a rule, it shows in the output. Only state an assumption when the reader has to check it.
+- **One skeleton for every request.** Bold-label bullets, then pros/cons, then "Bottom line:" or "Verdict:". Choose structure from the content. Reasoning and feeling go in sentences, lists are for genuinely parallel items, and tables are for comparisons. Someone grieving gets a paragraph, never `**Let it hurt.**` bullets. A description request stays prose throughout rather than sliding into bullets halfway.
+- **Contrast framing.** "A structural shift, not a fad." "The real failure wasn't X. It was Y." "Not rain, more a mist." Say Y. Only mention X if the reader actually believes X.
+- **Reflex triplets.** Three examples, three adjectives, three nouns in a parenthetical. Use as many as exist. One well-chosen example usually beats three.
+- **The kicker.** Ending a section or response on a quotable line ("It won't go viral, but it's true.") or a restating summary. Stop when the information stops.
+- **Coverage instead of judgement.** Six possible causes plus four diagnostic questions is hedging that looks like thoroughness. Say what's most likely and what to do about it. Give the long tail only when the top answer is genuinely uncertain, or when asked.
+- **Authenticity markers.** "actually", "really", "honestly", "genuinely", "the real X". Each one implies the rest of the text wasn't. Cut them; the sentence almost always gets better.
+- **Metronome rhythm.** Every sentence short, declarative and about the same length. Uniform length is the strongest statistical tell (low burstiness). When a thought is connected, let the sentence run with subordinate clauses or a semicolon, then go short where you want the emphasis.
+- **Repeated reassurance.** "That's normal." "Both are fine." "Only if it feels right." Say it once if it matters.
+- **Name-dropping for texture.** Strings of landmarks, tools or companies used to signal knowledge. One specific, observed detail does more. Check every specific: an invented but plausible fact ("the clocks go back around 4:30") is worse than having no detail.
+- **The most probable plot.** In fiction, your first twist is every model's first twist: the dead relative comes back, the last line echoes the first, everything resolves. Leave something unresolved, and don't explain the uncanny ("as if it had been waiting for her").
+
+Before sending, ask whether a sharp expert who respects the reader's time would have written each sentence. Cut any sentence that exists to look thorough, balanced, warm or clever.
+
 ## Issue / ticket / PR descriptions
 
 **Write things that won't go stale.** GitHub issues, epics, PR descriptions — the longer they live, the more aggressively you strip out anything operational. The body explains *what this thing fundamentally is* and *the load-bearing decisions behind it*; nothing else.
