@@ -680,6 +680,8 @@ tasks:
       - task: generate:completions:gen
         vars: { TOOL: fastmail, CMD: "fastmail completions zsh" }
       - task: generate:completions:gen
+        vars: { TOOL: sift, CMD: "sift completions zsh" }
+      - task: generate:completions:gen
         vars:
           { TOOL: bun, CMD: "bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'" }
       - task: generate:completions:gen
