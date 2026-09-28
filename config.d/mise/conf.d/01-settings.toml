@@ -20,6 +20,7 @@ minimum_release_age_excludes = [
   "fastmail",
   "codeowners-lsp",
   "caldav",
+  "sift",
 ]
 
 [settings.github]
