@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### September
 
+**sift replaces beets.** sift (radiosilence/sift) matches, tags and files albums against MusicBrainz, reads the existing beets `config.yaml`, and is a static binary from GitHub releases, so mise installs it without Python. The broot verb is `sift_import` (`si`); beets' `--flat` variant goes, since sift always treats the directory given as one album. `imp` imports with sift. The `bestjpeg` beets plugin and the `mozjpeg` it used are gone with it.
+
 **Claude gets a brief on not sounding like Claude.**
 
 - A "Writing prose" section in the personal CLAUDE.md, built by having Opus

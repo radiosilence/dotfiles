@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
-# Download a batch of URLs, each into its own album dir, and hand them to
-# beets one at a time — beets' importer is interactive and expects one album.
+# Download a batch of URLs, each into its own album dir, and import each with
+# sift, one album per directory.
 set -o pipefail
 
 autoload +X -Uz zarg dt && dt || exit 1
@@ -9,7 +9,7 @@ zarg imp 'Import music from URLs'
 zarg_arg urls 'URLs to download and import' required variadic
 zarg_go "$@"
 
-dt_need aria2c beet || exit 1
+dt_need aria2c sift || exit 1
 dt_head 'music importer'
 
 local dest=$(mktemp -d)
@@ -45,11 +45,10 @@ for url in $urls; do
     tree "$album_dir"
   fi
 
-  # Interactive — stdin must stay attached, so no redirection here.
-  dt_step "Importing to beets..."
-  if beet import "$album_dir"; then
+  dt_step "Importing with sift..."
+  if sift import "$album_dir"; then
     dt_ok "Import complete"
   else
-    dt_err "Beets import failed for this album"
+    dt_err "sift import failed for this album"
   fi
 done

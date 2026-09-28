@@ -1,5 +1,4 @@
 [tool_alias]
-beets = "pipx:beets[uvx_args=--with requests --with pillow --with beets-yearfixer --with beets[discogs]]"
 broot = "github:Canop/broot"
 caldav = "github:radiosilence/caldav-cli"
 codeowners-lsp = "github:radiosilence/codeowners-lsp"
@@ -14,6 +13,7 @@ pnpm-shell-completion = "github:g-plane/pnpm-shell-completion"
 procs = "github:dalance/procs"
 pup = "github:datadog-labs/pup"
 sfw-free = "github:SocketDev/sfw-free"
+sift = "github:radiosilence/sift"
 snowflake-cli = "pipx:snowflake-cli"
 suvadu = "github:AppachiTech/suvadu"
 tfl = "github:radiosilence/tfl-mcp"

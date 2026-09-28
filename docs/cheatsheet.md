@@ -44,7 +44,7 @@ zsh, on `$PATH` directly — nothing to build. Run any with `--help` for full op
 
 | Command                      | Description                                               |
 | ---------------------------- | --------------------------------------------------------- |
-| `imp <urls>`                 | Download + extract + beets music import (aria2c parallel) |
+| `imp <urls>`                 | Download + extract + sift music import (aria2c parallel) |
 | `parallel-dl-extract <urls>` | Parallel download and extract archives                    |
 
 Everything above lives in `scripts/` as zsh and takes `--help`, `--version` and

@@ -15,9 +15,6 @@ plugins:
   - embedart
   - importadded
   - yearfixer
-  - bestjpeg
-pluginpath:
-  - ~/.config/beets/plugins
 discogs:
   index_tracks: true
 fetchart:
