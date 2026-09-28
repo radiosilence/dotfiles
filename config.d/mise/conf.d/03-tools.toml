@@ -3,7 +3,6 @@
 aube = "latest"                                # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
 aws-vault = "latest"
 bat = "latest"                                 # Cat with wings
-beets = "latest"                               # Music organizer
 broot = "latest"                               # Directory navigation
 buf = "latest"
 bun = "latest"                                 # JS runtime
@@ -45,6 +44,7 @@ rust = "latest"
 ruby = "latest"
 sfw-free = { version = "latest", bin = "sfw" } # Socket Firewall — release ships as sfw-free; ni probes for sfw
 sheldon = "latest"                             # Zsh plug-in manager
+sift = "latest"                                # Tags and files music (MusicBrainz), reads the beets config
 snowflake-cli = "latest"                       # Snowflake CLI (binary: `snow`)
 starship = "latest"                            # Prompt
 suvadu = "latest"                              # Agent-aware shell history (binary: `suv`) — aliased to github:AppachiTech/suvadu in 02-aliases.toml

@@ -74,7 +74,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 
 - `to-audio opus|flac` — Parallel audio conversion
 - `embed-art` — Embed cover art into FLACs
-- `imp` — Download + extract + beets import
+- `imp` — Download + extract + sift import
 
 **Files**
 

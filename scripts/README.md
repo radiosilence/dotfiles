@@ -218,16 +218,16 @@ The directory is deliberately not cleaned up — it's the return value.
 
 ### `imp <urls...>`
 
-Download, extract, and import to beets, one album per URL.
+Download, extract, and import with sift, one album per URL.
 
 ```sh
 imp https://example.com/album.zip
 imp https://example.com/a.zip https://example.com/b.zip
 ```
 
-Each URL gets its own directory so beets sees distinct albums. `beet import` is
-interactive and keeps stdin, so its prompts work normally. A failed download
-skips that album and carries on.
+Each URL gets its own directory, so each is imported as its own album. sift
+never prompts: an album it cannot match confidently is left where it is and
+reported. A failed download skips that album and carries on.
 
 ---
 

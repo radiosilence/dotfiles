@@ -34,23 +34,15 @@ verbs: [
     }
 
     {
-        invocation: beet_import
-        shortcut: bi
+        invocation: sift_import
+        shortcut: si
         apply_to: directory
-        execution: "beet import {directory}"
+        execution: "sift import {directory}"
         leave_broot: false
     }
     {
         invocation: open
         execution: "open {file}"
-        leave_broot: false
-    }
-
-    {
-        invocation: beet_import
-        shortcut: bif
-        apply_to: directory
-        execution: "beet import --flat {directory}"
         leave_broot: false
     }
 
