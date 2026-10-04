@@ -18,6 +18,18 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 **sift replaces beets.** sift (radiosilence/sift) matches, tags and files albums against MusicBrainz, reads the existing beets `config.yaml`, and is a static binary from GitHub releases, so mise installs it without Python. The broot verb is `sift_import` (`si`); beets' `--flat` variant goes, since sift always treats the directory given as one album. `imp` imports with sift. The `bestjpeg` beets plugin and the `mozjpeg` it used are gone with it.
 
+**herdr's Claude hook ships with the dotfiles.**
+
+- Both profiles' `settings.json` call `hooks/herdr-agent-state.sh`, but the
+  script only existed where `herdr integration install claude` had been run, so
+  fresh machines and the work profile failed every SessionStart. The script has
+  nothing profile-specific in it, so one copy lives in `config.d/herdr` and
+  `link:agent-configs` links it into each profile
+- Installing via herdr is avoided because it appends a second SessionStart
+  entry with an absolute path rather than recognising the existing one. When
+  `herdr integration status --outdated-only` flags a new version, copy the
+  regenerated script back into `config.d/herdr`
+
 **Claude gets a brief on not sounding like Claude.**
 
 - A "Writing prose" section in the personal CLAUDE.md, built by having Opus

@@ -401,6 +401,9 @@ tasks:
         linkto .claude-work/settings.json "$HOME/.claude-work/settings.json"
         # herdr — config only; sockets/logs/session.json stay in ~/.config/herdr
         linkto config.d/herdr/config.toml "$HOME/.config/herdr/config.toml"
+        # herdr's claude hook is profile-agnostic, so every profile shares one copy
+        linkto config.d/herdr/claude-agent-state.sh "$HOME/.claude-personal/hooks/herdr-agent-state.sh"
+        linkto config.d/herdr/claude-agent-state.sh "$HOME/.claude-work/hooks/herdr-agent-state.sh"
 
   link:config:
     desc: Symlink config dirs (config.d/* → ~/.config/*)
