@@ -76,15 +76,9 @@ If the project doesn't have a changelog, create one following [Keep a Changelog]
 - Run the appropriate lock file update command
 - Run formatter on changed files
 
-## 6. Verify
+## 6. Commit and PR
 
-- Run the project's lint/check command (cargo clippy, eslint, mix credo, etc.)
-- Run tests to make sure nothing broke
-- `git diff` to review all changes
-
-## 7. Commit and PR
-
-Create a single commit and PR:
+Review `git diff`, then create a single commit and push it as a PR:
 
 ```
 release: vX.Y.Z
@@ -93,6 +87,10 @@ release: vX.Y.Z
 The PR description should include the changelog entry.
 
 **Do NOT create tags, do NOT push tags.** The user handles tag creation after merging.
+
+## 7. Verify
+
+Once the PR is pushed, run the project's lint/check command (cargo clippy, eslint, mix credo, etc.) and tests in the background while CI runs. Fix and push again if anything fails.
 
 ## Notes
 
