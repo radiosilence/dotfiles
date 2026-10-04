@@ -4,3 +4,5 @@
 !settings.json
 !skills/
 !skills/**
+!hooks/
+!hooks/push-before-test.sh

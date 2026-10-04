@@ -6,6 +6,14 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### October
+
+**Claude pushes before it tests, and never blocks on slow checks.**
+
+- The push-first rule was one bullet among eleven in the Git section, and the release skill told Claude to run tests before committing, so it kept verifying locally before CI had started. The rule now has its own section with the reasoning (CI runs the same suite, so a local run first only delays it), and the release skill pushes the PR before verifying.
+- `hooks/push-before-test.sh` is a PreToolUse hook that denies slow checks (tests, typecheck, build, clippy) unless they run in the background, and denies them outright while HEAD has unpushed commits. Uncommitted work is exempt so test-driven debugging still works.
+- The personal CLAUDE.md drops its all-caps emphasis, which recent models over-apply, in favour of stating the reason for each rule, and merges the duplicated changelog and workflow lines.
+
 ### September
 
 **sift replaces beets.** sift (radiosilence/sift) matches, tags and files albums against MusicBrainz, reads the existing beets `config.yaml`, and is a static binary from GitHub releases, so mise installs it without Python. The broot verb is `sift_import` (`si`); beets' `--flat` variant goes, since sift always treats the directory given as one album. `imp` imports with sift. The `bestjpeg` beets plugin and the `mozjpeg` it used are gone with it.
