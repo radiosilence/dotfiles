@@ -3,6 +3,7 @@ koan.db
 koan.db-wal
 koan.db-shm
 cache/
-*.logdevice-id
+*.log
+device-id
 devices.json
 *.log.*
