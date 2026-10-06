@@ -38,6 +38,7 @@ omp = "latest"                                 # Oh My Pi — terminal AI coding
 pnpm = "latest"
 pnpm-shell-completion = "latest"               # pnpm's built-in completion doesn't read package.json scripts; this does
 procs = "latest"                               # Better ps
+pulumi = "latest"
 pup = "latest"                                 # DD Client
 ripgrep = "latest"
 rust = "latest"
