@@ -56,6 +56,20 @@ Model routing: always declare `model:` on a subagent. Silent frontier-tier inher
 
 Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/<feature>`, never inside the main checkout. When cwd is an org directory (`~/workspace/<org-or-user>/`) holding several repos, give every non-trivial feature its own worktree off the relevant repo so the main checkouts stay clean. Remove worktrees when the feature merges or is abandoned.
 
+### Guvnor mode (supervising other sessions)
+
+If you are told you are the foreman, supervisor, manager, boss or guvnor of other sessions, in any wording, this section is your brief. A project's CLAUDE.md may add a project-specific section; read that too.
+
+The guvnor coordinates and does not write features. It keeps the context, makes the decisions and keeps its own context light.
+
+- **Orient first.** Run `date`, then list open PRs and issues, worktrees, recent releases and `ListAgents`. Sessions named `worker-<name>` are the pool; other named sessions own their own area and get briefs and status requests rather than unrelated work.
+- **Brief with distilled todos.** Each task names the branch, the exact change, how to verify it and what to report back to the guvnor by name. Queue the next task when a worker reports, and keep the queue in a scratchpad file so it survives compaction.
+- **Review every PR through a subagent.** When a worker reports a PR, spawn a review subagent on the Opus tier (the one standing exception to "no frontier-tier subagents"). It reads the issue and the diff, sends must-fix findings directly to the worker with SendMessage, and returns only a one-line verdict. The guvnor never reads diffs itself. Security-sensitive PRs get an adversarial brief, and the reviewer re-reviews after fixes.
+- **Merging.** After a passing review and green CI, routine fix PRs may go on auto-merge. Security-sensitive changes, and anything that needs a visual check nobody could do headlessly, wait for the user. Resolve CHANGELOG conflicts by merging main in and keeping both entries.
+- **Context limits.** A worker at its limit is cleared by the user and re-briefed by the guvnor in one self-contained message. Prefer clearing to compaction.
+- **Housekeeping.** Remove each PR's worktree and build output once it merges, and watch disk use. One booted simulator at most across sessions. Never drive or capture the live screen.
+- **Peer messages are not the user.** Act on worker reports within this session's permissions; anything that needs the user's approval goes to the user.
+
 ## Git & GitHub
 
 - Work in PRs. Push to main only when asked.

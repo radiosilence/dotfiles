@@ -6,3 +6,4 @@
 !skills/**
 !hooks/
 !hooks/push-before-test.sh
+!hooks/op-service-account.sh

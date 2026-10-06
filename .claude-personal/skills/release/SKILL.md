@@ -36,6 +36,12 @@ If no existing version is found, ask the user what version to start at.
 
 ## 3. Update changelog
 
+### Fragment-based changelogs
+
+First check whether the project builds its changelog from fragments, one file per change, instead of one hand-edited file. Signs of this include a `changelog.d/`, `changes/`, `.changeset/` or `newsfragments/` directory, a generator script such as `scripts/changelog.py`, towncrier or changesets config, or a note in CLAUDE.md or CONTRIBUTING. If it does, don't write the changelog by hand. Check that the unreleased fragments cover every PR since the last release, adding or fixing fragments where one is missing or wrong. Then run the project's release command (for koan, `python3 scripts/changelog.py --release X.Y.Z`, or `just changelog --release X.Y.Z`), which turns the fragments into the version's section. Commit the moved fragments with the regenerated changelog. Skip the rest of this step: the generated file is never edited directly.
+
+### Single-file changelogs
+
 This is the most important step. The changelog must be **thorough and useful**.
 
 ### Gather changes since last release
