@@ -133,7 +133,7 @@
     "dark": "Zedokai",
   },
   "wrap_guides": [80, 100],
-  "soft_wrap": "none",
+  "soft_wrap": "editor_width",
   "format_on_save": "on",
   "sticky_scroll": {
     "enabled": true,
@@ -308,6 +308,8 @@
     },
     "HTML": {
       "formatter": "language_server",
+      // The formatter re-indents <pre> blocks, which changes the code they show.
+      "format_on_save": "off",
     },
   },
   "lsp": {
