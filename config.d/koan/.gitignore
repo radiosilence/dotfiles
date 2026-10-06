@@ -7,3 +7,7 @@ cache/
 device-id
 devices.json
 *.log.*
+device-keys.json
+watch.lock
+autoeq/
+dsp/

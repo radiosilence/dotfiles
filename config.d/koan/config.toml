@@ -1,5 +1,4 @@
 [library]
-folders = [""]
 
 [playback]
 replaygain = "off"
@@ -10,8 +9,6 @@ pre_amp_db = 0.0
 art_size = 56
 
 [remote]
-enabled = true
-url = ""
 username = ""
 transcode_quality = "original"
 download_workers = 5
