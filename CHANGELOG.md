@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### October
 
+**Claude sessions read 1Password through a service account.** A remote-controlled session stalled whenever `op` wanted Touch ID on a laptop nobody was at. `c` now exports `OP_SERVICE_ACCOUNT_TOKEN` for the `claude-code` service account, which can only read the `Claude` vault, from the login keychain item `op-claude-code` into the claude process alone; other shells keep the desktop-app integration. `buf.build` moved to that vault so the `buf` wrapper resolves either way. Commit signing still goes through the 1Password SSH agent.
+
 **Claude pushes before it tests, and never blocks on slow checks.**
 
 - The push-first rule was one bullet among eleven in the Git section, and the release skill told Claude to run tests before committing, so it kept verifying locally before CI had started. The rule now has its own section with the reasoning (CI runs the same suite, so a local run first only delays it), and the release skill pushes the PR before verifying.
