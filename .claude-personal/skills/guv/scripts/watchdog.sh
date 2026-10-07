@@ -26,7 +26,7 @@ set -uo pipefail
 
 INTERVAL=${INTERVAL:-60}
 MEM_FREE_MIN=${MEM_FREE_MIN:-10}    # percent free, from memory_pressure
-DISK_FREE_MIN=${DISK_FREE_MIN:-50}  # GB free on the data volume
+DISK_FREE_MIN=${DISK_FREE_MIN:-30}  # GB free on the data volume; sweeps start at 50, this is the alarm
 COOLDOWN=${COOLDOWN:-900}           # seconds before the same breach alerts again
 
 dir=${XDG_CACHE_HOME:-$HOME/.cache}/guv
