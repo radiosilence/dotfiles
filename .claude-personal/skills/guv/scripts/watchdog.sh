@@ -124,14 +124,14 @@ ask() {
     echo "already asked by ${last##*$'\t'}"
     return 1
   fi
-  printf '%s\t%s\t%s\n' "$(date +%s)" "$target" "${GUV%% *}" >> "$asks"
+  printf '%s\t%s\t%s\n' "$(date +%s)" "$target" "${GUV% *}" >> "$asks"
 }
 
 case ${1:-} in
   guvs) list_guvs; exit 0 ;;
   top) top_procs; exit 0 ;;
   books) books; exit 0 ;;
-  post) printf '%s %s: %s\n' "$(date '+%m-%d %H:%M')" "${GUV%% *}" "${2:?usage: watchdog.sh post <text>}" >> "$dir/board"; exit 0 ;;
+  post) printf '%s %s: %s\n' "$(date '+%m-%d %H:%M')" "${GUV% *}" "${2:?usage: watchdog.sh post <text>}" >> "$dir/board"; exit 0 ;;
   board) tail -20 "$dir/board" 2>/dev/null; exit 0 ;;
   ask) ask "${2:?usage: watchdog.sh ask <guvnor>}"; exit ;;
 esac
