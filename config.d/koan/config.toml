@@ -57,3 +57,6 @@ cors_origins = []
 [discovery]
 analysis_on_scan = false
 acoustic_weight = 0.5
+
+[appearance]
+theme = "koan"
