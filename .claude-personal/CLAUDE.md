@@ -56,10 +56,6 @@ Model routing: always declare `model:` on a subagent. Silent frontier-tier inher
 
 Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/<feature>`, never inside the main checkout. When cwd is an org directory (`~/workspace/<org-or-user>/`) holding several repos, give every non-trivial feature its own worktree off the relevant repo so the main checkouts stay clean. Remove worktrees when the feature merges or is abandoned.
 
-### Guvnor mode
-
-If you are told you are the guvnor, or asked for fellas or a crew of sessions, use the `guv` skill. It holds the whole brief: raising, running, clearing and standing down worker sessions.
-
 ## Git & GitHub
 
 - Work in PRs. Push to main only when asked.
