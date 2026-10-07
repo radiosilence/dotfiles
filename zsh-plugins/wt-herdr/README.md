@@ -34,7 +34,7 @@ local = "~/.dotfiles/zsh-plugins/wt-herdr"
 | --- | --- |
 | `wth [-b] <name> [base]` | upsert worktree, open as a herdr workspace. No args: fzf picker |
 | `wtpr <n\|url\|owner/repo#n>` | PR **or** issue — a URL disambiguates, a bare number is probed |
-| `wti <n\|url\|owner/repo#n>` | worktree for a GitHub issue, named `<n>-<slug>`, with claude primed on `/ticket <n>` |
+| `wti <n\|url\|owner/repo#n>` | worktree for a GitHub issue, named `<n>-<slug>`, with claude primed with "Work issue #<n>" |
 
 The logic lives in `wt-core`; these are bindings of `_wt_pr` / `_wt_issue` to
 the herdr backend, so the zellij backend has the same set. The popup wrappers

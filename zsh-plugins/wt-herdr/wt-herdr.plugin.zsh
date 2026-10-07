@@ -31,7 +31,7 @@ _wt_herdr_prime() {
   local pane
   pane=$(herdr pane current --current 2>/dev/null | jq -r '.result.pane.pane_id' 2>/dev/null)
   [[ -n $pane && $pane != null ]] || return 0
-  herdr pane send-text "$pane" "claude \"/ticket $1\"" >/dev/null 2>&1
+  herdr pane send-text "$pane" "claude \"Work issue #$1\"" >/dev/null 2>&1
   herdr pane send-keys "$pane" enter >/dev/null 2>&1
 }
 

@@ -22,7 +22,7 @@ _wt_tab() {
 _wt_tab_prime() {
   [[ -n $ZELLIJ ]] || return 0
   sleep 0.5
-  zellij action write-chars "claude \"/ticket $1\""
+  zellij action write-chars "claude \"Work issue #$1\""
   zellij action write 13
 }
 
