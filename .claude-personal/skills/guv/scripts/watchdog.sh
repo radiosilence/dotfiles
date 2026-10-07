@@ -105,7 +105,7 @@ case ${1:-} in
   sign) sign "${2:?usage: watchdog.sh sign <text>}"; exit ;;
   guvs)
     for f in $(live_entries); do
-      printf '%s: %s\n' "$(head -1 "$f" | sed 's/ [^ ]*$//')" "$(sed -n 2p "$f")"
+      printf '%s (%s): %s\n' "$(head -1 "$f" | sed 's/ [^ ]*$//')" "$(head -1 "$f" | awk '{print $NF}')" "$(sed -n 2p "$f")"
     done
     exit 0 ;;
   ''|status) ;;
