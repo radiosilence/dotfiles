@@ -6,6 +6,11 @@
 #                        guvnor that started it. Restart it after acting.
 #   watchdog.sh status   print one line of current readings and exit.
 #   watchdog.sh guvs     list the guvnors whose watchdogs are running.
+#   watchdog.sh top      the heaviest processes with their working directories,
+#                        to tell whose crew is loading the machine.
+#   watchdog.sh ask <g>  record that you are asking guvnor <g> to shed load.
+#                        Fails, naming the asker, if someone already asked <g>
+#                        within COOLDOWN, so a guvnor is not asked by everyone.
 #
 # GUV="<ListAgents name> <project>" registers the running instance, so other
 # guvnors can find this one with `watchdog.sh guvs`. Entries die with it.
@@ -79,10 +84,31 @@ list_guvs() {
   done
 }
 
-if [[ ${1:-} == guvs ]]; then
-  list_guvs
-  exit 0
-fi
+top_procs() {
+  local pid cpu rss cwd
+  ps -Ao pid=,pcpu=,rss= -r | head -12 | while read -r pid cpu rss; do
+    cwd=$(lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')
+    printf '%5s%% %6sM  %-16s %s\n' "$cpu" "$((rss / 1024))" \
+      "$(ps -o comm= -p "$pid" | awk -F/ '{print $NF}')" "${cwd:-?}"
+  done
+}
+
+ask() {
+  local target=$1 asks=$dir/asks last
+  touch "$asks"
+  last=$(awk -F'\t' -v g="$target" '$2 == g' "$asks" | tail -1)
+  if [[ -n $last ]] && (( $(date +%s) - ${last%%$'\t'*} < COOLDOWN )); then
+    echo "already asked by ${last##*$'\t'}"
+    return 1
+  fi
+  printf '%s\t%s\t%s\n' "$(date +%s)" "$target" "${GUV%% *}" >> "$asks"
+}
+
+case ${1:-} in
+  guvs) list_guvs; exit 0 ;;
+  top) top_procs; exit 0 ;;
+  ask) ask "${2:?usage: watchdog.sh ask <guvnor>}"; exit ;;
+esac
 
 sample
 if [[ ${1:-} == status ]]; then
