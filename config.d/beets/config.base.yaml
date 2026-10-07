@@ -1,3 +1,6 @@
+# Read by sift (radiosilence/sift), which uses the beets config format. The
+# per-machine config.yaml (gitignored) includes this file and sets `directory`
+# and the discogs token.
 asciify_paths: false
 original_date: true
 per_disc_numbering: true
