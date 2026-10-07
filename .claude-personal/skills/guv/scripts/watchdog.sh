@@ -108,6 +108,8 @@ case ${1:-} in
       printf '%s: %s\n' "$(head -1 "$f" | sed 's/ [^ ]*$//')" "$(sed -n 2p "$f")"
     done
     exit 0 ;;
+  ''|status) ;;
+  *) echo "unknown command '$1'; use status, books, sign or guvs, or no argument to watch" >&2; exit 2 ;;
 esac
 
 sample
