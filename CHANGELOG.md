@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### October
 
+**guv skill: one session runs a crew of worker sessions.** A session told it is the guvnor raises named workers, each in its own worktree and herdr workspace, briefs them with self-contained todos, reviews each PR through a subagent instead of reading diffs itself, and clears workers between tasks, since a session's whole history is re-read on every turn. It merges on a passing review rather than waiting for CI on each PR, and keeps the release PR's full CI run as the hard gate. The brief lives in a skill so it loads only when needed; the personal CLAUDE.md just points at it.
+
 **Claude sessions read 1Password through a service account.** A remote-controlled session stalled whenever `op` wanted Touch ID on a laptop nobody was at. A SessionStart hook (`hooks/op-service-account.sh`) appends a line to `$CLAUDE_ENV_FILE` that reads the token for the `claude-code` service account, which can only read the `Claude` vault, from the login keychain item `op-claude-code` each time a Bash command runs. It works however claude is launched, keeps the token off disk, and leaves other shells on the desktop-app integration. `buf.build` moved to that vault so the `buf` wrapper resolves either way. Commit signing still goes through the 1Password SSH agent.
 
 **Claude pushes before it tests, and never blocks on slow checks.**
