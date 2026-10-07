@@ -14,7 +14,11 @@ Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgen
 
 ## Raise the crew
 
-How many fellas is the guvnor's call. Size the crew to the work in hand and the machine (`$ARGUMENTS` may say what needs doing, or a number): enough parallel tasks to keep each one busy, no more, since every session costs usage and laptop. Start small and add fellas as the queue grows.
+How many fellas is the guvnor's call. Size the crew to the work in hand and the machine (`$ARGUMENTS` may say what needs doing, or a number): enough parallel tasks to keep each one busy, no more, since every session costs usage and laptop. The crew is dynamic for as long as the session runs, without asking each time:
+- **Grow** when independent work is queued behind a busy crew.
+- **Shrink** when there isn't: stand idle fellas down rather than keep them warm.
+- **Within reason.** Stay at four or fewer unless the user says otherwise. Fewer when the machine is struggling (a high load average, little free disk, heavy builds running) or the user's usage is running high. A fella waiting on another fella's work isn't parallel, so don't raise one for it.
+Start small. Tell the user in one line whenever the crew changes, with the names.
 
 **Names.** Take a moment over them; they're part of the fun. Read the project and the conversation first, then name the crew after something that fits: the project's domain, its in-jokes, the mood of the push. A music player might get a crew of session musicians; a mail client, a sorting office. Give each fella a distinct, memorable name that a person would enjoy shouting across a room. Never NATO, never numbered. Names are short and lowercase (`[a-z][a-z0-9-]*`) and must not clash with any live herdr agent.
 
@@ -35,9 +39,10 @@ Then use `ListAgents` to get each fella's SendMessage name. Record the name, pan
 
 - **Brief with distilled todos.** Each brief names the branch, the exact change, how to verify it, and what to report. Make it self-contained, so a cleared fella can act on it. Queue the next task when a fella reports.
 - **Review every PR through a subagent.** The reviewer reads the issue and diff, sends must-fix findings straight to the fella with SendMessage, and returns a one-line verdict. The guvnor never reads diffs.
-  - Security, core logic and anything risky get Opus with an adversarial brief. This is the standing exception to "no frontier-tier subagents".
+  - Security, core logic and anything risky get Opus with an adversarial brief.
   - Small UI and docs PRs get Sonnet, and several small PRs can share one reviewer.
   - Re-reviews resume the same reviewer.
+  - The subagent review is the gate. A repo's review bot, if it has one, is advisory: fellas still trigger it, and nobody waits for it.
   - When a crew is busy enough, one fella can be the standing reviewer instead. Brief it the same way, have it message findings straight to the author and send the guvnor only the verdict, and clear it between reviews.
 - **Keep the guvnor's own context light.** Don't read diffs, logs or long files yourself. Send reviewers, Explore agents or shell loops, and take back only the verdict. The guvnor's context is the most expensive in the crew, because every report and notification wakes it.
 - **Merge on review, not per-PR CI.** On a pass, admin-merge at once. The fella's narrow local test is the only check before merging, and fixing forward is cheaper than waiting. Security changes wait for the user unless they've said otherwise. Workflow-file PRs need the user, because the token can't merge them. Resolve changelog conflicts by keeping both sides.

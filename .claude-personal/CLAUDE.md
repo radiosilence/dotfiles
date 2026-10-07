@@ -37,24 +37,9 @@ CI runs the same suite, so a local run before pushing only delays CI by its own 
 - Minimise state: derive values, use browser state (forms, nuqs), sync rather than duplicate.
 - Zustand over prop-drilling for shared state.
 
-## Octopus mode 🐙 (agent orchestration)
+## Worktrees
 
-One brain, many dumb arms. Cost scales with reads, and the context lives in the main thread, so keep the thinking there. Planning in a frontier model and handing off to a cheaper executor costs more than doing it yourself: the plan is a 2K-token postcard of 100K tokens of explored context, and the executor has to re-read all of it ([prewalk](https://stencil.so/blog/prewalk)).
-
-- **The brain thinks, the arms execute.** Exploration, synthesis, design, debugging and judgement calls stay in the main thread. A subagent that has to decide needs the context, and re-shipping context is the expensive part.
-- **Distil before delegating.** When work parallelises (the same edit across many files, or the same change across repos), do all the thinking first and reduce each arm's job to a self-contained todo: exact file, exact change, exact verify command ("in `foo.ts` change X to Y, run Z to verify", never "implement the auth changes"). An arm that lacks context reports back for a sharper todo instead of reading around. If you can't write the todo yet, you haven't finished thinking.
-- **Recon fan-out is the delegation that saves money.** Read-only search/summarise agents (Explore-type) sweep many files and return only the conclusion, keeping raw reads out of main context. Use them for "where is X / which files touch Y", never for decisions.
-- **Long-running commands go in the background** (tests, typecheck, codegen, pollers).
-
-Model routing: always declare `model:` on a subagent. Silent frontier-tier inheritance is how bills explode.
-
-- **Haiku** for the arms: mechanical edits from distilled todos, running commands, polling, status checks, ticket grooming, file lookups. Long-lived background agents (babysitters, pollers, monitors) are always Haiku; if one seems to need more, do that work in the main thread and keep the loop dumb.
-- **Sonnet** for recon that needs light judgement: which files need updating, summarising a subsystem, pattern lookups.
-- **No frontier-tier subagents.** Reaching for one means the task needs context and belongs in the main thread. The one exception is a worktree agent executing a fully distilled todo list in parallel with you, handed the trajectory (files already read, first edit shape, exact steps) rather than a narrative plan.
-
-### Worktrees
-
-Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/<feature>`, never inside the main checkout. When cwd is an org directory (`~/workspace/<org-or-user>/`) holding several repos, give every non-trivial feature its own worktree off the relevant repo so the main checkouts stay clean. Remove worktrees when the feature merges or is abandoned.
+Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/<feature>`, never inside the main checkout. When cwd is an org directory (`~/workspace/<org-or-user>/`) holding several repos, give every non-trivial feature its own worktree off the relevant repo so the main checkouts stay clean. Remove worktrees when the feature merges or is abandoned; a guv fella's worktree lasts until the fella is stood down.
 
 ## Git & GitHub
 
@@ -114,3 +99,5 @@ If a reader six months from now would find a sentence misleading, it doesn't bel
 ## Workflow
 
 No plan mode and no plan documents unless asked. The user prefers a short chat to align, then getting shit done; a chat plus a distilled todo list beats a plan artefact. Track work in GitHub issues, created and updated as the work happens rather than up front, which is why they stay current. Link context and assign them to the user. Use `gh`, inferring the user from `git config` or `gh api user`.
+
+An issue picked up may already be done, since issues outlive the code. Check for a PR that touched it and grep the code once; if either shows it done, close it saying what did it. Otherwise get on with it rather than proving a negative. PRs that resolve an issue say `Closes #<n>`.
