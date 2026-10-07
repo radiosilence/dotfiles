@@ -13,7 +13,9 @@
 # Every running instance waits on one alert log, but only one of them (the
 # holder of the lock) samples, so several guvnors see the same alert once
 # rather than each raising its own. A threshold must hold for two samples in a
-# row, so a single spike does not wake anyone. When the sampler exits, another
+# row, so a single spike does not wake anyone, and the same kind of breach
+# alerts at most once per COOLDOWN, so a machine that stays busy does not keep
+# waking every guvnor. When the sampler exits, another
 # instance takes the lock on its next tick.
 set -uo pipefail
 
@@ -21,6 +23,7 @@ INTERVAL=${INTERVAL:-60}
 LOAD_PER_CORE=${LOAD_PER_CORE:-4}   # 5-minute load average per core
 MEM_FREE_MIN=${MEM_FREE_MIN:-10}    # percent free, from memory_pressure
 DISK_FREE_MIN=${DISK_FREE_MIN:-50}  # GB free on the data volume
+COOLDOWN=${COOLDOWN:-900}           # seconds before the same breach alerts again
 
 dir=${XDG_CACHE_HOME:-$HOME/.cache}/guv
 lock=$dir/watchdog.lock
@@ -98,13 +101,17 @@ while sleep "$INTERVAL"; do
     sample
     now=$(breaches)
     if [[ -n $now && -n $prev ]]; then
-      echo "$(date '+%H:%M') $now" >> "$alerts"
+      kinds=$(sed -E 's/ [^;]*//g' <<< "$now")
+      last=$(grep -F " $kinds " "$alerts" | tail -1 | cut -d' ' -f1)
+      if (( $(date +%s) - ${last:-0} >= COOLDOWN )); then
+        echo "$(date +%s) $kinds $(date '+%H:%M') $now" >> "$alerts"
+      fi
       now=""
     fi
     prev=$now
   fi
   if (( $(wc -l < "$alerts") > seen )); then
-    echo "watchdog: $(tail -1 "$alerts")"
+    echo "watchdog: $(tail -1 "$alerts" | cut -d' ' -f3-)"
     exit 1
   fi
 done
