@@ -8,6 +8,10 @@
 #   watchdog.sh guvs     list the guvnors whose watchdogs are running.
 #   watchdog.sh top      the heaviest processes with their working directories,
 #                        to tell whose crew is loading the machine.
+#   watchdog.sh books    CPU and memory summed per project, from each
+#                        process's working directory.
+#   watchdog.sh post <t> pin a notice on the shared board, signed with $GUV.
+#   watchdog.sh board    the board's recent notices.
 #   watchdog.sh ask <g>  record that you are asking guvnor <g> to shed load.
 #                        Fails, naming the asker, if someone already asked <g>
 #                        within COOLDOWN, so a guvnor is not asked by everyone.
@@ -93,6 +97,25 @@ top_procs() {
   done
 }
 
+project_of() {
+  local cwd=$1
+  case $cwd in
+    */worktrees/*) cwd=${cwd#*/worktrees/}; echo "${cwd%%/*}" ;;
+    "$HOME"/workspace/*/*) cwd=${cwd#"$HOME"/workspace/*/}; echo "${cwd%%/*}" ;;
+    "$HOME"/.dotfiles*) echo dotfiles ;;
+    *) echo other ;;
+  esac
+}
+
+books() {
+  local pid cpu rss cwd
+  ps -Ao pid=,pcpu=,rss= | awk '$2 > 0.5' | while read -r pid cpu rss; do
+    cwd=$(lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')
+    printf '%s %s %s\n' "$(project_of "${cwd:-/}")" "$cpu" "$rss"
+  done | awk '{c[$1]+=$2; m[$1]+=$3} END {for (p in c) printf "%6.0f%% %7.0fM  %s\n", c[p], m[p]/1024, p}' \
+    | sort -rn
+}
+
 ask() {
   local target=$1 asks=$dir/asks last
   touch "$asks"
@@ -107,6 +130,9 @@ ask() {
 case ${1:-} in
   guvs) list_guvs; exit 0 ;;
   top) top_procs; exit 0 ;;
+  books) books; exit 0 ;;
+  post) printf '%s %s: %s\n' "$(date '+%m-%d %H:%M')" "${GUV%% *}" "${2:?usage: watchdog.sh post <text>}" >> "$dir/board"; exit 0 ;;
+  board) tail -20 "$dir/board" 2>/dev/null; exit 0 ;;
   ask) ask "${2:?usage: watchdog.sh ask <guvnor>}"; exit ;;
 esac
 
