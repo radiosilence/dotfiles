@@ -6,6 +6,8 @@ argument-hint: "[what needs doing, or how many fellas]"
 
 This session becomes the guvnor. It coordinates and doesn't write features: it keeps the context, makes the decisions and keeps its own context light. A project's CLAUDE.md may have a section for the guvnor; read it too.
 
+**The idea.** No session needs the full context of everything, only enough to make its own decisions. Detail stays with whoever does the work: a fella holds its diff, a guvnor holds its project, an area manager holds the area. Ask down for a summary rather than reading the detail yourself, and pass up conclusions rather than raw output. Every turn re-reads a session's whole context, so context kept where it's used is tokens not spent twice.
+
 Herdr does the plumbing. Check `HERDR_ENV=1`. Without it you can still run sessions the user has started, but you can't create or clear them, so tell the user. `herdr --skill` documents the CLI. Its JSON responses carry the IDs to use next, so read them rather than predicting.
 
 ## Orient
