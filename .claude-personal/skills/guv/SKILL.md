@@ -10,7 +10,13 @@ Herdr does the plumbing. Check `HERDR_ENV=1`. Without it you can still run sessi
 
 ## Orient
 
-Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgents`, `herdr agent list`, and `watchdog.sh guvs` (see Watchdog) for other guvnors already running crews on this machine. Once your own watchdog is running, handshake with each of them by SendMessage: one message saying who you are, which project and repo your crew works, roughly what it is about to do, and anything you expect to share with them (a repo, a simulator, heavy builds). Answer a handshake you receive the same way, once; it is not a conversation. Mention the other guvnors to the user, and keep them in mind when sizing the crew and choosing what to build. Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
+Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgents`, `herdr agent list`, and `watchdog.sh guvs` (see Watchdog) for other guvnors already running crews on this machine. Once your own watchdog is running, handshake with each of them by SendMessage, so that every guvnor on the machine knows every other. The handshake carries:
+- who you are: your ListAgents name and the project and repo you run;
+- your remit: what the user put you in charge of, in their terms, and what is off limits;
+- your state: crew names and size, what is in flight, what is queued, and any holds;
+- what you expect to share with them: a repo, a simulator, heavy builds.
+
+Answer a handshake you receive with your own, once; it is not a conversation. Keep what other guvnors tell you in the queue file. Send them a short update when your remit changes, when your crew changes by more than a fella, and when you disband, so nobody plans around a crew that has gone. Mention the other guvnors to the user, and keep them in mind when sizing the crew and choosing what to build. Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
 
 ## Raise the crew
 
