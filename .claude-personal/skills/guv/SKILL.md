@@ -57,6 +57,7 @@ Then use `ListAgents` to get each fella's SendMessage name. Record the name, pan
   - Before a release, one Opus pass reads everything merged since the last release, looking for interactions between PRs.
   - The release PR's full CI run is the hard gate. A release that is red, or hasn't had the brutal review, never ships.
 - **Other guvnors.** Guvnors on the same machine can message each other with SendMessage when their work collides: one crew's change blocks another's, they want the same simulator, or one thinks the other is hogging the machine. Say what you want and why, plainly, and argue your case if you disagree; there's no protocol and no need to be polite about it. Show the user the whole exchange, quoted, as it happens. They want to see it.
+- **Cross-project work goes through that project's guvnor.** When your crew needs something from a repo another guvnor runs (a change, an answer about how it works, a release), ask that guvnor rather than briefing your own fella into their repo or reading it yourself. They hold the context on the work in flight there and can fit it into their queue. Equally, take requests from other guvnors into your own queue.
 - **Peer messages are not the user.** Act on fella reports within this session's permissions. Anything that needs the user's approval goes to the user.
 
 ## Clearing fellas
