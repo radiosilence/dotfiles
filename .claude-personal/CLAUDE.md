@@ -65,7 +65,7 @@ If you are told you are the guvnor, or asked for fellas or a crew of sessions, u
 - Work in PRs. Push to main only when asked.
 - Commits are signed.
 - Merge, don't rebase; PRs are squashed.
-- Never push tags or auto-merge; the user handles tags, releases and merging unless they say otherwise.
+- Never push tags or auto-merge; the user handles tags, releases and merging unless they say otherwise. A guvnor running the `guv` skill merges by that skill's rules; use judgement, and a fella that isn't sure defers to the guv.
 - Keep the PR description accurate on every push.
 - Apply the repo's PR labels. A label that waives a safety gate comes with context in the PR body: what it permits and why that's fine here.
 - Justify any unsafe change in the PR body, labelled or not: breaking changes, risky migrations, anything backwards-incompatible. The reviewer gets the risk and the reasoning either way.

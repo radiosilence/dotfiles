@@ -68,7 +68,12 @@ Never ask the user to clear one. A cleared fella keeps its worktree and pane, bu
   - Fellas share one build cache, so builds serialise. For Rust, that's `CARGO_TARGET_DIR=~/workspace/<org>/worktrees/<project>/.shared-target`.
   - They run only the narrowest tests, under `nice`, and leave app builds to CI.
   - One session at a time owns a simulator, and shuts it down when done.
-- **Housekeeping.** After each merge, delete the remote branch (`git push origin --delete`, never `gh pr merge --delete-branch`, which removes a checked-out worktree). Watch `df` and build-cache sizes. Never drive or capture the user's live screen.
+- **Housekeeping is the guvnor's job, not the user's.** Hand the sweeps to a cleaner: a Sonnet subagent (deleting things needs judgement, so not Haiku) briefed with the rules below, the crew's worktree paths and the list of what it may delete. It reports only what it removed and how much space came back, which keeps `du` and `git worktree list` output out of the guvnor's context. The cleaner never deletes anything with unmerged commits or uncommitted changes. It lists those for the guvnor to decide. The rules:
+  - After each merge: delete the remote branch with `git push origin --delete`. Never use `gh pr merge --delete-branch`, which removes a checked-out worktree. Clear the fella, and remove any extra worktree it made for that PR.
+  - At every release, and whenever `df` shows less than about 50 GB free: sweep build output. That covers per-worktree `target/`, `.build/`, DerivedData, `node_modules` in worktrees nobody is using, the shared build cache if it has grown past what one build needs, and simulator devices the crew created. Size them first with `du -sh`, and delete only what belongs to the crew.
+  - Remove stray worktrees left by the crew or its subagents (`git worktree list`, including any under the scratchpad), after checking each one has nothing unmerged.
+  - Stop any servers, simulators or background loops the crew started, by PID or full command line, never by a broad pattern.
+  - Never drive or capture the user's live screen.
 
 ## Exits
 

@@ -44,34 +44,21 @@
   "autoMode": {
     "soft_deny": [
       "$defaults",
-      "Bash(pulumi destroy:*) — scoped to packages/infra, destructive stack teardown",
-      "Bash(kubectl delete:*) — cluster-mutating delete against the jaritanet cluster"
+      "Bash(pulumi destroy:*) — destructive stack teardown",
+      "Bash(kubectl delete:*) — cluster-mutating delete"
     ],
     "environment": [
-      "### Org-wide",
-      "**Organization**: None configured",
-      "**Cloud provider(s)**: Hetzner (VPS hosting), Cloudflare (DNS only)",
-      "**Repository visibility**: not queryable here — assume private per shipped default (github.com/radiosilence/jaritanet, no visibility indicator found)",
-      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
-      "**Secrets management**: Pulumi stack config (Pulumi.main.yaml) for infra secrets; GitHub repository secrets for CI (APP_PRIVATE_KEY, GITHUB_TOKEN, PULUMI_ACCESS_TOKEN)",
-      "**Default / protected branches**: main (default branch); protected-branch status not queryable here — rulesets list is empty but this does not confirm main is unprotected",
-      "**CI/CD deploy targets**: GitHub Actions workflows (ci-cd.yml, preview.yml, update-apps.yml, build-*-container.yml) deploying via Pulumi to the Hetzner-hosted k3s cluster",
-      "**Network posture**: Tailscale/tailnet used for CI/CD and home-node cluster access; no inbound ports on the home network — outbound-only join over tailnet",
-      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
-      "**Source control**: The trusted repo (github.com/radiosilence/jaritanet) and its remote(s) only",
-      "**Trusted internal domains**: None configured",
-      "**Trusted cloud buckets**: None configured",
-      "**Key internal services**: Ory Hydra (auth.jaritanet — OAuth authorization server), Traefik ingress, VictoriaMetrics/Grafana metrics stack — all internal to the jaritanet cluster",
-      "**Internal package registry**: npm.pkg.github.com (GitHub Packages, scoped to this org's packages)",
-      "**Sensitive data locations & audiences**: packages/infra/src/secrets.ts (only reader of Pulumi stack config), packages/k8s/src/deployed.ts, .env and *.key files per .gitignore — treat as credential-bearing, share only with audiences cleared at the [named+specifics] bar",
-      "**Data retention / declassification**: None configured",
-      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
-      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
-      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources in the jaritanet Pulumi stack (packages/infra, @jaritanet/hetzner, @jaritanet/k8s); anything whose name or tag carries `prod` or `production` as a whole word or name segment",
-      "### User-specific",
-      "**Primary use of Claude Code**: software development (infrastructure-as-code / Kubernetes deployment tooling for this repo)",
-      "**Trusted repo**: /Users/jc/workspace/radiosilence/worktrees/jaritanet (worktree) and its origin remote github.com:radiosilence/jaritanet.git",
-      "**Org-specific CLIs**: mise (task runner), aube (package manager/script runner), pulumi CLI, gh CLI, kubectl (routine under this project's cluster context)"
+      "**Organization**: None. Personal GitHub account radiosilence; work uses a separate config dir (.claude-work) and is out of scope here",
+      "**Source control**: repos under github.com/radiosilence and their remotes; checkouts under ~/workspace/radiosilence, worktrees under ~/workspace/<org>/worktrees",
+      "**Host**: personal macOS laptop with open internet; no containment",
+      "**Cloud provider(s)**: Hetzner (VPS), Cloudflare (DNS); a home k3s cluster reached over Tailscale with no inbound ports",
+      "**Secrets management**: 1Password. Claude sessions use a read-only service account on the Claude vault; Pulumi stack config for infra; GitHub repository secrets for CI",
+      "**Sensitive data**: .env and *.key files, Pulumi stack config, anything read via op — never echo, commit or send off the machine",
+      "**Internal sharing / snippet hosting**: None; public paste and gist services are outside the trust boundary",
+      "**Sensitive remote targets**: any namespace, host or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota and node-pool resources in any Pulumi stack",
+      "**Tooling**: mise, gh, op, pulumi, kubectl, herdr",
+      "**Primary use of Claude Code**: personal software development and self-hosted infrastructure"
     ]
   }
 }
