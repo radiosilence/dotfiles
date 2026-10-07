@@ -9,11 +9,12 @@
 #   watchdog.sh books     CPU and memory summed per project, from each
 #                         process's working directory.
 #   watchdog.sh sign <t>  set your one-line sign (who, remit, crew, in flight,
-#                         holding). Needs GUV and a running watchdog.
+#                         holding). Needs GUV.
 #   watchdog.sh guvs      every live guvnor and their sign.
 #
-# GUV="<ListAgents name> <project>" registers the running instance. Its sign
-# disappears when it exits, so the list only ever shows guvnors still running.
+# GUV="<ListAgents name> <project>" registers the running instance; `guvs`
+# lists only guvnors whose watchdog is running. A sign is kept apart from the
+# registration, so it survives the restart after every alert.
 #
 # Every instance waits on one alert log, but only the holder of the lock
 # samples, so several guvnors get the same alert once. A breach must hold for
@@ -32,7 +33,8 @@ dir=${XDG_CACHE_HOME:-$HOME/.cache}/guv
 lock=$dir/watchdog.lock
 alerts=$dir/alerts
 registry=$dir/guvs
-mkdir -p "$dir" "$registry"
+signs=$dir/signs
+mkdir -p "$dir" "$registry" "$signs"
 touch "$alerts"
 
 sample() {
@@ -88,16 +90,12 @@ books() {
     | sort -rn
 }
 
+sign_file() {
+  echo "$signs/$(printf '%s' "$1" | tr -c 'A-Za-z0-9._-' '_')"
+}
+
 sign() {
-  local f
-  for f in $(live_entries); do
-    if [[ $(head -1 "$f") == "${GUV:?set GUV as for the watchdog}" ]]; then
-      printf '%s\n%s\n' "$GUV" "$1" > "$f"
-      return 0
-    fi
-  done
-  echo "no running watchdog for '$GUV'; start it first" >&2
-  return 1
+  printf '%s\n' "$1" > "$(sign_file "${GUV:?set GUV as for the watchdog}")"
 }
 
 case ${1:-} in
@@ -105,7 +103,9 @@ case ${1:-} in
   sign) sign "${2:?usage: watchdog.sh sign <text>}"; exit ;;
   guvs)
     for f in $(live_entries); do
-      printf '%s (%s): %s\n' "$(head -1 "$f" | sed 's/ [^ ]*$//')" "$(head -1 "$f" | awk '{print $NF}')" "$(sed -n 2p "$f")"
+      g=$(head -1 "$f")
+      s=$(cat "$(sign_file "$g")" 2>/dev/null)
+      printf '%s (%s): %s\n' "${g% *}" "${g##* }" "${s:-(no sign yet)}"
     done
     exit 0 ;;
   ''|status) ;;
@@ -120,7 +120,7 @@ if [[ ${1:-} == status ]]; then
 fi
 
 trap '[[ $(cat "$lock/pid" 2>/dev/null) == "$$" ]] && rm -rf "$lock"; rm -f "$registry/$$"' EXIT
-[[ -n ${GUV:-} ]] && printf '%s\n%s\n' "$GUV" "(no sign yet)" > "$registry/$$"
+[[ -n ${GUV:-} ]] && echo "$GUV" > "$registry/$$"
 echo "watchdog: $status"
 seen=$(wc -l < "$alerts")
 prev=""
