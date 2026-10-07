@@ -5,6 +5,10 @@
 #                        output when the machine needs action, which wakes the
 #                        guvnor that started it. Restart it after acting.
 #   watchdog.sh status   print one line of current readings and exit.
+#   watchdog.sh guvs     list the guvnors whose watchdogs are running.
+#
+# GUV="<ListAgents name> <project>" registers the running instance, so other
+# guvnors can find this one with `watchdog.sh guvs`. Entries die with it.
 #
 # Every running instance waits on one alert log, but only one of them (the
 # holder of the lock) samples, so several guvnors see the same alert once
@@ -21,7 +25,8 @@ DISK_FREE_MIN=${DISK_FREE_MIN:-50}  # GB free on the data volume
 dir=${XDG_CACHE_HOME:-$HOME/.cache}/guv
 lock=$dir/watchdog.lock
 alerts=$dir/alerts
-mkdir -p "$dir"
+registry=$dir/guvs
+mkdir -p "$dir" "$registry"
 touch "$alerts"
 ncpu=$(sysctl -n hw.ncpu)
 
@@ -63,13 +68,27 @@ release_lock() {
   [[ $(cat "$lock/pid" 2>/dev/null) == "$$" ]] && rm -rf "$lock"
 }
 
+list_guvs() {
+  local f
+  for f in "$registry"/*; do
+    [[ -f $f ]] || continue
+    if kill -0 "${f##*/}" 2>/dev/null; then cat "$f"; else rm -f "$f"; fi
+  done
+}
+
+if [[ ${1:-} == guvs ]]; then
+  list_guvs
+  exit 0
+fi
+
 sample
 if [[ ${1:-} == status ]]; then
   status
   exit 0
 fi
 
-trap release_lock EXIT
+trap 'release_lock; rm -f "$registry/$$"' EXIT
+[[ -n ${GUV:-} ]] && echo "$GUV" > "$registry/$$"
 echo "watchdog: $(status)"
 seen=$(wc -l < "$alerts")
 prev=""

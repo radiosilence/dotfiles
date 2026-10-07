@@ -10,7 +10,7 @@ Herdr does the plumbing. Check `HERDR_ENV=1`. Without it you can still run sessi
 
 ## Orient
 
-Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgents` and `herdr agent list`. Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
+Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgents`, `herdr agent list`, and `watchdog.sh guvs` (see Watchdog) for other guvnors already running crews on this machine. Mention any to the user, and keep them in mind when sizing the crew and choosing what to build. Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
 
 ## Raise the crew
 
@@ -74,7 +74,7 @@ Never ask the user to clear one. A cleared fella keeps its worktree and pane, bu
   - Fellas share one build cache, so builds serialise. For Rust, that's `CARGO_TARGET_DIR=~/workspace/<org>/worktrees/<project>/.shared-target`.
   - They run only the narrowest tests, under `nice`, and leave app builds to CI.
   - One session at a time owns a simulator, and shuts it down when done.
-- **Watchdog.** Other guvnors may be running crews on the same machine, so the watchdog is shared. Start it with the crew and keep it running in the background for as long as the crew exists: `bash "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/guv/scripts/watchdog.sh"`. It is a shell loop, not an agent, so quiet minutes cost nothing. One instance per machine samples load, memory and disk; every guvnor's instance exits with the same alert when a threshold holds for two minutes, and its exit is what wakes you. `watchdog.sh status` gives one line of readings for a crew report. When it fires:
+- **Watchdog.** Other guvnors may be running crews on the same machine, so the watchdog is shared. Start it with the crew and keep it running in the background for as long as the crew exists: `GUV="<your ListAgents name> <project>" bash "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/guv/scripts/watchdog.sh"`. `GUV` registers you, so `watchdog.sh guvs` shows other guvnors who you are. It is a shell loop, not an agent, so quiet minutes cost nothing. One instance per machine samples load, memory and disk; every guvnor's instance exits with the same alert when a threshold holds for two minutes, and its exit is what wakes you. `watchdog.sh status` gives one line of readings for a crew report. When it fires:
   - Act on your own crew only. Other guvnors got the same alert and shed their own share, which keeps the response proportionate.
   - **Load or memory:** pause the fella furthest from a PR (stop its build, clear it, list it as paused), shut down any simulator your crew owns, and hold back new briefs that build.
   - **Disk:** send the cleaner on a sweep of your crew's build output.
