@@ -1,35 +1,29 @@
 #!/usr/bin/env bash
-# Machine watchdog shared by every guvnor on this machine.
+# Machine watchdog and neighbour list shared by every guvnor on this machine.
 #
-#   watchdog.sh          run in the background; exits with the alert as its
-#                        output when the machine needs action, which wakes the
-#                        guvnor that started it. Restart it after acting.
-#   watchdog.sh status   print one line of current readings and exit.
-#   watchdog.sh guvs     list the guvnors whose watchdogs are running.
-#   watchdog.sh top      the heaviest processes with their working directories,
-#                        to tell whose crew is loading the machine.
-#   watchdog.sh books    CPU and memory summed per project, from each
-#                        process's working directory.
-#   watchdog.sh post <t> pin a notice on the shared board, signed with $GUV.
-#   watchdog.sh board    the board's recent notices.
-#   watchdog.sh ask <g>  record that you are asking guvnor <g> to shed load.
-#                        Fails, naming the asker, if someone already asked <g>
-#                        within COOLDOWN, so a guvnor is not asked by everyone.
+#   watchdog.sh           run in the background; exits with the alert as its
+#                         output when the machine is short of memory or disk,
+#                         which wakes the guvnor that started it. Restart it
+#                         after acting.
+#   watchdog.sh status    one line of current readings.
+#   watchdog.sh books     CPU and memory summed per project, from each
+#                         process's working directory.
+#   watchdog.sh sign <t>  set your one-line sign (who, remit, crew, in flight,
+#                         holding). Needs GUV and a running watchdog.
+#   watchdog.sh guvs      every live guvnor and their sign.
 #
-# GUV="<ListAgents name> <project>" registers the running instance, so other
-# guvnors can find this one with `watchdog.sh guvs`. Entries die with it.
+# GUV="<ListAgents name> <project>" registers the running instance. Its sign
+# disappears when it exits, so the list only ever shows guvnors still running.
 #
-# Every running instance waits on one alert log, but only one of them (the
-# holder of the lock) samples, so several guvnors see the same alert once
-# rather than each raising its own. A threshold must hold for two samples in a
-# row, so a single spike does not wake anyone, and the same kind of breach
-# alerts at most once per COOLDOWN, so a machine that stays busy does not keep
-# waking every guvnor. When the sampler exits, another
-# instance takes the lock on its next tick.
+# Every instance waits on one alert log, but only the holder of the lock
+# samples, so several guvnors get the same alert once. A breach must hold for
+# two samples in a row, and the same kind alerts at most once per COOLDOWN, so
+# a spike or a machine that stays busy does not keep waking everyone. Load is
+# reported but never alerts: on macOS it counts threads waiting on disk, and a
+# busy machine is not a dying one.
 set -uo pipefail
 
 INTERVAL=${INTERVAL:-60}
-LOAD_PER_CORE=${LOAD_PER_CORE:-4}   # 5-minute load average per core
 MEM_FREE_MIN=${MEM_FREE_MIN:-10}    # percent free, from memory_pressure
 DISK_FREE_MIN=${DISK_FREE_MIN:-50}  # GB free on the data volume
 COOLDOWN=${COOLDOWN:-900}           # seconds before the same breach alerts again
@@ -40,7 +34,6 @@ alerts=$dir/alerts
 registry=$dir/guvs
 mkdir -p "$dir" "$registry"
 touch "$alerts"
-ncpu=$(sysctl -n hw.ncpu)
 
 sample() {
   load=$(sysctl -n vm.loadavg | awk '{print $3}')
@@ -49,14 +42,8 @@ sample() {
   swap=$(sysctl -n vm.swapusage | awk '{print $6}')
 }
 
-status() {
-  echo "load ${load}/${ncpu} cores, memory ${mem}% free, swap ${swap} used, disk ${disk}G free"
-}
-
 breaches() {
   local out=""
-  awk -v l="$load" -v n="$ncpu" -v k="$LOAD_PER_CORE" 'BEGIN{exit !(l > n*k)}' \
-    && out+="load ${load} on ${ncpu} cores; "
   (( mem < MEM_FREE_MIN )) && out+="memory ${mem}% free, swap ${swap} used; "
   (( disk < DISK_FREE_MIN )) && out+="disk ${disk}G free; "
   printf '%s' "${out%; }"
@@ -70,30 +57,15 @@ hold_lock() {
   fi
   local holder
   holder=$(cat "$lock/pid" 2>/dev/null)
-  if [[ -n $holder ]] && ! kill -0 "$holder" 2>/dev/null; then
-    rm -rf "$lock"
-  fi
+  [[ -n $holder ]] && ! kill -0 "$holder" 2>/dev/null && rm -rf "$lock"
   return 1
 }
 
-release_lock() {
-  [[ $(cat "$lock/pid" 2>/dev/null) == "$$" ]] && rm -rf "$lock"
-}
-
-list_guvs() {
+live_entries() {
   local f
   for f in "$registry"/*; do
     [[ -f $f ]] || continue
-    if kill -0 "${f##*/}" 2>/dev/null; then cat "$f"; else rm -f "$f"; fi
-  done
-}
-
-top_procs() {
-  local pid cpu rss cwd
-  ps -Ao pid=,pcpu=,rss= -r | head -12 | while read -r pid cpu rss; do
-    cwd=$(lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')
-    printf '%5s%% %6sM  %-16s %s\n' "$cpu" "$((rss / 1024))" \
-      "$(ps -o comm= -p "$pid" | awk -F/ '{print $NF}')" "${cwd:-?}"
+    if kill -0 "${f##*/}" 2>/dev/null; then echo "$f"; else rm -f "$f"; fi
   done
 }
 
@@ -116,35 +88,38 @@ books() {
     | sort -rn
 }
 
-ask() {
-  local target=$1 asks=$dir/asks last
-  touch "$asks"
-  last=$(awk -F'\t' -v g="$target" '$2 == g' "$asks" | tail -1)
-  if [[ -n $last ]] && (( $(date +%s) - ${last%%$'\t'*} < COOLDOWN )); then
-    echo "already asked by ${last##*$'\t'}"
-    return 1
-  fi
-  printf '%s\t%s\t%s\n' "$(date +%s)" "$target" "${GUV% *}" >> "$asks"
+sign() {
+  local f
+  for f in $(live_entries); do
+    if [[ $(head -1 "$f") == "${GUV:?set GUV as for the watchdog}" ]]; then
+      printf '%s\n%s\n' "$GUV" "$1" > "$f"
+      return 0
+    fi
+  done
+  echo "no running watchdog for '$GUV'; start it first" >&2
+  return 1
 }
 
 case ${1:-} in
-  guvs) list_guvs; exit 0 ;;
-  top) top_procs; exit 0 ;;
   books) books; exit 0 ;;
-  post) printf '%s %s: %s\n' "$(date '+%m-%d %H:%M')" "${GUV% *}" "${2:?usage: watchdog.sh post <text>}" >> "$dir/board"; exit 0 ;;
-  board) tail -20 "$dir/board" 2>/dev/null; exit 0 ;;
-  ask) ask "${2:?usage: watchdog.sh ask <guvnor>}"; exit ;;
+  sign) sign "${2:?usage: watchdog.sh sign <text>}"; exit ;;
+  guvs)
+    for f in $(live_entries); do
+      printf '%s: %s\n' "$(head -1 "$f" | sed 's/ [^ ]*$//')" "$(sed -n 2p "$f")"
+    done
+    exit 0 ;;
 esac
 
 sample
+status="load ${load}, memory ${mem}% free, swap ${swap} used, disk ${disk}G free"
 if [[ ${1:-} == status ]]; then
-  status
+  echo "$status"
   exit 0
 fi
 
-trap 'release_lock; rm -f "$registry/$$"' EXIT
-[[ -n ${GUV:-} ]] && echo "$GUV" > "$registry/$$"
-echo "watchdog: $(status)"
+trap '[[ $(cat "$lock/pid" 2>/dev/null) == "$$" ]] && rm -rf "$lock"; rm -f "$registry/$$"' EXIT
+[[ -n ${GUV:-} ]] && printf '%s\n%s\n' "$GUV" "(no sign yet)" > "$registry/$$"
+echo "watchdog: $status"
 seen=$(wc -l < "$alerts")
 prev=""
 
