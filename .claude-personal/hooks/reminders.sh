@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Daily-care reminders from ~/.REMINDERS.md, raised inside Claude sessions.
+# Daily-care reminders from ~/REMINDERS.md, raised inside Claude sessions.
 #
 #   reminders.sh hook              UserPromptSubmit: maybe inject a reminder
 #   reminders.sh done <item>       record that an item was done just now
@@ -11,7 +11,7 @@
 # seconds across all sessions; other prompts only touch the state file.
 set -euo pipefail
 
-file="${REMINDERS_FILE:-$HOME/.REMINDERS.md}"
+file="${REMINDERS_FILE:-$HOME/REMINDERS.md}"
 interval="${REMINDERS_INTERVAL:-900}"
 dir="${XDG_STATE_HOME:-$HOME/.local/state}/claude-reminders"
 # A break this long resets the continuous-work clock.
@@ -97,7 +97,7 @@ $view
   self="${CLAUDE_CONFIG_DIR:-$HOME/.claude-personal}/hooks/reminders.sh"
   jq -n --arg nag "$nag" --arg self "$self" '{hookSpecificOutput: {
     hookEventName: "UserPromptSubmit",
-    additionalContext: ("Self-care reminder from ~/.REMINDERS.md, due now:\n" + $nag + "\n\n"
+    additionalContext: ("Self-care reminder from ~/REMINDERS.md, due now:\n" + $nag + "\n\n"
       + "Raise this briefly at the start of your reply, in your own voice, then carry on. "
       + "When the user says they have done one, run `bash " + $self + " done \"<item>\"`. "
       + "If they defer it, run `bash " + $self + " snooze \"<item>\" <minutes>` (default 30).")}}'
