@@ -1,8 +1,8 @@
 {
   "agent_servers": {
     "claude-acp": {
-      "type": "registry"
-    }
+      "type": "registry",
+    },
   },
   "collaboration_panel": {
     "dock": "left",
@@ -98,6 +98,7 @@
     "kotlin": true,
     "proto": true,
     "scss": true,
+    "swift": true,
     "terraform": true,
     "toml": true,
     "tsgo": true,
@@ -134,7 +135,7 @@
   },
   "wrap_guides": [80, 100],
   "soft_wrap": "editor_width",
-  "format_on_save": "on",
+  "format_on_save": "modifications_if_available",
   "sticky_scroll": {
     "enabled": true,
   },

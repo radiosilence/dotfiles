@@ -2,7 +2,7 @@
 # Daily-care reminders from ~/REMINDERS.md, raised inside Claude sessions.
 #
 #   reminders.sh hook              UserPromptSubmit: maybe inject a reminder
-#   reminders.sh done <item>       record that an item was done just now
+#   reminders.sh done <item> [n]   record n doses of an item done just now
 #   reminders.sh snooze <item> <m> hold an item off for <m> minutes
 #   reminders.sh status            print the reminders and today's state
 #
@@ -37,8 +37,9 @@ update() {
 
 case "${1:-hook}" in
 done)
-  update --arg item "${2:?item}" '.done += [{item: $item, at: $clock}] | del(.snoozed[$item])'
-  echo "Recorded: $2 at $(date +%H:%M)"
+  update --arg item "${2:?item}" --argjson n "${3:-1}" \
+    '.done += [range($n) | {item: $item, at: $clock}] | del(.snoozed[$item])'
+  echo "Recorded: ${3:-1}x $2 at $(date +%H:%M)"
   ;;
 snooze)
   update --arg item "${2:?item}" --argjson m "${3:-30}" '.snoozed[$item] = ($now + $m * 60)'
@@ -99,7 +100,8 @@ $view
     hookEventName: "UserPromptSubmit",
     additionalContext: ("Self-care reminder from ~/REMINDERS.md, due now:\n" + $nag + "\n\n"
       + "Raise this briefly at the start of your reply, in your own voice, then carry on. "
-      + "When the user says they have done one, run `bash " + $self + " done \"<item>\"`. "
+      + "When the user says they have done one, run `bash " + $self + " done \"<item>\" <count>`, "
+      + "where count is how many doses they took since last telling you (default 1). "
       + "If they defer it, run `bash " + $self + " snooze \"<item>\" <minutes>` (default 30).")}}'
   ;;
 esac

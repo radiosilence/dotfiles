@@ -60,3 +60,5 @@ acoustic_weight = 0.5
 
 [appearance]
 theme = "koan"
+theme_icons = true
+wash_window = true
