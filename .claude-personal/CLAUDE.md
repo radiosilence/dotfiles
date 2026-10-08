@@ -29,6 +29,7 @@ CI runs the same suite, so a local run before pushing only delays CI by its own 
 
 - No unnecessary abstractions. Inline unless reused three or more times, or unless extracting aids testing or clarity.
 - Comment sparingly. Comments are timeless: no meta-commentary, no notes about code that was deleted or changed.
+- Do not put conversation links or claude banner in PR descriptions, it's obvious now.
 
 ### React / TypeScript
 
