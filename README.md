@@ -96,6 +96,16 @@ the identity half (`user.email`, `user.signingkey`, `allowed_signers`) is per-ma
 and lives in `~/.gitconfig`, written by `task git:signing` from the 1Password agent
 and account. Nothing key-shaped is committed, and a fresh box gets it from `converge`.
 
+**Claude reminders** — `.claude-personal/hooks/reminders.sh` is a UserPromptSubmit hook
+that reads `~/.REMINDERS.md` (a free-form list of medication, meals and chores, kept out of
+the repo because it is personal) and asks Haiku whether anything is due. The reminder is
+added to the prompt's context, so it appears in whichever session is in use and not in idle
+ones. Today's state (what was done, snoozes, past reminders) lives in
+`~/.local/state/claude-reminders/` and is shared by all sessions, so marking an item done in
+one stops reminders for it in all of them. Haiku is asked at most once per 15 minutes
+(`REMINDERS_INTERVAL`, in seconds) across all sessions; the other prompts only update a
+timestamp. Without `~/.REMINDERS.md` the hook does nothing.
+
 **Tool duplication** — Some tools exist in both brew and mise intentionally:
 
 - `sheldon` — brew for Intel (no arm64 binary), mise for Apple Silicon
