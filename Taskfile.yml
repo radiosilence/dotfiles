@@ -385,6 +385,7 @@ tasks:
         link .claude-personal/skills
         link .claude-personal/hooks/push-before-test.sh
         link .claude-personal/hooks/op-service-account.sh
+        link .claude-personal/hooks/reminders.sh
         link .omp/agent/config.yml
         link .omp/agent/mcp.json
         link .omp-personal/agent/config.yml
