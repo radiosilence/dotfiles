@@ -1,0 +1,692 @@
+
+[
+    {
+        "name":   "64 Audio",
+        "phones": [
+            {"name":"U12T","file":"64 Audio U12T","reviewScore":"S","reviewLink":"","price":"$2000"}
+        ]
+    },
+    {        
+        "name":   "7Hz",
+        "phones": [
+            {"name":"Dioko","file":"7Hz Dioko","reviewScore":"","reviewLink":"","price":"$100"},
+            {"name":"Legato","file":"7Hz Legato","reviewScore":"","reviewLink":"","price":"$100"},
+            {"name":"Sonus","file":"7Hz Sonus","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Timeless","file":"7Hz Timeless","reviewScore":"","reviewLink":"","price":"$200"},
+            {"name":"Timeless AE","file":"7Hz Timeless AE","reviewScore":"N/A","reviewLink":"","price":"$260"},
+            {"name":"Zero","file":"7Hz Zero","reviewScore":"B","reviewLink":"","price":"$20"},
+            {"name":"Zero 2","file":"7Hz Zero 2","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {        
+        "name":   "7th Acoustics",
+        "phones": [
+            {"name":"Proxima","file":"7th Proxima"},
+            {"name":"Supernova","file":"7th Supernova"}
+        ]
+    },
+    {        
+        "name":   "Aful",
+        "phones": [
+            {"name":"Explorer","file":"Aful Explorer"},
+            {"name":"MagicOne","file":"Aful MagicOne"},
+            {"name":"Performer 5","file":"AFB5"},
+            {"name":"Performer 5+2","file":"Aful Performer 5+2"},
+            {"name":"Performer 8","file":"Aful P8"},
+            {"name":"Soloist","file":"Aful Soloist"}
+        ]
+    },
+    { 
+        "name":   "Airline Freebuds",
+        "phones": [
+            {"name":"ANA Airline","file":"ANA Airline Freebud"}
+        ]
+    },
+    { 
+        "name":   "Audiosense",
+        "phones": [
+            {"name":"DT200","file":"Audiosense DT200"}
+        ]
+    },
+    { 
+        "name":   "Azla",
+        "phones": [
+            {"name":"ASE-500 ASMR","file":"Azla ASE-500 ASMR"}
+        ]
+    },
+    { 
+        "name":   "BGVP",
+        "phones": [
+            {"name":"Phantom","file":"BGVP Phantom"}
+        ]
+    },
+    { 
+        "name":   "Binary",
+        "phones": [
+            {"name":"x Gizaudio Chopin","file":"BN3"}
+        ]
+    },
+    { 
+        "name":   "Blon",
+        "phones": [
+            {"name":"BL03","file":"Blon BL03"},
+            {"name":"HBB Z300","file":"BLON Z300"}
+        ]
+    },
+    {       
+        "name":   "BQEYZ",
+        "phones": [
+            {"name":"Summer","file":"BQEYZ Summer"},
+            {"name":"Winter","file":"BQEYZ Winter"},
+            {"name":"Winter Ultra","file":"BQEYZ Winter Ultra"}
+        ]
+    },
+    {    
+        "name":   "Campfire Audio",
+        "phones": [
+            {"name":"Andromeda 2020","file":"CFA Andromeda 2020","reviewScore":"N/A","reviewLink":"","price":"$1000"},
+            {"name":"Astrolith","file":"Campfire Astrolith","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {       
+        "name":   "CCA",
+        "phones": [
+            {"name":"PLA13","file":"CCA PLA13"}
+        ]
+    },
+    {    
+        "name":   "CrinEar",
+        "phones": [
+            {"name":"Daybreak","file":["CrinEar Daybreak (Sha)","CrinEar Daybreak (Deep)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Project Meta","file":["CrinEar Meta (Normal Insertion)","CrinEar Meta (Deep Insertion)"],"suffix":["(Normal Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+
+        ]
+    },
+    {       
+        "name":   "CVJ",
+        "phones": [
+            {"name":"Freedom","file":["CVJ Freedom (00)","CVJ Freedom (10)","CVJ Freedom (02)","CVJ Freedom (12)"],"suffix":["(00)","(10)","(02)","(12)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Kumo","file":"CVJ KUMO","reviewScore":"","reviewLink":"","price":""},
+            {"name":"MEI","file":["CVJ MEI (00)","CVJ MEI (10)","CVJ MEI (02)","CVJ MEI (12)"],"suffix":["(00)","(10)","(02)","(12)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Delight Audio",
+        "phones": [
+            {"name":"DE2","file":"Delight Audio DE2","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Dita",
+        "phones": [
+            {"name":"Perpetua","file":"Dita Perpetua","reviewScore":"N/A","reviewLink":"","price":"$3000"}
+        ]
+    },
+    {    
+        "name":   "Dunu",
+        "phones": [
+            {"name":"DaVinci","file":["Dunu DaVinci (Retail)","Dunu Davinci (V3 - Final)","Dunu DaVinci (V2)"],"suffix":["(Retail)","(V3)","(V2)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"DK-3001 BD","file":"Dunu DK3001BD","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"EST112","file":"Dunu EST112","reviewScore":"N/A","reviewLink":"","price":"$350"},
+            {"name":"Falcon Ultra","file":["DUNU Falcon U (Blue)","DUNU Falcon U (Gold)"],"suffix":["(Blue)","(Gold)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Kima","file":"Dunu Kima","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Glacier","file":"Dunu Glacier","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Kima Classic","file":"Dunu Kima C","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Mirai","file":"Dunu Mirai","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"SA6","file":"Dunu SA6","reviewScore":"A-","reviewLink":"","price":"$560","shopLink":"https://bit.ly/3Q9cRgE"},
+            {"name":"SA6 MK2","file":["DUNU SA6 MK2 (OFF)","DUNU SA6 MK2 (ON)"],"suffix":["(OFF)","(ON)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"SA6 Ultra","file":["Dunu SA6 Ultra (OFF)","Dunu SA6 Ultra (ON)"],"suffix":["(OFF)","(ON)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Talos","file":["Dunu Talos (Planar)","Dunu Talos (Hybrid)"],"suffix":["(Planar)","(Hybrid)"],"reviewScore":"B+","reviewLink":"","price":"$200"},
+            {"name":"Titan S","file":"Dunu Titan S","reviewScore":"B","reviewLink":"","price":"$79","shopLink":"https://bit.ly/3BFGRge"},
+            {"name":"Titan S2","file":"Dunu TitanS2","reviewScore":"","reviewLink":"","price":"$79","shopLink":""},
+            {"name":"Vulkan","file":"Dunu Vulkan","reviewScore":"N/A","reviewLink":"","price":"$370"},
+            {"name":"Vulkan 2","file":"Dunu Vulkan 2","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {        
+        "name":   "Elysian",
+        "phones": [
+            {"name":"Annihilator 2021","file":"Elysian Annihilator 21","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Annihilator 2023","file":"Elysian Annihilator 23","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Diva","file":["Elysian Diva (Red Switch)","Elysian Diva (White Switch)","Elysian Diva (Blue Switch)"],"suffix":["(Red Switch)","(White Switch)","(Blue Switch)"],"reviewScore":"","reviewLink":"","price":"$1500"},
+            {"name":"Diva 2023","file":["Elysian Diva 23 (Red Switch)","Elysian Diva 23 (White Switch)","Elysian Diva 23 (Blue Switch)"],"suffix":["(Red Switch)","(White Switch)","(Blue Switch)"],"reviewScore":"","reviewLink":"","price":"$1500"},
+            {"name":"Effect Audio Gaea","file":"Elysian Gaea","reviewScore":"","reviewLink":"","price":"$1300"},
+            {"name":"Pilgrim","file":"Elysian Pilgrim","reviewScore":"","reviewLink":"","price":""},
+            {"name":"X","file":"Elysian X","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "EPZ",
+        "phones": [
+            {"name":"K9","file":["EPZ K9 (Shallow)","EPZ K9 (Deep)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Fatfreq",
+        "phones": [
+            {"name":"Harmony","file":"Fatfreq Harmony","reviewScore":"","reviewLink":"","price":"$"},
+            {"name":"Maestro Mini","file":"Fatfreq Maestro Mini","reviewScore":"B","reviewLink":"","price":"$430"},
+            {"name":"Maestro SE","file":"Fatfreq Maestro SE","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Scarlet Mini","file":"Fatfreq Scalet Mini","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Fearless",
+        "phones": [
+            {"name":"Crinacle Dawn","file":"Fearless Dawn","reviewScore":"S-","reviewLink":"","price":"$1400"}
+        ]
+    },
+    {
+        "name":   "FiiO",
+        "phones": [
+            {"name":"FD15","file":["FiiO FD15 (Black)","FiiO FD15 (Red)"],"suffix":["(Black)","(Red)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"FH11","file":"FiiO FH11","reviewScore":"","reviewLink":"","price":""},
+            {"name":"FH15","file":["FiiO FH15 (Balanced)","FiiO FH15 (Bass)","FiiO FH15 (Treble)"],"suffix":["(Balanced)","(Bass)","(Treble)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"FH3","file":"FiiO FH3","reviewScore":"","reviewLink":"","price":""},
+            {"name":"FH5","file":"FiiO FH5","reviewScore":"","reviewLink":"","price":""},
+            {"name":"FHE","file":"FiiO FHE","reviewScore":"","reviewLink":"","price":""},
+            {"name":"FX15","file":["FiiO FX15 (ON)","FiiO FX15 (OFF)"],"suffix":["(ON)","(OFF)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Final",
+        "phones": [
+            {"name":"A4000","file":"Final A4000","reviewScore":"","reviewLink":"","price":""},
+            {"name":"A5000","file":"Final A5000","reviewScore":"","reviewLink":"","price":""},
+            {"name":"E1000","file":"Final E1000","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Fir Audio",
+        "phones": [
+            {"name":"VxV","file":"Fir VxV","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Xeno 6","file":"Fir Xeno 6","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Geek Wold",
+        "phones": [
+            {"name":"GK100","file":"Geek Wold GK100","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+        ]
+    },
+    {
+        "name":   "Heartfield",
+        "phones": [
+            {"name":"CU8","file":["Heartfield CU8 (S)","Heartfield CU8 (D)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Hidition",
+        "phones": [
+            {"name":"Viento-B UIEM","file":"Hidition Viento-B","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+        ]
+    },
+    {
+        "name":   "Hidizs",
+        "phones": [
+            {"name":"MS5","file":["Hidizs MS5 (Neutral)","Hidizs MS5 (Treble)","Hidizs MS5 (Bass)"],"suffix":["(Neutral)","(Treble)","(Bass)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Hisenior",
+        "phones": [
+            {"name":"Cano Cristales","file":["Hisenior CanoCristales (S)","Hisenior CanoCristales (N)","Hisenior CanoCristales (D)"],"suffix":["(Shallow Insertion)","(Normal Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Mega5P","file":"Hisenior Mega5P","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Mega5EST","file":"HiSenior Mega5EST","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+        ]
+    },
+    {
+        "name":   "HZ Sound",
+        "phones": [
+            {"name":"Heart Mirror","file":"HZ Heartmirror","reviewScore":"B-","reviewLink":"","price":"49","shopLink":"https://bit.ly/3CWqZnK"},
+            {"name":"Heart Mirror Pro","file":"HZ Heartmirror Pro","reviewScore":"N/A","reviewLink":"","price":"79","shopLink":"https://bit.ly/3yf7PbY"}
+        ]
+    },
+    {
+        "name":   "I/O",
+        "phones": [
+            {"name":"Volare","file":"IO Volare","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+        ]
+    },
+    {
+        "name":   "IKKO",
+        "phones": [
+            {"name":"OH5 Asgard","file":"IKKO ASGARD","reviewScore":"N/A","reviewLink":"","price":"$489"},
+            {"name":"OH10","file":"IKKO OH10","reviewScore":"","reviewLink":"","price":"$159"},
+            {"name":"OH10S","file":"IKKO OH10S","reviewScore":"","reviewLink":"","price":""},
+            {"name":"OH300","file":"IKKO OH300","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Juzear",
+        "phones": [
+            {"name":"Butterfly 61T","file":"Juzear Butterfly 61T","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Clear","file":"Juzear Clear","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"x Zeos Defiant","file":["Juzear Defiant (8KHz)","Juzear Defiant (Deep)"],"suffix":["(Normal Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Kefine",
+        "phones": [
+            {"name":"Delci","file":"Kefine Delci","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Klanar","file":"Kefine Klanar","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Klean (Silver Nozzle)","file":"Kefine Klean (Gold)","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Quatio","file":["Kefine Quatio (SN)","Kefine Quatio (SD)","Kefine Quatio (BD)","Kefine Quatio (GD)"],"suffix":["(Silver Shallow Insertion)","(Silver Deep Insertion)","(Black Deep Insertion)","(Gold Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Kinera",
+        "phones": [
+            {"name":"Celest Gumiho","file":"Kinera Celest Gumiho","reviewScore":"B-","reviewLink":"","price":"50"},
+            {"name":"Celest Pandamon","file":"Kinera Pandamon","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Celest Pandamon 2","file":"Kinera Celest Panda 2","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Celest Phoenixcall","file":"Celeste Phoenixcall","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Celest Plustus Beast","file":"Kinera Plutus Beast","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Freya 2","file":"Kinera Freya 2","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Hodur","file":"Kinera Hodur","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Loki","file":"Kinera Loki","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Nanna 2","file":"Kinera Nanna 2","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Norn","file":"Kinera Norn","reviewScore":"B-","reviewLink":"","price":"510","shopLink":"https://bit.ly/3vAEg3s"},
+            {"name":"Skuld","file":"Kinera Skuld","reviewScore":"B-","reviewLink":"","price":"550","shopLink":"https://bit.ly/3oRk89i"},
+            {"name":"Verdandi","file":"Kinera Verdandi","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Kiwi Ears",
+        "phones": [
+            {"name":"Aether","file":["Kiwiear Aether (8K)","Kiwiear Aether (Deep)","Kiwiear Aether (Shallow)"],"suffix":["(8KHz Insert)","(Deep Insert)","(Shallow Insert)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Airoso","file":["Kiwiear Airoso (8K)","Kiwiear Airoso (Deep)","Kiwiear Airoso (Shallow)"],"suffix":["(8KHz Insert)","(Deep Insert)","(Shallow Insert)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Astral","file":["Kiwiears Astral (8K)","Kiwiears Astral (Deep)","Kiwiears Astral (Shallow)"],"suffix":["(8KHz Insert)","(Deep Insert)","(Shallow Insert)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Cadenza","file":"Kiwi Cadenza","reviewScore":"A","reviewLink":"","price":"$39"},
+            {"name":"Dolce","file":"Kiwiears Dolce","reviewScore":"A","reviewLink":"","price":"$29"},
+            {"name":"KE4","file":"Kiwiear KE4","reviewScore":"A","reviewLink":"","price":"$199"},
+            {"name":"Orchestra","file":"Kiwi Orchestra","reviewScore":"A","reviewLink":"","price":"$500"},
+            {"name":"Orchestra 2","file":["Kiwi Orchestra 2 (S)","Kiwi Orchestra 2 (D)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Orchestra Lite","file":"Kiwi Orchestra Lite","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Quintet","file":"Kiwi Quintet","reviewScore":"A","reviewLink":"","price":""},
+            {"name":"Septet","file":"Kiwi Ear Septet","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Singolo","file":"Kiwi Singolo","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "KZ",
+        "phones": [
+            {"name":"Ling Long","file":"KZ Linglong","reviewScore":"","reviewLink":"","price":""},
+            {"name":"PR1","file":"KZ PR1","reviewScore":"","reviewLink":"","price":""},
+            {"name":"ZS10 Pro","file":"KZ ZS10 PRO","reviewScore":"","reviewLink":"","price":""},
+            {"name":"ZVX","file":"KZ ZVX","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Letshuoer",
+        "phones": [
+            {"name":"Cadenza 12","file":"Letshuoer Cadenza","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Cadenza 4","file":"Letshuoer Cadenza 4","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"EJ07M Kinda Lava","file":"Letshuoer KL","reviewScore":"A+","reviewLink":"","price":"$600","shopLink":"https://bit.ly/3zSHK3M"},
+            {"name":"Galileo","file":"Letshuoer Galileo","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"S12","file":"Letshuoer S12","reviewScore":"B+","reviewLink":"","price":"$150","shopLink":"https://bit.ly/3bnPNfw"},
+            {"name":"S12 Pro","file":"Letshuoer S12 Pro","reviewScore":"B+","reviewLink":"","price":"$170"}
+        ]
+    },
+    {
+        "name":   "Mangird",
+        "phones": [
+            {"name":"Tea","file":"Mangird Tea","reviewScore":"N/A","reviewLink":"","price":"$300"},
+            {"name":"Tea 2","file":"Mangird Tea 2","reviewScore":"A-","reviewLink":"","price":"$350"},
+            {"name":"Xenns Top","file":"Xenns Top","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Xenns Tea Pro","file":["Mangird Tea Pro (Shallow)","Mangird Tea Pro (Normal)","Mangird Tea Pro (Deep)"],"suffix":["(Shallow Insertion)","(Normal Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Xenns Tea Pro SE","file":["Xenns Tea Pro SE (S)","Xenns Tea Pro SE (N)","Xenns Tea Pro SE (D)"],"suffix":["(Shallow Insertion)","(Normal Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Xenns Top Pro","file":["Xenns Top Pro (Shallow)","Xenns Top Pro (8KHz)","Xenns Top Pro (Deep)","Xenns Top Pro (BlackT)"],"suffix":["(White Silicone Eartips Shallow Insertion)","(White Silicone Eartips Normal Insertion)","(White Silicone Eartips Deep Insertion)","(Black Silicone Eartips)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Xenns Up","file":"Mangird Xenns Up","reviewScore":"B","reviewLink":"","price":"$700"}
+        ]
+    },
+    {
+        "name":   "Meze",
+        "phones": [
+            {"name":"Alba","file":"Meze Alba","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+        ]
+    },
+    {
+        "name":   "Moondrop",
+        "phones": [
+            {"name":"Aria","file":"Moondrop Aria","reviewScore":"B","reviewLink":"","price":"$79","shopLink":"https://bit.ly/3OZbRej"},
+            {"name":"Aria 2","file":"MD Aria 2","reviewScore":"B","reviewLink":"","price":"","shopLink":""},
+            {"name":"Aria Snow","file":"Moondrop Aria Snow","reviewScore":"B-","reviewLink":"","price":"$79","shopLink":"https://bit.ly/3Qn2KoR"},
+            {"name":"Beautiful World","file":"Moondrop Beautiful World","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Blessing 2","file":"MD B2","reviewScore":"N/A","reviewLink":"","price":"$320"},
+            {"name":"Blessing 3","file":"MD B3","reviewScore":"N/A","reviewLink":"","price":"$320"},
+            {"name":"Blessing 3 Aqua","file":"B3 Aqua","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Crinacle Blessing 2 Dusk","file":"MD B2 Dusk","reviewScore":"N/A","reviewLink":"","price":"$330"},
+            {"name":"Chu","file":"Moondrop Chu","reviewScore":"","reviewLink":"","price":"$20","shopLink":"https://bit.ly/3Snwtjg"},
+            {"name":"Chu 2","file":"Moondrop Chu 2","reviewScore":"","reviewLink":"","price":"$19","shopLink":""},
+            {"name":"Chu 2 (DSP)","file":"MD Chu 2 DSP","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Concerto","file":"Moondrop Concerto","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Droplet (DSP)","file":"MD Droplet DSP","reviewScore":"","reviewLink":"","price":"$50"},
+            {"name":"Dusk","file":["MD Dusk 2 (ANALOG)","MD Dusk 2(DSP)","MD Dusk 2 (B)","MD Dusk 2 (V)","MD Dusk 2 (H)","MD Dusk 2 (DF)"],"suffix":["(Analog)","(DSP-Default)","(Bass+)","(V)","(Harman)","(Diffuse-Tilted)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Jiu (DSP)","file":"Moondrop Jiu","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Kadenz","file":["MD Kadenz (A-Stock)","MD Kadenz (B-Stock)","MD Kadenz (C-Stock)","MD Kadenz (B-Spring)","MD Kadenz (Bass+)","MD Kadenz (Bass++)","MD Kadenz (SS+)","MD Kadenz (Treble+)"],"suffix":["(A-Nozzle-Stock Tips)","(B-Nozzle-Stock Tips)","(C-Nozzle-Stock Tips)","(B-Nozzle-Spring Tips)","(Bass+)","(Bass++)","(Soundstage+)","(Treble+)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Kato","file":"Moondrop Kato","reviewScore":"B+","reviewLink":"","price":"$189"},
+            {"name":"KXXS","file":"MD KXXS","reviewScore":"","reviewLink":"","price":""},
+            {"name":"KXXX","file":"MD KXXX","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Lan","file":"Moondrop Lan","reviewScore":"","reviewLink":"","price":"$40"},
+            {"name":"Quarks DSP","file":"MD Quarks DSP","reviewScore":"","reviewLink":"","price":"$15"},
+            {"name":"Gravity: Rays","file":["Moondrop Rays (Shallow)","Moondrop Rays (Deep)"],"suffix":["(Shallow Insert)","(Deep Insert)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Jiu (DSP)","file":"Moondrop Jiu","reviewScore":"","reviewLink":"","price":""},
+            {"name":"S8","file":"Moondrop S8","reviewScore":"A+","reviewLink":"","price":"$700"},
+            {"name":"Starfield","file":"Moondrop Starfield","reviewScore":"B","reviewLink":"","price":"$110"},
+            {"name":"Starfield 2","file":"Moondrop Starfield II","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Stellaris","file":"Moondrop Stellaris","reviewScore":"N/A","reviewLink":"","price":"$110","shopLink":"https://bit.ly/3fHdNfz"},
+            {"name":"Variations","file":"Moondrop Variations","reviewScore":"S-","reviewLink":"","price":"$520","shopLink":"https://bit.ly/3Q23cZO"}
+       ]
+    },
+    {
+        "name":   "MuseHifi",
+        "phones": [
+            {"name":"ME1","file":"MuseHifi ME1","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "NiceHCK",
+        "phones": [
+            {"name":"F1 Pro","file":"Nice F1Pro","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Jialai Carat","file":"Jialai Carat","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "Nintendo",
+        "phones": [
+            {"name":"Switch","file":"Nintendo Switch","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "Oriolus",
+        "phones": [
+            {"name":"Trailli JP","file":"Oriolus Trailli JP","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "Prisma",
+        "phones": [
+            {"name":"Azul","file":"Prisma Azul","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "Pula",
+        "phones": [
+            {"name":"PA02","file":"Pula PA02","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "Punch Audio",
+        "phones": [
+            {"name":"Martilo","file":["Punch Martilo (Shallow)","Punch Martilo (Deep)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+       ]
+    },
+    {
+        "name":   "QDC",
+        "phones": [
+            {"name":"8SS","file":"QDC 8SS","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"Gemini","file":["QDC Gemini (Bass Off)","QDC Gemini (Bass)"],"suffix":["(Bass Off)","(Bass)"],"reviewScore":"N/A","reviewLink":"","price":"$2100"},
+            {"name":"Folk-S","file":"QDC FOLK","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "QKZ",
+        "phones": [
+            {"name":"HBB","file":"QKZ x HBB","reviewScore":"N/A","reviewLink":"","price":"$20"},
+            {"name":"HBB Khan","file":"QKZ x HBB Khan","reviewScore":"N/A","reviewLink":"","price":"$50"}
+        ]
+    },
+    {
+        "name":   "QoA",
+        "phones": [
+            {"name":"Adonis","file":"QoA Adonis","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Aviation","file":"QoA Aviation","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Magarita","file":"QoA Magarita","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Mojito 2","file":"QoA Mojito 2","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Vesper","file":"QoA Vesper","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Questyle",
+        "phones": [
+            {"name":"NHB12","file":"Queststyle NHB12","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+       ]
+    },
+    {
+        "name":   "R2E3",
+        "phones": [
+            {"name":"Mermaid","file":"R2E3 Mermaid","reviewScore":"","reviewLink":"","price":"$"}
+        ]
+    },
+    {
+        "name":   "Raptgo",
+        "phones": [
+            {"name":"Hook-X","file":"Raptgo Hook X","reviewScore":"A-","reviewLink":"","price":"$250"}
+        ]
+    },
+    {
+        "name":   "Rose Technics",
+        "phones": [
+            {"name":"QT7 Pro 2","file":"RoseT QT7 Pro 2","reviewScore":"","reviewLink":"","price":""},
+            {"name":"QT9 MK2","file":"RoseT QT9 MK2","reviewScore":"","reviewLink":"","price":""},
+            {"name":"QTX","file":"RoseT QTX","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "SeeAudio",
+        "phones": [
+            {"name":"Bravery","file":"SeeAudio Bravery"},
+            {"name":"Bravery AE","file":"SeeAudio Bravery AE"},
+            {"name":"Kaguya","file":"Seeaudio Kaguya"},
+            {"name":"Rinko","file":"SeeAudio Rinko"},
+            {"name":"Miu","file":"SeeAudio Miu"},
+            {"name":"Neko","file":"Seeaudio Neko"},
+            {"name":"Neo","file":"Seeaudio Neo"},
+            {"name":"Yume","file":"SeeAudio Yume","reviewScore":"B","reviewLink":"","price":"$160"},
+            {"name":"Yume 2","file":"SeeAudio Yume 2","reviewScore":"N/A","reviewLink":"","price":"$200"},
+            {"name":"Crinacle Yume Midnight","file":"Seeaudio Midnight","reviewScore":"B+","reviewLink":"","price":"$200"},
+            {"name":"Yume Ultra","file":"SeeAudio Yume Ultra","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Sennheiser",
+        "phones": [
+            {"name":"IE200","file":["Sennheiser IE200 (Dunu SS Tips)","Sennheiser IE200 (Stock Tips)"],"suffix":["(Dunu SS Tips)","(Stock Tips)"],"reviewScore":"N/A","reviewLink":"","price":"150"},
+            {"name":"IE300","file":"Sennheiser IE300","reviewScore":"","reviewLink":"","price":"$300"},
+            {"name":"IE600","file":"Sennheiser IE600","reviewScore":"","reviewLink":"","price":"$700"}
+        ]
+    },
+    {
+        "name":   "Simgot",
+        "phones": [
+            {"name":"EA1000 Fermat","file":["Simgot EA1000 (BLK)","Simgot EA1000 (Gold)","Simgot EA1000 (Red)"],"suffix":["(Black)","(Gold)","(Red)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"EA500","file":["Simgot EA500 (Red)","Simgot EA500 (Black)"],"suffix":["(Red)","(Black)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"EA500LM","file":["Simg EA500LM (BLK)","Simg EA500LM (Gold)"],"suffix":["(Silver/Black)","(Gold/Red)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"EM10","file":"Simgot EM10"},
+            {"name":"EM6L","file":"Simgot EM6L"},
+            {"name":"Supermix 4","file":"Simgot Supermix4"},
+            {"name":"Supermix 5 (Deep Insertion)","file":"Simgot SM5 (D)"}
+        ]
+    },
+    {
+        "name":   "Softears",
+        "phones": [
+            {"name":"RSV","file":"Softears RSV","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Studio 4","file":"Softears S4","reviewScore":"","reviewLink":"","price":"$450"},
+            {"name":"Twilight","file":"Softears Twilight","reviewScore":"","reviewLink":"","price":"$930"},
+            {"name":"Volume","file":"Softears Volume","reviewScore":"","reviewLink":"","price":"$320"},
+            {"name":"Volume S","file":["Softears VolumeS (LS)","Softears VolumeS (LN)","Softears VolumeS (LD)","Softears VolumeS (HN)"],"suffix":["(Low Impedance Shallow Insertion)","(Low Impedance Normal Insertion)","(Low Impedance Deep Insertion)","(High Impedance Normal Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Sony",
+        "phones": [
+            {"name":"IER-M7","file":"Sony IER-M7","reviewScore":"A","reviewLink":"","price":"$500"},
+            {"name":"IER-Z1R","file":"Sony IER-Z1R","reviewScore":"S","reviewLink":"","price":"$1700"}
+        ]
+    },
+    {
+        "name":   "Subtonic",
+        "phones": [
+            {"name":"Storm","file":"Subtonic Storm","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Symphonium",
+        "phones": [
+            {"name":"Helios","file":"Symphonium Helios","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Tanchjim",
+        "phones": [
+            {"name":"Fission","file":["Tanchjim Fission (SDS)","Tanchjim Fission (SDD)"],"suffix":["(S Nozzle-Default Switch Shallow Insertion)","(S Nozzle-Default Switch Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Hana 2021","file":"Tanchjim Hana 2021","reviewScore":"B+","reviewLink":"","price":"$170"},
+            {"name":"Kara","file":"Tanchjim Kara","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Ola","file":"Tanchjim Ola","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Ola Bass","file":"Tanchjim Ola Bass","reviewScore":"","reviewLink":"","price":""},
+            {"name":"One","file":"Tanchjim One","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Origin","file":["Tanchjim Origin (S)","Tanchjim Origin (D)","Tanchjim Origin (L)"],"suffix":["(S)","(D)","(L)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Oxygen","file":"Tanchjim Oxygen","reviewScore":"A-","reviewLink":"","price":"$280"},
+            {"name":"Tanya DSP","file":"Tanchjim Tanya DSP","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Zero","file":"Tanchjim Zero","reviewScore":"N/A","reviewLink":"","price":"$15"}
+        ]
+    },
+    {
+        "name":   "Tangzu",
+        "phones": [
+            {"name":"Fudu","file":"Tangzu Fudu","reviewScore":"","reviewLink":"","price":""},
+            {"name":"HBB Xuan Nv","file":"Tangzu Xuan Nv","reviewScore":"","reviewLink":"","price":""},
+            {"name":"HBB Zetian Wu Heyday","file":"Tangzu Heydey","reviewScore":"","reviewLink":"","price":"$200"},
+            {"name":"Nezha","file":"Tangzu Nezha","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Shimin Li","file":"TZ Shimin Li","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Shimin Li Encounter","file":"Tangzu Encounter","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Wan'er","file":"Tangzu Waner","reviewScore":"N/A","reviewLink":"","price":"$20"},
+            {"name":"Wan'er 2","file":["Tangzu Waner 2 (8K)","Tangzu Waner 2 (Deep)","Tangzu Waner 2 (Shallow)"],"suffix":["(8KHz Insert)","(Deep Insert)","(Shallow Insert)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Yuan Li","file":"TZ Yuan Li","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Yuan Xuan Ji","file":"Tangzu Yu Xuan Ji","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Zetian Wu","file":"Tangzu Zetian Wu","reviewScore":"B","reviewLink":"","price":"$150"}
+        ]
+    },
+    {
+        "name":   "ThieAudio",
+        "phones": [
+            {"name":"Clairvoyance","file":"Thieaudio Clair","reviewScore":"A+","reviewLink":"","price":"$700"},
+            {"name":"Elixir","file":"Thieaudio Elixir","reviewScore":"B","reviewLink":"","price":"$209"},
+            {"name":"Hype 2","file":"Thieaudio Hype 2","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Hype 4","file":"Thieaudio Hype 4","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Hype 4 MK2","file":["Thie Hype4MK2 (S)","Thie Hype4MK2 (D)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"L2","file":"Thieaudio L2","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Hype 10","file":"Thieaudio Hype 10","reviewScore":"","reviewLink":"","price":""},
+            {"name":"L3","file":["Thieaudio L3 (00)","Thieaudio L3 (10)","Thieaudio L3 (02)","Thieaudio L3 (12)"],"suffix":["(00)","(10)","(02)","(12)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"L4","file":["Thieaudio L4 (00)","Thieaudio L4 (10)","Thieaudio L4 (02)","Thieaudio L4 (12)"],"suffix":["(00)","(10)","(02)","(12)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"L5","file":"Thieaudio L5","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Monarch","file":"Thieaudio Monarch","reviewScore":"A+","reviewLink":"","price":"$730"},
+            {"name":"Monarch MK2","file":"Thieaudio Monarch 2","reviewScore":"S+","reviewLink":"","price":"$1000"},
+            {"name":"Oracle","file":"Thieaudio Oracle","reviewScore":"A+","reviewLink":"","price":"$540"},
+            {"name":"Oracle MK2","file":"Thieaudio Oracle 2","reviewScore":"","reviewLink":"","price":"$590"},
+            {"name":"Origin","file":["Thieaudio Origin (Stock)","Thieaudio Origin (Foam)"],"suffix":["(Stock Tips)","(Foam Tips)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Prestige","file":"Thieaudio Prestige","reviewScore":"","reviewLink":"","price":""},
+            {"name":"Prestige LTD","file":"Thieaudio Prestige LTD","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "TinHifi",
+        "phones": [
+            {"name":"C2 Mech Warrior","file":"TinHifi C2","reviewScore":"N/A","reviewLink":"","price":"","shopLink":""},
+            {"name":"C3","file":"TinHifi C3","reviewScore":"N/A","reviewLink":"","price":"","shopLink":""},
+            {"name":"C5","file":"TinHifi C5","reviewScore":"N/A","reviewLink":"","price":"","shopLink":""},
+            {"name":"P1","file":"Tin P1","reviewScore":"N/A","reviewLink":"","price":"","shopLink":""},
+            {"name":"P1 Max","file":"Tin P1 Max","reviewScore":"N/A","reviewLink":"","price":"","shopLink":""},
+            {"name":"C5","file":"TinHifi C5","reviewScore":"N/A","reviewLink":"","price":"","shopLink":""},
+            {"name":"T2 Plus","file":"Tin T2 Plus","reviewScore":"N/A","reviewLink":"","price":"","shopLink":""},
+            {"name":"T3+","file":"TinHifi T3+","reviewScore":"B","reviewLink":"","price":"$79","shopLink":"https://bit.ly/3QAeGnp"},
+            {"name":"T4","file":"TinHifi T4","reviewScore":"B","reviewLink":"","price":"$99","shopLink":"https://bit.ly/3Q2ntyy"},
+            {"name":"T4+","file":"TinHifi T4 Pluss","reviewScore":"","reviewLink":"","price":"","shopLink":""},
+            {"name":"T5","file":"Tin T5","reviewScore":"","reviewLink":"","price":"","shopLink":""}
+        ]
+    },
+    {
+        "name":   "TKZK",
+        "phones": [
+            {"name":"Ouranos","file":"TKZK Ouranos2","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "TRI",
+        "phones": [
+            {"name":"HBB Kai","file":"TRI Kai","reviewScore":"N/A","reviewLink":"","price":"$79"},
+            {"name":"i3 MK3","file":"TRI i3 MK3","reviewScore":"N/A","reviewLink":"","price":"$79"},
+            {"name":"Starsea","file":["TRI Starsea (00)","TRI Starsea (10)","TRI Starsea (02)","TRI Starsea (12)"],"suffix":["(00)","(10)","(02)","(12)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Tripowin",
+        "phones": [
+            {"name":"HBB Mele","file":"Tripowin Mele","reviewScore":"N/A","reviewLink":"","price":"$50"},
+            {"name":"HBB Olina","file":"Tripowin Olina","reviewScore":"N/A","reviewLink":"","price":"$100"},
+            {"name":"HBB Olina SE","file":"HBB Olina SE","reviewScore":"N/A","reviewLink":"","price":"$100"},
+            {"name":"Lea","file":"Tripowin Lea","reviewScore":"N/A","reviewLink":"","price":"$25"},
+            {"name":"TC01","file":"Tripowin TC01","reviewScore":"N/A","reviewLink":"","price":"$100"},
+            {"name":"Vivace","file":"Tripowin Vivace","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "TRN",
+        "phones": [
+            {"name":"Kirin","file":"TRN Kirin","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"MT1 MAX","file":["TRN MT1 MAX (123)","TRN MT1 MAX (120)","TRN MT1 MAX (103)","TRN MT1 MAX (100)","TRN MT1 MAX (023)","TRN MT1 MAX (020)","TRN MT1 MAX (003)"],"suffix":["(123)","(120)","(103)","(100)","(023)","(020)","(003)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"MT4","file":"TRN MT4","reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"TA3","file":"TRN TA3","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Truthear",
+        "phones": [
+            {"name":"Crinacle Zero","file":"Truthears Zero","reviewScore":"B","reviewLink":"","price":"$50"},
+            {"name":"Crinacle Zero Red","file":["Project Red","Project Red IMP","Project Red 2","Project Red IMP 2"],"suffix":["","(10 Ohm Resistor)","(Retail)","(Retail: 10 Ohm Resistor)"],"reviewScore":"N/A","reviewLink":"","price":""},
+            {"name":"Gate","file":"Truthear Gate","reviewScore":"","reviewLink":"","price":"$20"},
+            {"name":"Hola","file":"Truthears Hola","reviewScore":"","reviewLink":"","price":"$18"},
+            {"name":"Hexa","file":"Truthears Hexa","reviewScore":"N/A","reviewLink":"","price":"$79"},
+            {"name":"Nova","file":"Truthear Nova","reviewScore":"N/A","reviewLink":"","price":"$149"},
+            {"name":"Pure","file":["Truthear Pure (S)","Truthear Pure (N)","Truthear Pure (D)"],"suffix":["(Shallow Insertion)","(Normal Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Unique Melody",
+        "phones": [
+            {"name":"3DT","file":"UM 3DT","reviewScore":"","reviewLink":"","price":""},
+            {"name":"McBeth MK1","file":"UM McBeth","reviewScore":"","reviewLink":"","price":""},
+            {"name":"MEST MK1","file":"UM Mest MK1","reviewScore":"","reviewLink":"","price":""},
+            {"name":"MEST MK2","file":"UM Mest 2","reviewScore":"","reviewLink":"","price":""},
+            {"name":"MEST MK3 CF","file":"UM Mest 3","reviewScore":"","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Whizzer",
+        "phones": [
+            {"name":"HE1","file":"Whizzer HE1","reviewScore":"N/A","reviewLink":"","price":""}
+        ]
+    },
+    {
+        "name":   "Yanyin",
+        "phones": [
+            {"name":"HBB Mahina","file":"Yanyin Mahina","reviewScore":"A","reviewLink":"","price":"$650"},
+            {"name":"Moonlight","file":"Yanyin Moonlight","reviewScore":"A","reviewLink":"","price":"$650"}
+        ]
+    },
+    {
+        "name":   "ZiiGaat",
+        "phones": [
+            {"name":"Arcanis","file":"Ziigaat Arcanis","reviewScore":"A","reviewLink":"","price":""},
+            {"name":"Cincotres","file":"ZiiGaat Cincotres","reviewScore":"A","reviewLink":"","price":""},
+            {"name":"Crescent","file":["ZiiGaat Crescent (Shallow)","ZiiGaat Crescent (Deep)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Doscinco","file":"ZiiGaat Doscinco","reviewScore":"A","reviewLink":"","price":""},
+            {"name":"x Jays Audio Estrella","file":["Ziigaat Estrella (S)","Ziigaat Estrella (N)","Ziigaat Estrella (D)"],"suffix":["(Shallow Insertion)","(Normal Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Luna","file":["ZiiGaat Luna (S)","ZiiGaat Luna (D)"],"suffix":["(Shallow Insertion)","(Deep Insertion)"],"reviewScore":"","reviewLink":"","price":""},
+            {"name":"Lush","file":"Ziigaat Lush","reviewScore":"A","reviewLink":"","price":""},
+            {"name":"Odyssey","file":"ZiiGaat Odyssey","reviewScore":"A","reviewLink":"","price":""}
+        ]
+    }
+]

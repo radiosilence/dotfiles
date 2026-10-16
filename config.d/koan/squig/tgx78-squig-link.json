@@ -1,0 +1,483 @@
+[
+    {
+        "name":   "64Audio",
+        "phones": [
+            {"name":"Duo","file":"64Audio Duo"},
+            {"name":"U12T MX15","file":"64audio U12T"}
+        ]
+    },
+    
+    {
+        "name":   "7Hz",
+        "phones": [
+            {"name":"Timeless","file":"7hz Timeless"}
+        ]
+    },
+
+    {
+        "name":   "AKG",
+        "phones": [
+            {"name":"N200","file":"AKG N200"},
+            {"name":"N400 EQed","file":"AKG N400"}
+        ]
+    },
+
+    {
+        "name":   "Aroma",
+        "phones": [
+            {"name":"Fei Wan","file":"Fei Wan"},
+            {"name":"Jewel Sample 1","file":"Aroma Jewel"},
+            {"name":"Jewel Sample 2","file":"Aroma Jewel2"},
+            {"name":"Jewel Sample 2 - 100 hours","file":"Aroma Jewel 100h"},
+            {"name":"Thunder (Focus Mode)","file":"Aroma Thunder Focus mode"},
+            {"name":"Thunder (Harmony Mode)","file":"Aroma Thunder Harmony mode"}
+        ]
+    },
+ 
+    {
+        "name":   "Audiosense",
+        "phones": [
+            {"name":"AQ4","file":"Audiosense AQ4"},
+            {"name":"AQ4 30ohm","file":"Audiosense AQ4 30"},
+            {"name":"DT100","file":"Audiosense DT100"},
+            {"name":"DT200","file":"Audiosense DT200"},
+            {"name":"DT300","file":"Audiosense DT300"},
+            {"name":"DT600 1ohm","file":"Audiosense DT600"},
+            {"name":"DT600 20ohm","file":"Audiosense DT600 20"},
+            {"name":"DT600 30ohm","file":"Audiosense DT600 30"},
+            {"name":"DT600 80ohm","file":"Audiosense DT600 80"}
+        ]
+    },
+    
+    {
+        "name":   "Blur Earbuds",
+        "phones": [
+            {"name":"OFC MX64 STE","file":"Blur MX64"}
+        ]
+    },
+
+     {
+        "name":   "Campfire Audio",
+        "phones": [
+            {"name":"Onyx","file":"Campfire Audio Onyx"}
+        ]
+    },
+
+   {
+        "name":   "Canpur",
+        "phones": [
+            {"name":"CP54E","file":"021U"},
+            {"name":"CP622B","file":"622B"},
+            {"name":"CP622B (sample 2)","file":"622B2"},
+            {"name":"CP622B CIEM","file":"622b Custom"}
+        ]
+    },
+
+    {
+        "name":   "CCA",
+        "phones": [
+            {"name":"CRA Sample 1","file":"CCA CRA"},
+            {"name":"CRA Sample 2","file":"CCA CRA S2"},
+            {"name":"CRA Sample 2 Modded","file":"CCA CRA Mod"}
+        ]
+    },
+
+    {
+        "name":   "Custom Art",
+        "phones": [
+            {"name":"Hybrid 3 Pro","file":"Neo 3"},
+            {"name":"Fibae 5","file":"Fibae 5"},
+            {"name":"Fibae 7","file":"Fibae 7"}
+        ]
+    },
+
+   {
+        "name":   "Dunu",
+        "phones": [
+            {"name":"Zen Pro","file":"Dunu Zen Pro"}
+        ]
+    },
+
+    {
+        "name":   "Empire Ears",
+        "phones": [
+            {"name":"Odin","file":"EE Odin"}
+        ]
+    },
+
+    {
+        "name":   "Elysian Acoustic Labs",
+        "phones": [
+            {"name":"Annihilator - CIEM (aaf evo)","file":"Elysian Ann"},
+            {"name":"Diva 2023 (Blue)","file":"Diva"}
+        ]
+    },
+
+    {
+        "name":   "Fatfreq",
+        "phones": [
+            {"name":"Fatfreq Maestro SE","file":"Fatfreq Maestro SE"}
+        ]
+    },
+
+    {
+        "name":   "Fiio",
+        "phones": [
+            {"name":"FD7 Balanced Nozzle","file":"Fiio FD7 Balanced"},
+            {"name":"FD7 Balanced Nozzle modded","file":"Fiio FD7 Modded"}
+        ]
+    },
+
+    {
+        "name":   "Fir Audio",
+        "phones": [
+             {"name":"E12","file":"E12"},
+            {"name":"NE4 (aaf evo)","file":"FiR NE4"},
+            {"name":"NE4 (Canadian Tour Unit)","file":"NE4"},
+           {"name":"KR5 Gold ATOM","file":"Fir KR5 Gold"},
+           {"name":"KR5 Silver ATOM","file":"Fir KR5"},
+           {"name":"KR5 Black ATOM","file":"Fir KR5 Black"},
+           {"name":"KR5 (Canadian Tour Unit)","file":"KR5"},
+           {"name":"KR5 Sample 2 Silver ATOM","file":"Fir KR5 S2"},
+           {"name":"RN6","file":"RN6"},
+           {"name":"XE6 (Canadian Tour Unit))","file":"XE6"},
+           {"name":"XE6 UIEM (aaf evo)","file":"Fir Audio Xenon 6"},
+           {"name":"XE6 CIEM (aaf evo)","file":"Fir Audio CIEM Xenon 6"}
+        ]
+    },
+
+    {
+        "name":   "Geek Wold",
+        "phones": [
+            {"name":"GK10","file":"Geekwold GK10"}
+        ]
+    },
+    {
+        "name":   "GS Audio",
+        "phones": [
+            {"name":"GD3A","file":"GS Audio GD3A"},
+            {"name":"GD5","file":"GS Audio GD5"},
+            {"name":"GT12","file":"GS Audio GT12 (1ohm)"},
+            {"name":"GT12X","file":"GS Audio GT12X"},
+            {"name":"GT12X 20ohm","file":"GS Audio GT12X 20ohm"},
+            {"name":"SD9","file":"GS Audio SD9"},
+            {"name":"SE11","file":"GS Audio SE11"},
+            {"name":"SE12 Sample 1","file":"GS Audio SE12"},
+            {"name":"SE12 Sample 2","file":"GS Audio SE12B"}
+        ]
+    },
+    
+    {
+        "name":   "Haylou",
+        "phones": [
+            {"name":"GT1 Plus","file":"Haylou GT1plus"}
+        ]
+    },
+
+    {
+        "name":   "IMR",
+        "phones": [
+            {"name":"Astra","file":"IMR Astra"}
+        ]
+    },
+
+    {
+        "name":   "JCally",
+        "phones": [
+            {"name":"EP05 (Earbuds)","file":"Ep05"}
+        ]
+    },
+ 
+    {
+        "name":   "JUZEAR",
+        "phones": [
+            {"name":"41T","file":"Juzear 41T"}
+        ]
+    },
+ 
+    {
+        "name":   "JVC",
+        "phones": [
+            {"name":"HA-FW10000","file":"JVC FW10000"}
+        ]
+    },
+
+    {
+        "name":   "KBEAR",
+        "phones": [
+            {"name":"Believe","file":"KBEAR Believe"}
+        ]
+    },
+
+    {
+        "name":   "Ksearphone",
+        "phones": [
+            {"name":"Lbbs (Earbuds)","file":"Lbbs2"}
+        ]
+    },
+
+    {
+        "name":   "KZ",
+        "phones": [
+            {"name":"BA10","file":"KZ BA10"},
+            {"name":"ZEX","file":"KZ ZEX"},
+            {"name":"ZEX Pro","file":"KZ Zex Pro"}
+        ]
+    },
+
+    {
+        "name":   "Mikubuds",
+        "phones": [
+            {"name":"Mikubuds","file":"Miku Buds"}
+        ]
+    },
+
+    {
+        "name":   "Moondrop",
+        "phones": [
+            {"name":"Kato","file":"Moondrop Kato"}
+        ]
+    },
+
+    {
+        "name":   "NF Audio",
+        "phones": [
+            {"name":"NM2+","file":"NF Audio NM2"}
+        ]
+    },
+
+    {
+        "name":   "Night Oblivion",
+        "phones": [
+            {"name":"Butastur 00","file":"Butasturoo"},
+            {"name":"Butastur 10","file":"Butastur10"},
+            {"name":"Butastur 12","file":"Butastur12"},
+            {"name":"Butastur 02","file":"Butastur02"}
+        ]
+    },
+
+    {
+        "name":   "Openheart",
+        "phones": [
+            {"name":"Resin","file":"Openheart Resin"}
+        ]
+    },
+
+    {
+        "name":   "Oriolus",
+        "phones": [
+            {"name":"Reborn","file":"Oriolus Reborn"},
+            {"name":"Traillii JP","file":"Oriolus Traillii"}
+        ]
+    },
+    
+    {
+        "name":   "Penon",
+        "phones": [
+            {"name":"Globe","file":"Penon Globe"},
+            {"name":"Fan","file":"Penon Fan"},
+            {"name":"Volt","file":"Penon Volt"},
+             {"name":"Impact","file":"Penon Impact"},
+              {"name":"Impact CIEM","file":"Penon Impact CIEM"},
+              {"name":"Quattro","file":"Quattro"},
+              {"name":"Serial","file":"Serial"},
+              {"name":"Voltage (1-2 setting)","file":"Vol 12orange"},
+              {"name":"Voltage (1-0 setting)","file":"Vol 10orange"},
+              {"name":"Voltage (0-2 setting)","file":"Vol 02orange"},
+              {"name":"Voltage (0-0 setting)","file":"Vol 00orange"},
+            {"name":"Vortex","file":"Penon Vortex"}
+        ]
+    },
+
+    {
+        "name":   "PMV",
+        "phones": [
+            {"name":"PP","file":"PMV PP"}
+        ]
+    },
+
+   {
+        "name":   "PULA",
+        "phones": [
+            {"name":"PA02","file":"PULA PA02"},
+            {"name":"PA02 Sample 2","file":"PULA2"}
+        ]
+    },
+
+    {
+        "name":   "QianYun",
+        "phones": [
+            {"name":"Qian39 (Earbuds)","file":"Qian39"}
+        ]
+    },
+
+    {
+        "name":   "Raptgo",
+        "phones": [
+            {"name":"Hook-X","file":"Hookx"}
+        ]
+    },
+
+    {
+        "name":   "Rose",
+        "phones": [
+            {"name":"QT9 mk2","file":"Rose QT9 mk2"}
+        ]
+    },
+   
+    {
+        "name":   "Samsung",
+        "phones": [
+            {"name":"Galaxy Buds Pro","file":"Samsung Galaxy Buds Pro"}
+        ]
+    },
+
+    {
+        "name":   "Sennheiser",
+        "phones": [
+            {"name":"IE900","file":"Sennheiser IE900"},
+            {"name":"IE900 EQ","file":"Sennheiser IE900 EQ"}
+        ]
+    },
+
+    {
+        "name":   "Shanling",
+        "phones": [
+            {"name":"ME80 + Filter","file":"Shanling ME80"}
+        ]
+    },
+    
+    {
+        "name":   "Simgot",
+        "phones": [
+            {"name":"EW200","file":"Simgot EW200"}
+        ]
+    },
+
+    {
+        "name":   "Sony",
+        "phones": [
+            {"name":"MH755","file":"Sony MH755"},
+            {"name":"IER-M9","file":"Sony IERM9"},
+            {"name":"IER-Z1R","file":"Sony IERZ1R"},
+            {"name":"WF-1000XM5","file":"Xm5"}
+        ]
+    },
+    
+    {
+        "name":   "Softears",
+        "phones": [
+            {"name":"RS10","file":"Softears RS10"},
+            {"name":"RS10 with Sennheiser Foam eartips","file":"Softears RS10 Foam"}
+        ]
+    },
+
+    {
+        "name":   "Soundpeats",
+        "phones": [
+            {"name":"Truedot","file":"Soundpeats Truedot"}
+        ]
+    },
+
+{
+        "name":   "Sound Rhyme",
+        "phones": [
+            {"name":"DTE900 Switch 1-2","file":"DTE900"},
+            {"name":"Prado Switch 0-0","file":"Prado 00"},
+            {"name":"Prado Switch 0-2","file":"Prado 02"},
+            {"name":"Prado Switch 1-0","file":"Prado 10"},
+            {"name":"Prado Switch 1-2","file":"Prado 12"},
+            {"name":"SR5","file":"SR5"},
+            {"name":"SR8 Switch 0-0","file":"SR8 00"},
+            {"name":"SR8 Switch 0-2","file":"SR8 01"},
+            {"name":"SR8 Switch 1-0","file":"SR8 10"},
+            {"name":"SR8 Switch 1-2","file":"SR8 11"}
+        ]
+    },
+
+    {
+        "name":   "Symphonium",
+        "phones": [
+            {"name":"Helios","file":"Symphonium Helios"}
+        ]
+    },
+
+     {
+        "name":   "Tanchjim",
+        "phones": [
+            {"name":"Hana","file":"Tanchjim Hana"},
+            {"name":"Tanya","file":"Tanchjim Tanya"}
+        ]
+    },
+
+    {
+        "name":   "Tansio Mirai",
+        "phones": [
+            {"name":"Halo","file":"Halo"},
+            {"name":"RGB","file":"Tansio Mirai RGB"},
+            {"name":"RGB Bass switch on","file":"Tansio Mirai RGB Bass"},
+            {"name":"X Balanced mode","file":"Tsmr X 020"},
+            {"name":"X Treble mode","file":"Tsmr X 003"},
+            {"name":"X Bass mode","file":"Tsmr X 100"},
+            {"name":"X 011 mode","file":"Tsmr X 023"}
+        ]
+    },
+
+     {
+        "name":   "Thieaudio",
+        "phones": [
+            {"name":"Monarch MKII","file":"Thieaudio Monarch Mkii"},
+            {"name":"Monarch MKII with IMR Cable","file":"Thieaudio Monarch Mkii IMR Cable"}
+        ]
+    },
+
+
+    {
+        "name":   "Tronsmart",
+        "phones": [
+            {"name":"Onyx Apex","file":"Tronsmart Onyx Apex"},
+            {"name":"Onyx Prime","file":"Tronsmart Onyx Prime"}
+        ]
+    },
+
+    {
+        "name":   "Unique Melody",
+        "phones": [
+            {"name":"3DT","file":"UM 3DT"},
+            {"name":"Multiverse Mentor","file":"UM Mentor"}
+        ]
+    },
+    
+   {
+        "name":   "Venture Electronics",
+        "phones": [
+            {"name":"Sun Copper","file":"Sun Copper"},
+            {"name":"Asura Pure White Shining","file":"VE AWS"}
+        ]
+    },
+    
+    {
+        "name":   "Vision Ears",
+        "phones": [
+            {"name":"VE x AK Aura","file":"Aura"},
+             {"name":"Elysium","file":"VE Elysium"},
+             {"name":"EXT","file":"VE EXT"},
+             {"name":"Phonix","file":"VE Phonix2"}
+        ]
+    },
+    
+    {
+        "name":   "Yanyin",
+        "phones": [
+            {"name":"Aladdin","file":"Yanyin Aladdin"},
+            {"name":"Canon (default setting)","file":"Canon"}
+        ]
+    },
+
+    {
+        "name":   "Yincrow",
+        "phones": [
+            {"name":"RW-3000","file":"RW3000"}
+        ]
+    }
+]

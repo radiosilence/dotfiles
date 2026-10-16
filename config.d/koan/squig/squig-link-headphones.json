@@ -1,0 +1,1953 @@
+[
+    {
+        "name": "AKG",
+        "phones": [
+            {
+                "name": "K371",
+                "reviewScore": "2",
+                "reviewLink": "",
+                "price": "$170",
+                "shopLink": "https://amzn.to/3DmlWOq",
+                "file": "AKG K371"
+            },
+            {
+                "name": "K7XX",
+                "reviewScore": "2",
+                "reviewLink": "",
+                "price": "$200",
+                "shopLink": "https://drop.com/buy/akg-k7xx-massdrop-first-edition-headphones?utm_source=linkshare&referer=95465S",
+                "file": "AKG K7XX"
+            },
+            {
+                "name": "Q701",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$200",
+                "shopLink": "https://amzn.to/44iGlAp",
+                "file": "AKG Q701"
+            }
+        ]
+    },
+    {
+        "name": "Amazon Basics",
+        "phones": [
+            {
+                "name": "Active Noise Cancelling Headphones",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$30",
+                "shopLink": "https://amzn.to/4u2Ohlt",
+                "file": [
+                    "Amazon Basics Active Noise Cancelling Headphones"
+                ],
+                "suffix": [
+                    "(model: AMZ-B6080B)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Audeze",
+        "phones": [
+            {
+                "name": "LCD-2 Closed Back",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$900",
+                "shopLink": "https://amzn.to/3tXhZLY",
+                "file": "Audeze LCD-2 Closed"
+            },
+            {
+                "name": "MM-500",
+                "reviewScore": "5",
+                "reviewLink": "https://www.youtube.com/watch?v=7kwY7Na-DFo",
+                "price": "$1,700",
+                "shopLink": "https://amzn.to/3sFokLx",
+                "file": "Audeze MM-500"
+            }
+        ]
+    },
+    {
+        "name": "Aune",
+        "phones": [
+            {
+                "name": "AR9000",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$1,400",
+                "shopLink": "https://headphones.com/products/aune-ar9000-headphones",
+                "file": "Aune AR9000"
+            }
+        ]
+    },
+    {
+        "name": "Auribus Acoustics",
+        "phones": [
+            {
+                "name": "Everest",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$685",
+                "shopLink": "https://www.auribusacoustics.com/product-page/everest-pre-release",
+                "file": [
+                    "Auribus Acoustics Everest",
+                    "Auribus Acoustics Everest ZMF + AKG"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: ZMF Universe hybrid :: mod: AKG K240 foam disc)"
+                ]
+            },
+            {
+                "name": "Sierra Aluminum",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$1,600",
+                "shopLink": "https://auribusacoustics.com/products/sierra-open-alu",
+                "file": "Auribus Sierra Aluminum"
+            },
+            {
+                "name": "Sierra Open",
+                "reviewScore": "0",
+                "reviewLink": "https://www.youtube.com/watch?v=_gSu78WtTuc",
+                "price": "$1,200",
+                "shopLink": "https://auribusacoustics.com/products/sierra-open-monitor",
+                "file": [
+                    "Auribus Sierra S2",
+                    "Auribus Sierra"
+                ],
+                "suffix": [
+                    "",
+                    "(pre-production)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Austrian Audio",
+        "phones": [
+            {
+                "name": "Hi-X60",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=LJG9j0ALvM4",
+                "price": "$430",
+                "shopLink": "https://amzn.to/3YbeizH",
+                "file": "Austrian Audio Hi-X60"
+            },
+            {
+                "name": "The Arranger",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=yb9Hncjbo6w",
+                "price": "$1,300",
+                "shopLink": "https://bloomaudio.com/products/austrian-audio-arranger",
+                "file": "Austrian Audio Arranger"
+            }
+        ]
+    },
+    {
+        "name": "Beyerdynamic",
+        "phones": [
+            {
+                "name": "DT 770 Pro",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$180",
+                "shopLink": "https://amzn.to/42spnPp",
+                "file": [
+                    "Beyerdynamic DT 770 Pro (S3)",
+                    "Beyerdynamic DT 770 Pro (S3 - AKG)",
+                    "Beyerdynamic DT 770 Pro",
+                    "Beyerdynamic DT 770 Pro (S2)"
+                ],
+                "suffix": [
+                    "(32 ohm :: sample 3)",
+                    "(32 ohm :: sample 3 + AKG K240 foam disc)",
+                    "(32 ohm :: sample 1)",
+                    "(32 ohm :: sample 2)"
+                ]
+            },
+            {
+                "name": "DT 880",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$200",
+                "shopLink": "https://amzn.to/3PM6bbz",
+                "file": [
+                    "Beyerdynamic DT 880"
+                ],
+                "suffix": [
+                    "(600 ohm)"
+                ]
+            },
+            {
+                "name": "DT 900 Pro X",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=6QVeo4O5Czw",
+                "price": "$260",
+                "shopLink": "https://amzn.to/3FjjTxn",
+                "file": "Beyerdynamic DT 900 Pro X"
+            }
+        ]
+    },
+    {
+        "name": "Creative",
+        "phones": [
+            {
+                "name": "Aurvana Live",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$80",
+                "shopLink": "https://amzn.to/3DJ2EnN",
+                "file": [
+                    "Creative Aurvana Live",
+                    "Creative Aurvana Live (bwz perf)"
+                ],
+                "suffix": [
+                    "",
+                    "(pads: Brainwavz small oval perforated)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Dan Clark Audio",
+        "phones": [
+            {
+                "name": "E3",
+                "reviewScore": "5",
+                "reviewLink": "https://www.youtube.com/watch?v=GZKL8Hx-eOE",
+                "price": "$2,000",
+                "shopLink": "https://headphones.com/products/dan-clark-audio-e3-headphones",
+                "file": "DCA E3"
+            },
+            {
+                "name": "Expanse",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=GZKL8Hx-eOE",
+                "price": "$4,000",
+                "shopLink": "https://headphones.com/products/dan-clark-audio-expanse-headphones",
+                "file": "DCA Expanse"
+            },
+            {
+                "name": "Stealth",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=GZKL8Hx-eOE",
+                "price": "$4,000",
+                "shopLink": "https://headphones.com/products/dan-clark-audio-stealth-headphones",
+                "file": "DCA Stealth"
+            }
+        ]
+    },
+    {
+        "name": "DMS",
+        "phones": [
+            {
+                "name": "Project Omega",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=mUIPiNG3keA",
+                "price": "$1,000",
+                "shopLink": "https://headphones.com/products/dms-omega-headphones",
+                "file": [
+                    "DMS Project Omega",
+                    "DMS Project Omega 100ohm"
+                ],
+                "suffix": [
+                    "",
+                    "(impedance adapter: 100 ohm)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Drop",
+        "phones": [
+            {
+                "name": "Panda",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=GIVY24Ka7vk",
+                "price": "$400",
+                "shopLink": "https://drop.com/buy/drop-wireless-headphones?utm_source=linkshare&referer=95465S",
+                "file": "Drop Panda"
+            }
+        ]
+    },
+    {
+        "name": "Dunu",
+        "phones": [
+            {
+                "name": "Arashi",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=TfjUBreXf00",
+                "price": "$1,400",
+                "shopLink": "https://bloomaudio.com/products/dunu-arashi",
+                "file": "Dunu Arashi"
+            }
+        ]
+    },
+    {
+        "name": "ETA Audio",
+        "phones": [
+            {
+                "name": "O2",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$550",
+                "shopLink": "https://etaheadphones.com/products/o2",
+                "file": "ETA O2"
+            }
+        ]
+    },
+    {
+        "name": "Fiio",
+        "phones": [
+            {
+                "name": "EH11",
+                "reviewScore": "5",
+                "reviewLink": "https://www.youtube.com/watch?v=01vJ7ds9KRo",
+                "price": "$30",
+                "shopLink": "https://amzn.to/4qBslgl",
+                "file": [
+                    "Fiio EH11",
+                    "Fiio EH11 EQ empty"
+                ],
+                "suffix": [
+                    "",
+                    "(EQ: blank)"
+                ]
+            },
+            {
+                "name": "EH13",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=8uHv8ERZ_4w",
+                "price": "$50",
+                "shopLink": "https://amzn.to/4vOze0Q",
+                "file": [
+                    "Fiio EH13 ANC max",
+                    "Fiio EH13 ANC off",
+                    "Fiio EH13 transparency",
+                    "Fiio EH13 EQ blank ANC max",
+                    "Fiio EH13 EQ blank ANC off"
+                ],
+                "suffix": [
+                    "(ANC: max)",
+                    "(ANC: off)",
+                    "(ANC: transparency)",
+                    "(EQ: blank :: ANC: max)",
+                    "(EQ: blank :: ANC: off)"
+                ]
+            },
+            {
+                "name": "FT1",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=P2VRNps4L3U",
+                "price": "$165",
+                "shopLink": "https://amzn.to/4lLbgNP",
+                "file": [
+                    "Fiio FT1 S2",
+                    "Fiio FT1"
+                ],
+                "suffix": [
+                    "(sample 2)",
+                    "(sample 1)"
+                ]
+            },
+            {
+                "name": "FT1 Pro",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$280",
+                "shopLink": "https://amzn.to/43pQrBn",
+                "file": "Fiio FT1 Pro"
+            },
+            {
+                "name": "FT13",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=P2VRNps4L3U",
+                "price": "$300",
+                "shopLink": "https://s.click.aliexpress.com/e/_ol0TfcJ",
+                "file": [
+                    "Fiio FT13",
+                    "Fiio FT13 suede",
+                    "Fiio FT13 ft7 lamb",
+                    "Fiio FT13 ft7 poly"
+                ],
+                "suffix": [
+                    "(pads: lamb)",
+                    "(pads: suede)",
+                    "(pads: FT7 - lamb)",
+                    "(pads: FT7 - polyester)"
+                ]
+            },
+            {
+                "name": "FT5",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=WAlyn0xYKl0",
+                "price": "$450",
+                "shopLink": "https://amzn.to/47ar4SP",
+                "file": [
+                    "Fiio FT5 (pu)",
+                    "Fiio FT5 (suede)"
+                ],
+                "suffix": [
+                    "(pads: pleather)",
+                    "(pads: suede)"
+                ]
+            },
+            {
+                "name": "FT7",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=bmjouskY2BE",
+                "price": "$700",
+                "shopLink": "https://amzn.to/4kjC6wl",
+                "file": [
+                    "Fiio FT7",
+                    "Fiio FT7 poly"
+                ],
+                "suffix": [
+                    "(pads: lambskin)",
+                    "(pads: polyester)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Final Audio",
+        "phones": [
+            {
+                "name": "UX3000",
+                "reviewScore": "3",
+                "reviewLink": "",
+                "price": "$150",
+                "shopLink": "https://amzn.to/3Ft3zKo",
+                "file": "Final Audio UX3000"
+            },
+            {
+                "name": "UX3000 SV",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$150",
+                "shopLink": "",
+                "file": [
+                    "Final Audio UX3000 SV",
+                    "Final Audio UX3000 SV anc off",
+                    "Final Audio UX3000 SV analog"
+                ],
+                "suffix": [
+                    "(ANC: on)",
+                    "(ANC: off)",
+                    "(connection: analog)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Focal",
+        "phones": [
+            {
+                "name": "Azurys",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$600",
+                "shopLink": "https://headphones.com/products/focal-azurys-closed-back-headphones",
+                "file": "Focal Azurys"
+            },
+            {
+                "name": "Bathys",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=MiuJBBCHuAk",
+                "price": "$800",
+                "shopLink": "https://www.headphones.com/products/focal-bathys?utm_source=super-reviews&utm_medium=youtube&utm_campaign=focal-bathys",
+                "file": [
+                    "Focal Bathys (bt)",
+                    "Focal Bathys (usb)",
+                    "Focal Bathys (3.5mm)"
+                ],
+                "suffix": [
+                    "(mode: Bluetooth)",
+                    "(mode: USB DAC)",
+                    "(mode: 3.5mm)"
+                ]
+            },
+            {
+                "name": "Celestee",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$1,000",
+                "shopLink": "https://headphones.com/products/focal-celestee-high-end-headphones",
+                "file": "Focal Celestee"
+            },
+            {
+                "name": "Clear Professional",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=-IZarOy7aik",
+                "price": "$1,500",
+                "shopLink": "https://amzn.to/3TN1NZ6",
+                "file": "Focal Clear Professional"
+            },
+            {
+                "name": "Elex",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$750",
+                "shopLink": "https://headphones.com/products/focal-elex-headphones",
+                "file": [
+                    "Focal Elex",
+                    "Focal Elex worn"
+                ],
+                "suffix": [
+                    "(pads: fresh)",
+                    "(pads: worn)"
+                ]
+            },
+            {
+                "name": "Radiance",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$990",
+                "shopLink": "https://headphones.com/products/focal-radiance-headphones-limited-edition",
+                "file": "Focal Radiance"
+            },
+            {
+                "name": "Utopia 2022",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=E5KKsCz0bbo",
+                "price": "$5,000",
+                "shopLink": "https://headphones.com/products/focal-utopia-2022",
+                "file": "Focal Utopia 2022"
+            }
+        ]
+    },
+    {
+        "name": "Fosi Audio",
+        "phones": [
+            {
+                "name": "i5",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=ABF4HYguh8A",
+                "price": "$550",
+                "shopLink": "https://www.kickstarter.com/projects/fosiaudio/fosi-audio-i5-planar-magnetic-headphones",
+                "file": "Fosi Audio i5"
+            }
+        ]
+    },
+    {
+        "name": "Fostex",
+        "phones": [
+            {
+                "name": "T50RP mk4",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$250",
+                "shopLink": "https://amzn.to/4jHKjdP",
+                "file": [
+                    "Fostex T50RP mk4",
+                    "Fostex T50RP mk4 zmf hyb perf",
+                    "Fostex T50RP mk4 velour",
+                    "Fostex T50RP mk4 1540",
+                    "Fostex T50RP mk4 moon para",
+                    "Fostex T50RP mk4 moon cosmo",
+                    "Fostex T50RP mk4 mayflower",
+                    "Fostex T50RP mk4 mayflower + zmf",
+                    "Fostex T50RP mk4 mayflower + para",
+                    "Fostex T50RP mk4 mayflower + para + akg"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: ZMF Universe hybrid perforated)",
+                    "(pads: Dekoni velour)",
+                    "(pads: Shure SRH1540)",
+                    "(pads: Moondrop Para)",
+                    "(pads: Moondrop Cosmo)",
+                    "(pads: stock :: baffle: Mayflower)",
+                    "(pads: ZMF Universe hybrid perforated :: baffle: Mayflower)",
+                    "(pads: Moondrop Para :: baffle: Mayflower)",
+                    "(pads: Moondrop Para :: baffle: Mayflower :: mod: AKG K240 foam disc)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Grado",
+        "phones": [
+            {
+                "name": "GW100",
+                "reviewScore": "2",
+                "reviewLink": "",
+                "price": "$250",
+                "shopLink": "",
+                "file": [
+                    "Grado GW100 BT",
+                    "Grado GW100 wired"
+                ],
+                "suffix": [
+                    "(Bluetooth)",
+                    "(wired)"
+                ]
+            },
+            {
+                "name": "SR80",
+                "reviewScore": "3",
+                "reviewLink": "",
+                "price": "$100",
+                "shopLink": "",
+                "file": [
+                    "Grado SR80",
+                    "Grado SR80 L Cush"
+                ],
+                "suffix": [
+                    "(pads: S-Cush)",
+                    "(pads: L-Cush)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Grell",
+        "phones": [
+            {
+                "name": "OAE1 Signature",
+                "reviewScore": "1",
+                "reviewLink": "https://www.youtube.com/watch?v=qbhZuswBI1g",
+                "price": "$350",
+                "shopLink": "https://drop.com/buy/drop-grell-oae1-signature-headphones?utm_source=linkshare&referer=95465S",
+                "file": [
+                    "Drop Grell OAE1",
+                    "Drop Grell OAE1 PB"
+                ],
+                "suffix": [
+                    "(position: pushed forward)",
+                    "(position: pushed backward)"
+                ]
+            },
+            {
+                "name": "OAE2",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=XLioutE9tTs",
+                "price": "$600",
+                "shopLink": "https://grellaudio.com/products/oae2",
+                "file": [
+                    "Grell OAE2",
+                    "Grell OAE2 meze foam",
+                    "Grell OAE2 meze foam loose"
+                ],
+                "suffix": [
+                    "",
+                    "(mod: Meze 99C V2 foam)",
+                    "(mod: Meze 99C V2 foam [loose])"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "HarmonicDyne",
+        "phones": [
+            {
+                "name": "Poseidon",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=rCOUYn5NI_s",
+                "price": "$440",
+                "shopLink": "https://www.linsoul.com/products/harmonicdyne-poseidon",
+                "file": "HarmonicDyne Poseidon"
+            },
+            {
+                "name": "Romantic",
+                "reviewScore": "0",
+                "reviewLink": "https://www.youtube.com/watch?v=rCOUYn5NI_s",
+                "price": "$340",
+                "shopLink": "https://www.linsoul.com/products/harmonicdyne-romantic",
+                "file": [
+                    "HarmonicDyne Romantic",
+                    "HarmonicDyne Romantic pushed back"
+                ],
+                "suffix": [
+                    "",
+                    "(pushed backward)"
+                ]
+            },
+            {
+                "name": "Zeus",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=bWH6QvpI3Eg",
+                "price": "$350",
+                "shopLink": "https://www.linsoul.com/products/harmonicdyne-zeus",
+                "file": "HarmonicDyne Zeus"
+            },
+            {
+                "name": "Zeus Elite",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=-3UxNuFj0Fc",
+                "price": "$380",
+                "shopLink": "https://www.linsoul.com/products/harmonicdyne-zeus-elite",
+                "file": "HarmonicDyne Zeus Elite"
+            }
+        ]
+    },
+    {
+        "name": "Headamame",
+        "phones": [
+            {
+                "name": "Pro",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$469",
+                "shopLink": "",
+                "file": "Headamame Pro"
+            }
+        ]
+    },
+    {
+        "name": "HEDD Audio",
+        "phones": [
+            {
+                "name": "HEDDphone D1",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=UgUrL05jhbc",
+                "price": "$800",
+                "shopLink": "https://hedd.audio/products/heddphone-d1",
+                "file": [
+                    "Hedd Audio D1",
+                    "Hedd Audio D1 worn"
+                ],
+                "suffix": [
+                    "",
+                    "(pads: worn)"
+                ]
+            },
+            {
+                "name": "HEDDphone Two",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=q35dFYJf30o",
+                "price": "$2,000",
+                "shopLink": "https://headphones.com/products/heddphone-two",
+                "file": "Hedd Audio Heddphone Two"
+            },
+            {
+                "name": "HEDDphone Two GT",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=lpTq0D7zgJc",
+                "price": "$2,200",
+                "shopLink": "https://headphones.com/products/heddphone-two-gt",
+                "file": [
+                    "Hedd Audio Heddphone Two GT leather",
+                    "Hedd Audio Heddphone Two GT suede"
+                ],
+                "suffix": [
+                    "(pads: leather)",
+                    "(pads: suede)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Hifi For All",
+        "phones": [
+            {
+                "name": "Dahlia",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$880",
+                "shopLink": "https://hififorall.com/products/hfa-dahlia-headphone",
+                "file": [
+                    "Hifi for All Dahlia S2 bal",
+                    "Hifi for All Dahlia S2 dyn",
+                    "Hifi for All Dahlia S2 bal univ hybrid",
+                    "Hifi for All Dahlia BW perf",
+                    "Hifi for All Dahlia BW suede",
+                    "Hifi for All Dahlia Poseidon",
+                    "Hifi for All Dahlia Zeus Pro",
+                    "Hifi for All Dahlia S2 dyn AKG"
+                ],
+                "suffix": [
+                    "(sample 2 :: resonator: balanced)",
+                    "(sample 2 :: resonator: dynamic)",
+                    "(sample 2 :: resonator: balanced :: pads: ZMF Universe hybrid)",
+                    "(sample 2 :: resonator: balanced :: pads: Brainwavz microsuede)",
+                    "(sample 2 :: resonator: balanced :: pads: Brainwavz perforated)",
+                    "(sample 2 :: resonator: balanced :: pads: HarmonicDyne Poseidon)",
+                    "(sample 2 :: resonator: balanced :: pads: HarmonicDyne Zeus Elite)",
+                    "(sample 2 :: resonator: dynamic :: mod: AKG 240 foam disc)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Hifiman",
+        "phones": [
+            {
+                "name": "Ananda Nano",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$600",
+                "shopLink": "https://headphones.com/products/hifiman-ananda-nano-headphones",
+                "file": "Hifiman Ananda Nano"
+            },
+            {
+                "name": "Arya Unveiled",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=TfjUBreXf00",
+                "price": "$1,450",
+                "shopLink": "https://amzn.to/3X9mvWp",
+                "file": [
+                    "Hifiman Arya Unveiled",
+                    "Hifiman Arya Unveiled veiled"
+                ],
+                "suffix": [
+                    "",
+                    "(covers: on)"
+                ]
+            },
+            {
+                "name": "Edition XS",
+                "reviewScore": "5",
+                "reviewLink": "https://www.youtube.com/watch?v=QDpHKSk8t2E",
+                "price": "$500",
+                "shopLink": "https://amzn.to/3TReukI",
+                "file": "Hifiman Edition XS"
+            },
+            {
+                "name": "Sundara",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$300",
+                "shopLink": "https://amzn.to/3SOYDCw",
+                "file": "Hifiman Sundara"
+            }
+        ]
+    },
+    {
+        "name": "Hongshu",
+        "phones": [
+            {
+                "name": "EH-1",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$650",
+                "shopLink": "https://poloyoaudio.store/products/hongshu-eh1",
+                "file": [
+                    "Hongshu EH-1",
+                    "Hongshu EH-1 bass boost",
+                    "Hongshu EH-1 solid",
+                    "Hongshu EH-1 solid bass boost",
+                    "Hongshu EH-1 HarmonicDyne",
+                    "Hongshu EH-1 ZMF"
+                ],
+                "suffix": [
+                    "",
+                    "(bass boost: on)",
+                    "(pads: Hongshu solid)",
+                    "(pads: Hongshu solid :: bass boost: on)",
+                    "(pads: HarmonicDyne Poseidon)",
+                    "(pads: ZMF Caldera perf hybrid)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "iKF",
+        "phones": [
+            {
+                "name": "Y3",
+                "reviewScore": "1",
+                "reviewLink": "",
+                "price": "$15",
+                "shopLink": "https://s.click.aliexpress.com/e/_Dc9jFLT",
+                "file": "iKF Y3"
+            }
+        ]
+    },
+    {
+        "name": "JM Audio Editions",
+        "phones": [
+            {
+                "name": "XTC^2.5 Closed",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$1,300",
+                "shopLink": "https://www.jmaudioeditions.com/product-page/new-limited-edition-check-here-frequently",
+                "file": "JM Audio Editions XTC25 Closed"
+            }
+        ]
+    },
+    {
+        "name": "Kali Audio",
+        "phones": [
+            {
+                "name": "HP-1",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$199",
+                "shopLink": "https://www.kaliaudio.com/hp1-purchase/hp-1-multi-reference-headphone",
+                "file": [
+                    "Kali HP-1 anc off studio",
+                    "Kali HP-1 anc off consumer",
+                    "Kali HP-1 anc off bass heavy",
+                    "Kali HP-1 anc on studio",
+                    "Kali HP-1 anc on consumer",
+                    "Kali HP-1 anc on bass heavy"
+                ],
+                "suffix": [
+                    "(EQ: studio :: ANC: off)",
+                    "(EQ: consumer :: ANC: off)",
+                    "(EQ: bass heavy :: ANC: off)",
+                    "(EQ: studio :: ANC: on)",
+                    "(EQ: consumer :: ANC: on)",
+                    "(EQ: bass heavy :: ANC: on)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Kiwi Ears",
+        "phones": [
+            {
+                "name": "Atheia",
+                "reviewScore": "1",
+                "reviewLink": "https://www.youtube.com/watch?v=dBlPaZ-Xg3E",
+                "price": "$350",
+                "shopLink": "https://www.linsoul.com/products/kiwi-ears-atheia",
+                "file": "Kiwi Ears Atheia"
+            },
+            {
+                "name": "Ardor",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=dBlPaZ-Xg3E",
+                "price": "$100",
+                "shopLink": "https://www.linsoul.com/products/kiwi-ears-ardor",
+                "file": [
+                    "Kiwi Ears Ardor BT ANC-ON",
+                    "Kiwi Ears Ardor BT ANC-OFF"
+                ],
+                "suffix": [
+                    "(connection: Bluetooth :: ANC: on)",
+                    "(connection: Bluetooth :: ANC: off)"
+                ]
+            },
+            {
+                "name": "Aventus",
+                "reviewScore": "1",
+                "reviewLink": "https://www.youtube.com/watch?v=dBlPaZ-Xg3E",
+                "price": "$90",
+                "shopLink": "https://www.linsoul.com/products/kiwi-ears-aventus",
+                "file": [
+                    "Kiwi Ears Aventus BT ANC-ON",
+                    "Kiwi Ears Aventus BT ANC-OFF"
+                ],
+                "suffix": [
+                    "(connection: Bluetooth :: ANC: on)",
+                    "(connection: Bluetooth :: ANC: off)"
+                ]
+            },
+            {
+                "name": "Division",
+                "reviewScore": "1",
+                "reviewLink": "https://www.youtube.com/watch?v=dBlPaZ-Xg3E",
+                "price": "$50",
+                "shopLink": "https://s.click.aliexpress.com/e/_olQDp9v",
+                "file": "Kiwi Ears Division"
+            },
+            {
+                "name": "Ellipse",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=dBlPaZ-Xg3E",
+                "price": "$76",
+                "shopLink": "https://www.linsoul.com/products/kiwi-ears-ellipse",
+                "file": "Kiwi Ears Ellipse"
+            },
+            {
+                "name": "x Z Reviews Serene",
+                "reviewScore": "1",
+                "reviewLink": "https://www.youtube.com/watch?v=x4PukFjOsPY",
+                "price": "$160",
+                "shopLink": "https://www.linsoul.com/products/kiwi-ears-x-z-reviews-serene",
+                "file": [
+                    "Kiwi Ears Serene",
+                    "Kiwi Ears Serene burned",
+                    "Kiwi Ears Serene screw mod"
+                ],
+                "suffix": [
+                    "",
+                    "(burned-in)",
+                    "(mod: screw mod)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Koss",
+        "phones": [
+            {
+                "name": "ESP/95X",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$500",
+                "shopLink": "https://drop.com/buy/massdrop-x-koss-esp-95x-electrostatic-system?utm_source=linkshare&referer=95465S",
+                "file": [
+                    "Koss ESP-95X",
+                    "Koss ESP-95X (Vesper)"
+                ],
+                "suffix": [
+                    "",
+                    "(pads: Vesper)"
+                ]
+            },
+            {
+                "name": "KPH30 Wireless",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$60",
+                "shopLink": "https://amzn.to/4asm9C7",
+                "file": "Koss KPH30 Wireless"
+            },
+            {
+                "name": "KPH30i",
+                "reviewScore": "5",
+                "reviewLink": "",
+                "price": "$30",
+                "shopLink": "https://amzn.to/3VKOFUv",
+                "file": "Koss KPH30i"
+            },
+            {
+                "name": "KPH40",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$40",
+                "shopLink": "https://amzn.to/3GeDRZ5",
+                "file": "Koss KPH40"
+            },
+            {
+                "name": "KSC75",
+                "reviewScore": "5",
+                "reviewLink": "https://www.youtube.com/watch?v=PBaAabzgoSk",
+                "price": "$20",
+                "shopLink": "https://amzn.to/3i9zmHb",
+                "file": "Koss KSC75"
+            },
+            {
+                "name": "Porta Pro",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=PBaAabzgoSk",
+                "price": "$50",
+                "shopLink": "https://amzn.to/3iePHdF",
+                "file": [
+                    "Koss Porta Pro",
+                    "Koss Porta Pro (Yaxi)",
+                    "Koss Porta Pro (Dekoni)"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: Yaxi)",
+                    "(pads: Dekoni)"
+                ]
+            },
+            {
+                "name": "Porta Pro Wireless",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=nnCOF3BOV14",
+                "price": "$100",
+                "shopLink": "https://amzn.to/3TuGRb7",
+                "file": "Koss Porta Pro Wireless"
+            }
+        ]
+    },
+    {
+        "name": "Meze",
+        "phones": [
+            {
+                "name": "105 AER",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=XDF0p7mFYV0",
+                "price": "$400",
+                "shopLink": "https://mezeaudio.com/products/105-aer?_ef_transaction_id=&oid=46&affid=120",
+                "file": [
+                    "Meze 105 AER",
+                    "Meze 105 AER pb"
+                ],
+                "suffix": [
+                    "",
+                    "(pushed backward on rig)"
+                ]
+            },
+            {
+                "name": "109 Pro",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=x1Ha7trfbec",
+                "price": "$800",
+                "shopLink": "https://mezeaudio.com/collections/all/products/109-pro",
+                "file": [
+                    "Meze 109 Pro",
+                    "Meze 109 Pro (AKG foam)",
+                    "Meze 109 Pro Titan mesh"
+                ],
+                "suffix": [
+                    "",
+                    "(mod: AKG K240 foam disc)",
+                    "(mod: ZMF Titan solid mesh)"
+                ]
+            },
+            {
+                "name": "99 Classics",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=s0t6PpgkkM4",
+                "price": "$300",
+                "shopLink": "https://mezeaudio.com/collections/all/products/meze-99-classics-walnut-gold-wood-headphones",
+                "file": [
+                    "Meze 99 Classics (meze lg)",
+                    "Meze 99 Classics (meze sm)",
+                    "Meze 99 Classics (bwz sue)"
+                ],
+                "suffix": [
+                    "(pads: Meze large)",
+                    "(pads: Meze small)",
+                    "(pads: Brainwavz oval microsuede)"
+                ]
+            },
+            {
+                "name": "99 Classics V2",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=Dfgwym2_OMY",
+                "price": "$350",
+                "shopLink": "https://mezeaudio.com/products/99-classics-v2-gold",
+                "file": [
+                    "Meze 99 Classics V2",
+                    "Meze 99 Classics V2 absorbers"
+                ],
+                "suffix": [
+                    "",
+                    "(acoustic absorbers: in)"
+                ]
+            },
+            {
+                "name": "Empyrean II",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=0ZxYZAp6X10&t",
+                "price": "$3,000",
+                "shopLink": "https://mezeaudio.com/collections/all/products/empyrean2",
+                "file": [
+                    "Meze Empyrean II (duo)",
+                    "Meze Empyrean II (alcantara)"
+                ],
+                "suffix": [
+                    "(pads: Duo)",
+                    "(pads: Alcantara)"
+                ]
+            },
+            {
+                "name": "Liric",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=712wpAGsAtI",
+                "price": "$2,000",
+                "shopLink": "https://mezeaudio.com/collections/all/products/liric",
+                "file": "Meze Liric"
+            },
+            {
+                "name": "Liric II",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=912kiUMzuIY",
+                "price": "$2,000",
+                "shopLink": "https://mezeaudio.com/products/liric?_ef_transaction_id=&oid=12&affid=120",
+                "file": "Meze Liric II"
+            },
+            {
+                "name": "Poet",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=rdr60L6GkN8",
+                "price": "$2,000",
+                "shopLink": "https://mezeaudio.com/products/poet?_ef_transaction_id=&oid=48&affid=120",
+                "file": "Meze Poet"
+            }
+        ]
+    },
+    {
+        "name": "Mod House",
+        "phones": [
+            {
+                "name": "Tungsten",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=vOnf1UP3IwE",
+                "price": "$2,000",
+                "shopLink": "https://www.modhouseaudio.com/tungsten/tungsten",
+                "file": [
+                    "Mod House Tungsten DS",
+                    "Mod House Tungsten DS Hybrid",
+                    "Mod House Tungsten SS",
+                    "Mod House Tungsten SS Perf"
+                ],
+                "suffix": [
+                    "(double-sided, pads: ZMF Caldera Ultra-Perf [stock])",
+                    "(double-sided, pads: ZMF Caldera Hybrid",
+                    "(single-sided, pads: ZMF Caldera Hybrid [stock])",
+                    "(single-sided, pads: ZMF Caldera Ultra-Perf"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Moondrop",
+        "phones": [
+            {
+                "name": "Cosmo",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=mFwUP7bKPlw",
+                "price": "$900",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-cosmo-100mm-full-size-flagship-planar-headphone",
+                "file": [
+                    "Moondrop Cosmo",
+                    "Moondrop Cosmo Para hybrid",
+                    "Moondrop Cosmo Para fene"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: Para hybrid)",
+                    "(pads: Para fenestrated)"
+                ]
+            },
+            {
+                "name": "Edge",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$90",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-edge-40mm-dynamic-driver-portable-wireless-headphone",
+                "file": [
+                    "Moondrop Edge anc on",
+                    "Moondrop Edge anc trans",
+                    "Moondrop Edge anc off",
+                    "Moondrop Edge extra bass",
+                    "Moondrop Edge country",
+                    "Moondrop Edge old studio",
+                    "Moondrop Edge violin solo",
+                    "Moondrop Edge anc on eq blank",
+                    "Moondrop Edge anc trans eq blank",
+                    "Moondrop Edge anc off eq blank"
+                ],
+                "suffix": [
+                    "(ANC: on)",
+                    "(ANC: transparency)",
+                    "(ANC: off)",
+                    "(ANC: on :: EQ: extra bass)",
+                    "(ANC: on :: EQ: country style)",
+                    "(ANC: on :: EQ: old studio style)",
+                    "(ANC: on :: EQ: violin solo)",
+                    "(ANC: on :: EQ: blank)",
+                    "(ANC: transparency :: EQ: blank)",
+                    "(ANC: off :: EQ: blank)"
+                ]
+            },
+            {
+                "name": "Edge 2",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$110",
+                "shopLink": "https://moondroplab.com/en/products/edge2",
+                "file": [
+                    "Moondrop Edge 2 anc on",
+                    "Moondrop Edge 2 anc off",
+                    "Moondrop Edge 2 trans"
+                ],
+                "suffix": [
+                    "(ANC: on)",
+                    "(ANC: off)",
+                    "(ANC: transparency)"
+                ]
+            },
+            {
+                "name": "GM-01 Pro",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$50?",
+                "shopLink": "",
+                "file": [
+                    "Moondrop GM-01 USB",
+                    "Moondrop GM-01 BT",
+                    "Moondrop GM-01 35"
+                ],
+                "suffix": [
+                    "(USB)",
+                    "(Bluetooth)",
+                    "(3.5mm analog)"
+                ]
+            },
+            {
+                "name": "Horizon",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=mFwUP7bKPlw",
+                "price": "$200",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-horizon-50mm-dynamic-driver-over-ear-headphone",
+                "file": [
+                    "Moondrop Horizon",
+                    "Moondrop Horizon cosmo"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: Cosmo :: mounting plate: Cosmo)"
+                ]
+            },
+            {
+                "name": "Joker",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=ScjUqQmW3GA",
+                "price": "$80",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-joker-50mm-dynamic-driver-full-size-headphone-1",
+                "file": "Moondrop Joker"
+            },
+            {
+                "name": "Old Fashioned",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=arexVdTS5YE",
+                "price": "$25",
+                "shopLink": "https://shenzhenaudio.com/collections/new-arrivals/products/moondrop-old-fashioned-40mm-dynamic-driver-on-ear-headphone",
+                "file": [
+                    "Moondrop Old Fashioned",
+                    "Moondrop Old Fashioned yaxi"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: Yaxi for Koss)"
+                ]
+            },
+            {
+                "name": "Para",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=7hoKMZlAXgE",
+                "price": "$300",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-para-full-size-planar-headphone",
+                "file": [
+                    "Moondrop Para (hybrid)",
+                    "Moondrop Para (PU)"
+                ],
+                "suffix": [
+                    "(pads: hybrid)",
+                    "(pads: fenestrated PU)"
+                ]
+            },
+            {
+                "name": "Para II",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=9dnPMFPf_Ns",
+                "price": "$500",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-para-ii-full-size-planar-headphone",
+                "file": [
+                    "Moondrop Para II",
+                    "Moondrop Para II para"
+                ],
+                "suffix": [
+                    "",
+                    "(pads: Para I pads / EP 100A :: mod: AKG K240 foam)"
+                ]
+            },
+            {
+                "name": "Skyland",
+                "reviewScore": "3",
+                "reviewLink": "",
+                "price": "$800",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-skyland-100mm-planar-flagship-full-size-over-ear-headphone",
+                "file": [
+                    "Moondrop Skyland",
+                    "Moondrop Skyland cosmo"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: Cosmo :: mounting plate: Cosmo)"
+                ]
+            },
+            {
+                "name": "Venus",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=G_lMhh6XXNM",
+                "price": "$600",
+                "shopLink": "https://shenzhenaudio.com/products/moondrop-venus-flagship-full-size-planar-headphone",
+                "file": "Moondrop Venus"
+            },
+            {
+                "name": "Void",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=uMllR_jUx0E",
+                "price": "$200",
+                "shopLink": "https://amzn.to/3iSKBE0",
+                "file": "Moondrop Void"
+            }
+        ]
+    },
+    {
+        "name": "Omne Audio",
+        "phones": [
+            {
+                "name": "Hendeka",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$700",
+                "shopLink": "https://bloomaudio.com/products/omne-audio-hendeka",
+                "file": "Omne Hendeka"
+            }
+        ]
+    },
+    {
+        "name": "Philips",
+        "phones": [
+            {
+                "name": "Fidelio X2HR",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=R5rbP9GfF0M",
+                "price": "$150",
+                "shopLink": "https://amzn.to/3gIA6ll",
+                "file": "Philips Fidelio X2HR"
+            },
+            {
+                "name": "SHP9500",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$75",
+                "shopLink": "https://amzn.to/3C9Gtpj",
+                "file": "Philips SHP9500"
+            }
+        ]
+    },
+    {
+        "name": "Plantronics",
+        "phones": [
+            {
+                "name": "BackBeat Go 600",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$30",
+                "shopLink": "https://amzn.to/3ID4tVp",
+                "file": [
+                    "Plantronics BackBeat Go 600 (bt)",
+                    "Plantronics BackBeat Go 600 (wired)"
+                ],
+                "suffix": [
+                    "(Bluetooth w/ pad swap)",
+                    "(wired w/ pad swap)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Sendy",
+        "phones": [
+            {
+                "name": "Aiva",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=kGeJm9gNixk",
+                "price": "$600",
+                "shopLink": "https://drop.com/buy/sendy-audio-aiva-planar-magnetic-headphones?utm_source=linkshare&referer=95465S",
+                "file": "Sendy Aiva"
+            }
+        ]
+    },
+    {
+        "name": "Sennheiser",
+        "phones": [
+            {
+                "name": "HD 480 Pro",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=l-VeBBpjThg",
+                "price": "$400",
+                "shopLink": "https://amzn.to/4vkd3xK",
+                "file": "Sennheiser HD 480 Pro"
+            },
+            {
+                "name": "HD 490 Pro",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$400",
+                "shopLink": "https://amzn.to/3Plwhkx",
+                "file": [
+                    "Sennheiser HD 490 Pro producing",
+                    "Sennheiser HD 490 Pro mixing"
+                ],
+                "suffix": [
+                    "(pads: producing)",
+                    "(pads: mixing)"
+                ]
+            },
+            {
+                "name": "HD 505",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=QqS1WaTn2R0",
+                "price": "$280",
+                "shopLink": "https://amzn.to/4mLDFFd",
+                "file": [
+                    "Sennheiser HD 505",
+                    "Sennheiser HD 505 100ohm"
+                ],
+                "suffix": [
+                    "",
+                    "(impedance adapter: 100 ohm)"
+                ]
+            },
+            {
+                "name": "HD 550",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=QqS1WaTn2R0",
+                "price": "$350",
+                "shopLink": "https://headphones.com/products/sennheiser-hd-550-headphones",
+                "file": [
+                    "Sennheiser HD 550",
+                    "Sennheiser HD 550 100ohm"
+                ],
+                "suffix": [
+                    "",
+                    "(impedance adapter: 100 ohm)"
+                ]
+            },
+            {
+                "name": "HD 560S",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=ZmZjI8lfZuQ",
+                "price": "$200",
+                "shopLink": "https://amzn.to/3fj4xyg",
+                "file": "Sennheiser HD 560S"
+            },
+            {
+                "name": "HD 58X",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$200",
+                "shopLink": "https://drop.com/buy/massdrop-x-sennheiser-hd-58x-jubilee-headphones?utm_source=linkshare&referer=95465S",
+                "file": [
+                    "Sennheiser HD 58X",
+                    "Sennheiser HD 58X (teabag)"
+                ],
+                "suffix": [
+                    "(pads: 6-months used)",
+                    "(teabag mod)"
+                ]
+            },
+            {
+                "name": "HD 600",
+                "reviewScore": "5",
+                "reviewLink": "",
+                "price": "$400",
+                "shopLink": "https://amzn.to/3U4vllb",
+                "file": [
+                    "Sennheiser HD 600",
+                    "Sennheiser HD 600 worn",
+                    "Sennheiser HD 600 brand-new",
+                    "Sennheiser HD 600 capra",
+                    "Sennheiser HD 600 soulwit",
+                    "Sennheiser HD 600 wicked",
+                    "Sennheiser HD 600 (ZMF)",
+                    "Sennheiser HD 600 (S2)",
+                    "Sennheiser HD 600 (S2 - Dekoni)"
+                ],
+                "suffix": [
+                    "(pads: 6-months used)",
+                    "(pads: 3 years used)",
+                    "(pads: brand-new)",
+                    "(pads: Capra)",
+                    "(pads: Soulwit - micro-fiber cooling gel)",
+                    "(pads: Wicked Cushions)",
+                    "(pads: ZMF Sub suede perforated)",
+                    "(sample 2)",
+                    "(sample 2 :: pads: Dekoni Elite Velour)"
+                ]
+            },
+            {
+                "name": "HD 660S",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$500",
+                "shopLink": "https://amzn.to/3hJJA0N",
+                "file": [
+                    "Sennheiser HD 660S"
+                ],
+                "suffix": [
+                    "(pads: 6-months used)"
+                ]
+            },
+            {
+                "name": "HD 6XX",
+                "reviewScore": "4",
+                "reviewLink": "",
+                "price": "$280",
+                "shopLink": "https://drop.com/buy/massdrop-sennheiser-hd6xx?utm_source=linkshare&referer=95465S",
+                "file": [
+                    "Sennheiser HD 6XX"
+                ],
+                "suffix": [
+                    "(pads: 6-months used)"
+                ]
+            },
+            {
+                "name": "HD 800S",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$1,800",
+                "shopLink": "https://amzn.to/3BWygVw",
+                "file": "Sennheiser HD 800S"
+            },
+            {
+                "name": "HD 820",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$1,800",
+                "shopLink": "https://amzn.to/3GJj93S",
+                "file": "Sennheiser HD 820"
+            },
+            {
+                "name": "HDB 630",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=epRUX48CNxM",
+                "price": "$500",
+                "shopLink": "https://amzn.to/4d8VPy8",
+                "file": [
+                    "Sennheiser HDB 630 A",
+                    "Sennheiser HDB 630 A ANC-mid",
+                    "Sennheiser HDB 630 A ANC-trans",
+                    "Sennheiser HDB 630 A ANC-off",
+                    "Sennheiser HDB 630 A bass boost",
+                    "Sennheiser HDB 630 A classical",
+                    "Sennheiser HDB 630 A dance",
+                    "Sennheiser HDB 630 A hip-hop",
+                    "Sennheiser HDB 630 A jazz",
+                    "Sennheiser HDB 630 A movie",
+                    "Sennheiser HDB 630 A podcast",
+                    "Sennheiser HDB 630 A pop",
+                    "Sennheiser HDB 630 A rock"
+                ],
+                "suffix": [
+                    "(ANC: on)",
+                    "(ANC: middle)",
+                    "(ANC: transparency)",
+                    "(ANC: off)",
+                    "(ANC: on :: EQ: bass boost)",
+                    "(ANC: on :: EQ: classical)",
+                    "(ANC: on :: EQ: dance)",
+                    "(ANC: on :: EQ: hip-hop)",
+                    "(ANC: on :: EQ: jazz)",
+                    "(ANC: on :: EQ: movie)",
+                    "(ANC: on :: EQ: podcast)",
+                    "(ANC: on :: EQ: pop)",
+                    "(ANC: on :: EQ: rock)"
+                ]
+            },
+            {
+                "name": "Momentum 5 Wireless",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=j-8butlOpHI",
+                "price": "$400",
+                "shopLink": "https://us.sennheiser-hearing.com/collections/wireless-headphones/products/momentum-5-wireless",
+                "file": [
+                    "Sennheiser Momentum 5 anc-on",
+                    "Sennheiser Momentum 5 anc-trans",
+                    "Sennheiser Momentum 5 anc-off",
+                    "Sennheiser Momentum 5 anc-on eq-bb",
+                    "Sennheiser Momentum 5 anc-on eq-classical",
+                    "Sennheiser Momentum 5 anc-on eq-dance",
+                    "Sennheiser Momentum 5 anc-on eq-hiphop",
+                    "Sennheiser Momentum 5 anc-on eq-jazz",
+                    "Sennheiser Momentum 5 anc-on eq-movie",
+                    "Sennheiser Momentum 5 anc-on eq-podcast",
+                    "Sennheiser Momentum 5 anc-on eq-pop",
+                    "Sennheiser Momentum 5 anc-on eq-rock",
+                    "Sennheiser Momentum 5 anc-on dolby"
+                ],
+                "suffix": [
+                    "(ANC: on)",
+                    "(ANC: transparency)",
+                    "(ANC: off)",
+                    "(ANC: on :: EQ: bass boost)",
+                    "(ANC: on :: EQ: classical)",
+                    "(ANC: on :: EQ: dance)",
+                    "(ANC: on :: EQ: hip-hop)",
+                    "(ANC: on :: EQ: jazz)",
+                    "(ANC: on :: EQ: movie)",
+                    "(ANC: on :: EQ: podcast)",
+                    "(ANC: on :: EQ: pop)",
+                    "(ANC: on :: EQ: rock)",
+                    "(ANC: on :: Dolby Atmos: on)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Shure",
+        "phones": [
+            {
+                "name": "Aonic 50",
+                "reviewScore": "3",
+                "reviewLink": "",
+                "price": "$300",
+                "shopLink": "https://amzn.to/3zscS9w",
+                "file": "Shure Aonic 50"
+            }
+        ]
+    },
+    {
+        "name": "Simgot",
+        "phones": [
+            {
+                "name": "EP5",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=ji7gSYpH0AQ",
+                "price": "$86",
+                "shopLink": "",
+                "file": "Simgot EP5"
+            }
+        ]
+    },
+    {
+        "name": "Sivga",
+        "phones": [
+            {
+                "name": "Anser",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=W7yTJ0dulYU",
+                "price": "$200",
+                "shopLink": "https://amzn.to/3UAXD8V",
+                "file": "Sivga Anser"
+            },
+            {
+                "name": "Luan",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=LE-qjyzt8Rg",
+                "price": "$300",
+                "shopLink": "https://amzn.to/43VtW4R",
+                "file": "Sivga Luan"
+            }
+        ]
+    },
+    {
+        "name": "Sony",
+        "phones": [
+            {
+                "name": "MDR-7506",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$100",
+                "shopLink": "https://amzn.to/3ntSWk0",
+                "file": "Sony MDR-7506"
+            },
+            {
+                "name": "MDR-CD900ST",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$200",
+                "shopLink": "https://amzn.to/3LT6IpP",
+                "file": "Sony MDR-CD900ST"
+            },
+            {
+                "name": "MDR-MV1",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=DnNh88IekYc",
+                "price": "$400",
+                "shopLink": "https://www.bhphotovideo.com/c/product/1761529-REG/sony_mdr_mv1_open_back_reference_monitor.html",
+                "file": "Sony MDR-MV1"
+            },
+            {
+                "name": "MDR-V6",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$100",
+                "shopLink": "https://amzn.to/3Lr9p0i",
+                "file": [
+                    "Sony MDR-V6",
+                    "Sony MDR-V6 (Yaxi)"
+                ],
+                "suffix": [
+                    "(pads: stock)",
+                    "(pads: Yaxi)"
+                ]
+            },
+            {
+                "name": "WH-1000XM3",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=eef5NCKhMMg",
+                "price": "$350",
+                "shopLink": "https://amzn.to/3i6n2XR",
+                "file": "Sony WH-1000XM3"
+            },
+            {
+                "name": "WH-1000XM5",
+                "reviewScore": "3",
+                "reviewLink": "",
+                "price": "$400",
+                "shopLink": "https://amzn.to/3gOoopn",
+                "file": "Sony WH-1000XM5"
+            },
+            {
+                "name": "WH-1000XM6",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=DBiRCksoV4M",
+                "price": "$450",
+                "shopLink": "https://amzn.to/3SN6N0M",
+                "file": [
+                    "Sony WH1000XM6",
+                    "Sony WH1000XM6 ANC ON",
+                    "Sony WH1000XM6 ANC OFF",
+                    "Sony WH1000XM6 ambient ON",
+                    "Sony WH1000XM6 analog",
+                    "Sony WH1000XM6 heavy",
+                    "Sony WH1000XM6 clear",
+                    "Sony WH1000XM6 hard",
+                    "Sony WH1000XM6 soft",
+                    "Sony WH1000XM6 game",
+                    "Sony WH1000XM6 manual FLAT",
+                    "Sony WH1000XM6 MRS V4",
+                    "Sony WH1000XM6 background MY",
+                    "Sony WH1000XM6 background LIVING",
+                    "Sony WH1000XM6 background CAFE",
+                    "Sony WH1000XM6 cinema"
+                ],
+                "suffix": [
+                    "",
+                    "(ANC: on)",
+                    "(ANC: off)",
+                    "(ANC: transparency)",
+                    "(analog cable)",
+                    "(EQ: heavy)",
+                    "(EQ: clear)",
+                    "(EQ: hard)",
+                    "(EQ: soft)",
+                    "(EQ: game)",
+                    "(EQ: manual - flat)",
+                    "(EQ: custom - MRS)",
+                    "(listening mode: background music - my room)",
+                    "(listening mode: background music - living room)",
+                    "(listening mode: background music - cafe)",
+                    "(listening mode: cinema)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Tanchjim",
+        "phones": [
+            {
+                "name": "Rita",
+                "reviewScore": "0",
+                "reviewLink": "",
+                "price": "$90",
+                "shopLink": "https://amzn.to/444uUO8",
+                "file": [
+                    "Tanchjim Rita ANC on",
+                    "Tanchjim Rita ANC trans",
+                    "Tanchjim Rita ANC off",
+                    "Tanchjim Rita ANC on EQ ambient",
+                    "Tanchjim Rita ANC on EQ balanced",
+                    "Tanchjim Rita ANC on EQ classical",
+                    "Tanchjim Rita ANC on EQ instrument",
+                    "Tanchjim Rita ANC on EQ ost",
+                    "Tanchjim Rita ANC on EQ pop",
+                    "Tanchjim Rita ANC on EQ theater",
+                    "Tanchjim Rita ANC on EQ blank",
+                    "Tanchjim Rita ANC trans EQ blank",
+                    "Tanchjim Rita ANC off EQ blank"
+                ],
+                "suffix": [
+                    "(ANC: on :: EQ: default)",
+                    "(ANC: transparency :: EQ: default)",
+                    "(ANC: off :: EQ: default)",
+                    "(ANC: on :: EQ: ambient)",
+                    "(ANC: on :: EQ: balanced)",
+                    "(ANC: on :: EQ: classical)",
+                    "(ANC: on :: EQ: instrument)",
+                    "(ANC: on :: EQ: OST)",
+                    "(ANC: on :: EQ: pop)",
+                    "(ANC: on :: EQ: theater)",
+                    "(ANC: on :: EQ: blank)",
+                    "(ANC: transparency :: EQ: blank)",
+                    "(ANC: off :: EQ: blank)"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "ThieAudio",
+        "phones": [
+            {
+                "name": "Cypher",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=l3KLieyl860",
+                "price": "$400f",
+                "shopLink": "https://www.linsoul.com/products/thieaudio-cypher",
+                "file": "ThieAudio Cypher"
+            }
+        ]
+    },
+    {
+        "name": "ZMF",
+        "phones": [
+            {
+                "name": "Atrium",
+                "reviewScore": "3",
+                "reviewLink": "",
+                "price": "$2,500",
+                "shopLink": "https://shop.zmfheadphones.com/collections/stock-headphones/products/atrium",
+                "file": [
+                    "ZMF Atrium (lamb perf)",
+                    "ZMF Atrium (suede perf)"
+                ],
+                "suffix": [
+                    "(pads: lamb skin perforated, mesh: solid)",
+                    "(pads: suede perforated, mesh: solid)"
+                ]
+            },
+            {
+                "name": "Auteur Classic",
+                "reviewScore": "4",
+                "reviewLink": "https://www.youtube.com/watch?v=MOga-RYAbOk",
+                "price": "$1,500",
+                "shopLink": "https://shop.zmfheadphones.com/collections/stock-headphones/products/auteur_classic",
+                "file": [
+                    "ZMF Auteur Classic",
+                    "ZMF Auteur Classic Caldera hybrid",
+                    "ZMF Auteur Classic Caldera lamb",
+                    "ZMF Auteur Classic Caldera suede"
+                ],
+                "suffix": [
+                    "(pads: lamb) [stock]",
+                    "(pads: Caldera hybrid)",
+                    "(pads: Caldera lamb)",
+                    "(pads: Caldera suede)"
+                ]
+            },
+            {
+                "name": "Bokeh Closed",
+                "reviewScore": "2",
+                "reviewLink": "https://www.youtube.com/watch?v=IbSASFm8_vo",
+                "price": "$1,100",
+                "shopLink": "https://shop.zmfheadphones.com/products/bokeh",
+                "file": [
+                    "ZMF Bokeh",
+                    "ZMF Bokeh no mesh",
+                    "ZMF Bokeh titan mesh",
+                    "ZMF Bokeh protein",
+                    "ZMF Bokeh suede",
+                    "ZMF Bokeh forward"
+                ],
+                "suffix": [
+                    "(pads: hybrid :: mesh: burst) [stock]",
+                    "(pads: hybrid :: mesh: none)",
+                    "(pads: hybrid :: mesh: solid)",
+                    "(pads: protein :: mesh: burst)",
+                    "(pads: suede :: mesh: burst)",
+                    "(config: stock, position: pushed backward)"
+                ]
+            },
+            {
+                "name": "Caldera Closed",
+                "reviewScore": "3",
+                "reviewLink": "https://www.youtube.com/watch?v=itGjafe3myY",
+                "price": "$3,500",
+                "shopLink": "https://shop.zmfheadphones.com/collections/stock-headphones/products/caldera-closed",
+                "file": [
+                    "ZMF Caldera Closed",
+                    "ZMF Caldera Closed m-black",
+                    "ZMF Caldera Closed m-green",
+                    "ZMF Caldera Closed lamb thick",
+                    "ZMF Caldera Closed protein thin",
+                    "ZMF Caldera Closed suede twp"
+                ],
+                "suffix": [
+                    "(pads: hybrid :: mesh: red) [stock]",
+                    "(pads: hybrid :: mesh: black)",
+                    "(pads: hybrid :: mesh: green)",
+                    "(pads: lamb :: mesh: red)",
+                    "(pads: protein :: mesh: red)",
+                    "(pads: suede :: mesh: red)"
+                ]
+            }
+        ]
+    }
+]

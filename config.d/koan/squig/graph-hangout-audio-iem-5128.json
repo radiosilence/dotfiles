@@ -1,0 +1,4285 @@
+[
+    {
+        "name": "634ears",
+        "phones": [
+            {
+                "name": "Loak2 TS Closed",
+                "file": [
+                    "Loak2 TS Closed (Brass)"
+                ],
+                "suffix": [
+                    "(brass)"
+                ],
+                "price": "$580",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "64 Audio",
+        "phones": [
+            {
+                "name": "Nio",
+                "file": [
+                    "Nio M20"
+                ],
+                "suffix": [
+                    "(m20 module)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$1700"
+            },
+            {
+                "name": "U4s",
+                "file": [
+                    "U4s"
+                ],
+                "suffix": [
+                    "(m20 module)"
+                ],
+                "reviewScore": "Approved",
+                "price": "$1100"
+            },
+            {
+                "name": "Volur",
+                "file": [
+                    "Volur M20"
+                ],
+                "suffix": [
+                    "(m20 module)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$2500"
+            }
+        ]
+    },
+    {
+        "name": "7Hz",
+        "phones": [
+            {
+                "name": "Aero",
+                "file": "Aero",
+                "reviewScore": "Approved",
+                "price": "$15"
+            },
+            {
+                "name": "Aurora",
+                "file": "Aurora 7Hz",
+                "price": "$400",
+                "reviewScore": "Tested"
+            },
+            {
+                "name": "Salnotes Dioko",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/iXNK4wDrZFg",
+                "price": "$100",
+                "shopLink": "https:\/\/hangout.audio\/products\/dioko",
+                "file": "Dioko"
+            },
+            {
+                "name": "Divine",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "price": "$150",
+                "file": "Divine S1"
+            },
+            {
+                "name": "Diablo",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "price": "$150",
+                "file": "Diablo S1"
+            },
+            {
+                "name": "Elua",
+                "file": "Elua",
+                "reviewScore": "Tested",
+                "price": "$30"
+            },
+            {
+                "name": "Elua Ultra",
+                "file": "Elua Ultra",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/www.youtube.com\/watch?v=BeUPwbqj3Sw",
+                "price": "$30"
+            },
+            {
+                "name": "Eternal",
+                "file": "Eternal",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Five",
+                "file": "Five",
+                "price": "$150",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "G1",
+                "file": "G1",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/U10OZIfBElE?si=TZuKnm-x7_YYTDVF",
+                "price": "$35"
+            },
+            {
+                "name": "Sonus",
+                "file": "Sonus",
+                "reviewScore": "Tested",
+                "price": "$60"
+            },
+            {
+                "name": "Timeless",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/tuTOq9hJp94",
+                "price": "$200",
+                "shopLink": "https:\/\/hangout.audio\/products\/7hz-timeless",
+                "file": "Timeless"
+            },
+            {
+                "name": "Timeless AE",
+                "file": "Timeless AE",
+                "reviewScore": "Approved",
+                "price": "$260"
+            },
+            {
+                "name": "Timeless 2",
+                "file": [
+                    "Timeless 2 Gold Flower",
+                    "Timeless 2 Silver Flower",
+                    "Timeless 2 Gold Round",
+                    "Timeless 2 Silver Round"
+                ],
+                "suffix": [
+                    "Gold Flower",
+                    "Silver Flower",
+                    "Gold Round",
+                    "Silver Round"
+                ],
+                "reviewScore": "Approved",
+                "price": "$230",
+                "reviewLink": "https:\/\/youtu.be\/YOYNotaukDo?si=IJSVQvB1pEXiua_H"
+            },
+            {
+                "name": "Salnotes Zero",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/jyD4orFap10",
+                "price": "$20",
+                "shopLink": "https:\/\/hangout.audio\/products\/salzero",
+                "file": "Zero Salnotes"
+            },
+            {
+                "name": "Zero:2",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/3aN3HV99uBo",
+                "price": "$25",
+                "shopLink": "https:\/\/hangout.audio\/products\/zero2",
+                "file": [
+                    "Zero2 S1",
+                    "Zero2 S2",
+                    "Zero2 S3"
+                ],
+                "suffix": [
+                    "S1",
+                    "S2",
+                    "S3"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "7th Acoustics",
+        "phones": [
+            {
+                "name": "Supernova",
+                "file": "Supernova",
+                "reviewScore": "Approved",
+                "price": "$850"
+            },
+            {
+                "name": "Asteria",
+                "file": "Asteria",
+                "reviewScore": "Untested",
+                "price": "$3799"
+            }
+        ]
+    },
+    {
+        "name": "A&D",
+        "suffix": "(Alpha & Delta)",
+        "phones": [
+            {
+                "name": "KS3",
+                "file": "KS3",
+                "reviewScore": "Tested",
+                "price": "$150"
+            }
+        ]
+    },
+    {
+        "name": "Acoustune",
+        "phones": [
+            {
+                "name": "HS2000",
+                "file": [
+                    "HS2000 (ACT-05)",
+                    "HS2000 (ACT-06)"
+                ],
+                "suffix": [
+                    "(ACT-05 module)",
+                    "(ACT-06 module)"
+                ],
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Advanced (ADV.)",
+        "phones": [
+            {
+                "name": "Sleeper",
+                "file": "Sleeper",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Audeze",
+        "phones": [
+            {
+                "name": "iSINE 10",
+                "file": "iSINE 10"
+            }
+        ]
+    },
+    {
+        "name": "AFUL",
+        "phones": [
+            {
+                "name": "DAWN-X",
+                "file": "DAWN-X",
+                "reviewScore": "Untested",
+                "price": "$1300"
+            },
+            {
+                "name": "Explorer",
+                "file": "Explorer",
+                "reviewScore": "Tested",
+                "price": "$120"
+            },
+            {
+                "name": "Performer 5",
+                "file": "Performer 5",
+                "reviewScore": "Approved",
+                "price": "$220"
+            },
+            {
+                "name": "Performer 5+2",
+                "file": "Performer 5+2",
+                "reviewScore": "Approved",
+                "price": "$240"
+            },
+            {
+                "name": "Performer 8",
+                "file": "Performer 8",
+                "reviewScore": "Approved",
+                "price": "$370"
+            },
+            {
+                "name": "Performer 8S",
+                "file": "Performer 8S",
+                "reviewScore": "Approved",
+                "price": "$389"
+            }
+        ]
+    },
+    {
+        "name": "AKG",
+        "phones": [
+            {
+                "name": "K3003",
+                "file": "K3003",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/7t3xtL-VAG0",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Ambient Dynamics",
+        "phones": [
+            {
+                "name": "AD-006 \"Lyndale\"",
+                "file": "AD-006",
+                "reviewScore": "Tested",
+                "price": "$200"
+            }
+        ]
+    },
+    {
+        "name": "Apple",
+        "phones": [
+            {
+                "name": "AirPods Pro 2 (ANC)",
+                "file": [
+                    "APP2 W80",
+                    "APP2 W100",
+                    "APP2 W60",
+                    "APP2 W40",
+                    "APP2 W25"
+                ],
+                "suffix": [
+                    "(Windows 80%)",
+                    "(Windows 100%)",
+                    "(Windows 60%)",
+                    "(Windows 40%)",
+                    "(Windows 25%)"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/9kTOvdo_6RU",
+                "price": "$250"
+            },
+            {
+                "name": "AirPods Pro 3 (ANC)",
+                "file": [
+                    "APP3 W80 Avg",
+                    "APP3 M100",
+                    "APP3 M80",
+                    "APP3 M60",
+                    "APP3 M40",
+                    "APP3 M25",
+                    "APP3 W100",
+                    "APP3 W80",
+                    "APP3 W60",
+                    "APP3 W40"
+                ],
+                "suffix": [
+                    "(Windows 80%, 5-seat Avg)",
+                    "(macOS 16\/16)",
+                    "(macOS 13\/16)",
+                    "(macOS 10\/16)",
+                    "(macOS 7\/16)",
+                    "(macOS 4\/16)",
+                    "(Windows 100%)",
+                    "(Windows 80%)",
+                    "(Windows 60%)",
+                    "(Windows 40%)"
+                ],
+                "reviewScore": "Approved",
+                "price": "$250"
+            }
+        ]
+    },
+    {
+        "name": "Arpegear",
+        "suffix": "(Topping)",
+        "phones": [
+            {
+                "name": "Hane",
+                "file": [
+                    "Hane 0000",
+                    "Hane 1000",
+                    "Hane 0100",
+                    "Hane 1100",
+                    "Hane 0010",
+                    "Hane 0001",
+                    "Hane 0011"
+                ],
+                "suffix": [
+                    "(0000 setting)",
+                    "(1000 setting)",
+                    "(0100 setting)",
+                    "(1100 setting)",
+                    "(0010 setting)",
+                    "(0001 setting)",
+                    "(0011 setting)"
+                ],
+                "reviewScore": "Untested",
+                "price": "$130"
+            }
+        ]
+    },
+    {
+        "name": "Audiosense",
+        "phones": [
+            {
+                "name": "AQ3",
+                "file": "AQ3",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "AQ4",
+                "file": "AQ4",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "AQ7",
+                "file": "AQ7",
+                "reviewScore": "Tested",
+                "price": "$500"
+            },
+            {
+                "name": "DT100",
+                "file": "DT100",
+                "reviewScore": "Tested",
+                "price": "$110"
+            }
+        ]
+    },
+    {
+        "name": "Aune",
+        "phones": [
+            {
+                "name": "Jasper",
+                "file": "Jasper",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Azla",
+        "phones": [
+            {
+                "name": "Trinity",
+                "file": "Trinity"
+            }
+        ]
+    },
+    {
+        "name": "BGVP",
+        "phones": [
+            {
+                "name": "DN3",
+                "file": "DN3",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=UT_6ep581WrpdqQI&t=298",
+                "price": "Discont."
+            },
+            {
+                "name": "DS1 Pro",
+                "file": "DS1 Pro",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Binary",
+        "suffix": "Acoustics",
+        "phones": [
+            {
+                "name": "Chopin",
+                "collab": "Gizaudio",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/UM4YxksUA5o?si=7yAAI5Gj_pS3vfTW",
+                "price": "$200",
+                "shopLink": "https:\/\/hangout.audio\/products\/binary-chopin",
+                "file": "Chopin"
+            }
+        ]
+    },
+    {
+        "name": "BLON",
+        "phones": [
+            {
+                "name": "Annotation",
+                "file": "Annotation"
+            },
+            {
+                "name": "BL-03",
+                "file": "BL03",
+                "reviewScore": "Tested",
+                "price": "$27"
+            },
+            {
+                "name": "BL-03 2",
+                "file": "BL03 2",
+                "price": "$32",
+                "reviewScore": "Tested"
+            },
+            {
+                "name": "BL-05",
+                "file": "BL05",
+                "reviewScore": "Tested",
+                "price": "$43"
+            },
+            {
+                "name": "BL-Max",
+                "file": "BL-Max",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=hFJ17MHullD56ogR&t=868",
+                "price": "$40"
+            },
+            {
+                "name": "Z300",
+                "collab": "HBB",
+                "reviewScore": "Approved",
+                "price": "$35",
+                "shopLink": "https:\/\/hangout.audio\/products\/blon-x-hbb-z300",
+                "file": "Z300"
+            }
+        ]
+    },
+    {
+        "name": "BQEYZ",
+        "phones": [
+            {
+                "name": "Autumn",
+                "file": [
+                    "Autumn Normal",
+                    "Autumn Bass",
+                    "Autumn Treble"
+                ],
+                "suffix": [
+                    "(Normal filter)",
+                    "(Bass filter)",
+                    "(Treble filter)"
+                ],
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=wIzSfH_CPTcXPnUG&t=740",
+                "price": "$200"
+            },
+            {
+                "name": "Summer",
+                "file": "Summer",
+                "reviewScore": "Tested",
+                "price": "$130"
+            },
+            {
+                "name": "Winter",
+                "file": "Winter",
+                "price": "$240",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "CatEar",
+        "phones": [
+            {
+                "name": "Mia",
+                "file": "Mia",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Cozoy",
+        "phones": [
+            {
+                "name": "D1",
+                "file": "D1",
+                "reviewScore": "Tested",
+                "price": "$30"
+            },
+            {
+                "name": "D2",
+                "file": "D2"
+            }
+        ]
+    },
+    {
+        "name": "CraftEars",
+        "phones": [
+            {
+                "name": "The One",
+                "file": "The One"
+            }
+        ]
+    },
+    {
+        "name": "Creative",
+        "phones": [
+            {
+                "name": "Aurvana Ace 3",
+                "file": "Aurvana Ace 3",
+                "reviewScore": "Tested",
+                "price": "$150"
+            }
+        ]
+    },
+    {
+        "name": "CrinEar",
+        "phones": [
+            {
+                "name": "Project Meta",
+                "file": [
+                    "Project Meta (Silicone) S1",
+                    "Project Meta (Silicone) S2",
+                    "Project Meta (Silicone) S3",
+                    "Project Meta (Silicone) S4"
+                ],
+                "suffix": [
+                    "S1",
+                    "S2",
+                    "S3",
+                    "S4"
+                ],
+                "reviewScore": "Approved",
+                "price": "Discont.",
+                "shopLink": "https:\/\/hangout.audio\/products\/crinear-project-meta",
+                "reviewLink": "https:\/\/youtu.be\/JX7aaDReDGQ?si=Wu9kg6I6vjfnhDqJ"
+            },
+            {
+                "name": "Daybreak",
+                "file": [
+                    "Daybreak",
+                    "Daybreak Standard S1",
+                    "Daybreak Standard S2"
+                ],
+                "suffix": [
+                    "(Shortwide tips) S1",
+                    "(Standard bore tips) S1",
+                    "(Standard bore tips) S2"
+                ],
+                "reviewScore": "Approved",
+                "price": "$170",
+                "shopLink": "https:\/\/hangout.audio\/products\/crinear-daybreak",
+                "reviewLink": "https:\/\/youtu.be\/dPOvNwi0b1k"
+            },
+            {
+                "name": "Reference",
+                "file": [
+                    "Reference Standard S1",
+                    "Reference Shorter S1",
+                    "Reference Shortwide S1"
+                ],
+                "suffix": [
+                    "(Standard bore tips)",
+                    "(Shorter bore tips)",
+                    "(Shortwide tips)"
+                ],
+                "reviewScore": "Approved",
+                "price": "$350",
+                "shopLink": "https:\/\/hangout.audio\/products\/crinear-reference",
+                "reviewLink": "https:\/\/youtu.be\/jBYrS2c_hlM"
+            },
+            {
+                "name": "Project Monolith",
+                "file": "Project Monolith S1",
+                "reviewScore": "Approved",
+                "price": "$400",
+                "shopLink": "https:\/\/hangout.audio\/products\/crinear-project-monolith"
+            },
+            {
+                "name": "Nightfall",
+                "file": [
+                    "Nightfall Standard S2",
+                    "Nightfall Shortwide S2"
+                ],
+                "suffix": [
+                    "(Standard tips)",
+                    "(Shortwide tips)"
+                ],
+                "reviewScore": "Approved"
+            }
+        ]
+    },
+    {
+        "name": "CVJ",
+        "phones": [
+            {
+                "name": "Aria",
+                "file": [
+                    "CVJ Aria Blue",
+                    "CVJ Aria Gold",
+                    "CVJ Aria Silver"
+                ],
+                "suffix": [
+                    "Blue",
+                    "Gold",
+                    "Silver"
+                ],
+                "price": "$80",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "Dethonray",
+        "phones": [
+            {
+                "name": "Tender I",
+                "file": "Tender",
+                "reviewScore": "Tested",
+                "price": "$640"
+            }
+        ]
+    },
+    {
+        "name": "Dita",
+        "phones": [
+            {
+                "name": "Project M",
+                "file": "Project M",
+                "reviewScore": "Tested",
+                "price": "$325"
+            },
+            {
+                "name": "Project M2",
+                "file": "M2"
+            },
+            {
+                "name": "Prelude",
+                "file": "Prelude"
+            },
+            {
+                "name": "Dita x Activo Q1",
+                "file": "Activo Q1"
+            }
+            
+        ]
+    },
+    {
+        "name": "Drop",
+        "suffix": "(Formerly Massdrop)",
+        "phones": [
+            {
+                "name": "Planamic",
+                "collab": "MEE",
+                "file": "Planamic",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Plus",
+                "file": "Plus",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "DUNU",
+        "phones": [
+            {
+                "name": "DaVinci",
+                "collab": "Gizaudio",
+                "file": "DaVinci",
+                "reviewScore": "Approved",
+                "price": "$300",
+                "reviewLink": "https:\/\/youtu.be\/5_aldhVa2UI?si=p6_9Co28APIJrfHe"
+            },
+            {
+                "name": "DK-3001 Pro",
+                "file": "DK-3001 Pro",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "DK 3001 BD",
+                "file": "DK 3001 BD",
+                "reviewScore": "Tested",
+                "price": "$500"
+            },
+            {
+                "name": "DK-4001",
+                "file": "DK4001",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "EST 112",
+                "file": "EST 112",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Ito",
+                "collab": "KOTO",
+                "file": "Ito",
+                "reviewScore": "Tested",
+                "price": "$200"
+            },
+            {
+                "name": "Kima",
+                "file": "Kima",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "SA6 (Mk1)",
+                "file": [
+                    "SA6 (Off)",
+                    "Sa6 (On)"
+                ],
+                "suffix": [
+                    "(Switch Off)",
+                    "(Switch On)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$550"
+            },
+            {
+                "name": "SA6 Mk2",
+                "file": [
+                    "SA6 Mk2 (Off)",
+                    "SA6 Mk2 (On)"
+                ],
+                "suffix": [
+                    "(Switch Off)",
+                    "(Switch On)"
+                ],
+                "reviewScore": "Approved",
+                "price": "$580"
+            },
+            {
+                "name": "Titan S",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/ks6PGwD6Cjo?t=341",
+                "price": "Discont.",
+                "shopLink": "https:\/\/hangout.audio\/products\/dunu-titan-s",
+                "file": "Titan S"
+            },
+            {
+                "name": "Zen",
+                "file": "Zen",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "E Audio",
+        "phones": [
+            {
+                "name": "EVA001",
+                "collab": "Evangelion",
+                "file": "EVA001",
+                "price": "$150",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "Etymotic",
+        "phones": [
+            {
+                "name": "ERX",
+                "collab": "Drop",
+                "file": "ERX",
+                "price": "$300",
+                "reviewScore": "Tested"
+            }
+        ]
+    },
+    {
+        "name": "Elysian",
+        "suffix": "Acoustic Labs",
+        "phones": [
+            {
+                "name": "Annihilator (2021)",
+                "file": [
+                    "Annihilator (2021)",
+                    "Annihilator 2021 S2"
+                ],
+                "suffix": [
+                    "Annihilator 2021 S1",
+                    "Annihilator 2021 S2"
+                ],
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Annihilator (2023)",
+                "file": "Annihilator 2023",
+                "reviewScore": "Approved",
+                "price": "Discont."
+            },
+            {
+                "name": "Apostle",
+                "file": "Apostle"
+            },
+            {
+                "name": "Diva",
+                "file": [
+                    "Elysian Diva Min Bass",
+                    "Elysian Diva Max Bass"
+                ],
+                "suffix": [
+                    "(Min Bass)",
+                    "(Max Bass)"
+                ]
+            },
+            {
+                "name": "Pilgrim",
+                "file": "Pilgrim",
+                "reviewScore": "Approved",
+                "price": "$400"
+            },
+            {
+                "name": "X",
+                "file": "Elysian X"
+            }
+        ]
+    },
+    {
+        "name": "Eminent Ears",
+        "phones": [
+            {
+                "name": "Ruby",
+                "file": "Ruby",
+                "price": "$2300",
+                "reviewScore": "Tested"
+            }
+        ]
+    },
+    {
+        "name": "Empire Ears",
+        "phones": [
+            {
+                "name": "Triton",
+                "file": "Triton",
+                "price": "$1800",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Zeus",
+                "collab": "Drop",
+                "file": "Zeus"
+            },
+            {
+                "name": "Zeus-XIV",
+                "file": "Zeus-XIV",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "EPZ",
+        "phones": [
+            {
+                "name": "530",
+                "file": "530",
+                "price": "$530",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "550",
+                "file": "550"
+            },
+            {
+                "name": "G10",
+                "file": "G10"
+            },
+            {
+                "name": "G20 Pro",
+                "file": "G20 Pro"
+            },
+            {
+                "name": "G30",
+                "file": "G30"
+            },
+            {
+            
+                "name": "K9",
+                "file": "K9"
+            },
+            
+            {
+                "name": "P40",
+                "file": "P40"
+            },
+            {
+                "name": "P50",
+                "file": "P50"
+            },
+            {
+                "name": "Q1 Pro",
+                "file": "Q1 Pro",
+                "price": "$37",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "EarAcoustic audio",
+        "phones": [
+            {
+                "name": "Silver Angel Limited Edition",
+                "file": "Silver Angel Limited Edition"
+            },
+            {
+                "name": "Silver Angel Pro Max",
+                "file": "Silver Angel Pro Max"
+            },
+            {
+                "name": "Silver Angel Hi-End Max",
+                "file": "Silver Angel Hi-End Max"
+            },
+            {
+                "name": "SPA Golden Snake",
+                "file": "Golden Snake"
+            }
+        ]
+    },
+    {
+        "name": "FAAEAL",
+        "phones": [
+            {
+                "name": "Hibiscus",
+                "file": "Hibiscus",
+                "reviewScore": "Tested",
+                "price": "$70"
+            }
+        ]
+    },
+    {
+        "name": "FATfreq",
+        "phones": [
+            {
+                "name": "Deuce",
+                "collab": "HBB",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/fCXaz9VNsoo?si=klGrOsFCyXLQVLI4",
+                "price": "$240",
+                "shopLink": "https:\/\/hangout.audio\/products\/deuce",
+                "file": [
+                    "Deuce (Narrow bore)",
+                    "Deuce (Narrow bore) (15ohm)",
+                    "Deuce (Wide bore)",
+                    "Deuce (Wide bore) (15ohm)"
+                ],
+                "suffix": [
+                    "(Narrow bore)",
+                    "(Narrow bore) (15\u03a9 adapter)",
+                    "(Wide bore)",
+                    "(Wide bore) (15\u03a9 adapter)"
+                ]
+            },
+            {
+                "name": "Reference Pro SE",
+                "file": "Reference Pro SE",
+                "reviewScore": "Tested",
+                "price": "$480"
+            },
+            {
+                "name": "Maestro Mini",
+                "file": "Maestro Mini",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/01fVsVFVNzI",
+                "price": "$480"
+            },
+            {
+                "name": "Scarlet Mini",
+                "file": [
+                    "Scarlet Mini",
+                    "Scarlet Mini S2"
+                ],
+                "suffix": [
+                    "S1",
+                    "S2"
+                ],
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/01fVsVFVNzI",
+                "price": "$636"
+            }
+        ]
+    },
+    {
+        "name": "Fearless",
+        "phones": [
+            {
+                "name": "Barcelona",
+                "file": "Barcelona",
+                "reviewScore": "Tested",
+                "price": "$118"
+            },
+            {
+                "name": "Dawn",
+                "collab": "Crinacle",
+                "file": "Dawn",
+                "reviewScore": "Approved",
+                "price": "$1400",
+                "reviewLink": "https:\/\/youtu.be\/HXmkjzi6iRc?si=o36iyCZ5fraotJ31&t=411"
+            },
+            {
+                "name": "Provence",
+                "file": "Provence",
+                "reviewScore": "Tested",
+                "price": "$140"
+            },
+            {
+                "name": "Shangri-la",
+                "file": "Shangri-la",
+                "reviewScore": "Tested",
+                "price": "$230"
+            },
+            {
+                "name": "Tequila",
+                "file": "Tequila",
+                "reviewScore": "Tested",
+                "price": "$400"
+            }
+        ]
+    },
+    {
+        "name": "FiiO",
+        "phones": [
+            {
+                "name": "FH3",
+                "file": "FH3",
+                "reviewScore": "Tested",
+                "price": "$150"
+            },
+            {
+                "name": "FH9",
+                "file": [
+                    "FH9 Black",
+                    "FH9 Red",
+                    "FH9 Green"
+                ],
+                "suffix": [
+                    "(Black filter)",
+                    "(Red filter)",
+                    "(Green filter)"
+                ],
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=cNd35RKZwPtVO-gC&t=424",
+                "price": "$600"
+            },
+            {
+                "name": "FHE:Eclipse",
+                "collab": "Crinacle",
+                "file": "FHE Eclipse",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Final Audio",
+        "suffix": "Design",
+        "phones": [
+            {
+                "name": "E500",
+                "file": "E500",
+                "reviewScore": "Approved",
+                "price": "$20"
+            },
+            {
+                "name": "E1000C",
+                "file": "E1000C"
+            }
+        ]
+    },
+    {
+        "name": "Flo",
+        "phones": [
+            {
+                "name": "Lily",
+                "file": "Flo Lily"
+            }
+        ]
+    },
+    {
+        "name": "Flipears",
+        "phones": [
+            {
+                "name": "Aegis",
+                "file": "Aegis"
+            }
+        ]
+    },
+    {
+        "name": "Geek Wold",
+        "phones": [
+            {
+                "name": "GK10",
+                "file": "GK10",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "GK",
+        "phones": [
+            {
+                "name": "Kunten",
+                "file": "Kunten",
+                "reviewScore": "Tested",
+                "price": "$10"
+            }
+        ]
+    },
+    {
+        "name": "Guide Ray",
+        "phones": [
+            {
+                "name": "GR-I",
+                "file": "GR-I",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "HarmonicDyne",
+        "phones": [
+            {
+                "name": "PD1",
+                "file": "PD1",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Hidition",
+        "phones": [
+            {
+                "name": "T1 Gaming",
+                "file": "T1",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Hidizs",
+        "phones": [
+            {
+                "name": "MP145",
+                "file": [
+                    "MP145 (Balanced)",
+                    "MP145 (Bass)",
+                    "MP145 (High)"
+                ],
+                "suffix": [
+                    "(Balanced tips)",
+                    "(Bass tips)",
+                    "(High tips)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$120"
+            },
+            {   "name": "MP145 Pro",
+                "file": [
+                    "MP145 Pro Balanced",
+                    "MP145 Pro Bass",
+                    "MP145 Pro Treble"
+                ],
+                "suffix": [
+                    "(Balanced tips)",
+                    "(Bass tips)", 
+                    "(High tips)"
+                ],
+                "reviewScore": "Untested",
+                "price": "$170"
+            },
+            {
+                "name": "MS3",
+                "file": [
+                    "MS3 (Red Filter)",
+                    "MS3 (Balanced Filter)",
+                    "MS3 (Silver Filter)"
+                ],
+                "suffix": [
+                    "MS3 (Red Filter)",
+                    "MS3 (Balanced Filter)",
+                    "MS3 (Silver Filter)"
+                ],
+                "price": "$120",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "MK12",
+                "file": "MK12"
+            }
+        ]
+    },
+    {
+        "name": "Hisenior",
+        "phones": [
+            {
+                "name": "Mega5-EST",
+                "file": [
+                    "Mega5-EST (Narrow bore)",
+                    "Mega5-EST (Wide bore)"
+                ],
+                "suffix": [
+                    "(Narrow bore tips)",
+                    "(Wide bore tips)"
+                ],
+                "reviewScore": "Approved",
+                "price": "$550",
+                "reviewLink": "https:\/\/youtu.be\/jLiPLLPANVM?si=tJI5s-_q9yVforf9"
+            },
+            {
+                "name": "Mega5EST Bass+",
+                "file": "Mega5EST Bass+",
+                "price": "$590",
+                "reviewScore": "Tested"
+            },
+            {
+                "name": "Mega7",
+                "file": [
+                    "Mega7 Balance",
+                    "Mega7 Smooth"
+                ],
+                "suffix": [
+                    "(Balance tips)",
+                    "(Smooth tips)"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/www.youtube.com\/watch?v=UqROP6jBW3U",
+                "price": "$450"
+            },
+            {
+                "name": "Cano Cristales",
+                "file": "Cano Cristales",
+                "reviewScore": "Tested",
+                "price": "$400"
+            }
+        ]
+    },
+    {
+        "name": "Ice Lab",
+        "phones": [
+            {
+                "name": "Prismatica",
+                "file": "Prismatica",
+                "price": "$965",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "I\\O",
+        "suffix": "(IO)",
+        "phones": [
+            {
+                "name": "Sogno",
+                "file": "Sogno",
+                "reviewScore": "Approved",
+                "price": "$400",
+                "reviewLink": "https:\/\/youtu.be\/_gwyXmYruUI?si=rRDiApM5YNR08T91"
+            },
+            {
+                "name": "Volare",
+                "file": "Volare",
+                "reviewScore": "Approved",
+                "price": "$600"
+            },
+            {
+                "name": "Cielo",
+                "file": "Cielo",
+                "reviewScore": "Untested",
+                "price": "$1000"
+            }
+        ]
+    },
+     {
+        "name": "Ikko",
+        "phones": [
+            {
+                "name": "OH1S",
+                "file": "OH1S"
+            }
+        ]
+    },
+    {
+        "name": "Inawaken",
+        "phones": [
+            {
+                "name": "Dawn Ms",
+                "file": "Dawn Ms",
+                "price": "$50",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Twilight-DS",
+                "file": [
+                    "Twilight-DS Long",
+                    "Twilight-DS Short"
+                ],
+                "suffix": [
+                    "(Yellow tips)",
+                    "(Grey tips)"
+                ],
+                "price": "$350"
+            }
+        ]
+    },
+    {
+        "name": "Intuaura",
+        "phones": [
+            {
+                "name": "Plume",
+                "file": "Plume",
+                "price": "$150",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Reference 2019",
+                "file": [
+                    "Reference 2019 (DSP)",
+                    "Reference 2019 (Analog)"
+                ],
+                "suffix": [
+                    "(DSP)",
+                    "(Analog)"
+                ],
+                "price": "$100",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "Itsfit",
+        "suffix": "LAB",
+        "phones": [
+            {
+                "name": "Fusion",
+                "file": "Fusion itsfitlabs",
+                "reviewScore": "Tested",
+                "price": "$950"
+            },
+            {
+                "name": "R3",
+                "file": [
+                    "R3"
+                ],
+                "suffix": [
+                    "(universal)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$350"
+            }
+        ]
+    },
+    {
+        "name": "Jomo",
+        "suffix": "Audio",
+        "phones": [
+            {
+                "name": "P3",
+                "collab": "Pantheon Percussion",
+                "file": "P3",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Nautilus",
+                "file": "Nautilus"
+            }
+        ]
+    },
+    {
+        "name": "JQ",
+        "phones": [
+            {
+                "name": "4U Pro",
+                "file": "JQ 4U Pro",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "JVC",
+        "phones": [
+            {
+                "name": "HA-FDX1",
+                "collab": "Drop",
+                "file": [
+                    "FDX1 (Stock)",
+                    "FDX1 (Blue)",
+                    "FDX1 (Green)"
+                ],
+                "suffix": [
+                    "(Stock filter)",
+                    "(Blue filter)",
+                    "(Green filter)"
+                ],
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Juzear",
+        "phones": [
+            {
+                "name": "Butterfly",
+                "file": "Juzear Butterfly"
+            },
+            {
+                "name": "Defiant",
+                "file": "Defiant"
+            }
+        ]
+    },
+    {
+        "name": "KBear",
+        "phones": [
+            {
+                "name": "Aurora",
+                "file": "Aurora KBear",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "F1",
+                "file": "F1",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Neon",
+                "file": "Neon",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Qinglong",
+                "file": "Qinglong",
+                "price": "$70",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "Kefine",
+        "phones": [
+            {
+                "name": "Klean",
+                "file": "Klean",
+                "price": "$50",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Delci",
+                "file": "Delci",
+                "reviewScore": "Approved",
+                "price": "$75",
+                "reviewLink": "https:\/\/youtu.be\/Rqw-W0pO6n0?si=0sTNlA_akOVyQW4l"
+            }
+        ]
+    },
+    {
+        "name": "Kinera",
+        "phones": [
+            {
+                "name": "H3",
+                "file": "H3",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Kiwi Ears",
+        "phones": [
+            {
+                "name": "Aether",
+                "file": "Aether"
+            },
+            {
+                "name": "Astral",
+                "file": "Astral",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/l6pu17ETspE?si=SOEwkQfLv2bkNK9A",
+                "price": "$300"
+            },
+            {
+                "name": "Belle",
+                "file": "Belle",
+                "reviewScore": "Untested",
+                "price": "$30"
+            },
+            {
+                "name": "Cadenza 2",
+                "file": "Cadenza 2",
+                "reviewScore": "Approved",
+                "price": "$50"
+            },
+            {
+                "name": "Etude",
+                "file": "Etude"
+            },
+            {
+                "name": "Canta",
+                "file": "Canta",
+                "reviewScore": "Tested",
+                "price": "$90"
+            },
+            {
+                "name": "Dolce",
+                "file": "Dolce",
+                "price": "$25",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "KE4",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/E-acJ5Vh674?si=YsPtBXTHtCmqbFQ4",
+                "price": "$200",
+                "shopLink": "https:\/\/hangout.audio\/products\/kiwi-ears-ke4",
+                "file": "KE4"
+            },
+            {
+                "name": "Orchestra Lite",
+                "reviewScore": "Approved",
+                "price": "$250",
+                "shopLink": "https:\/\/hangout.audio\/products\/kiwi-ears-orchestra-lite",
+                "file": "Orchestra Lite",
+                "reviewLink": "https:\/\/youtu.be\/O6KMdgzQrf8?si=sfbvUK2gQK6EbZPu"
+            },
+            {
+                "name": "Orchestra",
+                "reviewScore": "Tested",
+                "file": "Orchestra",
+                "price": "Discont."
+            },
+            {
+                "name": "Orchestra 2",
+                "file": "Orchestra 2",
+                "reviewScore": "Untested",
+                "price": "$350"
+            },
+            {
+                "name": "Punch",
+                "collab": "HBB",
+                "file": "Punch",
+                "price": "$450",
+                "reviewScore": "Tested"
+            },
+            {
+                "name": "Quartet",
+                "reviewScore": "Tested",
+                "price": "$110",
+                "file": [
+                    "Quartet (00)",
+                    "Quartet (10)",
+                    "Quartet (02)",
+                    "Quartet (12)"
+                ],
+                "suffix": [
+                    "(00 setting)",
+                    "(10 setting)",
+                    "(02 setting)",
+                    "(12 setting)"
+                ]
+            },
+            {
+                "name": "Quintet",
+                "reviewScore": "Approved",
+                "price": "$220",
+                "shopLink": "https:\/\/hangout.audio\/products\/kiwi-ears-quintet",
+                "file": "Quintet",
+                "reviewLink": "https:\/\/youtu.be\/zYluDHWeoY8?si=UgOb_lS3z4Y50xas"
+            },
+            {
+                "name": "Singolo",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/K-qAJA4B0p4",
+                "price": "$80",
+                "shopLink": "https:\/\/hangout.audio\/products\/singolo",
+                "file": "Resonator"
+            }
+        ]
+    },
+    {
+        "name": "Kotori Audio",
+        "phones": [
+            {
+                "name": "Zephyr",
+                "file": "Zephyr",
+                "price": "$200",
+                "reviewScore": "Tested"
+            }
+        ]
+    },
+    {
+        "name": "KZ",
+        "suffix": "(Knowledge Zenith)",
+        "phones": [
+            {
+                "name": "AS10",
+                "file": "AS10",
+                "reviewScore": "Tested",
+                "price": "$55"
+            },
+            {
+                "name": "ASF",
+                "file": "ASF",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "ASX",
+                "file": "ASX",
+                "reviewScore": "Tested",
+                "price": "$100"
+            },
+            {
+                "name": "EDX Pro",
+                "file": "EDX Pro",
+                "reviewScore": "Tested",
+                "price": "$13"
+            },
+            {
+                "name": "ZAR",
+                "file": "ZAR",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "ZAS",
+                "file": "ZAS",
+                "reviewScore": "Tested",
+                "price": "$70"
+            },
+            {
+                "name": "ZAX",
+                "file": "ZAX",
+                "reviewScore": "Tested",
+                "price": "$60"
+            },
+            {
+                "name": "ZEX",
+                "file": "ZEX",
+                "reviewScore": "Tested",
+                "price": "$22"
+            },
+            {
+                "name": "ZS10 Pro",
+                "file": "ZS10 Pro",
+                "reviewScore": "Tested",
+                "price": "$45"
+            },
+            {
+                "name": "ZSN Pro X",
+                "file": "ZSN Pro X",
+                "reviewScore": "Tested",
+                "price": "$21"
+            },
+            {
+                "name": "ZSX",
+                "file": "ZSX",
+                "reviewScore": "Tested",
+                "price": "$50"
+            }
+        ]
+    },
+    {
+        "name": "Letshuoer",
+        "phones": [
+            {
+                "name": "Cadenza 4",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/AK0De_wGnBI?si=3pU3iu0TgMplAeqR",
+                "price": "$250",
+                "shopLink": "https:\/\/hangout.audio\/products\/letshuoer-cadenza-4",
+                "file": "Cadenza 4"
+            },
+            {
+                "name": "Cadenza 12",
+                "file": "Cadenza 12",
+                "reviewScore": "Tested",
+                "price": "$2100"
+            },
+            {
+                "name": "E20",
+                "collab": "Aoshida",
+                "file": "E20",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Ember",
+                "file": "Ember",
+                "price": "$500",
+                "reviewScore": "Tested"
+            },
+            {
+                "name": "EJ09",
+                "file": "EJ09",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Galileo",
+                "collab": "GizAudio",
+                "file": "Galileo",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Mystic 8",
+                "file": "Letshuoer Mystic 8",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/JchCV6piaZs?si=lh8EPLcXpTyq9LKa",
+                "price": "$990"
+            },
+            {
+                "name": "S12",
+                "file": "S12",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=6grh_x3lCp6AWvfz&t=561",
+                "price": "$110"
+            },
+            {
+                "name": "S12 Anniversary",
+                "file": "S12 Anniversary",
+                "price": "$215",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "S12 Pro",
+                "reviewScore": "Approved",
+                "price": "$135",
+                "shopLink": "https:\/\/hangout.audio\/products\/letshuoer-s12-pro",
+                "file": "S12 Pro"
+            },
+            {
+                "name": "Z12",
+                "collab": "Z Review",
+                "file": "Z12",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "LZ",
+        "suffix": "Audio",
+        "phones": [
+            {
+                "name": "A2 Pro",
+                "file": "A2 Pro",
+                "reviewScore": "Tested",
+                "price": "$140"
+            }
+        ]
+    },
+    {
+        "name": "Magaosi",
+        "phones": [
+            {
+                "name": "K5",
+                "file": "K5",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Moondrop",
+        "phones": [
+            {
+                "name": "Aria",
+                "file": "Aria",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Aria 2",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/QSVn-qZBdog?si=5aP4NUYiZj-zWC4a",
+                "price": "$100",
+                "shopLink": "https:\/\/hangout.audio\/products\/moondrop-aria-2",
+                "file": "Aria 2"
+            },
+            {
+                "name": "Aria Snow Edition",
+                "file": "Aria SE",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Armature Art 12",
+                "file": "Armature Art 12"
+            },
+            {
+                "name": "Armature Art 24",
+                "file": [
+                    "AA24 Silicone",
+                    "AA24 Foam"
+                ],
+                "suffix": [
+                    "Silicone Tips",
+                    "Foam"
+                ]
+            },
+            {
+                "name": "Blessing (Original)",
+                "file": "Blessing",
+                "price": "Discont.",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Blessing 2",
+                "file": "Blessing 2",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Blessing2:Dusk",
+                "collab": "Crinacle",
+                "file": "Dusk",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Blessing 3",
+                "file": "Blessing 3",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/BeW9bvtkE-o",
+                "price": "$360"
+            },
+            {
+                "name": "Chu",
+                "file": "Chu",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/fMy3DJ18ntE",
+                "price": "Discont."
+            },
+            {
+                "name": "Chu 2 DSP",
+                "file": "Chu 2 DSP",
+                "reviewScore": "Approved",
+                "price": "$30"
+            },
+            {
+                "name": "Chu 2",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/dsyVzW71KJs",
+                "price": "$23",
+                "shopLink": "https:\/\/hangout.audio\/products\/moondrop-chu-2",
+                "file": "Chu 2"
+            },
+            {
+                "name": "Chu 3",
+                "reviewScore": "Approved",
+                "price": "$25",
+                "shopLink": "https:\/\/hangout.audio\/products\/moondrop-chu-3",
+                "file": "Chu 3"
+            },
+            {
+                "name": "Dark Saber",
+                "file": "Dark Saber",
+                "price": "$900",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "DUSK",
+                "collab": "Crinacle",
+                "file": [
+                    "DUSK DSP Default S1",
+                    "DUSK DSP Bass S1",
+                    "DUSK DSP V S1",
+                    "DUSK DSP Harman S1",
+                    "DUSK DSP DFT S1",
+                    "DUSK S1"
+                ],
+                "suffix": [
+                    "(DSP: Default)",
+                    "(DSP: Bass+)",
+                    "(DSP: V)",
+                    "(DSP: Harman)",
+                    "(DSP: Diffuse-Tilted)",
+                    "(Analog)"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/ATzoF4IxCmk",
+                "price": "$400"
+            },
+            {
+                "name": "Golden Age 2",
+                "file": "Golden Age 2"
+            },
+            {
+                "name": "Harmon",
+                "file": "Harmon",
+                "reviewScore": "Untested",
+                "price": "$350"
+            },
+            {
+                "name": "Illustrious",
+                "file": "illustrious"
+            },
+            {
+                "name": "Illumination",
+                "file": "Illumination",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Jiu",
+                "file": "Jiu",
+                "reviewScore": "Tested",
+                "price": "$25"
+            },
+            {
+                "name": "Kadenz",
+                "file": "Kadenz",
+                "price": "$220",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Kanas Pro",
+                "file": "Kanas Pro",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Kato",
+                "file": [
+                    "Kato Brass",
+                    "Kato Silver"
+                ],
+                "suffix": [
+                    "(Brass nozzle)",
+                    "(Silver nozzle)"
+                ],
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "KXXS",
+                "file": "KXXS",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Lan",
+                "reviewScore": "Approved",
+                "price": "$45",
+                "shopLink": "https:\/\/hangout.audio\/products\/moondrop-lan",
+                "file": "Lan"
+            },
+            {
+                "name": "May",
+                "reviewScore": "Approved",
+                "price": "$75",
+                "shopLink": "https:\/\/hangout.audio\/products\/moondrop-may",
+                "file": [
+                    "May (DSP)",
+                    "May (3.5)"
+                ],
+                "suffix": [
+                    "DSP",
+                    "3.5"
+                ]
+            },
+            {
+                "name": "Meteor",
+                "file": "Moondrop Meteor",
+                "reviewScore": "Approved",
+                "price": "$550",
+                "reviewLink": "https:\/\/youtu.be\/S3q728aoRig?si=DfpoFoYH0UIbsjpt"
+            },
+            {
+                "name": "Quarks",
+                "file": "Quarks",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Quarks DSP",
+                "file": "Quarks DSP",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Ray",
+                "file": [
+                    "Ray DSP",
+                    "Ray 3.5"
+                ],
+                "suffix": [
+                    "DSP",
+                    "3.5"
+                ]
+            },
+            {
+                "name": "Robin",
+                "file": "Robin"
+            },
+            {
+                "name": "S8",
+                "file": "S8",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Silicon",
+                "collab": "Crinacle",
+                "file": "Silicon S1",
+                "reviewScore": "Approved"
+            },
+            {
+                "name": "Solis 2",
+                "file": "Solis 2",
+                "reviewScore": "Approved",
+                "price": "$3000"
+            },
+            {
+                "name": "Space Travel",
+                "reviewScore": "Approved",
+                "price": "$30",
+                "shopLink": "https:\/\/hangout.audio\/products\/moondrop-space-travel",
+                "file": [
+                    "Space Travel (Bass)",
+                    "Space Travel (Monitor)",
+                    "Space Travel (Ref)"
+                ],
+                "suffix": [
+                    "Bass",
+                    "Monitor",
+                    "Ref"
+                ],
+                "reviewLink": "https:\/\/youtu.be\/Ui6LbCetd9Y?si=-5970pWXeqP4k--q"
+            },
+            {
+                "name": "Space Travel 2",
+                "file": "Space Travel 2"
+            },
+            {
+                "name": "Space Travel 2 Ultra",
+                "file": "Space Travel 2 Ultra"
+            },
+            {
+                "name": "SSR",
+                "file": "SSR",
+                "reviewScore": "Tested",
+                "price": "$40"
+            },
+            {
+                "name": "SSP",
+                "file": "SSP",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Starfield 3",
+                "file": "Starfield 3"
+            },
+            {
+                "name": "Stellaris",
+                "file": "Stellaris",
+                "reviewScore": "Tested",
+                "price": "$130"
+            },
+            {
+                "name": "Ultrasonic",
+                "file": "Ultrasonic",
+                "suffix": [
+                    "Default"
+                ],
+                "reviewScore": "Tested",
+                "price": "$90"
+            },
+            {
+                "name": "Variations",
+                "file": "Variations",
+                "reviewScore": "Approved",
+                "price": "$520",
+                "reviewLink": "https:\/\/youtu.be\/X97-_kAJssc?si=gh2bpMgWkETrCyWD"
+            }
+        ]
+    },
+    {
+        "name": "Myer Audio",
+        "phones": [
+            {
+                "name": "SLIIVO SL41 Pro",
+                "file": [
+                    "41 Pro 00",
+                    "41 Pro 02",
+                    "41 Pro 10",
+                    "41 Pro 12"
+                ],
+                "suffix": [
+                    "(00 setting)",
+                    "(02 setting)",
+                    "(10 setting)",
+                    "(12 setting)"
+                ],
+                "reviewScore": "Approved",
+                "price": "$220"
+            },
+            {
+                "name": "SLIIVO SL41 Mk2",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/IZYFjy7Xyak?si=qTn43tMqbjl5WbXj",
+                "price": "$180",
+                "shopLink": "https:\/\/hangout.audio\/products\/myer-audio-sliivo",
+                "file": "SLIIVO SL41 Mk2"
+            },
+            {
+                "name": "SLIIVO SLA3",
+                "file": "SLA3"
+            },
+            {
+                "name": "SLIIVO SL224",
+                "file": "SL224",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/www.youtube.com\/watch?v=4MAGMzST7bE",
+                "price": "$270"
+            },
+            {
+                "name": "CKLVX CK2V",
+                "file": "CK2V"
+            },
+            {
+                "name": "CKLVX Lava",
+                "file": "CKLVX Lava"
+            }
+        ]
+    },
+    {
+        "name": "Mysticraft",
+        "phones": [
+            {
+                "name": "Myth",
+                "file": [
+                    "Myth",
+                    "Myth S2"
+                ],
+                "suffix": [
+                    "S1",
+                    "S2"
+                ],
+                "reviewScore": "Approved",
+                "price": "$1000"
+            }
+        ]
+    },
+    {
+        "name": "ND",
+        "phones": [
+            {
+                "name": "DD3",
+                "file": [
+                    "DD3 1-1-0",
+                    "DD3 1-0-0",
+                    "DD3 0-1-0",
+                    "DD3 0-0-1"
+                ],
+                "suffix": [
+                    "(000 setting)",
+                    "(101 setting)",
+                    "(011 setting)",
+                    "(110 setting)"
+                ],
+                "price": "$19",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "ND-001",
+                "file": "ND-001",
+                "price": "$56",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "NICE",
+                "file": "NICE",
+                "price": "$27",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "X12",
+                "file": [
+                    "X12 (000)",
+                    "X12 (101)",
+                    "X12 (011)",
+                    "X12 (110)"
+                ],
+                "suffix": [
+                    "(000 setting)",
+                    "(101 setting)",
+                    "(011 setting)",
+                    "(110 setting)"
+                ],
+                "price": "$50",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "ZR",
+                "file": "ZR",
+                "price": "$25",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "Neusonik",
+        "phones": [
+            {
+                "name": "Direm E3",
+                "file": "Direm E3",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Direm PRO",
+                "file": "Direm PRO",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "NF Audio",
+        "phones": [
+            {
+                "name": "NF2u",
+                "file": "NF-2U",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "NM2+",
+                "file": "NM2+",
+                "price": "$170",
+                "reviewScore": "Tested"
+            }
+        ]
+    },
+    {
+        "name": "NiceHCK",
+        "phones": [
+            {
+                "name": "EBX25Ti",
+                "file": "EBX25Ti"
+            },
+            {
+                "name": "F1 Pro",
+                "file": "F1 Pro"
+            },
+            {
+                "name": "NX8",
+                "file": "NiceHCK NX8"
+            },
+            {
+                "name": "NX8 Ti",
+                "file": [
+                    "NX8 Ti Silver",
+                    "NX8 Ti Gold"
+                ],
+                "suffix": [
+                    "Silver Nozzle",
+                    "Gold Nozzle"
+                ]
+            },
+            {
+                "name": "Rockies",
+                "file": "Rockies",
+                "reviewScore": "Approved",
+                "price": "$500",
+                "reviewLink": "https:\/\/youtu.be\/7pDfoJJ1FPU"
+            },
+            {
+                "name": "String Snow",
+                "file": "String Snow"
+            },
+            {
+                "name": "Tears",
+                "file": "Tears"
+            },
+            {
+                "name": "Himalaya",
+                "file": "Himalaya"
+            }
+        ]
+    },
+    {
+        "name": "Nightjar",
+        "phones": [
+            {
+                "name": "Singularity",
+                "file": "Singularity",
+                "reviewScore": "Tested",
+                "price": "$1300",
+                "reviewLink": "https:\/\/youtu.be\/cLm430qGE0c"
+            },
+            {
+                "name": "Duality",
+                "file": [
+                    "Duality",
+                    "Duality Switch",
+                    "Duality Impedance",
+                    "Duality Impedance + Switch"
+                ],
+                "suffix": [
+                    "Switch Off",
+                    "Switch On",
+                    "Impedance",
+                    "Impedance + Switch"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Nothing",
+        "phones": [
+            {
+                "name": "Ear (1)",
+                "file": "Ear (1)"
+            },
+            {
+                "name": "Ear (2)",
+                "file": [
+                    "Ear (2) Post update",
+                    "Ear (2) Pre update"
+                ],
+                "suffix": [
+                    "(Post-update)",
+                    "(Pre-update)"
+                ],
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/cLm430qGE0c",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Noble Audio",
+        "phones": [
+            {
+                "name": "Onyx",
+                "file": "Onyx"
+            }
+        ]
+    },
+    {
+        "name": "NuForce",
+        "phones": [
+            {
+                "name": "EDC3",
+                "collab": "Drop",
+                "file": "EDC3",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "oBravo",
+        "phones": [
+            {
+                "name": "Cupid",
+                "file": "Cupid",
+                "reviewScore": "Tested",
+                "price": "$270"
+            }
+        ]
+    },
+    {
+        "name": "Ocharaku",
+        "phones": [
+            {
+                "name": "Donguri Kaede",
+                "file": "Donguri Kaede",
+                "price": "$441",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "Open Audio",
+        "phones": [
+            {
+                "name": "Mercury",
+                "file": "Mercury",
+                "reviewScore": "Tested",
+                "price": "$630"
+            },
+            {
+                "name": "Witch Pro",
+                "file": "Witch Pro"
+            }
+        ]
+    },
+    {
+        "name": "ooopusX",
+        "phones": [
+            {
+                "name": "op.22",
+                "file": [
+                    "op.22",
+                    "op.22 Bass"
+                ],
+                "suffix": [
+                    "(Bass off)",
+                    "(Bass on)"
+                ],
+                "reviewScore": "Approved",
+                "price": "$35"
+            },
+            {
+                "name": "op.24",
+                "file": [
+                    "op.24 Mode 1",
+                    "op.24 Mode 2"
+                ],
+                "suffix": [
+                    "(Mode 1)",
+                    "(Mode 2)"
+                ],
+                "reviewScore": "Untested",
+                "price": "$50"
+            }
+        ]
+    },
+    {
+        "name": "Ovidius",
+        "phones": [
+            {
+                "name": "RX100 Qin Armour",
+                "file": "RX100",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Periodic",
+        "suffix": "Audio",
+        "phones": [
+            {
+                "name": "Be",
+                "file": "Be",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Mg",
+                "file": "Mg",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Ti",
+                "file": "Ti",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Pioneer",
+        "phones": [
+            {
+                "name": "SE-CX9",
+                "file": "SE-CX9",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Prisma",
+        "suffix": "Audio",
+        "phones": [
+            {
+                "name": "Azul",
+                "file": "Azul",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Project",
+        "phones": [
+            {
+                "name": "Solo (V1.0)",
+                "file": "Project Solo V1.0"
+            },
+            {
+                "name": "Lion",
+                "file": [
+                    "Project Lion-Bright V0.3",
+                    "Project Lion-Bass V0.3"
+                ],
+                "suffix": [
+                    "(Variant:Bright) V0.3",
+                    "(Variant:Bass) V0.3"
+                ]
+            },
+            {
+                "name": "Comet (V2.1)",
+                "file": "Project Comet V2.1"
+            }
+        ]
+    },
+    {
+        "name": "Punch Audio",
+        "phones": [
+            {
+                "name": "Portazo",
+                "file": "Portazo",
+                "reviewScore": "Approved",
+                "price": "$189"
+            }
+        ]
+    },
+    {
+        "name": "Pula",
+        "phones": [
+            {
+                "name": "CE-5",
+                "file": "CE5"
+            }
+        ]
+    },
+    {
+        "name": "QoA",
+        "suffix": "(Queen of Audio)",
+        "phones": [
+            {
+                "name": "Mojito",
+                "file": "Mojito",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Ryusei",
+                "file": "Ryusei"
+            }
+        ]
+    },
+    {
+        "name": "QKZ",
+        "phones": [
+            {
+                "name": "Khan",
+                "collab": "HBB",
+                "file": "Khan",
+                "price": "Discont.",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "VK4 (Revised)",
+                "file": "VK4 Revised",
+                "reviewScore": "Tested",
+                "price": "$20"
+            },
+            {
+                "name": "ZXD",
+                "file": "ZXD",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=hDHMR9HyNXA6udxN&t=1068",
+                "price": "$20"
+            },
+            {
+                "name": "ZXN",
+                "file": "ZXN",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=EzWBWd6WcdbB69SX&t=1107",
+                "price": "Discont.",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "QDC",
+        "phones": [
+            {
+                "name": "Superior EX",
+                "collab": "Fitear",
+                "file": "Superior EX"
+            }
+        ]
+    },
+    {
+        "name": "Raptgo",
+        "phones": [
+            {
+                "name": "Bridge",
+                "file": [
+                    "Bridge 0-0 Black",
+                    "Bridge 1-0 Black",
+                    "Bridge 1-1 Black",
+                    "Bridge 0-1 Black",
+                    "Bridge 0-0 Gold",
+                    "Bridge 1-0 Gold",
+                    "Bridge 1-1 Gold",
+                    "Bridge 0-1 Gold",
+                    "Bridge 0-0 Silver",
+                    "Bridge 1-0 Silver",
+                    "Bridge 1-1 Silver",
+                    "Bridge 0-1 Silver"
+                ],
+                "suffix": [
+                    "0-0 Black",
+                    "1-0 Black",
+                    "1-1 Black",
+                    "0-1 Black",
+                    "0-0 Gold",
+                    "1-0 Gold",
+                    "1-1 Gold",
+                    "0-1 Gold",
+                    "0-0 Silver",
+                    "1-0 Silver",
+                    "1-1 Silver",
+                    "0-1 Silver"
+                ],
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Hook-X",
+                "file": "Hook-X",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Razer",
+        "phones": [
+            {
+                "name": "Moray",
+                "file": "Moray",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/WLr4eWDS1K4",
+                "price": "$150"
+            }
+        ]
+    },
+    {
+        "name": "Samsung",
+        "phones": [
+            {
+                "name": "EO-IG955",
+                "collab": "AKG",
+                "file": "EO-IG955",
+                "reviewScore": "Approved",
+                "price": "$10"
+            },
+            {
+                "name": "Galaxy Buds2 Pro",
+                "file": [
+                    "Galaxy Buds2 Pro (ANC on)",
+                    "Galaxy Buds2 Pro (ANC off)"
+                ],
+                "suffix": [
+                    "(ANC on)",
+                    "(ANC off)"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/45AHeEquI-s",
+                "price": "$230"
+            },
+            {
+                "name": "Galaxy Buds3 Pro",
+                "file": [
+                    "Galaxy Buds3 Pro (ANC on)",
+                    "Galaxy Buds3 Pro (ANC off)"
+                ],
+                "suffix": [
+                    "(ANC on)",
+                    "(ANC off)"
+                ],
+                "reviewLink": "https:\/\/youtu.be\/QgKHV-lQkDE",
+                "price": "$280",
+                "reviewScore": "Approved"
+            },
+            {
+                "name": "Galaxy Buds4 Pro",
+                "file": "Buds4 Pro",
+                "suffix": "(ANC on)",
+                "price": "$250",
+                "reviewScore": "Approved"
+            }
+        ]
+    },
+    {
+        "name": "See Audio",
+        "phones": [
+            {
+                "name": "Yume:Midnight",
+                "collab": "Crinacle",
+                "file": "Midnight",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/aLJB4QbzGPQ",
+                "price": "Discont."
+            },
+            {
+                "name": "Bravery",
+                "file": "Bravery",
+                "reviewScore": "Tested",
+                "price": "$280"
+            }
+        ]
+    },
+    {
+        "name": "Seek Real",
+        "suffix": "Audio",
+        "phones": [
+            {
+                "name": "Airship",
+                "file": "Airship",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Senfer",
+        "phones": [
+            {
+                "name": "DT6",
+                "file": "DT6",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Sennheiser",
+        "phones": [
+            {
+                "name": "IE200",
+                "file": [
+                    "IE200",
+                    "IE200 Open"
+                ],
+                "suffix": [
+                    "(Standard tip position)",
+                    "(Open tip position)"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/enYOKvYSAPc",
+                "price": "$150"
+            },
+            {
+                "name": "IE300",
+                "file": "IE300",
+                "reviewScore": "Tested",
+                "price": "$300"
+            },
+            {
+                "name": "IE600",
+                "file": "IE600"
+            },
+            {
+                "name": "Momentum 4",
+                "file": "Momentum 4",
+                "reviewScore": "Tested",
+                "price": "$300"
+            }
+        ]
+    },
+    {
+        "name": "Shanling",
+        "phones": [
+            {
+                "name": "ME100",
+                "file": "ME100",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Sono",
+                "file": "Sono",
+                "price": "$80",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "ME700 Lite",
+                "file": "ME700 Lite",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "ME800",
+                "file": [
+                    "ME800 12",
+                    "ME800 10",
+                    "ME800 02",
+                    "ME800 00"
+                ],
+                "suffix": [
+                    "(12 setting)",
+                    "(10 setting)",
+                    "(02 setting)",
+                    "(00 setting)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$780"
+            },
+            {
+                "name": "MG600",
+                "file": "MG600",
+                "reviewScore": "Tested",
+                "price": "$600"
+            }
+        ]
+    },
+    {
+        "name": "Shozy",
+        "phones": [
+            {
+                "name": "Ceres",
+                "file": "Ceres",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Black Hole Mini",
+                "file": "Black Hole Mini",
+                "reviewScore": "Tested",
+                "price": "$670"
+            },
+            {
+                "name": "Form 1.1",
+                "file": "Form 1.1",
+                "reviewScore": "Tested",
+                "price": "$75"
+            },
+            {
+                "name": "Form 1.4",
+                "file": "Form 1.4",
+                "reviewScore": "Tested",
+                "price": "$200"
+            },
+            {
+                "name": "Neo BG",
+                "file": "Neo BG",
+                "reviewScore": "Tested",
+                "price": "$280"
+            },
+            {
+                "name": "V33",
+                "file": "V33",
+                "reviewScore": "Tested",
+                "price": "$50"
+            }
+        ]
+    },
+    {
+        "name": "Shuoer",
+        "phones": [
+            {
+                "name": "H27",
+                "file": "H27",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Tape Pro",
+                "file": "Tape Pro",
+                "reviewScore": "Tested",
+                "price": "$180"
+            },
+            {
+                "name": "Singer",
+                "file": [
+                    "Singer (Stock)",
+                    "Singer (LF)"
+                ],
+                "suffix": [
+                    "(Stock filter)",
+                    "(LF filter)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$120"
+            },
+            {
+                "name": "EJ07M",
+                "file": "EJ07M",
+                "reviewScore": "Approved",
+                "price": "$670"
+            }
+        ]
+    },
+    {
+        "name": "Simgot",
+        "phones": [
+            {
+                "name": "EA1000",
+                "file": [
+                    "EA1000 Red",
+                    "EA1000 Black",
+                    "EA1000 White"
+                ],
+                "suffix": [
+                    "(Red filter)",
+                    "(Black filter)",
+                    "(White filter)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$220"
+            },
+            {
+                "name": "EA500",
+                "file": [
+                    "EA500 Red",
+                    "EA500 Black"
+                ],
+                "suffix": [
+                    "(Red filter)",
+                    "(Black filter)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$80"
+            },
+            {
+                "name": "EA500LM",
+                "file": [
+                    "EA500LM Red",
+                    "EA500LM Black"
+                ],
+                "suffix": [
+                    "(Red filter)",
+                    "(Black filter)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$90"
+            },
+            {
+                "name": "EM6L",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/hZMwifK_L5s?si=-CimvewLpY0bU48w",
+                "price": "$110",
+                "shopLink": "https:\/\/hangout.audio\/products\/simgot-em6l",
+                "file": "EM6L"
+            },
+            {
+                "name": "EM10",
+                "file": "EM10",
+                "price": "$440",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "ET142",
+                "file": "ET142",
+                "reviewScore": "Tested",
+                "price": "$220"
+            },
+            {
+                "name": "EW100",
+                "file": "EW100",
+                "reviewScore": "Tested",
+                "price": "$20"
+            },
+            {
+                "name": "EW100 DSP",
+                "file": "EW100 DSP"
+            },
+            {
+                "name": "EW100P",
+                "reviewScore": "Approved",
+                "price": "$20",
+                "shopLink": "https:\/\/hangout.audio\/products\/simgot-ew100p",
+                "file": "EW100P S2"
+            },
+            {
+                "name": "EW200",
+                "file": "EW200",
+                "reviewScore": "Tested",
+                "price": "$40"
+            },
+            {
+                "name": "EW300",
+                "file": [
+                    "EW300 (Pink)",
+                    "EW300 (Red)"
+                ],
+                "suffix": [
+                    "(Pink filter)",
+                    "(Red filter)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$70"
+            },
+            {
+                "name": "EW300 DSP",
+                "file": [
+                    "EW300 DSP Pink",
+                    "EW300 DSP Red"
+                ],
+                "suffix": [
+                    "(Pink filter)",
+                    "(Red filter)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$80"
+            },
+            {
+                "name": "SuperMix 4",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/CG2lMpmWp28?si=SticJmO_ZM7Xs4o3",
+                "price": "$150",
+                "shopLink": "https:\/\/hangout.audio\/products\/simgot-supermix-4",
+                "file": "SuperMix 4"
+            },
+            {
+                "name": "SuperMix 5",
+                "file": "SuperMix 5",
+                "reviewScore": "Untested",
+                "price": "$220"
+            }
+        ]
+    },
+    {
+        "name": "Simphonio",
+        "phones": [
+            {
+                "name": "RX10",
+                "file": "RX10",
+                "reviewScore": "Tested",
+                "price": "$640"
+            }
+        ]
+    },
+    {
+        "name": "Softears",
+        "phones": [
+            {
+                "name": "RS10",
+                "file": "RS10",
+                "reviewScore": "Approved",
+                "price": "$2100",
+                "reviewLink": "https:\/\/www.youtube.com\/watch?v=SgxAfgQ6jd0"
+            },
+            {
+                "name": "RSV",
+                "file": "RSV",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/www.youtube.com\/watch?v=XpzaxDN4bCg",
+                "price": "$730"
+            },
+            {
+                "name": "RSV MK2",
+                "file": "RSV MK2",
+                "reviewScore": "Tested",
+                "price": "$700"
+            },
+            {
+                "name": "Studio 4",
+                "file": "Studio 4",
+                "reviewScore": "Approved",
+                "price": "$450"
+            },
+            {
+                "name": "Turii",
+                "file": "Turii",
+                "reviewScore": "Approved",
+                "price": "$1400"
+            },
+            {
+                "name": "Twilight",
+                "file": "Twilight",
+                "reviewScore": "Approved",
+                "price": "$930",
+                "reviewLink": "https:\/\/youtu.be\/DP26AF8Owkg?si=al_M5sQdw8N-ohiQ"
+            },
+            {
+                "name": "Volume",
+                "reviewScore": "Approved",
+                "price": "$285",
+                "shopLink": "https:\/\/hangout.audio\/products\/softears-volume",
+                "file": "Volume",
+                "reviewLink": "https:\/\/youtu.be\/b-kOD9peGCM?si=4Jwh72Mv_erBd47x"
+            },
+            {
+                "name": "Volume S",
+                "file": [
+                    "Volume S Low S1",
+                    "Volume S High S1",
+                    "Volume S Low S2",
+                    "Volume S High S2"
+                ],
+                "suffix": [
+                    "Low S1",
+                    "High S1",
+                    "Low S2",
+                    "High S2"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/t81eBEXyw6c?si=kOC76I0adWEeueRQ",
+                "price": "$320"
+            }
+        ]
+    },
+    {
+        "name": "Sony",
+        "phones": [
+            {
+                "name": "MH755",
+                "file": "MH755",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "AS800",
+                "file": "AS800"
+            },
+            {
+                "name": "IER-M9",
+                "file": "IER-M9"
+            },
+            {
+                "name": "IER-Z1R",
+                "file": [
+                    "IER-Z1R",
+                    "IER-Z1R Filtered"
+                ],
+                "Suffix": [
+                    "Z1R",
+                    "Z1R Filtered"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/OR9ET3qykh4",
+                "price": "$1700"
+            }
+        ]
+    },
+    {
+        "name": "Subtonic",
+        "phones": [
+            {
+                "name": "Storm",
+                "file": "Storm",
+                "reviewScore": "Tested",
+                "price": "$5200"
+            },
+            {
+                "name": "Storm Relaunch Edition",
+                "file": "Storm Relaunch Edition"
+            }
+        ]
+    },
+    {
+        "name": "Symphonium Audio",
+        "phones": [
+            {
+                "name": "Europa",
+                "file": "Europa"
+            },
+            {
+                "name": "Titan",
+                "file": "Titan"
+            },
+            {
+                "name": "Helios SE",
+                "collab": "Elise",
+                "file": "Helios SE"
+            }
+        ]
+    },
+    {
+        "name": "Tanchjim",
+        "phones": [
+            {
+                "name": "Kara",
+                "file": "Kara",
+                "reviewScore": "Approved",
+                "price": "$180"
+            },
+            {
+                "name": "Kasier",
+                "file": "Kasier"
+            },
+            {
+                "name": "New HANA (2021)",
+                "file": "New HANA",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Ola",
+                "file": "Ola",
+                "reviewScore": "Tested",
+                "price": "$43"
+            },
+            {
+                "name": "Force",
+                "file": "Force"
+            },
+            {
+                "name": "ONE",
+                "file": "ONE",
+                "reviewScore": "Tested",
+                "price": "$26"
+            },
+            {
+                "name": "Origin",
+                "file": "Tanchjim Origin",
+                "reviewScore": "Approved",
+                "price": "$260",
+                "reviewLink": "https:\/\/youtu.be\/MrNoXDq3O3M?si=B3AGQX9AQyuUE_Xi"
+            },
+            {
+                "name": "Oxygen",
+                "reviewScore": "Approved",
+                "price": "$230",
+                "file": "Oxygen"
+            },
+            {
+                "name": "Prism",
+                "file": "Prism",
+                "reviewScore": "Tested",
+                "price": "$600"
+            },
+            {
+                "name": "Tanya",
+                "file": "Tanya",
+                "reviewScore": "Tested",
+                "price": "$22"
+            },
+            {
+                "name": "Zero",
+                "file": "Zero Tanchjim",
+                "reviewScore": "Tested",
+                "price": "$15"
+            },
+            {
+                "name": "Bunny DSP",
+                "file": [
+                    "Bunny DSP",
+                    "Bunny Non-DSP"
+                ],
+                "suffix": [
+                    "DSP",
+                    "Non-DSP"
+                ],
+                "reviewScore": "Untested",
+                "price": "$20"
+            }
+        ]
+    },
+    {
+        "name": "Tangzu",
+        "phones": [
+            {
+                "name": "Wan'er",
+                "reviewScore": "Approved",
+                "price": "$19",
+                "shopLink": "https:\/\/hangout.audio\/products\/tangzu-waner-sg",
+                "file": "Wan'er"
+            },
+            {
+                "name": "Wan'er 2",
+                "file": "Wan'er 2"
+            },
+            {
+                "name": "Wan'er 2 Lion Edition",
+                "file": "Wan Er SG2 Lion Edition"
+            },
+            {
+                "name": "Wukong",
+                "file": "Wukong",
+                "reviewScore": "Tested",
+                "price": "$1950"
+            },
+            {
+                "name": "HE XiaoQiao",
+                "file": "HE XiaoQiao"
+            },
+            {
+                "name": "Amethyst Dragon",
+                "file": "Purple Dragon"
+            },
+            {
+                "name": "Wan'er Studio Edition",
+                "file": "Wan'er Studio Edition"
+            },
+            {
+                "name": "Xuan Nv",
+                "collab": "HBB",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/r7gwCXGMp_I?si=P2v3RlIFHVQ4Wktv",
+                "price": "$80",
+                "shopLink": "https:\/\/hangout.audio\/products\/tangzu-x-hbb-xuan-nv",
+                "file": "Xuan Nv"
+            },
+            {
+                "name": "Zetian Wu",
+                "file": "Zetian Wu",
+                "reviewScore": "Approved",
+                "price": "$150"
+            },
+            {
+                "name": "Zetian Wu Heyday",
+                "file": "Zetian Wu Heyday",
+                "reviewScore": "Approved",
+                "price": "$200"
+            },
+            {
+                "name": "XuanWu Gate",
+                "file": "XuanWu Gate",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/XiPPRc2W0ls?si=m7UZiAkZKRzyTU54",
+                "price": "$650"
+            }
+        ]
+    },
+    {
+        "name": "Tansio Mirai",
+        "suffix": "(TSMR)",
+        "phones": [
+            {
+                "name": "TSMR-12 \"Zodiac\"",
+                "file": [
+                    "Zodiac 123",
+                    "Zodiac 100",
+                    "Zodiac 020",
+                    "Zodiac 003",
+                    "Zodiac 120",
+                    "Zodiac 103"
+                ],
+                "suffix": [
+                    "(123 setting)",
+                    "(100 setting)",
+                    "(020 setting)",
+                    "(003 setting)",
+                    "(120 setting)",
+                    "(103 setting)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$1350"
+            }
+        ]
+    },
+    {
+        "name": "TFZ",
+        "phones": [
+            {
+                "name": "No.3",
+                "file": "No.3",
+                "price": "$110",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Warrior",
+                "file": "Warrior",
+                "reviewScore": "Untested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Thieaudio",
+        "phones": [
+            {
+                "name": "Elixir",
+                "file": "Elixir TA",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Hype 2",
+                "file": "Hype 2",
+                "reviewScore": "Approved",
+                "price": "$300",
+                "reviewLink": "https:\/\/youtu.be\/p7sFG1EZTBg?si=GugEs-QW7i1WdbfN"
+            },
+            {
+                "name": "Hype 4",
+                "file": "Hype 4",
+                "reviewScore": "Approved",
+                "price": "$400",
+                "reviewLink": "https:\/\/youtu.be\/6NCgbSxN-pE?si=Rn_K9I9oLHGcqUd6"
+            },
+            {
+                "name": "Hype 4 MK2",
+                "file": "Hype 4 MK2",
+                "reviewScore": "Approved",
+                "price": "$400",
+                "reviewLink": "https:\/\/youtu.be\/9iUwYWB13qI"
+            },
+            {
+                "name": "Hype 10",
+                "file": "Hype 10",
+                "price": "$900",
+                "reviewScore": "Approved"
+            },
+            {
+                "name": "Legacy 2 (L2)",
+                "file": "Legacy 2",
+                "reviewScore": "Tested",
+                "price": "$100"
+            },
+            {
+                "name": "Legacy 3 (L3)",
+                "file": [
+                    "Legacy 3 12",
+                    "Legacy 3 10",
+                    "Legacy 3 02",
+                    "Legacy 3 00"
+                ],
+                "suffix": [
+                    "(12 setting)",
+                    "(10 setting)",
+                    "(02 setting)",
+                    "(00 setting)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$120"
+            },
+            {
+                "name": "Legacy 5 (L5)",
+                "file": "Legacy 5",
+                "reviewScore": "Tested",
+                "price": "$250"
+            },
+            {
+                "name": "Monarch Mk2",
+                "file": "Monarch Mk2",
+                "reviewScore": "Approved",
+                "price": "$1000",
+                "reviewLink": "https:\/\/youtu.be\/ApDh4hdEmZc?si=p45ygCDOAhXF4yvF"
+            },
+            {
+                "name": "Monarch Mk3",
+                "file": "Monarch Mk3",
+                "reviewScore": "Approved",
+                "price": "$1000",
+                "reviewLink": "https:\/\/youtu.be\/FBbnrrf2N9E?si=SfPa0Wdt-dAunkTV"
+            },
+            {
+                "name": "Monarch Mk4",
+                "file": [
+                    "Monarch Mk4 Off",
+                    "Monarch Mk4 On"
+                ],
+                "suffix": [
+                    "Monarch Mk4 Off",
+                    "Monarch Mk4 On"
+                ],
+                "reviewScore": "Approved",
+                "price": "$1150"
+            },
+            {
+                "name": "Oracle (Mk1)",
+                "file": "Oracle",
+                "reviewScore": "Approved",
+                "price": "$540",
+                "reviewLink": "https:\/\/youtu.be\/sUL7aYmjS5M?si=7DpKtiWl0L2mVyi5"
+            },
+            {
+                "name": "Oracle (Mk2)",
+                "file": "Oracle Mk2",
+                "reviewScore": "Approved",
+                "price": "$590"
+            },
+            {
+                "name": "Origin",
+                "file": "Origin",
+                "price": "$850",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/huB1ppOsqIQ?si=SegPS7UeU9LVEA5e"
+            },
+            {
+                "name": "Prestige",
+                "file": "Prestige",
+                "reviewScore": "Approved",
+                "price": "$1300"
+            },
+            {
+                "name": "Prestige LTD",
+                "file": "Prestige LTD",
+                "price": "$1300",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Valhalla",
+                "file": "Valhalla",
+                "reviewScore": "Tested",
+                "price": "$2000"
+            },
+            {
+                "name": "Voyager 3 (V3)",
+                "file": [
+                    "Voyager 3 (00)",
+                    "Voyager 3 (10)",
+                    "Voyager 3 (02)",
+                    "Voyager 3 (12)"
+                ],
+                "suffix": [
+                    "(00 setting)",
+                    "(10 setting)",
+                    "(02 setting)",
+                    "(12 setting)"
+                ],
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "V16 Divinity",
+                "file": "V16 Divinity",
+                "reviewScore": "Approved",
+                "price": "$1500"
+            }
+        ]
+    },
+    {
+        "name": "Tin",
+        "suffix": "HiFi",
+        "phones": [
+            {
+                "name": "P1 Max",
+                "file": "P1 Max",
+                "reviewScore": "Tested",
+                "price": "$190"
+            },
+            {
+                "name": "P1 Max 2",
+                "file": "P1 Max 2",
+                "price": "$140",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "P2",
+                "file": "P2",
+                "reviewScore": "Tested",
+                "price": "$370"
+            },
+            {
+                "name": "T1",
+                "file": "T1 Tin"
+            },
+            {
+                "name": "T2",
+                "file": "T2",
+                "reviewScore": "Tested",
+                "price": "$65"
+            },
+            {
+                "name": "T2 DLC",
+                "file": "T2 DLC",
+                "price": "$60",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "T2 Plus",
+                "file": "T2 Plus",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "T3",
+                "file": "T3",
+                "reviewScore": "Tested",
+                "price": "$80"
+            },
+            {
+                "name": "T4",
+                "file": "T4",
+                "reviewScore": "Tested",
+                "price": "$110"
+            },
+            {
+                "name": "T5",
+                "file": "T5",
+                "reviewScore": "Tested",
+                "price": "$130"
+            }
+        ]
+    },
+    {
+        "name": "Tipsy",
+        "phones": [
+            {
+                "name": "Dunmer",
+                "file": "Dunmer",
+                "reviewScore": "Tested",
+                "price": "$120"
+            },
+            {
+                "name": "Dunmer Pro",
+                "file": "Dunmer Pro",
+                "reviewScore": "Tested",
+                "price": "$190"
+            },
+            {
+                "name": "TTROMSO",
+                "file": "Ttromso",
+                "reviewScore": "Tested",
+                "price": "$90"
+            }
+        ]
+    },
+    {
+        "name": "TRI",
+        "phones": [
+            {
+                "name": "i4",
+                "file": "i4 TRI",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Starlight",
+                "file": "Starlight",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Starshine",
+                "file": "Starshine",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "TRN",
+        "phones": [
+            {
+                "name": "BAX",
+                "file": "BAX",
+                "reviewScore": "Tested",
+                "price": "$313"
+            },
+            {
+                "name": "Starfish",
+                "file": "Starfish"
+            },
+            {
+                "name": "Whale Shark",
+                "file": "Whale Shark"
+            },
+            {
+                "name": "TA2",
+                "file": "TA2",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=xNZ_Vf38Wa6kInIU&t=1024",
+                "price": "$50"
+            },
+            {
+                "name": "V90",
+                "file": "V90",
+                "reviewScore": "Tested",
+                "price": "$53"
+            },
+            {
+                "name": "X7",
+                "file": "X7",
+                "reviewScore": "Tested",
+                "price": "$130"
+            }
+        ]
+    },
+    {
+        "name": "Tripowin",
+        "phones": [
+            {
+                "name": "Mele",
+                "collab": "HBB",
+                "file": "Mele",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Piccolo",
+                "file": "Piccolo",
+                "price": "$35",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "Rhombus",
+                "file": "Rhombus",
+                "price": "$80",
+                "reviewScore": "Untested"
+            },
+            {
+                "name": "TC-01",
+                "file": "TC-01",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "TP10",
+                "file": "TP10",
+                "reviewScore": "Tested",
+                "price": "$60"
+            },
+            {
+                "name": "Vivace",
+                "file": "Vivace",
+                "price": "$30",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/w2PiOg23BC8?si=848-u6HPgu5uinML"
+            }
+        ]
+    },
+    {
+        "name": "Truthear",
+        "phones": [
+            {
+                "name": "Gate",
+                "reviewScore": "Approved",
+                "price": "$22",
+                "shopLink": "https:\/\/hangout.audio\/products\/truthear-gate",
+                "file": "Gate",
+                "reviewLink": "https:\/\/youtu.be\/KxgyQZ88lrE?si=CAQ6a2FnFXJ3LMzd"
+            },
+            {
+                "name": "Hexa",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/2VZFcCMUNnA",
+                "price": "$90",
+                "shopLink": "https:\/\/hangout.audio\/products\/truthear-hexa",
+                "file": "Hexa"
+            },
+            {
+                "name": "Hola",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/2VZFcCMUNnA",
+                "price": "Discont.",
+                "file": "Hola"
+            },
+            {
+                "name": "Nova",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/OJZZP-jzW-U?si=SbNRaMaBWB9ZyrZx",
+                "price": "$170",
+                "shopLink": "https:\/\/hangout.audio\/products\/truthear-nova",
+                "file": "Nova TE"
+            },
+            {
+                "name": "Pure",
+                "file": [
+                    "Pure (Narrow)",
+                    "Pure (Wide)"
+                ],
+                "suffix": [
+                    "(Narrow bore tips)",
+                    "(Wide bore tips)"
+                ],
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/OItA_AiP8aM",
+                "price": "$90"
+            },
+            {
+                "name": "Zero",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/VKV8zI4MCfc",
+                "price": "$60",
+                "shopLink": "https:\/\/hangout.audio\/products\/truzero",
+                "file": "Zero TE"
+            },
+            {
+                "name": "Zero:RED",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/uYLv4qKK36E",
+                "price": "$65",
+                "shopLink": "https:\/\/hangout.audio\/products\/red",
+                "file": [
+                    "ZeroRed S5",
+                    "ZeroRed S5 10ohm",
+                    "ZeroRed S1",
+                    "ZeroRed S1 10ohm",
+                    "ZeroRed S2",
+                    "ZeroRed S2 10ohm",
+                    "ZeroRed S3",
+                    "ZeroRed S3 10ohm",
+                    "ZeroRed S4",
+                    "ZeroRed S4 10ohm",
+                    "ZeroRed S6",
+                    "ZeroRed S6 10ohm",
+                    "ZeroRed S7",
+                    "ZeroRed S7 10ohm",
+                    "ZeroRed S8",
+                    "ZeroRed S8 10ohm",
+                    "ZeroRed S9",
+                    "ZeroRed S9 10ohm",
+                    "ZeroRed S10",
+                    "ZeroRed S10 10ohm"
+                ],
+                "suffix": [
+                    "S5",
+                    "S5 (Bass+)",
+                    "S1",
+                    "S1 (Bass+)",
+                    "S2",
+                    "S2 (Bass+)",
+                    "S3",
+                    "S3 (Bass+)",
+                    "S4",
+                    "S4 (Bass+)",
+                    "S6",
+                    "S6 (Bass+)",
+                    "S7",
+                    "S7 (Bass+)",
+                    "S8",
+                    "S8 (Bass+)",
+                    "S9",
+                    "S9 (Bass+)",
+                    "S10",
+                    "S10 (Bass+)"
+                ]
+            },
+            {
+                "name": "Zero:BLUE2",
+                "collab": "Crinacle",
+                "reviewScore": "Approved",
+                "price": "$65",
+                "file": [
+                    "ZeroBLUE2 (Foam tips)",
+                    "ZeroBLUE2 (Bass+) (Foam tips)",
+                    "ZeroBLUE2 (Silicone tips)",
+                    "ZeroBLUE2 (Bass+) (Silicone tips)"
+                ],
+                "suffix": [
+                    "(Foam tips)",
+                    "(Bass+) (Foam tips)",
+                    "(Silicone tips)",
+                    "(Bass+) (Silicone tips)"
+                ],
+                "reviewLink": "https:\/\/www.youtube.com\/watch?v=ItR4R6DVrO4&ab_channel=crinacle"
+            }
+        ]
+    },
+    {
+        "name": "Ucotech",
+        "phones": [
+            {
+                "name": "RE-2",
+                "file": "RE-2",
+                "reviewScore": "Tested",
+                "price": "$110"
+            }
+        ]
+    },
+    {
+        "name": "UFOEar",
+        "phones": [
+            {
+                "name": "UFO-111",
+                "file": "UFO-111",
+                "reviewScore": "Tested",
+                "price": "$200"
+            },
+            {
+                "name": "UFO-112",
+                "file": "UFO-112",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Ultimate Ears",
+        "phones": [
+            {
+                "name": "Super.fi 5 Extra Bass (SF5EB)",
+                "file": "SF5EB",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/7t3xtL-VAG0",
+                "price": "Discont."
+            },
+            {
+                "name": "Triple.fi 10 (TF10)",
+                "file": "TF10",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Unique Melody",
+        "phones": [
+            {
+                "name": "Mini MEST",
+                "file": "Mini MEST",
+                "reviewScore": "Tested",
+                "price": "$660"
+            }
+        ]
+    },
+    {
+        "name": "Urbanfun",
+        "phones": [
+            {
+                "name": "YBF-ISS014",
+                "file": "YISS",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Veedix",
+        "phones": [
+            {
+                "name": "Diamond String",
+                "file": "Diamond String",
+                "reviewScore": "Tested",
+                "reviewLink": "https:\/\/youtu.be\/_b-ssFeX9hI?si=NsFrcMSS-gUAOG1b&t=649",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Vsonic",
+        "phones": [
+            {
+                "name": "VS7",
+                "file": "VS7",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "W+G",
+        "phones": [
+            {
+                "name": "T2",
+                "file": "T2 WG",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Whizzer",
+        "phones": [
+            {
+                "name": "HE01",
+                "file": "HE01",
+                "reviewScore": "Tested",
+                "price": "$55"
+            },
+            {
+                "name": "Kylin",
+                "file": "Kylin",
+                "price": "$70",
+                "reviewScore": "Untested"
+            }
+        ]
+    },
+    {
+        "name": "XENNS",
+        "phones": [
+            {
+                "name": "Mangird MT4",
+                "file": "MT4",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Mangird Tea (1)",
+                "file": "Tea",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Mangird Tea 2",
+                "file": "Tea 2",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Tea Pro",
+                "file": "Tea Pro",
+                "reviewScore": "Approved",
+                "price": "$360",
+                "reviewLink": "https:\/\/youtu.be\/rr1sCoLNwGk?si=GrQlyK2hjSq8Ob5s"
+            },
+            {
+                "name": "Tea Pro SE",
+                "file": "Tea Pro SE",
+                "reviewScore": "Approved",
+                "price": "$449"
+            },
+            {
+                "name": "Top",
+                "file": "Top",
+                "reviewScore": "Tested",
+                "price": "Discont.",
+                "reviewLink": "https:\/\/youtu.be\/GsW4PIJNYsU?si=5j6loVpupLQqOr7x"
+            },
+            {
+                "name": "Top Pro",
+                "file": "Top Pro",
+                "reviewScore": "Approved",
+                "price": "$450"
+            },
+            {
+                "name": "UP",
+                "file": "UP",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Xiaomi",
+        "phones": [
+            {
+                "name": "HiFi Hybrid (Mi Quad)",
+                "file": "HiFi Hybrid",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            }
+        ]
+    },
+    {
+        "name": "Yanyin",
+        "phones": [
+            {
+                "name": "Aladdin",
+                "file": "Aladdin",
+                "reviewScore": "Tested",
+                "price": "Discont."
+            },
+            {
+                "name": "Baker",
+                "file": "Baker",
+                "reviewScore": "Tested",
+                "price": "$499"
+            },
+            {
+                "name": "Canon 2",
+                "file": [
+                    "Canon 2 00",
+                    "Canon 2 01",
+                    "Canon 2 10"
+                ],
+                "suffix": [
+                    "(00)",
+                    "(01)",
+                    "(10)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$380"
+            },
+            {
+                "name": "Canon Pro",
+                "file": [
+                    "Canon Pro UU",
+                    "Canon Pro DD",
+                    "Canon Pro UD",
+                    "Canon Pro DU"
+                ],
+                "suffix": [
+                    "UU",
+                    "DD",
+                    "UD",
+                    "DU"
+                ],
+                "reviewScore": "Tested",
+                "price": "$400"
+            }
+        ]
+    },
+    {
+        "name": "YU9",
+        "phones": [
+            {
+                "name": "Que",
+                "file": "Que"
+            },
+            {
+                "name": "Merqury",
+                "file": "Merqury"
+            }
+        ]
+    },
+    {
+        "name": "ZiiGaat",
+        "phones": [
+            {
+                "name": "Arcanis",
+                "file": "Arcanis"
+            },
+            {
+                "name": "Arete 2",
+                "collab": "Fresh Reviews",
+                "file": [
+                    "Arete 2 1",
+                    "Arete 2 ON"
+                ],
+                "suffix": [
+                    "(Bass switch off)",
+                    "(Bass switch on)"
+                ],
+                "reviewScore": "Tested",
+                "price": "$250"
+            },
+            {
+                "name": "Cincotres",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/w566KePBoKA?si=6x16k8oqtlhQfDtZ",
+                "price": "$270",
+                "shopLink": "https:\/\/hangout.audio\/products\/ziigaat-cincotres",
+                "file": "Cincotres"
+            },
+            {
+                "name": "Cinno",
+                "file": "Cinno",
+                "reviewScore": "Tested",
+                "price": "$100"
+            },
+            {
+                "name": "Crescent",
+                "file": "Crescent",
+                "reviewScore": "Tested",
+                "price": "$280"
+            },
+            {
+                "name": "Doscinco",
+                "reviewScore": "Approved",
+                "price": "$270",
+                "shopLink": "https:\/\/hangout.audio\/products\/ziigaat-doscinco",
+                "file": "Doscinco",
+                "reviewLink": "https:\/\/youtu.be\/5FDz6DUoHLo?si=AEMieq7xRjOFkyuW"
+            },
+            {
+                "name": "Estrella",
+                "collab": "Jay",
+                "file": "Estrella",
+                "reviewScore": "Tested",
+                "price": "$300"
+            },
+            {
+                "name": "Horizon",
+                "file": "Horizon"
+            },
+            {
+                "name": "Lush",
+                "file": "Lush",
+                "reviewScore": "Tested",
+                "price": "$180"
+            },
+            {
+                "name": "Luna",
+                "file": "Luna"
+            },
+            {
+                "name": "Nuo",
+                "file": "Nuo",
+                "reviewScore": "Tested",
+                "price": "$24"
+            },
+            {
+                "name": "Odyssey",
+                "file": "Odyssey",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/Zlz9qCx6iFg?si=OJRtcfQYar3IYu-p",
+                "price": "$230"
+            },
+            {
+                "name": "Odyssey 2",
+                "collab": "Hangout.Audio",
+                "file": "Odyssey 2",
+                "reviewScore": "Approved",
+                "reviewLink": "https:\/\/youtu.be\/4Tq44uVnKCw",
+                "price": "$250"
+            }
+        ]
+    }
+]

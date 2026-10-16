@@ -1,0 +1,504 @@
+[
+    {
+        "name":   "64 Audio",
+        "phones": [
+            {"name":"U12t","file":"64 Audio U12t","reviewScore":"4"},
+	        {"name":"Duo","file":"64 Audio Duo","reviewScore":"3.5"},
+            {"name":"Tia Trio","file":"64 Audio Tia Trio","reviewScore":"4.5"}
+        ]
+    },
+    {
+        "name":   "Acefast",
+        "phones": [
+            {"name":"Crystal T8","file":"Acefast Crystal T8","reviewScore":"3","reviewLink":"https://www.audioreviews.org/acefast-t8-tws-review/"}
+        ]
+    },
+    {
+        "name":   "AFUL",
+        "phones": [
+            {"name":"MagicOne","file":"AFUL MagicOne","reviewScore":"4","reviewLink":"https://www.headphonesty.com/2024/02/aful-magicone-review/"},
+            {"name":"P5+2","file":"AFUL P5+2","reviewScore":"3.5","reviewLink":"https://www.head-fi.org/threads/the-discovery-thread.586909/post-18848496"},
+            {"name":"Performer 8S","file":"AFUL Performer 8S","reviewScore":"4.5","reviewLink":"https://www.head-fi.org/threads/the-discovery-thread.586909/post-19020892"}
+        ]
+    },
+        {
+        "name":   "Acoustune",
+        "phones": [
+            {"name":"HS1657CU","file":"Acoustune HS1657CU","reviewScore":"4"}
+        ]
+    },
+    {
+        "name":   "Astrotec",
+        "phones": [
+            {"name":"Archimedes","file":"Astrotec Archimedes","reviewScore":"2.5"}
+        ]
+    },
+    {
+        "name":   "AuR Audio",
+        "phones": [
+            {"name":"Aure","file":"AuR Audio Aure","reviewScore":"3"}
+        ]
+    },
+    {
+        "name":   "BASN",
+        "phones": [
+            {"name":"MTPro","file":"BASN MTPro","reviewScore":"3","reviewLink":"https://www.audioreviews.org/basn-mtpro-review-kmmbd/"}
+        ]
+    },
+    {
+        "name":   "Beats",
+        "phones": [
+            {"name":"Studio Buds +","file":"Beats Studio Buds +", "reviewScore":"4","reviewLink":"https://www.headphonesty.com/2023/07/review-beats-studio-buds-plus/"}
+        ]
+    },
+    {
+        "name":   "Beyerdynamic",
+        "phones": [
+            {"name":"Xelento Wireless","file":"Beyerdynamic Xelento Wireless","reviewScore":"3.5"}
+        ]
+    },
+    {
+        "name":   "Binary Acoustics",
+        "phones": [
+            {"name":"1900","file":"Binary Acoustics 1900"}
+        ]
+    },
+    {
+        "name":   "BLON",
+        "phones": [
+            {"name":"X HBB Z300","file":"BLON X HBB Z300","reviewScore":"3","reviewLink":"https://www.headphonesty.com/2023/06/review-blon-x-hbb-z300/"}
+        ]
+    },
+    {
+        "name":   "BQEYZ",
+        "phones": [
+            {"name":"Frost","file":"BQEYZ Frost"}
+        ]
+    },
+    {
+        "name":   "Campfire",
+        "phones": [
+            {"name":"Alien Brain","file":"Campfire Alien Brain","reviewScore":"4.5","reviewLink":"https://www.audioreviews.org/campfire-audio-alien-brain-review/"},
+            {"name":"Holocene","file":"Campfire Holocene","reviewScore":"4","reviewLink":"https://www.audioreviews.org/campfire-audio-holocene-review-kmmbd/"},
+            {"name":"Honeydew","file":"Campfire Honeydew","reviewScore":"3.5","reviewLink":"https://www.audioreviews.org/campfire-audio-honeydew-review-kmmbd/"},
+            {"name":"Bonneville","file":"Campfire Bonneville","reviewScore":"3.5","reviewLink":"https://www.headphonesty.com/2024/01/campfire-audio-bonneville-review/"},
+            {"name":"Supermoon Universal","file":"Campfire Supermoon Universal","reviewScore":"4","reviewLink":"https://www.headphonesty.com/2024/08/campfire-audio-supermoon-review/"}
+        ]
+    },
+    {
+        "name":   "Celest",
+        "phones": [
+            {"name":"Pandamon","file":["Celest Pandamon (Radius Deep Mount tips)"], "suffix":["(Radius Deep Mount tips)"]},
+            {"name":"Phoenixcall","file":["Celest Phoenixcall", "Celest Phoenixcall (Spring Tips)"], "suffix":["", "(Spring Tips)"]},
+            {"name":"Wyvern","file":"Celest Wyvern"}
+        ]
+    },
+    {
+        "name":   "Creative",
+        "phones": [
+            {"name":"Aurvana Ace 2","file":"Creative Aurvana Ace 2"}
+        ]
+    },
+    {
+        "name":   "Dita",
+        "phones": [
+            {"name":"Project M","file":"Dita Project M"}
+        ]
+    },
+    {
+        "name":   "Dunu",
+        "phones": [
+            {"name":"Glacier","file":"Dunu Glacier"},
+            {"name":"DaVinci","file":"Dunu DaVinci"},
+            {"name":"SA6 EST","file":"Dunu SA6 EST"},
+            {"name":"Talos","file":"Dunu Talos (Candy Tips)"},
+            {"name":"Kima","file":"Dunu Kima"},
+            {"name":"Zen","file":"Dunu Zen"},
+            {"name":"Zen Pro","file":"Dunu Zen Pro"}
+        ]
+    },
+    {
+        "name":   "Effect Audio",
+        "phones": [
+            {"name":"Gaea","file":"Effect Audio Gaea"}
+        ]
+    },
+    {
+        "name":   "Empire Ears",
+        "phones": [
+            {"name":"Odyssey","file":"Empire Ears Odyssey"}
+        ]
+    },
+    {
+        "name":   "Fatfreq",
+        "phones": [
+            {"name":"Scarlet Mini","file":"Fatfreq Scarlet Mini"}
+        ]
+    },
+    {
+        "name":   "Fiio",
+        "phones": [
+            {"name":"JadeAudio JD3","file":"Fiio JadeAudio JD3"},
+            {"name":"FD7","file":"Fiio FD7"},
+            {"name":"Snowsky FH3 Lumi","file":"Fiio Snowsky FH3 Lumi"},
+            {"name":"Snowsky OAK Nano","file":["Fiio Snowsky OAK Nano (red)", "Fiio Snowsky OAK Nano (black)"], "suffix":["(red)" ,"(black)"]}
+        ]
+    },
+    {
+        "name":   "Final",
+        "phones": [
+            {"name":"E500","file":"Final E500"},
+            {"name":"E1000","file":"Final E1000"},
+            {"name":"E3000","file":"Final E3000"},
+            {"name":"E5000","file":["Final E5000", "Final E5000 S2"], "suffix":["" ,"S2"]},
+            {"name":"VR2000","file":"Final VR2000"},
+            {"name":"VR3000","file":"Final VR3000"},
+            {"name":"ZE3000","file":"Final ZE3000"},
+            {"name":"ZE8000","file":"Final ZE8000"},
+            {"name":"A8000","file":"Final A8000"}
+        ]
+    },
+    {
+        "name":   "FIR Audio",
+        "phones": [
+            {"name":"RN6","file":"FIR Audio RN6"}
+        ]
+    },
+    {
+        "name":   "Flipears",
+        "phones": [
+            {"name":"Aether","file":"Flipears Aether"}
+        ]
+    },
+    {
+        "name":   "HarmonicDyne",
+        "phones": [
+            {"name":"Devil","file":"HarmonicDyne Devil"}
+        ]
+    },
+    {
+        "name":   "Hercules Audio",
+        "phones": [
+            {"name":"Noah","file":"Hercules Audio Noah"}
+        ]
+    },
+    {
+        "name":   "Hidizs",
+        "phones": [
+            {"name":"MS5","file":["Hidizs MS5 (Balanced)"], "suffix":["(Balanced)"]},
+            {"name":"MP145","file":["Hidizs MP145", "Hidizs MP145 (new)"], "suffix":["" ,"(new)"]},
+            {"name":"MP143","file":"Hidizs MP143"},
+            {"name":"MK12","file":["Hidizs MK12 Silver", "Hidizs MK12 Gold", "Hidizs MK12 Red"], "suffix":["Silver" ,"Gold", "Red"]}
+        ]
+    },
+    {
+        "name":   "Hifiman",
+        "phones": [
+            {"name":"Svanar","file":["Hifiman Svanar"]}
+        ]
+    },
+    {
+        "name":   "Hisenior",
+        "phones": [
+            {"name":"Okavango","file":["Hisenior Okavango UU", "Hisenior Okavango UD", "Hisenior Okavango DD", "Hisenior Okavango DU"], "suffix":["UU", "UD", "DD", "DU"]}
+        ]
+    },
+    {
+        "name":   "iBasso",
+        "phones": [
+            {"name":"IT07","file":"iBasso IT07"}
+        ]
+    },
+    {
+        "name":   "IMR",
+        "phones": [
+            {"name":"Na-Le","file":"IMR Na-Le"}
+        ]
+    },
+    {
+        "name":   "InEar",
+        "phones": [
+            {"name":"ProPhile 8","file":"InEar ProPhile 8"}
+        ]
+    },
+    {
+        "name":   "Intime",
+        "phones": [
+            {"name":"Miyabi","file":"Intime Miyabi"},
+            {"name":"Sho DD","file":"Intime Sho DD"},
+            {"name":"Shu-Mai","file":"Intime Shu-Mai"},
+            {"name":"Yo","file":"Intime Yo"}
+        ]
+    },
+    {
+        "name":   "IOAudio",
+        "phones": [
+            {"name":"Volare","file":"IOAudio Volare"}
+        ]
+    },
+    {
+        "name":   "iFi",
+        "phones": [
+            {"name":"Uno","file":["iFi Uno (Game Mode)", "iFi Uno (Movie Mode)", "iFi Uno (Music Mode)"], "suffix":["(Game Mode)", "(Movie Mode)", "(Music Mode)"]}
+        ]
+    },
+    {
+        "name":   "JBL",
+        "phones": [
+            {"name":"Tour Pro 2","file":"JBL Tour Pro 2"}
+        ]
+    },
+    {
+        "name":   "JVC",
+        "phones": [
+            {"name":"HA-FW1000T","file":"JVC HA-FW1000T"},
+            {"name":"HA-FW1800","file":"JVC HA-FW1800"},
+            {"name":"FDX1","file":"JVC FDX1"}
+        ]
+    },
+    {
+        "name":   "KBEar",
+        "phones": [
+            {"name":"Storm","file":"KBEar Storm"}
+        ]
+    },
+    {
+        "name":   "Kinera",
+        "phones": [
+            {"name":"Tyr","file":"Kinera Tyr"},
+            {"name":"Verdandi","file":"Kinera Verdandi"}
+        ]
+    },
+    {
+        "name":   "Kiwi Ears",
+        "phones": [
+            {"name":"Aether","file":"Kiwi Ears Aether"},
+            {"name":"KE4","file":"Kiwi Ears KE4"},
+            {"name":"Orchestra Lite","file":"Kiwi Ears Orchestra Lite"},
+            {"name":"Quintet","file":"Kiwi Ears Quintet"},
+            {"name":"Melody","file":"Kiwi Ears Melody"},
+            {"name":"Septet","file":["Kiwi Ears Septet", "Kiwi Ears Septet (Final E-type)"], "suffix":["", "(Final E-type)"]},
+            {"name":"Stardust","file":"Kiwi Ears Stardust"}
+        ]
+    },
+    {
+        "name":   "KZ",
+        "phones": [
+            {"name":"D-Fi","file":["KZ D-Fi Default", "KZ D-Fi Switch 1", "KZ D-Fi Switch 1+2"], "suffix":["Default", "Switch 1", "Switch 1+2"]}
+        ]
+    },
+    {
+        "name":   "Letshuoer",
+        "phones": [
+            {"name":"D02","file":"Letshuoer D02"},
+            {"name":"DX1","file":"Letshuoer DX1"},
+            {"name":"S12 Pro","file":"Letshuoer S12 Pro"},
+            {"name":"Mystic 8","file":"Letshuoer Mystic 8"},
+            {"name":"EJ07m Kinda Lava","file":"Letshuoer EJ07m Kinda Lava"}
+        ]
+    },
+    {
+        "name":   "Meze",
+        "phones": [
+            {"name":"Alba","file":"Meze Alba"}
+        ]
+    },
+    {
+        "name":   "MYER AUDIO",
+        "phones": [
+            {"name":"CKLVX D62","file":"MYER AUDIO CKLVX D62"}
+        ]
+    },
+    {
+        "name":   "Moondrop",
+        "phones": [
+            {"name":"Crescent","file":"Moondrop Crescent"},
+            {"name":"JIU","file":"Moondrop JIU"},
+            {"name":"Chu 2","file":"Moondrop Chu 2"},
+            {"name":"Pudding","file":"Moondrop Pudding"},
+            {"name":"Space Travel","file":"Moondrop Space Travel"},
+            {"name":"Starfield 2","file":["Moondrop Starfield 2 (Spinfit CP-145)", "Moondrop Starfield 2 (Azla Vivid)", "Moondrop Starfield 2 (Spring tips)", "Moondrop Starfield 2 (Gray Foam dampers)", "Moondrop Starfield 2 (tuning mesh 500)"], "suffix":["(Spinfit CP-145)", "(Azla Vivid)", "(Spring tips)", "(Gray Foam dampers)", "(tuning mesh 500)"]}
+        ]
+    },
+    {
+        "name":   "NFAudio",
+        "phones": [
+            {"name":"NM2","file":"NFAudio NM2"},
+            {"name":"NA2+","file":"NFAudio NA2+"}
+        ]
+    },
+    {
+        "name":   "NICEHCK",
+        "phones": [
+            {"name":"F1 Pro","file":"NICEHCK F1 Pro"}
+        ]
+    },
+    {
+        "name":   "Nintendo",
+        "phones": [
+            {"name":"Switch stock earbuds","file":"Nintendo Switch stock earbuds"}
+        ]
+    },
+    {
+        "name":   "Noble",
+        "phones": [
+            {"name":"Vanguard","file":"Noble Vanguard"}
+        ]
+    },
+    {
+        "name":   "ooopusX",
+        "phones": [
+            {"name":"Op.24","file":["ooopusX Op.24", "ooopusX Op.24 (bass)"],"suffix":["", "(bass)"]}
+        ]
+    },
+    {
+        "name":   "Orpheus",
+        "phones": [
+            {"name":"Earbuds","file":"Orpheus Earbuds"}
+        ]
+    },
+    {
+        "name":   "QoA",
+        "phones": [
+            {"name":"Mimosa","file":"QoA Mimosa"}
+        ]
+    },
+    {
+        "name":   "Radius",
+        "phones": [
+            {"name":"HP-NHR11","file":"Radius HP-NHR11"}
+        ]
+    },
+    {
+        "name":   "Saccater",
+        "phones": [
+            {"name":"aera","file":"Saccater aera"}
+        ]
+    },
+    {
+        "name":   "Samsung",
+        "phones": [
+            {"name":"Galaxy Buds2","file":"Samsung Galaxy Buds2"}
+        ]
+    },
+    {
+        "name":   "Sennheiser",
+        "phones": [
+            {"name":"IE 200","file":["Sennheiser IE 200 (Tip at the end of the nozzle)", "Sennheiser IE 200 (Tip at the front of the nozzle)"], "suffix":["(Tip at the end of the nozzle)", "(Tip at the front of the nozzle)"]},
+            {"name":"IE 300","file":["Sennheiser IE 300 (stock silicone tips)", "Sennheiser IE 300 (Spiral Dots++ tips)"], "suffix":["(stock silicone tips)", "(Spiral Dots++ tips)"]},
+            {"name":"IE 600","file":"Sennheiser IE 600"},
+            {"name":"IE 900","file":["Sennheiser IE 900 (stock silicone tips)", "Sennheiser IE 900 (JVC Spiral Dots++)", "Sennheiser IE 900 (Fake)"], "suffix":["(stock silicone tips)", "(JVC Spiral Dots++)", "(Fake)"]}
+        ]
+    },
+    {
+        "name":   "Simgot",
+        "phones": [
+            {"name":"ET142","file":["Simgot ET142 (black)","Simgot ET142 (titanium)","Simgot ET142 (red)"], "suffix":["(black)", "(titanium)", "(red)"]},
+            {"name":"EW100P","file":"Simgot EW100P"},
+            {"name":"EW100","file":"Simgot EW100"},
+            {"name":"EW200","file":"Simgot EW200"},
+            {"name":"EW300","file":"Simgot EW300"},
+            {"name":"EW300 DSP","file":["Simgot EW300 DSP", "Simgot EW300 DSP with Analog cable"], "suffix":["", "with Analog cable"]},
+            {"name":"EM6L","file":"Simgot EM6L"},
+            {"name":"EM10","file":"Simgot EM10"},
+            {"name":"EN1000","file":["Simgot EN1000 (Blue)","Simgot EN1000 (Red)","Simgot EN1000 (Black)"], "suffix":["(Blue)", "(Red)", "(Black)"]},
+            {"name":"EA500","file":["Simgot EA500 Red","Simgot EA500 Black"], "suffix":["Red", "Black"]},
+            {"name":"EA1000","file":["Simgot EA1000 (Red)","Simgot EA1000 (Gold)","Simgot EA1000 (Black)"], "suffix":["(Red)", "(Gold)", "(Black)"]},
+            {"name":"EA500 LM","file":["Simgot EA500 LM Red","Simgot EA500 LM Gold","Simgot EA500 LM Black","Simgot EA500 LM (200 mesh)","Simgot EA500 LM (500 mesh)"], "suffix":["Red", "Gold", "Black", "(500 mesh)", "(200 mesh)"]},
+            {"name":"Supermix 4","file":"Simgot Supermix 4"}
+        ]
+    },
+    {
+        "name":   "Sivga",
+        "phones": [
+            {"name":"Nightingale Pro","file":"Sivga Nightingale Pro"}
+        ]
+    },
+    {
+        "name":   "Softears",
+        "phones": [
+            {"name":"Turii","file":"Softears Turii"},
+            {"name":"Turii Ti","file":"Softears Turii Ti"}
+        ]
+    },
+    {
+        "name":   "Sony",
+        "phones": [
+            {"name":"WF-C500","file":"Sony WF-C500"},
+            {"name":"WF-1000XM5","file":"Sony WF-1000XM5"},
+            {"name":"WI-C100","file":"Sony WI-C100"}
+        ]
+    },
+    {
+        "name":   "Soundpeats",
+        "phones": [
+            {"name":"Air 5 Pro","file":"Soundpeats Air 5 Pro"},
+            {"name":"Capsule3 Pro","file":"Soundpeats Capsule3 Pro"},
+            {"name":"Engine4","file":"Soundpeats Engine4"},
+            {"name":"Opera05","file":"Soundpeats Opera05"}
+        ]
+    },
+    {
+        "name":   "Symphonium",
+        "phones": [
+            {"name":"Crimson","file":"Symphonium Crimson"}
+        ]
+    },
+    {
+        "name":   "TangZu",
+        "phones": [
+            {"name":"Waner","file":"TangZu Waner"}
+        ]
+    },
+    {
+        "name":   "ThieAudio",
+        "phones": [
+            {"name":"Hype 2","file":"ThieAudio Hype 2"}
+        ]
+    },
+    {
+        "name":   "Tin",
+        "phones": [
+            {"name":"T4 Plus","file":"Tin T4 Plus"}
+        ]
+    },
+    {
+        "name":   "Tripowin",
+        "phones": [
+            {"name":"Piccolo","file":"Tripowin Piccolo"}
+        ]
+    },
+    {
+        "name":   "TruthEar",
+        "phones": [
+            {"name":"Zero Blue 2","file":"TruthEar Zero Blue 2"},
+            {"name":"X Crinacle Zero Red","file":"TruthEar X Crinacle Zero Red"},
+            {"name":"Nova","file":"TruthEar Nova"}
+        ]
+    },
+    {
+        "name":   "TXN Audio",
+        "phones": [
+            {"name":"Dest Ti","file":"TXN Audio Dest Ti"}
+        ]
+    },
+    {
+        "name":   "Unique Melody",
+        "phones": [
+            {"name":"MEST mkii","file":"Unique Melody MEST mkii"},
+            {"name":"MEST mkIII","file":"Unique Melody MEST mkIII"}
+        ]
+    },
+    {
+        "name":   "Venture Electronics",
+        "phones": [
+            {"name":"VE Grand Duke","file":"Venture Electronics VE Grand Duke"}
+        ]
+    },
+    {
+        "name":   "Vision Ears",
+        "phones": [
+            {"name":"EXT mkii","file":"Vision Ears EXT mkii"}
+        ]
+    }
+]

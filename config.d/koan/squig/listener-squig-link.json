@@ -1,0 +1,227 @@
+
+[
+    {
+        "name":   "AKG",
+        "phones": [
+            {"name":"K240 Studio","file":"AKG K240"},
+            {"name":"K361","file":"AKG K361"},
+            {"name":"K371","file":"AKG K371"},
+            {"name":"K52","file":"AKG K52"}
+        ]
+    },    
+    {
+        "name":   "Audeze",
+        "phones": [
+            {"name":"LCD-4","file":["LCD-4 (Humble)","LCD-4 (James)"],"suffix":["(Humble)","(James)"]},
+            {"name":"LCD-5S","file":"LCD-5S"},
+            {"name":"LCD-R","file":"Audeze LCD-R"},
+            {"name":"LCD-X","file":["LCD-X (Kyle)"],"suffix":["(Kyle)"]},
+            {"name":"MM-100","file":["MM-100 Loose","MM-100 Tight"],"suffix":["(Loose Headband)","(Tight Headband)"]},
+            {"name":"MM-500","file":["MM-500 New MoreClamp","MM-500 New","Audeze MM 500"],"suffix":["(Sample 1, Post-RMA, Tighter Clamp)","(Sample 1, Post-RMA, Looser Clamp)","(Sample 1)"]}
+        ]
+    },
+    {
+        "name":   "Audio Technica",
+        "phones": [
+            {"name":"ATH-ADX7000","file":["ADX7000 Clamp","ADX7k Velvet"],"suffix":["(Tighter Clamp, Velvet Pads)","(Loose Clamp, Velvet Pads)"]},
+            {"name":"ATH-M20x","file":"Audio Technica ATH-M20x"},
+            {"name":"ATH-M40x","file":"Audio Technica ATH-M40x"},
+            {"name":"ATH-M50x","file":"Audio Technica ATH-M50x"}
+        ]
+    },
+    {
+        "name":   "Aune",
+        "phones": [
+            {"name":"AC55","file":"AC55"}
+        ]
+    },    
+    {
+        "name":   "Aurorus Audio",
+        "phones": [
+            {"name":"Australis","file":["Australis","Australis (Fuku)","Australis (Kyle)"],"suffix":["(Listener)","(Fuku)","(Kyle)"]},
+            {"name":"Borealis","file":"Aurorus Borealis"}
+        ]
+    },
+    {
+        "name":   "Austrian Audio",
+        "phones": [
+            {"name":"Hi-X55","file":"Austrian Audio Hi-X55"},
+            {"name":"Hi-X60","file":"Hi-x60"}
+        ]
+    },
+    {
+        "name":   "Capra Audio",
+        "phones": [
+            {"name":"Ouroboros","file":["OuroborosGolem","OuroborosGolem Back","OuroborosGolem Up","Ouroboros Ideal","Ouroboros Back","Ouroboros Up","Ouroboros Down","Ouroboros SD Card","Ouroboros 6.3mm"],"suffix":["(Golem Mod, Ideal Seating)","(Golem Mod, Pushed Back on Head)","(Golem Mod, Pushed Up on Head)","(Ideal Seating)","(Pushed Back on Head)","(Pushed Up on Head)","(Pushed Down on Head)","(Leak, SD Card)","(Leak, 6.3mm Plug)"]},
+            {"name":"Satyr2","file":["Satyr2 Worn"],"suffix":["(Worn Pads)"]}
+        ]
+    },
+        {
+        "name":   "Dan Clark Audio",
+        "phones": [
+            {"name":"Noire X Open","file":["Noire XO","Noire XO Up","Noire XO Bwd"],"suffix":["","(Pushed Up on Head)","(Pushed Back on Head)"]}
+        ]
+    },
+    {
+        "name":   "FiiO",
+        "phones": [
+            {"name":"FT1 Pro","file":"FT1 Pro"},
+            {"name":"JT7","file":["JT7","JT7 YaxiTH900","JT7 YaxiTH900Rotated"],"suffix":["(Stock Pads)","(Yaxi TH900 Pads)","(Yaxi TH900 Pads, Rotated 180º)"]}
+        ]
+    },
+    {
+        "name":   "Focal",
+        "phones": [
+            {"name":"Azurys","file":["Azurys S2 Strapless","Azurys S2 Strap","Azurys S2 LPad Strapless","Azurys S2 LPad Strap","Azurys","Azurys Back"],"suffix":["(S2, Stock)","(S2, Capra Strap)","(S2, Lensys Pads)","(S2, Lensys Pads, Capra Strap)","(S1, Capra Strap)","(S1, Capra Strap, Pushed Back on Head)"]},
+            {"name":"Elex","file":"Elex"},
+            {"name":"Lensys Professional","file":["Lensys Strapless","Lensys Strap","Lensys APad Strapless","Lensys APad Strap"],"suffix":["(Stock)","(Capra Strap)","(Azurys Pads)","(Azurys Pads, Capra Strap)"]},
+            {"name":"Radiance","file":"Focal Radiance"}
+        ]
+    },
+    {
+        "name":   "Fostex",
+        "phones": [
+            {"name":"TH900 (Eudis Mod)","file":"cum900"}
+        ]
+    },
+    {
+        "name":   "Grell",
+        "phones": [
+            {"name":"OAE-1","file":["OAE-1","OAE-1 Back","OAE-1 Up","OAE-1 Down","OAE-1 Turned Fwd","OAE-1 Turned Bwd","OAE-1 Backward","OAE-1 Leak1","OAE-1 Leak2","OAE-1 Leak3","OAE-1 Leak4"],"suffix":["","(Pushed Back on Head)","(Pushed Up on Head)","(Pushed Down on Head)","(Rotated Forward)","(Rotated Backward)","(Worn Backwards)","(Leak, 6.3mm Plug)","(Leak, Two 6.3mm Plugs)","(Leak, Three 6.3mm Plugs)","(Leak, Four 6.3mm Plugs)"]}
+        ]
+    },
+    {
+        "name":   "HEDD Audio",
+        "phones": [
+            {"name":"HEDDphone D1","file":["D1 Center","D1","D1 Centered Clampier","D1 Pushed Fwd","D1 Pushed Bwd"],"suffix":["(3 Clicks, Loose Clamp, Centered Seating)","(3 Clicks, Tighter Clamp, Centered Seating)","(2 Clicks, Loose Clamp, Centered Seating)","(3 Clicks, Loose Clamp, Pushed Forward on Head)","(3 Clicks, Loose Clamp, Pushed Backward on Head)"]},
+            {"name":"HEDDphone Two GT","file":["HEDD2GT Suede"],"suffix":["(Suede Pads)"]}
+        ]
+    },
+    {
+        "name":   "Hifiman",
+        "phones": [
+            {"name":"Edition XS","file":["Edition XS 2","Edition XS 2 Up","Edition XS 2 Back","Edition XS 2 6.3mm","Edition XS (Dilupus)"],"suffix":["","(Pushed Up on Head)","(Pushed Back on Head)","(Leak, 6.3mm Plug)","(Dilupus)"]},
+            {"name":"Edition XV","file":["Edition XV"],"suffix":[""]},
+            {"name":"HE400SE","file":"Hifiman HE400SE"}
+        ]
+    },
+    {
+        "name":   "Koss",
+        "phones": [
+            {"name":"KSC75","file":["Koss KSC75"],"suffix":["(Stock Pads, Earclips)"]},  
+            {"name":"PortaPro Wireless","file":["PortaPro Wireless"],"suffix":["(Stock Pads)"]}
+        ]
+    },
+    {
+        "name":   "Moondrop",
+        "phones": [
+            {"name":"Cosmo","file":["Cosmo","Cosmo Up","Cosmo Back","Cosmo 6.3mm"],"suffix":["","(Pushed Up on Head)","(Pushed Back on Head)","(Leak, 6.3mm Plug)"]},
+            {"name":"Edge","file":["EDGE ANC Off Balanced","EDGE ANC On Balanced","EDGE ANC Off Bass","EDGE ANC On Bass","EDGE ANC Off Country","EDGE ANC On Country","EDGE ANC Off Studio","EDGE ANC On Studio","EDGE ANC Off Violin","EDGE ANC On Violin"],"suffix":["(ANC Off, Balanced)","(ANC On, Balanced)","(ANC Off, Extra Bass)","(ANC On, Extra Bass)","(ANC Off, Country)","(ANC On, Country)","(ANC Off, Studio)","(ANC On, Studio)","(ANC Off, Violin)","(ANC On, Violin)"]},
+            {"name":"Horizon","file":["Horizon"],"suffix":[""]},            
+            {"name":"Old Fashioned","file":["OldFashioned"],"suffix":[""]},
+            {"name":"Venus","file":["Venus (Dilupus)"],"suffix":["(Dilupus)"]}
+        ]
+    },
+    {
+        "name":   "Neumann",
+        "phones": [
+            {"name":"NDH-30","file":["Neumann NDH30 S2","Neumann NDH30"],"suffix":["(sample 2)","(sample 1)"]}
+        ]
+    },
+    {
+        "name":   "Philphone",
+        "phones": [
+            {"name":"300 Ohm","file":"Philphone 300ohm (Dilupus)"},
+            {"name":"24 Ohm","file":"Philphone 24ohm (Cate)"}
+        ]
+    },
+    {
+        "name":   "Pioneer",
+        "phones": [
+            {"name":"HDJ-X5","file":"Pioneer HDJ-X5"},
+            {"name":"HDJ-X7","file":"Pioneer HDJ-X7"}
+        ]
+    },
+    {
+        "name":   "RAAL",
+        "phones": [
+            {"name":"Immanis","file":["Immanis"],"suffix":[""]}
+        ]
+    },
+    {
+        "name":   "Sennheiser",
+        "phones": [
+            {"name":"HD 25","file":"Sennheiser HD25"},
+            {"name":"HD 200 Pro","file":"Sennheiser HD200 Pro"},
+            {"name":"HD 280 Pro","file":"Sennheiser HD280 Pro"},
+            {"name":"HD 300 Pro","file":"Sennheiser HD300 Pro"},
+            {"name":"HD 400 Pro (HD560S)","file":["Sennheiser HD560S","Sennheiser HD560S S2"],"suffix":["(sample 1)","(sample 2)"]},
+            {"name":"HD 480 Pro","file":["HD 480 Pro"],"suffix":[""]},
+            {"name":"HD 490 Pro","file":["490Pro","490ProMP"],"suffix":["(Producer Pads)","(Mixing Pads)"]},
+            {"name":"HD 505 Copper Edition","file":"HD 505"},
+            {"name":"HD 550","file":["HD 550"]},
+            {"name":"HD 569","file":["HD 569","HD 569 Leak","HD 569 More Leak","HD 569 620SPad"],"suffix":["","(Leak, SD Card)","(Leak, 6.3mm Plug)","(HD 620S Pads)"]},
+            {"name":"HD 580","file":["HD580BPFP (Floyd)","HD580BS (Floyd)","HD580BS (Kyle)"],"suffix":["Black Paper (Flat Plate) (Floyd)","Black Silk (Floyd)","Black Silk (Kyle)"]},
+            {"name":"HD 600","file":["HD600SS (New Pads)","HD600SS (Old Pads)","HD600BS (Claire)","HD600BP (Floyd)"],"suffix":["Silver Screen (New Pads, Worn)","Silver Screen (Old Pads, Worn)","Black Silk (Claire)","Black Paper (Floyd)"]},
+            {"name":"HD 620S","file":["HD 620S Ideal","HD 620S Back","HD 620S Up","HD 620S Down","HD 620S SD Card","HD 620S 6.3mm"],"suffix":["(Ideal Seating)","(Pushed Back on Head)","(Pushed Up on Head)","(Pushed Down on Head)","(Leak, SD Card)","(Leak, 6.3mm Plug)"]},
+            {"name":"HD 650","file":["HD 6XX Stock","HD650BS (Dilupus)","HD650SS (Fuku)","HD650BS (Humble)","HD650BP (Kyle)"],"suffix":["(6XX)","Black Silk (Dilupus)","Silver Screen (Fuku)","Black Silk (Humble)","Black Paper (Kyle)"]},
+            {"name":"HD 660S2","file":"HD 660S2"},
+            {"name":"HD 800","file":["Sennheiser HD800","HD800 (Dilupus)"],"suffix":["SN:15018 (SDR Mod)","SN:05550 (Dilupus)"]},
+            {"name":"HDB 630","file":["HDB 630 ANC","HDB 630 Trans"],"suffix":["(ANC Mode)","(Transparency Mode)"]},
+            {"name":"HE 60","file":"HE60 (Dilupus)"}
+        ]
+    },
+    {
+        "name":   "Shure",
+        "phones": [
+            {"name":"SRH440A","file":"Shure SRH440A"},
+            {"name":"SRH840A","file":"Shure SRH840A"}
+        ]
+    },
+    {
+        "name":   "Sony",
+        "phones": [
+            {"name":"MDR-7506","file":"Sony MDR7506"},
+            {"name":"MDR-MV1","file":["MDR-MV1","MDR-MV1 Up","MDR-MV1 Fwd","MDR-MV1 Bwd"],"suffix":["","(Pushed Up on Head)","(Pushed Forward on Head)","(Pushed Back on Head)"]}
+        ]
+    },
+    {
+        "name":   "Sterling",
+            "phones": [
+            {"name":"S400","file":"Sterling S400"},
+            {"name":"S452","file":"Sterling S452"}
+        ]
+    },
+    {
+        "name":   "Tascam",
+            "phones": [
+            {"name":"TH-200x","file":"Tascam TH200x"},
+            {"name":"TH-300x","file":"Tascam TH300x"}
+        ]
+    },
+    {
+        "name":   "UGREEN",
+            "phones": [
+                {"name":"Max5C","file":["Max5C Jazz ANC Off","Max5C Jazz Awareness","Max5C Jazz ANC Gentle","Max5C Jazz ANC General","Max5C Jazz ANC Ultra","Max5C Adaptive","Max5C Classical ANC Off","Max5C Classical Awareness","Max5C Classical ANC Gentle","Max5C Classical ANC General","Max5C Classical ANC Ultra","Max5C Classical ANC Adaptive","Max5C Bass ANC Off","Max5C Bass Awareness","Max5C Bass ANC Gentle","Max5C Bass ANC General","Max5C Bass ANC Ultra","Max5C Bass ANC Adaptive"],"suffix":["(Jazz, ANC Off)","(Jazz, Awareness)","(Jazz, ANC Gentle)","(Jazz, ANC General)","(Jazz, ANC Ultra)","(Jazz, ANC Adaptive)","(Classical, ANC Off)","(Classical, Awareness)","(Classical, ANC Gentle)","(Classical, ANC General)","(Classical, ANC Ultra)","(Classical, ANC Adaptive)","(Bass [Default], ANC Off)","(Bass [Default], Awareness)","(Bass [Default], ANC Gentle)","(Bass [Default], ANC General)","(Bass [Default], ANC Ultra)","(Bass [Default], ANC Adaptive)"]}
+        ]
+    },
+    {
+        "name":   "VMODA",
+        "phones": [
+            {"name":"Crossfade LP2","file":"VMODA Crossfade LP2"}
+        ]
+    },
+    {
+        "name":   "Yamaha",
+        "phones": [
+            {"name":"HPH-MT5","file":"Yamaha HPH-MT5"}
+        ]
+    },
+    {
+        "name":   "ZMF",
+            "phones": [
+                {"name":"Atrium","file":["Atrium (Kyle)"],"suffix":["Perf. Lambskin BE2 Pads (Kyle)"]},
+                {"name":"Caldera","file":["Caldera (ThickLamb)(Ishca)"],"suffix":["Thick Lambskin Caldera Pads (Kyle)"]}
+        ]
+    }
+]
