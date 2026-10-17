@@ -426,17 +426,19 @@ tasks:
           ln -s "$f" "$target"
           printf "{{.LINK}} ~/.config/%s\n" "$name"
         done
-        # ~/.cargo is CARGO_HOME as a whole; an existing one has its registry,
-        # git checkouts and installed binaries moved in so nothing re-downloads
+        # Only the config is linked: a symlinked CARGO_HOME breaks crates that
+        # resolve paths against it (askama via uniffi). Undo the earlier
+        # whole-directory link by moving its contents back out.
         src="{{.DOTFILES}}/config.d/cargo"; dst="$HOME/.cargo"
-        if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then :
-        else
-          if [ -d "$dst" ] && [ ! -L "$dst" ]; then
-            rm -f "$dst/config.toml"
-            find "$dst" -mindepth 1 -maxdepth 1 -exec mv -n {} "$src/" \;
-            rmdir "$dst" || { printf "~/.cargo not empty after move, left alone\n"; exit 1; }
-          fi
-          rm -f "$dst"; ln -s "$src" "$dst"; printf "{{.LINK}} ~/.cargo\n"
+        if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+          rm "$dst"; mkdir "$dst"
+          find "$src" -mindepth 1 -maxdepth 1 ! -name config.toml ! -name .gitignore -exec mv {} "$dst/" \;
+          rm -f "$src/.gitignore"
+        fi
+        mkdir -p "$dst"
+        if ! { [ -L "$dst/config.toml" ] && [ "$(readlink "$dst/config.toml")" = "$src/config.toml" ]; }; then
+          rm -f "$dst/config.toml"; ln -s "$src/config.toml" "$dst/config.toml"
+          printf "{{.LINK}} ~/.cargo/config.toml\n"
         fi
 
   patch:gitconfig:
