@@ -51,7 +51,7 @@ Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/
 - Keep the PR description accurate on every push.
 - Apply the repo's PR labels. A label that waives a safety gate comes with context in the PR body: what it permits and why that's fine here.
 - Justify any unsafe change in the PR body, labelled or not: breaking changes, risky migrations, anything backwards-incompatible. The reviewer gets the risk and the reasoning either way.
-- When you address a PR comment, resolve the thread on GitHub as well.
+- Every inline review comment you act on gets a reply in its thread and the thread resolved, in the same pass as the push that addresses it. The reply names the commit and says what changed, or why you didn't change it. Resolve with the `resolveReviewThread` GraphQL mutation (`gh api graphql`); a reply alone leaves the thread open. Before reporting the work done, list the PR's review threads and confirm none you handled is still unresolved. Leave a thread open only when it needs the reviewer's call, and say so in the reply.
 - Where a repo has a review bot, trigger it on new PRs and after each push.
 
 ## Docs
