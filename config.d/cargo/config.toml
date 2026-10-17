@@ -1,0 +1,18 @@
+# Several agent sessions build this machine at once, and cargo defaults to one
+# job per core each, so a handful of sessions oversubscribes the CPU and swaps
+# rather than compiles. Four apiece keeps the total in the right order of
+# magnitude.
+[build]
+jobs = 4
+# Shared compilation cache across every worktree and project. Registry crates
+# compile from the same ~/.cargo/registry path everywhere, so a dependency built
+# once with the same flags is a cache hit in any new worktree. Workspace crates
+# build incrementally, which sccache skips.
+rustc-wrapper = "sccache"
+
+[env]
+SCCACHE_CACHE_SIZE = "30G"
+
+# Dependency debuginfo is most of a dev target dir and rarely stepped into.
+[profile.dev.package."*"]
+debug = false

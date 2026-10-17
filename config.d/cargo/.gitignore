@@ -1,0 +1,4 @@
+# ~/.cargo links here; only config is tracked, caches and installed binaries stay local
+/*
+!/.gitignore
+!/config.toml

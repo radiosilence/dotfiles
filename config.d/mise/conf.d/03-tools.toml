@@ -42,6 +42,7 @@ pulumi = "latest"
 pup = "latest"                                 # DD Client
 ripgrep = "latest"
 rust = "latest"
+sccache = "latest"                             # Shared rustc cache, wired in config.d/cargo
 ruby = "latest"
 sfw-free = { version = "latest", bin = "sfw" } # Socket Firewall — release ships as sfw-free; ni probes for sfw
 sheldon = "latest"                             # Zsh plug-in manager
