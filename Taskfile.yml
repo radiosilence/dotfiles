@@ -418,12 +418,26 @@ tasks:
           name=$(basename "$f")
           # herdr keeps sockets/logs alongside its config; per-file linked in link:agent-configs
           [ "$name" = "herdr" ] && continue
+          # cargo reads ~/.cargo, not ~/.config/cargo; linked below
+          [ "$name" = "cargo" ] && continue
           target="$HOME/.config/$name"
           [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
           rm -rf "$target"
           ln -s "$f" "$target"
           printf "{{.LINK}} ~/.config/%s\n" "$name"
         done
+        # ~/.cargo is CARGO_HOME as a whole; an existing one has its registry,
+        # git checkouts and installed binaries moved in so nothing re-downloads
+        src="{{.DOTFILES}}/config.d/cargo"; dst="$HOME/.cargo"
+        if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then :
+        else
+          if [ -d "$dst" ] && [ ! -L "$dst" ]; then
+            rm -f "$dst/config.toml"
+            find "$dst" -mindepth 1 -maxdepth 1 -exec mv -n {} "$src/" \;
+            rmdir "$dst" || { printf "~/.cargo not empty after move, left alone\n"; exit 1; }
+          fi
+          rm -f "$dst"; ln -s "$src" "$dst"; printf "{{.LINK}} ~/.cargo\n"
+        fi
 
   patch:gitconfig:
     desc: Ensure gitconfig includes dotfiles
