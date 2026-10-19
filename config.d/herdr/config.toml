@@ -26,7 +26,7 @@ teal = "#78dce8"
 blue = "#78dce8"
 
 [ui.toast]
-delivery = "terminal"
+delivery = "off"
 
 [ui]
 show_agent_labels_on_pane_borders = true
