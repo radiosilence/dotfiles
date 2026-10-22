@@ -3,10 +3,9 @@
 [playback]
 replaygain = "off"
 ticker_fps = 8
-target_fps = 60
+target_fps = 100
 show_fps = true
 pre_amp_db = 0.0
-art_size = 56
 
 [remote]
 username = ""
@@ -23,9 +22,7 @@ move_ancillary = true
 default = "%album artist%/$if($stricmp(%album artist%,Various Artists),,['('$left(%date%,4)')' ])%album% '['$upper(%codec%)']'/[$num(%discnumber%,2)][%tracknumber%. ][%artist% - ]%title%"
 
 [visualizer]
-enabled = true
-fps = 60
-mode = "oscilloscope"
+fps = 100
 scale = "bark"
 amplitude_scale = "aweight"
 bar_decay_ms = 25
@@ -62,3 +59,4 @@ acoustic_weight = 0.5
 theme = "koan"
 theme_icons = true
 wash_window = true
+wash_tint = 100
