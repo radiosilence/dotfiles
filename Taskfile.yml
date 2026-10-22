@@ -413,6 +413,13 @@ tasks:
     cmds:
       - |
         mkdir -p "$HOME/.config"
+        # sift's config moved from config.d/beets; carry the per-machine file over
+        old="{{.DOTFILES}}/config.d/beets"
+        if [ -f "$old/config.yaml" ] && [ ! -e "{{.DOTFILES}}/config.d/sift/config.yaml" ]; then
+          mv "$old/config.yaml" "{{.DOTFILES}}/config.d/sift/config.yaml"
+        fi
+        rmdir "$old" 2>/dev/null || true
+        if [ -L "$HOME/.config/beets" ] && [ ! -e "$HOME/.config/beets" ]; then rm "$HOME/.config/beets"; fi
         for f in "{{.DOTFILES}}/config.d"/*; do
           [ -e "$f" ] || continue
           name=$(basename "$f")
