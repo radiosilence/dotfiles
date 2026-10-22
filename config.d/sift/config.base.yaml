@@ -1,0 +1,37 @@
+# Shared sift settings. The per-machine config.yaml (gitignored, start from
+# config.template.yaml) includes this file and sets `directory` and
+# `discogs.user_token`.
+import:
+  move: true
+  copy: false
+paths:
+  comp: Various Artists/%album%' ['%codec%']/'$num(%discnumber%,2)$num(%tracknumber%,2). %artist% - %title%
+  default: '%album artist%/$if(%year%,''(''%year%'') '',)%album%'' [''%codec%'']/''$num(%discnumber%,2)$num(%tracknumber%,2). %artist% - %title%'
+replace:
+  '[\\/]': '-'
+  ^\.: '-'
+  '[\x00-\x1f]': '-'
+  '[<>:"\?\*\|]': '-'
+  \.$: '-'
+  \s+$: ''
+  ^\s+: ''
+  ^-: '-'
+asciify_paths: false
+original_date: true
+per_disc_numbering: true
+plugins:
+- ftintitle
+- fetchart
+- discogs
+- importadded
+fetchart:
+  maxwidth: 1200
+  minwidth: 500
+  quality: 95
+  enforce_ratio: 10%
+  high_resolution: true
+embedart:
+  maxwidth: 1200
+  quality: 95
+discogs:
+  index_tracks: true
