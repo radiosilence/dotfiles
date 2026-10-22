@@ -91,6 +91,8 @@ completions cannot drift from the flags it actually accepts.
 
 ## Architecture Notes
 
+**Merging** — `git.d/merge.conf` and `git.d/attributes` route merges through mergiraf, which merges syntax trees instead of lines. GitHub does not run custom merge drivers, so merge the base in locally to clear a PR conflict.
+
 **Git signing** — `git.d/sign.conf` sets the format, signer program and `commit.gpgsign`;
 the identity half (`user.email`, `user.signingkey`, `allowed_signers`) is per-machine
 and lives in `~/.gitconfig`, written by `task git:signing` from the 1Password agent

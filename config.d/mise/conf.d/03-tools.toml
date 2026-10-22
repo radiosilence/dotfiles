@@ -31,6 +31,7 @@ kubecolor = "latest"                           # Terminal kubectl colorizer
 kubectl = "latest"
 lsd = "latest"                                 # Modern ls replacement
 mainlynorfolk = "latest"                       # Folk MCP
+mergiraf = "latest"                            # Syntax-aware git merge driver
 nano-web = "latest"                            # Ultrafast webserver
 ni = "latest"                                  # @antfu/ni — auto-detects project pm, wraps it with consistent verbs
 oha = "latest"                                 # Load testing
