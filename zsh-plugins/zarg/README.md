@@ -166,7 +166,7 @@ is the only version they meaningfully have. Set `ZARG_VERSION` to override.
 
 ## Completions
 
-`--completions zsh|fish|bash` writes to stdout. `task generate:completions`
+`--completions zsh|fish|bash` writes to stdout. `task completions`
 collects the zsh ones into `~/.config/zsh/completions/`.
 
 Fidelity differs by shell, and that is the shells' doing rather than a gap
