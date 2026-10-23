@@ -1,6 +1,10 @@
 {
   "permissions": {
-    "defaultMode": "auto"
+    "defaultMode": "auto",
+    "allow": [
+      "Bash(gh pr merge:*)",
+      "Bash(gh workflow run:*)"
+    ]
   },
   "model": "opus",
   "hooks": {
