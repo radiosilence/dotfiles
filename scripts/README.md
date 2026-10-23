@@ -251,6 +251,6 @@ dt_head my-tool
 (( dry_run )) && { dt_info "would act on $target"; exit 0 }
 ```
 
-Then `chmod +x`, and add the name to the zarg block of
-`generate:completions` in `Taskfile.yml`. Completions, `--help` and `--version`
+Then `chmod +x`, and add a line for it to the table in the
+`completions` task in `Taskfile.yml`. Completions, `--help` and `--version`
 come for free — there is nothing else to write.

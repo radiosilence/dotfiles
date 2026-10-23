@@ -7,12 +7,11 @@ run: once
 
 vars:
   DOTFILES: "{{.ROOT_DIR}}"
-  # Icons
+  OP_SOCK: "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
   OK: '\033[32m󰄬\033[0m'
   WARN: '\033[33m\033[0m'
   FAIL: '\033[31m󰅖\033[0m'
   LINK: '\033[32m󰌷\033[0m'
-  WORK: '\033[35m󱁤\033[0m'
   BOLD: '\033[1m'
   RESET: '\033[0m'
 
@@ -20,110 +19,306 @@ env:
   CLICOLOR_FORCE: "1"
   FORCE_COLOR: "1"
 
+# setup-macos and setup-linux own everything interactive or root-owned that a
+# fresh machine needs first: Xcode tools, Touch ID sudo, Homebrew, gh auth, the
+# 1Password agent, the clone itself, and mise with task. This file assumes
+# those exist and keeps the machine current. brew and mise are the only slow
+# steps and run concurrently; everything else is a one-shot guarded by status.
+#
+# Nothing here asks for root on Linux: `upd` runs unattended there. os:upgrade
+# is for running by hand.
+
 tasks:
-  # ===========================================================================
-  # System update pipeline
-  #
-  # `task converge` is the single entry point. It works on both fresh systems
-  # (everything missing) and converged ones (most tasks no-op via status:).
-  #
-  # Deps express real prerequisites — tasks that need brew packages depend on
-  # brew:bundle, tasks that need mise tools depend on mise:install, etc.
-  # Don't use `! command -v X` as a "skip if missing" shortcut for a tool we
-  # install ourselves — that turns a missing dep into a silent no-op.
-  # ===========================================================================
-
-  # ---------------------------------------------------------------------------
-  # Bootstrap tasks (fresh system)
-  # ---------------------------------------------------------------------------
-
-  xcode:install:
-    desc: Install Xcode Command Line Tools
-    platforms: [darwin]
-    status: ["command -v git"]
+  converge:
+    desc: Update everything and bring the machine to the state in this repo
+    deps:
+      - link
+      - brew
+      - mise
+      - completions
+      - secrets
+      - git:signing
+      - use-ssh
+      - sudo:reattach
+      - sudo:timeout
+      - rosetta
+      - claude
     cmds:
-      - xcode-select --install
+      - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc ~/.config/zsh/conf.d/*.zwc ~/.zcompdump
       - |
-        printf "{{.WARN}} waiting for Xcode CLI tools installer...\n"
-        while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
-        printf "{{.OK}} xcode cli tools\n"
-
-  dotfiles:clone:
-    desc: Clone dotfiles repo
-    deps: [xcode:install]
-    status: ["test -d {{.DOTFILES}}"]
-    cmds:
-      - git clone https://github.com/radiosilence/dotfiles {{.DOTFILES}}
-      - printf "{{.OK}} dotfiles cloned\n"
-
-  brew:install:
-    desc: Install Homebrew
-    platforms: [darwin]
-    # sudo:touchid runs first so brew's sudo prompts use Touch ID instead of
-    # blocking on a password the non-interactive shell can't supply.
-    deps: [sudo:touchid]
-    status: ["command -v brew"]
-    cmds:
-      # NONINTERACTIVE=1 skips the "press RETURN" prompt brew bombs on without a TTY.
-      - NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      - |
-        if [ -d /opt/homebrew ]; then
-          eval "$(/opt/homebrew/bin/brew shellenv)"
-        else
-          eval "$(/usr/local/bin/brew shellenv)"
+        if command -v sheldon >/dev/null && ! sheldon source >/dev/null 2>&1; then
+          printf "{{.WARN}} sheldon source failed\n"
         fi
-      - printf "{{.OK}} homebrew\n"
+      - printf "{{.OK}} {{.BOLD}}converged{{.RESET}} (restart shell for changes)\n"
 
-  brew:roles:
-    desc: Copy Brewfile roles template
-    deps: [dotfiles:clone]
-    status: ["test -f {{.DOTFILES}}/dotfiles-roles.yml"]
-    cmds:
-      - cp {{.DOTFILES}}/dotfiles-roles.yml.template {{.DOTFILES}}/dotfiles-roles.yml
-      - printf "{{.WARN}} copied dotfiles-roles.yml — edit to enable brew roles\n"
-
-  1password:setup:
-    desc: Set up 1Password SSH agent
-    platforms: [darwin]
-    deps: [brew:bundle]
-    status:
-      - "test -S ~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  link:
+    desc: Point ~ at the configs in this repo
     cmds:
       - |
-        # Sanity-check the app actually landed before telling the user to open it.
-        if [ ! -d "/Applications/1Password.app" ]; then
-          printf "{{.FAIL}} 1Password.app not installed — brew:bundle should have done this\n"
+        d="{{.DOTFILES}}"
+        ln_s() {
+          [ -e "$1" ] || return 0
+          [ "$(readlink "$2")" = "$1" ] && return 0
+          mkdir -p "$(dirname "$2")"
+          rm -rf "$2"
+          ln -s "$1" "$2"
+          printf "{{.LINK}} %s\n" "${2#"$HOME"/}"
+        }
+
+        for f in "$d"/.*; do
+          case "${f##*/}" in
+            .|..|.git|.gitignore|.github|.vscode|.sonarlint|.editorconfig|\
+            .codeowners-lsp|.ruby-lsp|.claude|.claude-work|.omp|.omp-personal|\
+            .claude-personal) continue ;;
+          esac
+          ln_s "$f" "$HOME/${f##*/}"
+        done
+
+        # sift's config moved from config.d/beets; carry the per-machine file over.
+        if [ -f "$d/config.d/beets/config.yaml" ] && [ ! -e "$d/config.d/sift/config.yaml" ]; then
+          mv "$d/config.d/beets/config.yaml" "$d/config.d/sift/config.yaml"
+        fi
+        rmdir "$d/config.d/beets" 2>/dev/null || true
+        if [ -L "$HOME/.config/beets" ] && [ ! -e "$HOME/.config/beets" ]; then rm "$HOME/.config/beets"; fi
+
+        # herdr keeps sockets and logs beside its config, and cargo reads
+        # ~/.cargo rather than ~/.config/cargo, so both are linked per file below.
+        for f in "$d"/config.d/*; do
+          case "${f##*/}" in herdr|cargo) continue ;; esac
+          ln_s "$f" "$HOME/.config/${f##*/}"
+        done
+
+        # A symlinked CARGO_HOME breaks crates that resolve paths against it
+        # (askama via uniffi). Undo the earlier whole-directory link.
+        if [ "$(readlink "$HOME/.cargo")" = "$d/config.d/cargo" ]; then
+          rm "$HOME/.cargo"; mkdir "$HOME/.cargo"
+          find "$d/config.d/cargo" -mindepth 1 -maxdepth 1 ! -name config.toml ! -name .gitignore -exec mv {} "$HOME/.cargo/" \;
+          rm -f "$d/config.d/cargo/.gitignore"
+        fi
+        ln_s "$d/config.d/cargo/config.toml" "$HOME/.cargo/config.toml"
+
+        # Agent profiles: config is versioned, runtime state and PII stay in ~.
+        for p in \
+          .claude-personal/CLAUDE.md \
+          .claude-personal/settings.json \
+          .claude-personal/skills \
+          .claude-personal/hooks/push-before-test.sh \
+          .claude-personal/hooks/op-service-account.sh \
+          .claude-personal/hooks/reminders.sh \
+          .claude-work/CLAUDE.md \
+          .claude-work/skills \
+          .claude-work/settings.json \
+          .omp/agent/config.yml \
+          .omp/agent/mcp.json \
+          .omp-personal/agent/config.yml \
+          .omp-personal/agent/mcp.json; do
+          ln_s "$d/$p" "$HOME/$p"
+        done
+        ln_s "$d/config.d/herdr/config.toml" "$HOME/.config/herdr/config.toml"
+        ln_s "$d/config.d/herdr/claude-agent-state.sh" "$HOME/.claude-personal/hooks/herdr-agent-state.sh"
+        ln_s "$d/config.d/herdr/claude-agent-state.sh" "$HOME/.claude-work/hooks/herdr-agent-state.sh"
+
+        touch "$HOME/.gitconfig"
+        if ! grep -q .dotfiles "$HOME/.gitconfig"; then
+          printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
+          printf "{{.OK}} gitconfig include\n"
+        fi
+
+        mkdir -p "$HOME/.ssh"
+        [ -f "$HOME/.ssh/config" ] || install -m 600 /dev/null "$HOME/.ssh/config"
+        if ! grep -q .dotfiles "$HOME/.ssh/config"; then
+          printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
+          printf "{{.OK}} ssh config include\n"
+        fi
+
+        if [ "$(uname)" = Darwin ]; then
+          ln_s "$d/Brewfile" "$HOME/Brewfile"
+          if ! grep -q 2BUA8C4S2C.com.1password "$HOME/.ssh/config"; then
+            printf '\nHost *\n  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"\n' >> "$HOME/.ssh/config"
+            printf "{{.OK}} 1password ssh agent\n"
+          fi
+        fi
+
+  brew:
+    desc: Update Homebrew and install or upgrade everything in the Brewfile
+    platforms: [darwin]
+    deps: [link]
+    cmds:
+      - |
+        if [ ! -f "{{.DOTFILES}}/dotfiles-roles.yml" ]; then
+          cp "{{.DOTFILES}}/dotfiles-roles.yml.template" "{{.DOTFILES}}/dotfiles-roles.yml"
+          printf "{{.WARN}} copied dotfiles-roles.yml — edit to enable brew roles\n"
+        fi
+      - brew update --quiet
+      - brew bundle --file="{{.DOTFILES}}/Brewfile" --verbose
+      - brew cleanup &
+
+  mise:
+    desc: Install and upgrade mise tools
+    deps: [link, uv]
+    cmds:
+      - |
+        # mise reads gh's token; without it release lookups hit the anonymous rate limit.
+        gh auth status >/dev/null 2>&1 || printf "{{.WARN}} gh is not authenticated (gh auth login)\n"
+        # brew owns mise on macOS; the Linux installer puts it in ~/.local.
+        case "$(command -v mise)" in "$HOME/.local/"*) mise self-update --yes ;; esac
+        mise install
+        mise up
+        mise reshim
+
+  # mise's pipx: backend runs through uv. Installing it here rather than
+  # waiting on brew lets brew and mise run at the same time.
+  uv:
+    desc: Install uv
+    status: ["command -v uv"]
+    cmds:
+      - |
+        if command -v brew >/dev/null; then
+          brew install --quiet uv
+        else
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+        fi
+      - printf "{{.OK}} uv\n"
+
+  completions:
+    desc: Regenerate zsh completions
+    # After brew and mise, so completions come from the upgraded binaries.
+    deps: [brew, mise]
+    vars:
+      DIR: '{{.COMP_DIR | default (printf "%s/.config/zsh/completions" .HOME)}}'
+    cmds:
+      - |
+        dir="{{.DIR}}"
+        mkdir -p "$dir"
+        gen() {
+          new=$(mktemp)
+          if eval "$2" > "$new" 2>/dev/null && [ -s "$new" ] && ! cmp -s "$new" "$1"; then
+            mv "$new" "$1"
+            printf "{{.OK}} %s\n" "${1##*/}"
+          else
+            rm -f "$new"
+          fi
+        }
+
+        # A tool that isn't installed fails its command and is skipped.
+        # scripts/ and the wt plugins are zarg scripts, whose completions come
+        # from the same spec they parse flags with.
+        while read -r tool cmd; do
+          gen "$dir/_$tool" "$cmd" &
+        done <<'EOF'
+        argocd argocd completion zsh
+        buf buf completion zsh
+        dagger dagger completion zsh
+        docker docker completion zsh
+        glow glow completion zsh
+        golangci-lint golangci-lint completion zsh
+        gt gt completion zsh
+        helm helm completion zsh
+        herdr herdr completion zsh
+        k9s k9s completion zsh
+        kubecolor kubecolor completion zsh
+        kubectl kubectl completion zsh
+        lefthook lefthook completion zsh
+        nano-web nano-web completion zsh
+        op op completion zsh
+        orbctl orbctl completion zsh
+        procs procs completion zsh
+        pulumi pulumi completion zsh
+        sesh sesh completion zsh
+        tilt tilt completion zsh
+        watchwoman watchwoman completion zsh
+        yq yq completion zsh
+        aube aube completion zsh
+        nr nr --completion-zsh
+        gh gh completion -s zsh
+        koan koan completions zsh
+        codeowners-cli codeowners-cli completions zsh
+        task task --completion zsh
+        just just --completions zsh
+        aws-vault aws-vault --completion-script-zsh
+        rg rg --generate complete-zsh
+        xh xh --generate complete-zsh
+        pup pup completions zsh
+        folk folk completions zsh
+        tfl tfl completions zsh
+        caldav caldav completions zsh
+        fastmail fastmail completions zsh
+        sift sift completions zsh
+        bun bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'
+        deno deno completions zsh
+        starship starship completions zsh
+        sheldon sheldon completions --shell zsh
+        bat bat --completion zsh
+        delta delta --generate-completion zsh
+        lsd cat "$(dirname "$(command -v lsd)")/autocomplete/_lsd"
+        clean-dls clean-dls --completions zsh
+        clean-exif clean-exif --completions zsh
+        embed-art embed-art --completions zsh
+        extract-exif-from-flac extract-exif-from-flac --completions zsh
+        git-squash git-squash --completions zsh
+        git-sync git-sync --completions zsh
+        imp imp --completions zsh
+        kill-port kill-port --completions zsh
+        parallel-dl-extract parallel-dl-extract --completions zsh
+        prune prune --completions zsh
+        to-audio to-audio --completions zsh
+        unfuck-xcode unfuck-xcode --completions zsh
+        url2base64 url2base64 --completions zsh
+        vimv vimv --completions zsh
+        wtclean {{.DOTFILES}}/zsh-plugins/wt-core/bin/wtclean --completions zsh
+        wt-list {{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-list --completions zsh
+        wt-preview {{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-preview --completions zsh
+        wt-picker {{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-picker --completions zsh
+        wt-shell {{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-shell --completions zsh
+        EOF
+        # npm's completion is a script to source, not a compdef.
+        gen "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" "npm completion" &
+        wait
+
+  secrets:
+    desc: Fill mise conf.d/secrets.toml from 1Password
+    platforms: [darwin]
+    deps: [brew, mise]
+    vars:
+      TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
+      LOCAL: "$HOME/.config/mise/conf.d/secrets.toml"
+      KEYS: "grep -E '^[A-Z_][A-Z_0-9]* *=' {{.TMPL}} | cut -d= -f1 | tr -d ' '"
+    status:
+      - |
+        [ -f "{{.LOCAL}}" ] || exit 1
+        for key in $({{.KEYS}}); do
+          v=$(yq -p toml -oy ".env.${key}" "{{.LOCAL}}" 2>/dev/null)
+          { [ -z "$v" ] || [ "$v" = "null" ]; } && exit 1
+        done
+    cmds:
+      - |
+        [ -f "{{.LOCAL}}" ] || : > "{{.LOCAL}}"
+        chmod 600 "{{.LOCAL}}"
+        # yq -i sets each key in place, so a rerun never duplicates entries.
+        resolved=$(mktemp)
+        if ! op inject -i "{{.TMPL}}" > "$resolved"; then
+          printf "{{.FAIL}} op inject failed (is op signed in?)\n"
+          rm -f "$resolved"
           exit 1
         fi
-        printf "{{.WARN}} open 1Password, sign in, and enable the SSH agent (Settings → Developer → SSH Agent)\n"
-        sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-        while [ ! -S "$sock" ]; do sleep 0.5; done
-        printf "{{.OK}} 1password ssh agent\n"
-
-  1password:ssh-config:
-    desc: Add 1Password SSH agent to ~/.ssh/config
-    platforms: [darwin]
-    status: ["grep -q '2BUA8C4S2C.com.1password' ~/.ssh/config 2>/dev/null"]
-    cmds:
-      - |
-        mkdir -p ~/.ssh
-        [ -f ~/.ssh/config ] || touch ~/.ssh/config && chmod 600 ~/.ssh/config
-        printf '\nHost *\n  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"\n' >> ~/.ssh/config
-        printf "{{.OK}} 1password ssh agent added to ~/.ssh/config\n"
+        for key in $({{.KEYS}}); do
+          val=$(yq -p toml -oy ".${key}" "$resolved" 2>/dev/null)
+          { [ -z "$val" ] || [ "$val" = "null" ]; } && continue
+          v="$val" yq -i -p toml -o toml ".env.${key} = strenv(v)" "{{.LOCAL}}"
+          printf "{{.OK}} %s\n" "$key"
+        done
+        rm -f "$resolved"
 
   git:signing:
-    desc: Point git ident + SSH commit signing at the 1Password key
+    desc: Point git identity and SSH commit signing at the 1Password key
     platforms: [darwin]
     # sign.conf sets format/program/gpgsign; the identity half is per-machine
-    # and lives in ~/.gitconfig. Both values come from 1Password so a fresh
-    # box converges without anything key-shaped in the repo.
-    deps: [1password:setup, patch:gitconfig]
-    status:
-      - 'test -n "$(git config --global user.signingkey)"'
+    # and lives in ~/.gitconfig, read from 1Password so no key is in the repo.
+    deps: [link, brew]
+    status: ['test -n "$(git config --global user.signingkey)"']
     cmds:
       - |
-        sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-        key=$(SSH_AUTH_SOCK="$sock" ssh-add -L 2>/dev/null | grep -m1 '^ssh-ed25519')
+        key=$(SSH_AUTH_SOCK="{{.OP_SOCK}}" ssh-add -L 2>/dev/null | grep -m1 '^ssh-ed25519')
         if [ -z "$key" ]; then
           printf "{{.FAIL}} no ed25519 key in the 1Password agent — enable the key for this vault\n"
           exit 1
@@ -133,79 +328,48 @@ tasks:
           printf "{{.FAIL}} could not read account email from op\n"
           exit 1
         fi
-
         git config --global user.email "$email"
         git config --global user.signingkey "$key"
         git config --global tag.gpgsign true
-
-        # Verification is local-only: git refuses to check an SSH signature
-        # without a signers file, so `git log --show-signature` reads as broken.
+        # git refuses to verify an SSH signature without a signers file.
         signers="$HOME/.config/git/allowed_signers"
         mkdir -p "$(dirname "$signers")"
         printf '%s %s\n' "$email" "$key" > "$signers"
         git config --global gpg.ssh.allowedSignersFile "$signers"
-
         printf "{{.OK}} git signing (%s)\n" "$email"
 
-  gh:auth:
-    desc: Authenticate GitHub CLI
-    deps: [1password:setup, gh:ensure]
-    status: ["gh auth status 2>/dev/null"]
+  use-ssh:
+    desc: Switch the dotfiles remote from HTTPS to SSH
+    # The key lives in the 1Password desktop agent, so headless Linux boxes
+    # stay on HTTPS through gh's credential helper.
+    platforms: [darwin]
+    deps: [link]
+    dir: "{{.DOTFILES}}"
+    status: ['git remote get-url origin | grep -q "^git@"']
     cmds:
-      - printf "{{.WARN}} gh is not authenticated — run 'gh auth login' in another terminal\n"
       - |
-        while ! gh auth status &>/dev/null; do sleep 0.5; done
-        printf "{{.OK}} gh authenticated\n"
-
-  rosetta:install:
-    desc: Install Rosetta 2 (Apple Silicon)
-    platforms: [darwin]
-    status: ["test $(uname -m) != arm64 || /usr/bin/pgrep -q oahd 2>/dev/null"]
-    cmds:
-      - /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-      - printf "{{.OK}} rosetta 2\n"
-
-  claude:install:
-    desc: Install Claude Code
-    status: ["command -v claude"]
-    cmds:
-      - curl -fsSL https://claude.ai/install.sh | bash
-      - printf "{{.OK}} claude code\n"
-
-  sudo:touchid:
-    desc: Enable TouchID for sudo
-    platforms: [darwin]
-    status: ["grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null"]
-    cmds:
-      - sudo sh -c 'printf "auth       sufficient     pam_tid.so\n" > /etc/pam.d/sudo_local'
-      - printf "{{.OK}} touchid sudo\n"
-
-  brew:pam-reattach:
-    desc: Install pam-reattach (Touch ID inside zellij/tmux detached sessions)
-    platforms: [darwin]
-    deps: [brew:install]
-    status: ["test -f /opt/homebrew/lib/pam/pam_reattach.so"]
-    cmds:
-      - brew install pam-reattach
-      - printf "{{.OK}} pam-reattach\n"
+        if [ ! -S "{{.OP_SOCK}}" ]; then
+          printf "{{.WARN}} 1Password SSH agent not running — staying on HTTPS\n"
+          exit 0
+        fi
+        url=$(git remote get-url origin | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
+        git remote set-url origin "$url"
+        printf "{{.OK}} remote switched to %s\n" "$url"
 
   sudo:reattach:
-    desc: Prepend pam_reattach to sudo_local so Touch ID works in detached sessions
+    desc: Let Touch ID sudo work inside detached terminal sessions
     platforms: [darwin]
-    deps: [brew:pam-reattach, sudo:touchid]
+    deps: [brew]
     status: ["grep -q pam_reattach /etc/pam.d/sudo_local 2>/dev/null"]
     cmds:
       - |
-        # Resolve dynamically — handles both /opt/homebrew and /usr/local.
-        # Refuse to touch sudo_local if the .so is missing: a sudo_local that
-        # references a non-existent module bricks sudo entirely, and recovery
-        # requires enabling the root user via Directory Utility.
+        # A sudo_local that references a missing module bricks sudo entirely,
+        # and recovery means enabling the root user in Directory Utility.
         so="$(brew --prefix pam-reattach)/lib/pam/pam_reattach.so"
         if [ ! -f "$so" ]; then
           printf "{{.FAIL}} pam_reattach.so missing at %s — refusing to edit sudo_local\n" "$so"
           exit 1
         fi
-        # Backup, write, then probe PAM. If sudo can't initialize PAM, revert.
         backup=$(mktemp)
         sudo cp /etc/pam.d/sudo_local "$backup"
         sudo sh -c "{ printf 'auth       optional       %s\n' '$so'; cat /etc/pam.d/sudo_local; } > /etc/pam.d/sudo_local.tmp && mv /etc/pam.d/sudo_local.tmp /etc/pam.d/sudo_local"
@@ -219,615 +383,35 @@ tasks:
         printf "{{.OK}} sudo reattach\n"
 
   sudo:timeout:
-    desc: Set sudo timeout to 30 min
+    desc: Set the sudo timeout to 30 minutes
     platforms: [darwin]
     status: ["test -f /etc/sudoers.d/timeout"]
     cmds:
       - sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout'
       - printf "{{.OK}} sudo timeout\n"
 
-  apt:core:
-    desc: Install base packages (Debian/Ubuntu) — manual, never part of converge
-    # Deliberately outside the converge DAG. converge runs unattended and must
-    # never need root on Linux; everything it touches lives under $HOME. These
-    # are the packages that can't — nothing here is in mise's registry — and
-    # they're setup-linux's job, once, at bootstrap. Re-run by hand if needed.
-    #
-    # aria2/unzip: parallel-dl-extract execs `aria2c` and `unzip` directly.
+  rosetta:
+    desc: Install Rosetta 2 on Apple Silicon
+    platforms: [darwin]
+    status: ["test $(uname -m) != arm64 || /usr/bin/pgrep -q oahd"]
+    cmds:
+      - /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+      - printf "{{.OK}} rosetta 2\n"
+
+  claude:
+    desc: Install Claude Code
+    status: ["command -v claude"]
+    cmds:
+      - curl -fsSL https://claude.ai/install.sh | bash
+      - printf "{{.OK}} claude code\n"
+
+  os:upgrade:
+    desc: Upgrade system packages on Linux (needs sudo; not part of converge)
     platforms: [linux]
-    # One expression, not two: separate status entries are ANDed, so a dnf box
-    # would satisfy "no apt-get" and still fail the tools check, then run apt-get.
-    status:
-      - '! command -v apt-get >/dev/null || { command -v zsh && command -v git && command -v curl && command -v rsync; } >/dev/null'
-    cmds:
-      - sudo apt-get update -qq
-      - sudo apt-get install -y -qq zsh git curl ca-certificates gh rsync gnupg unzip aria2
-      - printf "{{.OK}} base packages\n"
-
-  mise:ensure:
-    desc: Ensure mise is installed
-    # brew:install is darwin-gated and skipped on Linux, where the official
-    # installer drops mise in ~/.local/bin — user-owned, no root.
-    deps: [brew:install]
-    status: ["command -v mise"]
     cmds:
       - |
-        if command -v brew >/dev/null 2>&1; then
-          brew install mise
-        else
-          curl -fsSL https://mise.run | sh
-        fi
-      - printf "{{.OK}} mise installed\n"
-
-  gh:ensure:
-    desc: Ensure gh is installed
-    # mise reads tokens from gh's hosts.yml, so gh has to exist before the
-    # bulk `mise install` or every release lookup hits the anonymous rate limit.
-    # On macOS brew:bundle covers this; on Linux nothing else does.
-    #
-    # link:config, and `mise install gh` rather than gh@latest: a shim only
-    # resolves if some config declares the tool, so 03-tools.toml has to be
-    # linked first or the shim errors with "No version is set".
-    deps: [mise:ensure, link:config]
-    status: ["command -v gh"]
-    cmds:
-      - mise install gh
-      - printf "{{.OK}} gh installed\n"
-
-  uv:ensure:
-    desc: Ensure uv is installed
-    platforms: [linux]
-    status: ["command -v uv"]
-    cmds:
-      - curl -LsSf https://astral.sh/uv/install.sh | sh
-      - printf "{{.OK}} uv installed\n"
-
-  mise:install:
-    desc: Install mise tools
-    deps: [mise:ensure, gh:auth, link:config]
-    status:
-      - 'test -z "$(mise ls --missing 2>/dev/null)"'
-    cmds:
-      - |
-        export PATH="$HOME/.local/share/mise/shims:$PATH"
-        MISE_BIN="$(command -v mise)"
-        case "$MISE_BIN" in
-          "$HOME/.local/"*)
-            mise self-update
-            ;;
-        esac
-        mise install
-      - printf "{{.OK}} mise tools installed\n"
-
-  converge:
-    desc: Converge system to desired state
-    # Most tasks below are reached transitively via the DAG. They're listed
-    # here as explicit entry points — order does not matter, deps decide it.
-    #
-    # Nothing here touches the system package manager on Linux. brew is
-    # user-owned and installs formulae without root; apt is not, and `upd`
-    # running unattended is the wrong place to be asking for a sudo password
-    # or moving system packages under the user. apt:core / apt:upgrade /
-    # dnf:upgrade stay available to run by hand.
-    deps:
-      - brew:roles
-      - rosetta:install
-      - claude:install
-      - sudo:reattach
-      - sudo:timeout
-      - 1password:ssh-config
-      - git:signing
-      - use-ssh
-      - link
-      - check:auth
-      - brew:bundle
-      - mise:upgrade
-      - uv:ensure
-      - secrets:populate
-      - generate:completions
-    cmds:
-      - rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc
-      - rm -f ~/.config/zsh/conf.d/*.zwc
-      - rm -f ~/.zcompdump
-      - printf "{{.OK}} {{.BOLD}}converged{{.RESET}} (restart shell for changes)\n"
-
-  # ---------------------------------------------------------------------------
-  # Link tasks
-  # ---------------------------------------------------------------------------
-
-  link:
-    desc: Symlink dotfiles and configs
-    deps:
-      - link:dotfiles
-      - link:config
-      - patch:gitconfig
-      - patch:ssh
-      - link:brewfile
-      - link:agent-configs
-      - link:sheldon
-
-  link:dotfiles:
-    desc: Symlink dotfiles (.* → ~)
-    deps: [dotfiles:clone]
-    cmds:
-      - |
-        for f in "{{.DOTFILES}}"/.* ; do
-          name=$(basename "$f")
-          case "$name" in
-            .|..|.git|.gitignore|.github|.vscode|.sonarlint|\
-            .editorconfig|.codeowners-lsp|.ruby-lsp|\
-            .claude|.claude-work|.omp|.omp-personal|.claude-personal)
-              continue ;;
-          esac
-          target="$HOME/$name"
-          [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
-          rm -rf "$target"
-          ln -s "$f" "$target"
-          printf "{{.LINK}} %s\n" "$name"
-        done
-
-  link:agent-configs:
-    desc: Per-file symlink agent configs (omp/claude-personal); runtime state/PII stays in ~
-    deps: [dotfiles:clone]
-    cmds:
-      - |
-        link() {
-          src="{{.DOTFILES}}/$1"; dst="$HOME/$1"
-          [ -e "$src" ] || return 0
-          [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ] && return 0
-          mkdir -p "$(dirname "$dst")"
-          rm -f "$dst"
-          ln -s "$src" "$dst"
-          printf "{{.LINK}} %s\n" "$1"
-        }
-        link .claude-personal/CLAUDE.md
-        link .claude-personal/settings.json
-        link .claude-personal/skills
-        link .claude-personal/hooks/push-before-test.sh
-        link .claude-personal/hooks/op-service-account.sh
-        link .claude-personal/hooks/reminders.sh
-        link .omp/agent/config.yml
-        link .omp/agent/mcp.json
-        link .omp-personal/agent/config.yml
-        link .omp-personal/agent/mcp.json
-        # work claude profile — vendor config into ~/.claude-work; runtime/PII stays local
-        linkto() {
-          src="{{.DOTFILES}}/$1"; dst="$2"
-          [ -e "$src" ] || return 0
-          [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ] && return 0
-          mkdir -p "$(dirname "$dst")"; rm -f "$dst"
-          ln -s "$src" "$dst"; printf "{{.LINK}} %s\n" "$dst"
-        }
-        linkto .claude-work/CLAUDE.md     "$HOME/.claude-work/CLAUDE.md"
-        linkto .claude-work/skills        "$HOME/.claude-work/skills"
-        linkto .claude-work/settings.json "$HOME/.claude-work/settings.json"
-        # herdr — config only; sockets/logs/session.json stay in ~/.config/herdr
-        linkto config.d/herdr/config.toml "$HOME/.config/herdr/config.toml"
-        # herdr's claude hook is profile-agnostic, so every profile shares one copy
-        linkto config.d/herdr/claude-agent-state.sh "$HOME/.claude-personal/hooks/herdr-agent-state.sh"
-        linkto config.d/herdr/claude-agent-state.sh "$HOME/.claude-work/hooks/herdr-agent-state.sh"
-
-  link:config:
-    desc: Symlink config dirs (config.d/* → ~/.config/*)
-    deps: [dotfiles:clone]
-    cmds:
-      - |
-        mkdir -p "$HOME/.config"
-        # sift's config moved from config.d/beets; carry the per-machine file over
-        old="{{.DOTFILES}}/config.d/beets"
-        if [ -f "$old/config.yaml" ] && [ ! -e "{{.DOTFILES}}/config.d/sift/config.yaml" ]; then
-          mv "$old/config.yaml" "{{.DOTFILES}}/config.d/sift/config.yaml"
-        fi
-        rmdir "$old" 2>/dev/null || true
-        if [ -L "$HOME/.config/beets" ] && [ ! -e "$HOME/.config/beets" ]; then rm "$HOME/.config/beets"; fi
-        for f in "{{.DOTFILES}}/config.d"/*; do
-          [ -e "$f" ] || continue
-          name=$(basename "$f")
-          # herdr keeps sockets/logs alongside its config; per-file linked in link:agent-configs
-          [ "$name" = "herdr" ] && continue
-          # cargo reads ~/.cargo, not ~/.config/cargo; linked below
-          [ "$name" = "cargo" ] && continue
-          target="$HOME/.config/$name"
-          [ -L "$target" ] && [ "$(readlink "$target")" = "$f" ] && continue
-          rm -rf "$target"
-          ln -s "$f" "$target"
-          printf "{{.LINK}} ~/.config/%s\n" "$name"
-        done
-        # Only the config is linked: a symlinked CARGO_HOME breaks crates that
-        # resolve paths against it (askama via uniffi). Undo the earlier
-        # whole-directory link by moving its contents back out.
-        src="{{.DOTFILES}}/config.d/cargo"; dst="$HOME/.cargo"
-        if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
-          rm "$dst"; mkdir "$dst"
-          find "$src" -mindepth 1 -maxdepth 1 ! -name config.toml ! -name .gitignore -exec mv {} "$dst/" \;
-          rm -f "$src/.gitignore"
-        fi
-        mkdir -p "$dst"
-        if ! { [ -L "$dst/config.toml" ] && [ "$(readlink "$dst/config.toml")" = "$src/config.toml" ]; }; then
-          rm -f "$dst/config.toml"; ln -s "$src/config.toml" "$dst/config.toml"
-          printf "{{.LINK}} ~/.cargo/config.toml\n"
-        fi
-
-  patch:gitconfig:
-    desc: Ensure gitconfig includes dotfiles
-    cmds:
-      - |
-        [ -f "$HOME/.gitconfig" ] || touch "$HOME/.gitconfig"
-        grep -q '.dotfiles' "$HOME/.gitconfig" 2>/dev/null && exit 0
-        printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >> "$HOME/.gitconfig"
-        printf "{{.OK}} gitconfig include\n"
-
-  patch:ssh:
-    desc: Ensure SSH config includes dotfiles
-    cmds:
-      - |
-        mkdir -p "$HOME/.ssh"
-        if [ ! -f "$HOME/.ssh/config" ]; then
-          touch "$HOME/.ssh/config"
-          chmod 600 "$HOME/.ssh/config"
-        fi
-        grep -q '.dotfiles' "$HOME/.ssh/config" 2>/dev/null && exit 0
-        printf '\nInclude ~/.dotfiles/ssh.d/*.conf\n' >> "$HOME/.ssh/config"
-        printf "{{.OK}} ssh config include\n"
-
-  link:brewfile:
-    desc: Symlink Brewfile
-    platforms: [darwin]
-    deps: [dotfiles:clone]
-    cmds:
-      - |
-        target="$HOME/Brewfile"
-        [ -L "$target" ] && [ "$(readlink "$target")" = "{{.DOTFILES}}/Brewfile" ] && exit 0
-        ln -sf "{{.DOTFILES}}/Brewfile" "$target"
-        printf "{{.OK}} Brewfile\n"
-
-  secrets:populate:
-    desc: Populate mise conf.d/secrets.toml from 1Password (single op inject call)
-    platforms: [darwin]
-    deps: [brew:bundle, link:config]
-    vars:
-      TMPL: "{{.DOTFILES}}/packager.d/mise-secrets.tmpl"
-      LOCAL: "$HOME/.config/mise/conf.d/secrets.toml"
-    status:
-      - |
-        [ -f "{{.LOCAL}}" ] || exit 1
-        for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
-          v=$(yq -p toml -oy ".env.${key}" "{{.LOCAL}}" 2>/dev/null)
-          { [ -z "$v" ] || [ "$v" = "null" ]; } && exit 1
-        done
-    cmds:
-      - |
-        [ -f "{{.LOCAL}}" ] || : > "{{.LOCAL}}"
-        chmod 600 "{{.LOCAL}}"
-
-        # op inject expands op:// refs in the template into a TOML-shaped blob
-        # of `KEY = "value"` lines. Parse it via yq, then yq -i the values
-        # into the local file — idempotent by construction (set rewrites the
-        # key in place, no append, no dupes).
-        resolved_file=$(mktemp)
-        op inject -i "{{.TMPL}}" > "$resolved_file" || { printf "{{.FAIL}} op inject failed (is op signed in?)\n"; rm -f "$resolved_file"; exit 1; }
-
-        for key in $(grep -E '^[A-Z_][A-Z_0-9]* *=' "{{.TMPL}}" | cut -d= -f1 | tr -d ' '); do
-          val=$(yq -p toml -oy ".${key}" "$resolved_file" 2>/dev/null)
-          { [ -z "$val" ] || [ "$val" = "null" ]; } && continue
-          v="$val" yq -i -p toml -o toml ".env.${key} = strenv(v)" "{{.LOCAL}}"
-          printf "{{.OK}} %s\n" "$key"
-        done
-        rm -f "$resolved_file"
-
-  link:sheldon:
-    desc: Sheldon plugin manager smoke test
-    deps: [brew:bundle]
-    # Skip on systems where sheldon isn't available (non-darwin)
-    status:
-      - "! command -v sheldon || sheldon source >/dev/null 2>&1"
-    cmds:
-      - 'printf "{{.WARN}} sheldon source failed\n"'
-
-  # ---------------------------------------------------------------------------
-  # Build / utility tasks
-  # ---------------------------------------------------------------------------
-
-  use-ssh:
-    desc: Switch dotfiles remote from HTTPS to SSH
-    # darwin-only: the key lives in the 1Password desktop agent. Headless Linux
-    # boxes stay on HTTPS via gh's credential helper.
-    platforms: [darwin]
-    deps: [dotfiles:clone, 1password:setup]
-    dir: "{{.DOTFILES}}"
-    status:
-      - 'git remote get-url origin 2>/dev/null | grep -q "^git@"'
-    cmds:
-      - |
-        current=$(git remote get-url origin)
-        ssh_url=$(echo "$current" | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
-        git remote set-url origin "$ssh_url"
-        printf "{{.OK}} remote switched to %s\n" "$ssh_url"
-
-  # ---------------------------------------------------------------------------
-  # Update tasks
-  # ---------------------------------------------------------------------------
-
-  check:auth:
-    desc: Check authentication status
-    deps:
-      - check:auth:gh
-      - check:auth:op
-
-  check:auth:gh:
-    desc: Check GitHub CLI auth
-    # gh:auth blocks until the user runs `gh auth login`, so by the time this
-    # status check fires, gh either auths cleanly or really is broken.
-    deps: [gh:auth]
-    status: ["gh auth status >/dev/null 2>&1"]
-    cmds:
-      - 'printf "{{.WARN}} gh: not authenticated (run gh auth login)\n"'
-
-  check:auth:op:
-    desc: Check 1Password CLI integration
-    platforms: [darwin]
-    # 1password:setup waits for the SSH agent socket — by then the user has
-    # been through 1Password settings and op should be talking to the app.
-    deps: [1password:setup]
-    status: ["op account list >/dev/null 2>&1"]
-    cmds:
-      - 'printf "{{.WARN}} op: not integrated (check 1Password CLI settings)\n"'
-
-  brew:bundle:
-    desc: Install/upgrade brew packages
-    deps: [brew:install, link:brewfile, brew:pam-reattach]
-    platforms: [darwin]
-    status: ["brew bundle check >/dev/null 2>&1"]
-    cmds:
-      - brew bundle --verbose
-      - brew cleanup &
-
-  apt:upgrade:
-    desc: Update apt packages
-    platforms: [linux]
-    status: ["! command -v apt-get"]
-    cmds:
-      - sudo apt-get update
-      - sudo apt-get upgrade -y
-      - sudo apt-get autoremove -y
-
-  dnf:upgrade:
-    desc: Update dnf packages
-    platforms: [linux]
-    status: ["! command -v dnf"]
-    cmds:
-      - sudo dnf update -y
-
-  mise:upgrade:
-    desc: Update mise tools
-    deps: [mise:install]
-    cmds:
-      - mise up
-      - mise reshim
-
-  generate:completions:
-    desc: Regenerate zsh completions
-    deps:
-      - mise:upgrade
-      - for:
-          - argocd
-          - buf
-          - dagger
-          - docker
-          - glow
-          - golangci-lint
-          - gt
-          - helm
-          - herdr
-          - k9s
-          - kubecolor
-          - kubectl
-          - lefthook
-          - nano-web
-          - op
-          - orbctl
-          - procs
-          - pulumi
-          - sesh
-          - tilt
-          - watchwoman
-          - yq
-        task: generate:completions:gen
-        vars:
-          TOOL: "{{.ITEM}}"
-          CMD: "{{.ITEM}} completion zsh"
-      # scripts/ — zarg derives these from the same spec the script parses with,
-      # so they cannot drift from the flags the script actually accepts.
-      - for:
-          - clean-dls
-          - clean-exif
-          - embed-art
-          - extract-exif-from-flac
-          - git-squash
-          - git-sync
-          - imp
-          - kill-port
-          - parallel-dl-extract
-          - prune
-          - to-audio
-          - unfuck-xcode
-          - url2base64
-          - vimv
-        task: generate:completions:gen
-        vars:
-          TOOL: "{{.ITEM}}"
-          CMD: "{{.ITEM}} --completions zsh"
-      - task: generate:completions:plugin
-        vars:
-          TOOL: wtclean
-          BIN: "{{.DOTFILES}}/zsh-plugins/wt-core/bin/wtclean"
-      - task: generate:completions:plugin
-        vars:
-          TOOL: wt-list
-          BIN: "{{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-list"
-      - task: generate:completions:plugin
-        vars:
-          TOOL: wt-preview
-          BIN: "{{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-preview"
-      - task: generate:completions:plugin
-        vars:
-          TOOL: wt-picker
-          BIN: "{{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-picker"
-      - task: generate:completions:plugin
-        vars:
-          TOOL: wt-shell
-          BIN: "{{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-shell"
-      # Custom completion commands
-      - task: generate:completions:gen
-        vars: { TOOL: aube, CMD: "aube completion zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: nr, CMD: "nr --completion-zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: gh, CMD: "gh completion -s zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: koan, CMD: "koan completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: codeowners-cli, CMD: "codeowners-cli completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: task, CMD: "task --completion zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: just, CMD: "just --completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: aws-vault, CMD: "aws-vault --completion-script-zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: rg, CMD: "rg --generate complete-zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: xh, CMD: "xh --generate complete-zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: pup, CMD: "pup completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: folk, CMD: "folk completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: tfl, CMD: "tfl completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: caldav, CMD: "caldav completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: fastmail, CMD: "fastmail completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: sift, CMD: "sift completions zsh" }
-      - task: generate:completions:gen
-        vars:
-          { TOOL: bun, CMD: "bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'" }
-      - task: generate:completions:gen
-        vars: { TOOL: deno, CMD: "deno completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: starship, CMD: "starship completions zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: sheldon, CMD: "sheldon completions --shell zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: bat, CMD: "bat --completion zsh" }
-      - task: generate:completions:gen
-        vars: { TOOL: delta, CMD: "delta --generate-completion zsh" }
-      # Prebuilt: lsd
-      - task: generate:completions:lsd
-      # Sourced: npm
-      - task: generate:completions:npm
-    cmds:
-      - |
-        n=$(wc -l < /tmp/.task-completions-changed 2>/dev/null | tr -d ' ' || echo 0)
-        printf "{{.OK}} completions: %s updated\n" "${n:-0}"
-
-  generate:completions:setup:
-    internal: true
-    # Every gen task deps on this, so this is the choke point that orders the
-    # whole fan-out after the binaries exist and are upgraded. mise:upgrade
-    # (not mise:install) — completions must come from post-`mise up` shims.
-    deps: [brew:bundle, mise:upgrade]
-    vars:
-      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
-      STATE: "/tmp/.task-completions-changed"
-    cmds:
-      - mkdir -p {{.COMP_DIR}}
-      - ": > {{.STATE}}"
-
-  generate:completions:gen:
-    internal: true
-    run: always
-    deps: [generate:completions:setup]
-    status: ["! command -v {{.TOOL}}"]
-    vars:
-      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
-      STATE: "/tmp/.task-completions-changed"
-    cmds:
-      - |
-        new=$(mktemp)
-        if {{.CMD}} > "$new" 2>/dev/null && [ -s "$new" ]; then
-          if ! cmp -s "$new" "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null; then
-            mv "$new" "{{.COMP_DIR}}/_{{.TOOL}}"
-            printf "{{.OK}} %s\n" "{{.TOOL}}"
-            echo "{{.TOOL}}" >> {{.STATE}}
-          else
-            rm -f "$new"
-          fi
-        else
-          rm -f "$new"
-        fi
-
-  # zarg scripts that live in a plugin rather than on $PATH. wtclean is reached
-  # interactively through a shell function, so `command -v` can't see it from
-  # here and the usual gen task would skip it.
-  generate:completions:plugin:
-    internal: true
-    run: always
-    deps: [generate:completions:setup]
-    status: ["! test -x {{.BIN}}"]
-    vars:
-      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
-      STATE: "/tmp/.task-completions-changed"
-    cmds:
-      - |
-        new=$(mktemp)
-        if {{.BIN}} --completions zsh > "$new" 2>/dev/null && [ -s "$new" ]; then
-          if ! cmp -s "$new" "{{.COMP_DIR}}/_{{.TOOL}}" 2>/dev/null; then
-            mv "$new" "{{.COMP_DIR}}/_{{.TOOL}}"
-            printf "{{.OK}} %s\n" "{{.TOOL}}"
-            echo "{{.TOOL}}" >> {{.STATE}}
-          else
-            rm -f "$new"
-          fi
-        else
-          rm -f "$new"
-        fi
-
-  generate:completions:lsd:
-    internal: true
-    deps: [generate:completions:setup]
-    status: ["! command -v lsd"]
-    vars:
-      COMP_DIR: "{{.HOME}}/.config/zsh/completions"
-      STATE: "/tmp/.task-completions-changed"
-    cmds:
-      - |
-        src="$(dirname "$(command -v lsd)")/autocomplete/_lsd"
-        [ -f "$src" ] || exit 0
-        if ! cmp -s "$src" "{{.COMP_DIR}}/_lsd" 2>/dev/null; then
-          cp "$src" "{{.COMP_DIR}}/_lsd"
-          printf "{{.OK}} lsd (pre-built)\n"
-          echo "lsd" >> {{.STATE}}
-        fi
-
-  generate:completions:npm:
-    internal: true
-    deps: [generate:completions:setup]
-    status: ["! command -v npm"]
-    vars:
-      STATE: "/tmp/.task-completions-changed"
-    cmds:
-      - |
-        new=$(mktemp)
-        if npm completion > "$new" 2>/dev/null && [ -s "$new" ]; then
-          if ! cmp -s "$new" "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" 2>/dev/null; then
-            mv "$new" "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh"
-            printf "{{.OK}} npm (sourced)\n"
-            echo "npm" >> {{.STATE}}
-          else
-            rm -f "$new"
-          fi
-        else
-          rm -f "$new"
+        if command -v apt-get >/dev/null; then
+          sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get autoremove -y
+        elif command -v dnf >/dev/null; then
+          sudo dnf update -y
         fi

@@ -78,9 +78,8 @@ backend is only ever the two functions above.
 
 All zsh, and all parse with [`zarg`](../zarg) — one declaration yields the
 parser, `--help` and the completions, so a flag can't exist in one and not the
-other. `task generate:completions` picks them up through
-`generate:completions:plugin`, which takes a path: these live in plugins, not
-on `PATH`.
+other. `task completions` lists them by full path, since they live in plugins
+rather than on `PATH`.
 
 `wt-list` prints `branch<TAB>path` per worktree, or resolves one branch to its
 path. Parsing `worktree list --porcelain` lived in four places and drifted;

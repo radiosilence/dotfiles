@@ -90,7 +90,7 @@ printf "  %s dotfiles at %s\n" "$OK" "$DOTFILES"
 # 5. Link the mise config before installing anything. A shim only resolves if
 #    some config file declares the tool — `mise install task@latest` alone
 #    leaves a shim that errors with "No version is set". conf.d/03-tools.toml
-#    is that declaration, so it has to be in place first. `task link:config`
+#    is that declaration, so it has to be in place first. `task link`
 #    later sees the symlink already correct and no-ops.
 # ---------------------------------------------------------------------------
 mkdir -p "$HOME/.config"

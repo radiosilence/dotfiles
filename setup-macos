@@ -115,7 +115,7 @@ print -P "  ${OK} dotfiles at $DOTFILES"
 #    and $DOTFILES/mise.toml only declares lefthook and shellcheck. brew hid
 #    this for gh and mise by installing real binaries at step 4 — task has no
 #    such cover, so converge never started on a genuinely fresh machine.
-#    `task link:config` later sees the symlink already correct and no-ops.
+#    `task link` later sees the symlink already correct and no-ops.
 # ---------------------------------------------------------------------------
 mkdir -p "$HOME/.config"
 if [[ "$(readlink "$HOME/.config/mise" 2>/dev/null)" != "$DOTFILES/config.d/mise" ]]; then
