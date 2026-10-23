@@ -33,6 +33,7 @@ CI runs the same suite, so a local run before pushing only delays CI by its own 
 
 ### React / TypeScript
 
+- mise for tooling, oxc for linting/formatting, aube for package management
 - No `useEffect` anti-patterns.
 - Lean on inference. No explicit return types, and no types inference already gives you unless they're reused.
 - Minimise state: derive values, use browser state (forms, nuqs), sync rather than duplicate.
