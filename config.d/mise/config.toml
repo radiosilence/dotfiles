@@ -1,2 +1,4 @@
 [tools]
-gcloud = "586.0.0"
+# Linux only: macOS gets it from the gcloud-cli cask (brewfiles.d/infra.rb),
+# because vfox-gcloud's env hook probes for Python on every hook-env.
+gcloud = { version = "586.0.0", os = ["linux"] }

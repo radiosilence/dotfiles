@@ -1,5 +1,5 @@
 [tools]
-1password = "latest"
+1password = { version = "latest", os = ["linux"] }  # macOS: 1password-cli cask; the vfox plugin costs ~35ms per hook-env
 aube = "latest"                                # Rust-built JS pkg manager (reads/writes pnpm-lock.yaml + package-lock.json)
 aws-vault = "latest"
 bat = "latest"                                 # Cat with wings
