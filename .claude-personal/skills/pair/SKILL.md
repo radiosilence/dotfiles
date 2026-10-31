@@ -1,6 +1,6 @@
 ---
 name: pair
-description: Pair-program with a partner subagent on the same model. Agree the plan with it before starting (without stopping for the user's sign-off), then show it each logical chunk of work as you go so problems are caught while they are cheap. Use when the user says "/pair", asks to pair, or wants a second pair of eyes on work as it happens.
+description: Pair-program with a partner subagent on the same model. Agree the plan with it and post it in the chat before starting, without waiting for sign-off, then show it each logical chunk of work as you go so problems are caught while they are cheap. Use when the user says "/pair", asks to pair, or wants a second pair of eyes on work as it happens.
 argument-hint: "<what to work on: an issue, a feature, a bug>"
 ---
 
@@ -38,7 +38,7 @@ Before writing code, fetch and check what else is moving in the same area: open 
 
 Explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, pick one and note the disagreement in the PR body.
 
-Then start coding without asking the user to sign off the plan; they review the PR.
+Then post the agreed plan in the chat and start coding straight away, without waiting for a reply: the user reviews the PR, and the posted plan lets them stop you early if it is heading the wrong way. Format it to be read at a glance: a one-line summary of the approach, then short bullets for what changes (files and behaviour), what was considered and rejected, and any open disagreement. If the user replies with changes, stop, take them to the partner, and carry on from the revised plan.
 
 ## Chunks as you go
 
