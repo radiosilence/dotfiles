@@ -24,7 +24,10 @@ Its brief tells it:
 - the task and the repo path (it loads CLAUDE.md itself, so don't restate it);
 - to be direct and specific: findings with file and line, a better alternative where it has one, and silence on things that are fine. No praise, no summary of what you said;
 - to push back on the approach, not just the details, when it thinks there is a simpler or more robust way;
-- for every resource or side effect the change starts (an element playing, a listener, a timer, a subscription), to trace each path that should stop it, not just the one you mention;
+- for every resource or side effect the change starts (an element playing, a listener, a timer, a subscription), to trace each path that should stop it, not just the one you mention, and to check that the stopping action itself succeeds: it runs with the same auth, headers and limits as the action that started the resource;
+- when a change adds or reconfigures a client, server, pool or connection, to review every default it now inherits (redirects, retries, proxies, header forwarding, pooling), not only the settings you changed;
+- to check every branch's failure path, and compare sibling branches: one that handles an error while its neighbour doesn't is a bug in the neighbour;
+- to hold comments and code style to both CLAUDE.md files, global and repo, as well as behaviour: a comment that describes the change rather than the code, or claims more than the code does, is a finding;
 - to test each assumption you flag as uncertain against the cases it would get wrong (older versions, other platforms, other callers) rather than judging it on its face;
 - for each fix, its own or yours, to ask what legitimate input or caller it now refuses or treats differently, what it costs at peak (a copy, an allocation, a lock held longer), and what reads the values it changes (an average, a counter, a limit) and whether that still holds;
 - that its own suggestions get no pass: once you have built one, it reviews that code as hard as anything else you send.
