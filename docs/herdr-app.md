@@ -19,6 +19,7 @@ The herdr TUI ran inside Ghostty, which keeps every `cmd` shortcut for itself, s
 | Go to tab N | `ctrl-a 1..9` | `cmd-1..9` |
 | Rename tab | `ctrl-a r` | `f2` |
 | New space (workspace) | `ctrl-a n`, `alt-shift-o` | `cmd-n` |
+| New space in a folder picked with zoxide | none | `cmd-shift-n` |
 | Close space | `ctrl-a shift-x` | `cmd-alt-w` |
 | Rename space | `ctrl-a shift-w` | `shift-f2` |
 | Go to space N | `alt-shift-1..9` | `ctrl-1..9` |

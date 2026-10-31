@@ -60,7 +60,8 @@
     "cmd-alt-w": "space.close",
     "cmd-;": "mod.open:popup-shell",
     "alt-shift-p": "mod.open:popup-pr",
-    "alt-w": "mod.open:popup-worktree"
+    "alt-w": "mod.open:popup-worktree",
+    "cmd-shift-n": "mod.open:popup-space"
   },
   "terminal": {
     "cmd-c": "terminal.copy",
