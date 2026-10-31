@@ -18,7 +18,9 @@ Its brief tells it:
 
 ## Plan first
 
-Before writing code, explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, decide, and mention the disagreement to the user if it matters.
+Before writing code, explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, say so in the plan you show the user.
+
+Then present the agreed plan to the user: concise, covering the approach, what changes, and any open disagreement. Wait for their sign-off before writing code, and take their changes back to the partner if they reshape the plan.
 
 ## Chunks as you go
 
