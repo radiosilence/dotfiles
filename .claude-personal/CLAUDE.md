@@ -64,6 +64,7 @@ Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/
 - Justify any unsafe change in the PR body, labelled or not: breaking changes, risky migrations, anything backwards-incompatible. The reviewer gets the risk and the reasoning either way.
 - Every inline review comment you act on gets a reply in its thread and the thread resolved, in the same pass as the push that addresses it. The reply names the commit and says what changed, or why you didn't change it. Resolve with the `resolveReviewThread` GraphQL mutation (`gh api graphql`); a reply alone leaves the thread open. Before reporting the work done, list the PR's review threads and confirm none you handled is still unresolved. Leave a thread open only when it needs the reviewer's call, and say so in the reply.
 - Where a repo has a review bot, trigger it on new PRs and after each push.
+- Run `/code-review` without `--comment`: findings come back in the session, and posting them burns the GitHub API rate limit. Post them to the PR only when someone other than you has to act on them there, such as a review of another author's PR the user asked for.
 
 ## Docs
 

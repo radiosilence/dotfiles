@@ -60,4 +60,4 @@ Before opening the PR, merge the default branch in, then give the partner the wh
 
 ## While this skill is being tuned
 
-After the PR is open and the partner's final pass is in, run `/code-review medium --comment` on it; the level is pinned so runs are comparable. Triage each finding: fix it, or reply why not, then resolve the thread as for any review. Report to the user, in a few lines, which valid findings the partner missed and what in this skill's prompt would have caught them. False positives aren't misses.
+After the PR is open and the partner's final pass is in, run `/code-review medium` on it; the level is pinned so runs are comparable. Triage each finding in the session: fix it, or note why not in your report. Report to the user, in a few lines, which valid findings the partner missed and what in this skill's prompt would have caught them. False positives aren't misses.
