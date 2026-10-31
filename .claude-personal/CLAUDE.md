@@ -39,6 +39,16 @@ CI runs the same suite, so a local run before pushing only delays CI by its own 
 - Minimise state: derive values, use browser state (forms, nuqs), sync rather than duplicate.
 - Zustand over prop-drilling for shared state.
 
+## Teammates
+
+Inside herdr-core (`HC_TERMINAL_ID` is set), parallel work goes to teammates started with `hc` rather than in-process subagents, so the user can watch and steer them and they don't share this session's context. Keep it light: a teammate is for an independent task you have already thought through (a fix in its own worktree, a review, a long investigation), and most work needs none.
+
+- Start one with `hc run --bg --name <name> --cwd <dir> claude --model <id> "<task>"`. The task says exactly what to do, what not to touch, not to start agents of its own, and to report with `hc send $HC_TERMINAL_ID` when done or stuck. An editing teammate gets its own worktree; add `--label herdr.space=<name>` when the user should see it as a space.
+- Talk to it with `hc send <name>`. Its reports arrive as your next input, tagged `<hc from="...">`, and hc tells you if it is blocked or exits. Wait with `hc wait`, never sleep or poll; `hc read <name>` shows its screen.
+- When its work is accepted, `hc kill <name>` then `hc rm <name>`.
+- Short read-only lookups still go to the Agent tool's Explore agent: cheaper, and nothing to clean up.
+- A large push across many tasks is the `guv` skill; working alongside a reviewer as you go is `pair`.
+
 ## Worktrees
 
 Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/<feature>`, never inside the main checkout. When cwd is an org directory (`~/workspace/<org-or-user>/`) holding several repos, give every non-trivial feature its own worktree off the relevant repo so the main checkouts stay clean. Remove worktrees when the feature merges or is abandoned; a guv fella's worktree lasts until the fella is stood down.

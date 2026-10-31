@@ -1,0 +1,44 @@
+---
+name: pair
+description: Pair-program with a partner subagent on the same model. Agree the plan with it before starting, then show it each logical chunk of work as you go so problems are caught while they are cheap. Use when the user says "/pair", asks to pair, or wants a second pair of eyes on work as it happens.
+argument-hint: "<what to work on: an issue, a feature, a bug>"
+---
+
+You drive; a partner subagent navigates. The aim is that the PR needs nothing from review because the partner already caught it. The user's whole request is the task, so read it as you would any prompt and do the work in this session.
+
+## The partner
+
+The partner is a fresh session on your model, not a fork, so its read isn't anchored on your context. Keep it for the whole task so it builds up context across rounds rather than starting cold.
+
+Inside herdr-core (`HC_TERMINAL_ID` is set), run it as a terminal the user can watch and type into:
+
+1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id> --disallowedTools Edit Write NotebookEdit "<brief>"`. It is a child of this terminal, so it ends when this session does. If `first_message.sent` is false, `hc read` it before sending the brief with `hc send`.
+2. It replies with `hc send $HC_TERMINAL_ID`, so put your terminal address in the brief. Replies arrive as your next input, tagged `<hc from="... pair-<branch>">`. Talk to it with `hc send pair-<branch>`.
+3. `hc kill pair-<branch>` when the PR is done.
+
+Elsewhere, spawn it with the Agent tool as `subagent_type: "Plan"` (fresh and without edit tools) and `model` set to your own model, since an omitted model can resolve to a configured subagent default. Keep the agent ID from the result and continue it with SendMessage to that ID; load SendMessage with ToolSearch first.
+
+Its brief tells it:
+- how to reply to you;
+- it is the navigator, and does not edit files, commit or run anything with side effects; it reads code and runs read-only commands to check claims;
+- the task and the repo path (it loads CLAUDE.md itself, so don't restate it);
+- to be direct and specific: findings with file and line, a better alternative where it has one, and silence on things that are fine. No praise, no summary of what you said;
+- to push back on the approach, not just the details, when it thinks there is a simpler or more robust way.
+
+## Plan first
+
+Before writing code, explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, say so in the plan you show the user.
+
+Then present the agreed plan to the user: concise, covering the approach, what changes, and any open disagreement. Wait for their sign-off before writing code, and take their changes back to the partner if they reshape the plan.
+
+## Chunks as you go
+
+After each logical chunk (a coherent change you could describe in one commit message), commit it, then send the partner the SHA and what changed and why rather than pasting the diff. A commit stays put while you carry on editing; a live `git diff` doesn't. Ask about what is uncertain: an edge case, a naming choice, whether an abstraction pays for itself. Skip trivial chunks such as renames, config tweaks and docs-only edits; batch small ones together.
+
+Keep working while it reads unless the next chunk depends on its answer. Fold its feedback in before the PR, fix what's right, and tell it briefly why you didn't take the rest so it calibrates.
+
+Before opening the PR, give the partner the whole branch diff for one last pass and fold that in. Then push and open the PR as usual.
+
+## While this skill is being tuned
+
+After the PR is open and the partner's final pass is in, run `/code-review medium --comment` on it; the level is pinned so runs are comparable. Triage each finding: fix it, or reply why not, then resolve the thread as for any review. Report to the user, in a few lines, which valid findings the partner missed and what in this skill's prompt would have caught them. False positives aren't misses.

@@ -70,6 +70,9 @@ autoload -Uz compinit
 if [[ -n ~/.zcompdump(#qN.mh+24) ]] || \
    [[ -d ~/.config/zsh/completions && ~/.config/zsh/completions -nt ~/.zcompdump ]]; then
   compinit
+  # compinit leaves the dump untouched when nothing changed, so without this
+  # the 24h check stays true and every shell pays for the full audit.
+  touch ~/.zcompdump
 else
   compinit -C
 fi

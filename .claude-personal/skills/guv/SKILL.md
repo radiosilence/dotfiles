@@ -8,11 +8,11 @@ This session becomes the guvnor. It coordinates and doesn't write features: it k
 
 **The idea.** No session needs the full context of everything, only enough to make its own decisions. Detail stays with whoever does the work: a fella holds its diff, a guvnor holds its project, an area manager holds the area. Ask down for a summary rather than reading the detail yourself, and pass up conclusions rather than raw output. Every turn re-reads a session's whole context, so context kept where it's used is tokens not spent twice.
 
-Herdr does the plumbing: herdr-core (`hc`) runs every session and the Herdr app (`herdr-app`) shows them. Check `HC_TERMINAL_ID` is set, which means this session runs in herdr-core. Without it you can still message sessions the user has started, but you can't create, read or clear them, so tell the user. `hc --skill` and `herdr-app --skill` document the CLIs. Their JSON responses carry the IDs to use next, so read them rather than predicting.
+Herdr does the plumbing: herdr-core (`hc`) runs every session and the Herdr app (`herdr-app`) shows them. Check `HC_TERMINAL_ID` is set, which means this session runs in herdr-core. Without it you can't create, message, read or clear sessions, so tell the user. `hc --skill` and `herdr-app --skill` document the CLIs. Their JSON responses carry the IDs to use next, so read them rather than predicting.
 
 ## Orient
 
-Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgents`, `hc ls`, and `watchdog.sh guvs` for other guvnors on this machine (see Neighbours). Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
+Run `date`. Then list open PRs and issues, worktrees, recent releases, `hc ls`, and `watchdog.sh guvs` for other guvnors on this machine (see Neighbours). Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
 
 ## Raise the crew
 
@@ -27,19 +27,20 @@ Start small. Tell the user in one line whenever the crew changes, with the names
 For each fella:
 
 1. `git -C <repo root> worktree add -b fellas/<name> ~/workspace/<org>/worktrees/<project>/<name> origin/main`.
-2. `herdr-app do space.new --name <name> --folder <worktree> --argv '["claude"]' --task "<boot>"`. This gives the fella a space of its own in the window and starts Claude with the boot message. Take `space` and `terminal` from the response. If the window isn't open (`herdr-app status` fails), start it hidden instead with `hc run --bg --keep --outlive-parent --name <name> --cwd <worktree> claude "<boot>"`; the user can still `hc attach` it. The boot message gives the fella:
-   - its name, and the guvnor's ListAgents name;
+2. `hc run --bg --keep --outlive-parent --name <name> --cwd <worktree> --label herdr.space=fella-<name> claude "<boot>"`. The fella is your child in herdr-core, so hc tells you when it is blocked, errors or exits. The label gives it a space of its own in the Herdr window, named after its worktree. `--outlive-parent` keeps the crew running if you are restarted. Check `first_message.sent` in the response; if it is false, `hc read` the fella before sending the boot message again. The boot message gives the fella:
+   - its name, and the guvnor's terminal (`$HC_TERMINAL_ID`), to which it reports with `hc send`;
    - an instruction to read the repo CLAUDE.md;
    - the machine-load rules below;
    - to message the guvnor only when a PR is ready or it is blocked;
    - to wait for a brief.
 
-Then use `ListAgents` to get each fella's SendMessage name. Record the name, terminal, space, worktree and SendMessage name in the queue file, and introduce the crew to the user.
+Record each fella's name, terminal and worktree in the queue file, and introduce the crew to the user.
 
 ## Run the crew
 
+- **Talk through hc.** Brief a fella with `hc send <name> "<brief>"`. Its reports arrive as your next input, tagged `<hc from="t7 <name>">`. Don't sleep or poll for them; `hc wait <name>` or `hc wait --children any` waits when you need to.
 - **Brief with distilled todos.** Each brief names the branch, the exact change, how to verify it, and what to report. Make it self-contained, so a cleared fella can act on it. Queue the next task when a fella reports.
-- **Review every PR through a subagent.** The reviewer reads the issue and diff, sends must-fix findings straight to the fella with SendMessage, and returns a one-line verdict. The guvnor never reads diffs.
+- **Review every PR through a subagent.** The reviewer reads the issue and diff, sends must-fix findings straight to the fella with `hc send <name>`, and returns a one-line verdict. The guvnor never reads diffs.
   - Security, core logic and anything risky get Opus with an adversarial brief.
   - Small UI and docs PRs get Sonnet, and several small PRs can share one reviewer. Tiny PRs (one-liners, label, icon or spacing tweaks, changelog fixes) get no reviewer: glance at the diff and merge.
   - Re-reviews resume the same reviewer.
@@ -57,8 +58,8 @@ Then use `ListAgents` to get each fella's SendMessage name. Record the name, ter
 
 Other guvnors may run crews on the same machine. Nobody manages the guvnors, so it works only if each is a decent neighbour.
 
-- **Your sign.** Once your watchdog is running, set a one-line sign: `GUV="<name> <project>" watchdog.sh sign "<text>"`. It says who you are, your remit in the user's words, what the work is worth to the user (how much they care, any deadline), your crew, what's in flight, and anything you're holding (a simulator, a release, heavy builds). Rewrite it whenever that changes. `watchdog.sh guvs` lists every live guvnor's sign; read it when you orient, before growing the crew, and when the watchdog fires. A sign disappears with its watchdog, so the list is always current.
-- **Talk to each other.** Message another guvnor whenever you need something from them: work in their repo (they hold its context, so ask rather than sending a fella in, and take their requests into your own queue), a resource you both want, or a crew that's still sinking the machine. Have a proper conversation: go back and forth until you reach a conclusion you can both act on, then update your signs. Be direct, argue your case, and have some banter; it's a pub, not a ticket queue. A row never comes out of the machine: no spite builds, no grabbing shared resources to make a point.
+- **Your sign.** Once your watchdog is running, set a one-line sign: `GUV="$HC_TERMINAL_ID <project>" watchdog.sh sign "<text>"`. It says who you are, your remit in the user's words, what the work is worth to the user (how much they care, any deadline), your crew, what's in flight, and anything you're holding (a simulator, a release, heavy builds). Rewrite it whenever that changes. `watchdog.sh guvs` lists every live guvnor's sign; read it when you orient, before growing the crew, and when the watchdog fires. A sign disappears with its watchdog, so the list is always current.
+- **Talk to each other.** Message another guvnor with `hc send <terminal>`, using the terminal at the start of its sign, whenever you need something from them: work in their repo (they hold its context, so ask rather than sending a fella in, and take their requests into your own queue), a resource you both want, or a crew that's still sinking the machine. Have a proper conversation: go back and forth until you reach a conclusion you can both act on, then update your signs. Be direct, argue your case, and have some banter; it's a pub, not a ticket queue. A row never comes out of the machine: no spite builds, no grabbing shared resources to make a point.
 - **Defer by value.** In a clash, the work worth more to the user goes first: a release they're waiting on beats a refactor, and the project they've called the priority beats the rest. Be honest about your own work's value, and give way with good grace when theirs is worth more. Anything you can't settle, or where the value is unclear, goes to the user, whose call stands.
 - **The area manager.** A sign whose project is `area` belongs to the area manager, the user's deputy across the workspace. Its sign carries the user's priority ranking, so use it when weighing value. A brief from the area manager is authority to raise the crew you judge the work needs; tell it the size you plan. Answer its questions about your project from your own context; it asks you rather than reading your repo. Take the requests it routes to you into your queue, and keep it posted on anything that crosses projects. Weigh its suggestions about your crew, but your crew stays your call, and a disagreement with it is argued like any other.
 - **Show the user.** Quote any exchange between guvnors to the user as it happens. They enjoy it.
@@ -84,7 +85,7 @@ Never ask the user to clear one. A cleared fella keeps its worktree and space, b
   - Fellas share one build cache, so builds serialise. For Rust, that's `CARGO_TARGET_DIR=~/workspace/<org>/worktrees/<project>/.shared-target`.
   - They run only the narrowest tests, under `nice`, and leave app builds to CI.
   - One session at a time owns a simulator, and shuts it down when done.
-- **Watchdog.** Start it with the crew and keep it running in the background: `GUV="<your ListAgents name> <project>" bash "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/guv/scripts/watchdog.sh"`. It's a shell loop, so quiet minutes cost nothing. One instance per machine samples memory and disk, and every guvnor's instance exits with the same alert, which is what wakes you; restart it after acting. `watchdog.sh status` gives one line of readings. When it fires, `watchdog.sh books` shows which project is using what:
+- **Watchdog.** Start it with the crew and keep it running in the background: `GUV="$HC_TERMINAL_ID <project>" bash "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/guv/scripts/watchdog.sh"`. It's a shell loop, so quiet minutes cost nothing. One instance per machine samples memory and disk, and every guvnor's instance exits with the same alert, which is what wakes you; restart it after acting. `watchdog.sh status` gives one line of readings. When it fires, `watchdog.sh books` shows which project is using what:
   - **Your crew:** shed load sensibly. Pause the fella furthest from a PR (stop its build, clear it, list it as paused), shut down your simulator, and hold back builds; for disk, send the cleaner. Tell the user in one line.
   - **Another guvnor's crew:** they got the same alert, so give them the cooldown to act. If the next alert still shows them on top, talk to them.
   - **The user's own work:** leave it alone and mention it once.
@@ -98,7 +99,7 @@ Never ask the user to clear one. A cleared fella keeps its worktree and space, b
 ## Exits
 
 - **Pause** (task done, more work likely): clear it as above, list it as paused, and re-brief it when there's work.
-- **Stand down** (fella no longer needed): check its worktree has nothing unmerged, clear it, run `git worktree remove <worktree>`, delete its branches, and drop it from the queue file. Close its space (`herdr-app do space.close --id <space> --confirmed true`, which ends its terminal) only if the user asks.
+- **Stand down** (fella no longer needed): check its worktree has nothing unmerged, clear it, run `git worktree remove <worktree>`, delete its branches, and drop it from the queue file. End its session (`hc kill <name>`, which also closes its space) only if the user asks.
 - **Disband** (the push is over):
   - stand every fella down;
   - remove stray worktrees and their build output, and shut down simulators and any servers the crew started (by PID or full command line);
@@ -113,4 +114,4 @@ The user often runs the crew from a phone through Remote Control, so replies sho
 - Inspect a fella without messaging it: `hc read <terminal>` shows its screen, `hc get <terminal>` its status, and `hc wait <terminal>` waits for it to settle.
 - A fella showing `blocked` is waiting on a permission prompt. Read it and tell the user; don't answer it for them.
 - Fellas on another machine (`hc machine ls`): pass `--machine <name>` to `space.new` and `--on <name>` to `hc run`/`hc exec`. Their terminals are addressed `<name>/t7`; local IDs don't carry over.
-- SendMessage reaches local sessions by their ListAgents name. Cloud sessions can receive messages but can't reply.
+- `hc send` reaches any session on this machine by terminal or name, and one on another machine as `<machine>/t7`.
