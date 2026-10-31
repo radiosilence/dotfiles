@@ -64,7 +64,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 **Worktrees** (`wt*`) — git worktree management, as local zsh plugins under `zsh-plugins/`: `wt-core` plus a backend per multiplexer (`wt-herdr`, `wt-zellij`). Worktrees live in `<repo-parent>/worktrees/<repo>/<name>/` — outside the repo so editors don't recurse into them.
 
 - `wt` / `wt <name>` — Upsert worktree + cd (fzf picker with no args)
-- `wtt` / `wth` — Same, opening a Zellij tab / Herdr app space instead
+- `wtt` / `wth` — Same, opening a Zellij tab / Herdr app space instead (keys: [docs/herdr-app.md](docs/herdr-app.md))
 - `wt -b <name>` — Branch from current HEAD instead of origin/main
 - `wtpr <n|url>` — Worktree for a GitHub PR **or** issue (handles forks); `wti` for issues only, `wtpr-pick` to fzf over both
 - `wtrm [name]` — Remove the worktree you're in (or a named one) + its branch
