@@ -1,9 +1,6 @@
 # Helpers run by the Herdr app's popup-* mods (config.d/herdr-app/mods), which
-# start them in the focused pane's folder. HERDR_ACTIVE_PANE_CWD is the herdr
-# TUI's equivalent for its [[keys.command]] popups.
-command -v herdr-app >/dev/null || command -v herdr >/dev/null || return
-
-_herdr_cwd() { print -r -- "${HERDR_ACTIVE_PANE_CWD:-$PWD}"; }
+# start them in the focused pane's folder.
+command -v herdr-app >/dev/null || return
 
 # fzf over open PRs in the current repo, or paste any reference wtpr understands
 # (URL / owner/repo#N / number). --print-query returns what was typed when it
@@ -12,7 +9,6 @@ _herdr_cwd() { print -r -- "${HERDR_ACTIVE_PANE_CWD:-$PWD}"; }
 wtpr-pick() {
   command -v gh >/dev/null || { echo "gh not found"; read -k1; return 1; }
   command -v fzf >/dev/null || { echo "fzf not found"; read -k1; return 1; }
-  builtin cd "$(_herdr_cwd)" 2>/dev/null
 
   # Author is its own column so fzf can filter on it; the query starts on your
   # own login, so it opens showing your PRs and backspacing reveals everyone's.
@@ -60,7 +56,7 @@ wtpr-pick() {
 # global directory, which cannot express the per-org layout the profile split
 # depends on.
 wth-pick() {
-  local cwd=$(_herdr_cwd)
+  local cwd=$PWD
   builtin cd "$cwd" 2>/dev/null || { print -u2 "cannot cd: $cwd"; read -k1; return 1; }
   if ! git rev-parse --git-dir >/dev/null 2>&1; then
     print -u2 "not a git repo: $cwd"
@@ -76,7 +72,6 @@ wth-pick() {
 # URL falls through untouched when it matches no row.
 wti-pick() {
   command -v gh >/dev/null || { echo "gh not found"; read -k1; return 1; }
-  builtin cd "$(_herdr_cwd)" 2>/dev/null
 
   local me=${GH_LOGIN:-$(gh api user -q .login 2>/dev/null)}
   local out

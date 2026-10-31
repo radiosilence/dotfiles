@@ -12,7 +12,7 @@
 #                         holding). Needs GUV.
 #   watchdog.sh guvs      every live guvnor and their sign.
 #
-# GUV="<ListAgents name> <project>" registers the running instance; `guvs`
+# GUV="<terminal address> <project>" registers the running instance; `guvs`
 # lists only guvnors whose watchdog is running. A sign is kept apart from the
 # registration, so it survives the restart after every alert.
 #

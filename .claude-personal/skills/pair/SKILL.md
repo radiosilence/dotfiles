@@ -10,12 +10,11 @@ You drive; a partner subagent navigates. The aim is that the PR needs nothing fr
 
 The partner is a fresh session on your model, not a fork, so its read isn't anchored on your context. Keep it for the whole task so it builds up context across rounds rather than starting cold.
 
-Inside the Herdr app (`HC_TERMINAL_SOCKET` is set), run it as a terminal the user can watch and type into:
+Inside herdr-core (`HC_TERMINAL_ID` is set), run it as a terminal the user can watch and type into:
 
-1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id> --disallowedTools Edit Write NotebookEdit`. It is a child of this terminal, so it ends when this session does.
-2. `hc wait pair-<branch>` until it is ready, then `hc send pair-<branch> "<brief>"`. Talk to it with `hc send` from then on.
-3. It replies with SendMessage to your ListAgents name, so put that name in the brief.
-4. `hc kill pair-<branch>` when the PR is done.
+1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id> --disallowedTools Edit Write NotebookEdit "<brief>"`. It is a child of this terminal, so it ends when this session does. If `first_message.sent` is false, `hc read` it before sending the brief with `hc send`.
+2. It replies with `hc send $HC_TERMINAL_ID`, so put your terminal address in the brief. Replies arrive as your next input, tagged `<hc from="... pair-<branch>">`. Talk to it with `hc send pair-<branch>`.
+3. `hc kill pair-<branch>` when the PR is done.
 
 Elsewhere, spawn it with the Agent tool as `subagent_type: "Plan"` (fresh and without edit tools) and `model` set to your own model, since an omitted model can resolve to a configured subagent default. Keep the agent ID from the result and continue it with SendMessage to that ID; load SendMessage with ToolSearch first.
 
