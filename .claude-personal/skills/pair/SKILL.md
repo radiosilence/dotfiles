@@ -12,7 +12,7 @@ The partner is a fresh session on your model, not a fork, so its read isn't anch
 
 Inside herdr-core (`HC_TERMINAL_ID` is set), run it as a terminal the user can watch and type into:
 
-1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id> --disallowedTools Edit Write NotebookEdit "<brief>"`. It is a child of this terminal, so it ends when this session does. If `first_message.sent` is false, `hc read` it before sending the brief with `hc send`.
+1. `hc get $HC_TERMINAL_ID` gives your own `herdr.space` and `herdr.tab` labels. Start the partner with them, so it opens as a pane beside you rather than hidden: `hc run --json --bg --name pair-<branch> --cwd "$PWD" --label herdr.space=<space> --label herdr.tab=<tab> -- env CLAUDE_CONFIG_DIR="$CLAUDE_CONFIG_DIR" claude --model <your model id> --disallowedTools Edit Write NotebookEdit "<brief>"`. It is a child of this terminal, so it ends when this session does. hc starts programs without your shell environment, so `env CLAUDE_CONFIG_DIR="$CLAUDE_CONFIG_DIR"` keeps it on your Claude profile; without it Claude asks to log in. If `first_message.sent` is false, `hc read` it before sending the brief with `hc send`.
 2. It replies with `hc send $HC_TERMINAL_ID`, so put your terminal address in the brief. Replies arrive as your next input, tagged `<hc from="... pair-<branch>">`. Talk to it with `hc send pair-<branch>`.
 3. `hc kill pair-<branch>` when the PR is done.
 
