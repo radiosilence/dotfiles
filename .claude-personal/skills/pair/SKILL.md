@@ -38,7 +38,15 @@ Before writing code, fetch and check what else is moving in the same area: open 
 
 Explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, pick one and note the disagreement in the PR body.
 
-Then post the agreed plan in the chat and start coding straight away, without waiting for a reply: the user reviews the PR, and the posted plan lets them stop you early if it is heading the wrong way. Format it to be read at a glance: a one-line summary of the approach, then short bullets for what changes (files and behaviour), what was considered and rejected, and any open disagreement. If the user replies with changes, stop, take them to the partner, and carry on from the revised plan.
+Then post the agreed plan in the chat and start coding straight away, without waiting for a reply: the user reviews the PR, and the posted plan lets them stop you early if it is heading the wrong way. Make it easy to take in at a glance; the user should see in seconds whether it is heading the right way. Start with a bold one-line summary of the approach, then give each part its own short headed section and pick the form that fits each part:
+
+- a table for the files to change, one row per file with what changes in it, and for options compared or behaviour before and after;
+- a small ASCII or Mermaid diagram when the change moves data, control flow or state between components, or reshapes how they connect;
+- a short code or config snippet where the shape of a new interface or signature matters more than prose about it;
+- bullets for what was considered and rejected, each with its reason in a clause;
+- the open disagreement, if any, and the riskiest or least certain parts, called out on their own at the end.
+
+Leave out any section that has nothing in it, and keep each one tight: this is a map, not the PR description. If the user replies with changes, stop, take them to the partner, and carry on from the revised plan.
 
 ## Chunks as you go
 

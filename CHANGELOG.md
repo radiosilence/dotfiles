@@ -8,7 +8,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### October
 
-**pair no longer waits for plan sign-off.** The partner still agrees the plan before any code is written, and the driver posts it in the chat as before but starts coding without waiting for sign-off. The user reviews the PR and can still interrupt when the posted plan looks wrong; an unsettled disagreement goes in the PR body.
+**pair no longer waits for plan sign-off.** The partner still agrees the plan before any code is written, and the driver posts it in the chat, laid out with tables, diagrams and snippets where they help so it can be checked at a glance, but starts coding without waiting for sign-off. The user reviews the PR and can still interrupt when the posted plan looks wrong; an unsettled disagreement goes in the PR body.
 
 **Teammates, fellas and pair partners lose their Herdr layout labels.** Herdr's agent tree already lists every Claude started with `hc run` under the session that started it, so the `herdr.space` and `herdr.tab` labels that gave each one a space, a shared "team" tab or a pane beside its driver only added windows to manage. The skills and CLAUDE.md keep the `hc` commands and the `CLAUDE_CONFIG_DIR` handoff.
 
