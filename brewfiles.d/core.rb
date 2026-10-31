@@ -2,6 +2,7 @@
 
 brew 'zsh'
 cask 'ghostty'
+cask 'herdr-app'                # herdr-core (hc) has no formula; the app updates it on each app update
 brew 'git'
 cask '1password'
 cask '1password-cli'

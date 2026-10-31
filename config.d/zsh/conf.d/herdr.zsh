@@ -1,7 +1,7 @@
-# Helpers invoked from herdr popups ([[keys.command]] in config.d/herdr/config.toml).
-# Popups inherit HERDR_ACTIVE_PANE_CWD, so they act on the pane you launched from
-# rather than wherever the popup shell happens to start.
-command -v herdr >/dev/null || return
+# Helpers run by the Herdr app's popup-* mods (config.d/herdr-app/mods), which
+# start them in the focused pane's folder. HERDR_ACTIVE_PANE_CWD is the herdr
+# TUI's equivalent for its [[keys.command]] popups.
+command -v herdr-app >/dev/null || command -v herdr >/dev/null || return
 
 _herdr_cwd() { print -r -- "${HERDR_ACTIVE_PANE_CWD:-$PWD}"; }
 
@@ -56,9 +56,9 @@ wtpr-pick() {
   fi
 }
 
-# Popup entry for the worktree picker. herdr's native open_worktree/new_worktree
-# are prefix-gated instead: they use its global [worktrees] directory, which
-# cannot express the per-org layout the profile split depends on.
+# Popup entry for the worktree picker. Herdr's own worktree actions use a single
+# global directory, which cannot express the per-org layout the profile split
+# depends on.
 wth-pick() {
   local cwd=$(_herdr_cwd)
   builtin cd "$cwd" 2>/dev/null || { print -u2 "cannot cd: $cwd"; read -k1; return 1; }

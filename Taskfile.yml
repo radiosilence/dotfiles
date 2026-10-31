@@ -81,10 +81,11 @@ tasks:
         rmdir "$d/config.d/beets" 2>/dev/null || true
         if [ -L "$HOME/.config/beets" ] && [ ! -e "$HOME/.config/beets" ]; then rm "$HOME/.config/beets"; fi
 
-        # herdr keeps sockets and logs beside its config, and cargo reads
-        # ~/.cargo rather than ~/.config/cargo, so both are linked per file below.
+        # herdr and herdr-app keep sockets, logs and generated files beside their
+        # config, and cargo reads ~/.cargo rather than ~/.config/cargo, so these
+        # are linked per file below.
         for f in "$d"/config.d/*; do
-          case "${f##*/}" in herdr|cargo) continue ;; esac
+          case "${f##*/}" in herdr|herdr-app|cargo) continue ;; esac
           ln_s "$f" "$HOME/.config/${f##*/}"
         done
 
@@ -115,6 +116,10 @@ tasks:
           ln_s "$d/$p" "$HOME/$p"
         done
         ln_s "$d/config.d/herdr/config.toml" "$HOME/.config/herdr/config.toml"
+        for f in keys.json settings.json themes/monokai-pro.json "$d"/config.d/herdr-app/mods/*/; do
+          f=${f#"$d/config.d/herdr-app/"}; f=${f%/}
+          ln_s "$d/config.d/herdr-app/$f" "$HOME/.config/herdr-app/$f"
+        done
         ln_s "$d/config.d/herdr/claude-agent-state.sh" "$HOME/.claude-personal/hooks/herdr-agent-state.sh"
         ln_s "$d/config.d/herdr/claude-agent-state.sh" "$HOME/.claude-work/hooks/herdr-agent-state.sh"
 
