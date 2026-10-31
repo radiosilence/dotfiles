@@ -10,7 +10,7 @@ bindkey '^[[1;3D' backward-word   # Alt-Left (stops at / . - etc)
 bindkey '^[[1;3C' forward-word    # Alt-Right (stops at / . - etc)
 bindkey '^C' kill-whole-line      # Ctrl-C clears line
 
-# herdr takes ctrl+a as its prefix, so beginning-of-line needs Home (fn+Left).
+# The herdr TUI takes ctrl+a as its prefix, so beginning-of-line needs Home (fn+Left) there.
 # Only ^[OH was bound; cover the other sequences terminals send.
 bindkey '^[[H' beginning-of-line
 bindkey '^[[1~' beginning-of-line
