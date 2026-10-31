@@ -36,17 +36,17 @@ Its brief tells it:
 
 Before writing code, fetch and check what else is moving in the same area: open PRs (`gh pr list`) and recent commits on the default branch that touch the files you expect to change. Work another PR is already doing is duplicated effort and a pile of conflicts later; build on it, wait for it, or narrow the task, and say which in the plan.
 
-Explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, pick one and note the disagreement in the PR body.
+Explore enough to have a real plan, then send it to the partner: the idea of what needs doing and how, the behaviour it changes, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, pick one and note the disagreement in the PR body.
 
 Then post the agreed plan in the chat and start coding straight away, without waiting for a reply: the user reviews the PR, and the posted plan lets them stop you early if it is heading the wrong way. Make it easy to take in at a glance; the user should see in seconds whether it is heading the right way. Start with a bold one-line summary of the approach, then give each part its own short headed section and pick the form that fits each part:
 
-- a table for the files to change, one row per file with what changes in it, and for options compared or behaviour before and after;
+- a table for options compared, or for behaviour before and after;
 - a small ASCII or Mermaid diagram when the change moves data, control flow or state between components, or reshapes how they connect;
 - a short code or config snippet where the shape of a new interface or signature matters more than prose about it;
 - bullets for what was considered and rejected, each with its reason in a clause;
 - the open disagreement, if any, and the riskiest or least certain parts, called out on their own at the end.
 
-Leave out any section that has nothing in it, and keep each one tight: this is a map, not the PR description. If the user replies with changes, stop, take them to the partner, and carry on from the revised plan.
+The plan is the idea of what needs to be done, not an inventory of the work: which files change usually isn't known until the work is under way, so don't guess at them; name a file or component only where the approach hinges on it. Leave out any section that has nothing in it, and keep each one tight: this is a map, not the PR description. If the user replies with changes, stop, take them to the partner, and carry on from the revised plan.
 
 ## Chunks as you go
 
