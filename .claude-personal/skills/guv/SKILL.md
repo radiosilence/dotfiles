@@ -27,7 +27,7 @@ Start small. Tell the user in one line whenever the crew changes, with the names
 For each fella:
 
 1. `git -C <repo root> worktree add -b fellas/<name> ~/workspace/<org>/worktrees/<project>/<name> origin/main`.
-2. `hc run --bg --keep --outlive-parent --name <name> --cwd <worktree> --label herdr.space=fella-<name> claude "<boot>"`. The fella is your child in herdr-core, so hc tells you when it is blocked, errors or exits. The label gives it a space of its own in the Herdr window, named after its worktree. `--outlive-parent` keeps the crew running if you are restarted. Check `first_message.sent` in the response; if it is false, `hc read` the fella before sending the boot message again. The boot message gives the fella:
+2. `hc run --bg --keep --outlive-parent --name <name> --cwd <worktree> --label herdr.space=fella-<name> -- env CLAUDE_CONFIG_DIR="$CLAUDE_CONFIG_DIR" claude "<boot>"`. hc starts programs without your shell environment, so `env CLAUDE_CONFIG_DIR="$CLAUDE_CONFIG_DIR"` keeps it on your Claude profile; without it Claude asks to log in. The fella is your child in herdr-core, so hc tells you when it is blocked, errors or exits. The label gives it a space of its own in the Herdr window, named after its worktree. `--outlive-parent` keeps the crew running if you are restarted. Check `first_message.sent` in the response; if it is false, `hc read` the fella before sending the boot message again. The boot message gives the fella:
    - its name, and the guvnor's terminal (`$HC_TERMINAL_ID`), to which it reports with `hc send`;
    - an instruction to read the repo CLAUDE.md;
    - the machine-load rules below;
