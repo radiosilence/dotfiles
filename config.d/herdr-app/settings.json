@@ -3,7 +3,7 @@
   "sounds": {
     "enabled": false
   },
-  "font": "GeistMono Nerd Font",
+  "font": "Geist Mono",
   "font_size": 14,
   "minimum_contrast": 1,
   "option_as_alt": "on",
