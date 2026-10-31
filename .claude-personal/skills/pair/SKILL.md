@@ -26,12 +26,15 @@ Its brief tells it:
 - to push back on the approach, not just the details, when it thinks there is a simpler or more robust way;
 - for every resource or side effect the change starts (an element playing, a listener, a timer, a subscription), to trace each path that should stop it, not just the one you mention, and to check that the stopping action itself succeeds: it runs with the same auth, headers and limits as the action that started the resource;
 - when a change adds or reconfigures a client, server, pool or connection, to review every default it now inherits (redirects, retries, proxies, header forwarding, pooling), not only the settings you changed;
-- to check every branch's failure path, and compare sibling branches: one that handles an error while its neighbour doesn't is a bug in the neighbour;
+- to check every branch's failure path, and compare sibling branches: one that handles an error while its neighbour doesn't is a bug in the neighbour; that includes an early return (`?`, a `return Err`) after some resources were already started, which must stop them;
+- when a change resizes, truncates or replaces a buffer or collection, to re-check every index, cursor or length into it on the next call, not only the call that changed it;
+- when a change moves work onto another thread or task, to check what can now run after its owner is destroyed (a callback after a stop, a reply after a free), and when a change sets a rule ("call X on every thread", "every write has a deadline"), to find every site the rule covers, including ones the same change adds;
+- in `unsafe` code and FFI, to check that the return value of every system call is handled, and to confirm platform behaviour it is unsure of with a small program on the platform rather than from documentation;
 - when a component, view or function is reused somewhere new, to list every state it can now receive there (each status, an empty or finished record, a removed one) and check how it behaves for each, not only the states it was built for or the ones you mention; where the old home handled a state elsewhere (a separate row, another branch), the new home has to handle it too;
 - to hold comments and code style to both CLAUDE.md files, global and repo, as well as behaviour: a comment that describes the change rather than the code, or claims more than the code does, is a finding;
 - to test each assumption you flag as uncertain against the cases it would get wrong (older versions, other platforms, other callers) rather than judging it on its face;
 - for each fix, its own or yours, to ask what legitimate input or caller it now refuses or treats differently, what it costs at peak (a copy, an allocation, a lock held longer), and what reads the values it changes (an average, a counter, a limit) and whether that still holds;
-- that its own suggestions get no pass: once you have built one, it reviews that code as hard as anything else you send.
+- that its own suggestions get no pass: once you have built one, it reviews that code as hard as anything else you send. A limit or cap it proposed gets the same question as any fix: what legitimate input does it now refuse.
 
 ## Plan first
 
