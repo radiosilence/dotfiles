@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### October
 
+**pair no longer waits for plan sign-off.** The partner still agrees the plan before any code is written, but the driver no longer stops to present it to the user, who reviews the PR instead; an unsettled disagreement goes in the PR body.
+
 **Teammates, fellas and pair partners lose their Herdr layout labels.** Herdr's agent tree already lists every Claude started with `hc run` under the session that started it, so the `herdr.space` and `herdr.tab` labels that gave each one a space, a shared "team" tab or a pane beside its driver only added windows to manage. The skills and CLAUDE.md keep the `hc` commands and the `CLAUDE_CONFIG_DIR` handoff.
 
 **New space from a zoxide pick.** `cmd-n` opens a space in the focused pane's folder, so starting work elsewhere meant a new space and then `zi`. `cmd-shift-n` opens the `popup-space` mod, which runs `zoxide query -i` in a dialog and opens a space in the chosen folder. Herdr's own folder chooser is the system Finder dialog, which has no frecency.

@@ -1,6 +1,6 @@
 ---
 name: pair
-description: Pair-program with a partner subagent on the same model. Agree the plan with it before starting, then show it each logical chunk of work as you go so problems are caught while they are cheap. Use when the user says "/pair", asks to pair, or wants a second pair of eyes on work as it happens.
+description: Pair-program with a partner subagent on the same model. Agree the plan with it before starting (without stopping for the user's sign-off), then show it each logical chunk of work as you go so problems are caught while they are cheap. Use when the user says "/pair", asks to pair, or wants a second pair of eyes on work as it happens.
 argument-hint: "<what to work on: an issue, a feature, a bug>"
 ---
 
@@ -36,9 +36,9 @@ Its brief tells it:
 
 Before writing code, fetch and check what else is moving in the same area: open PRs (`gh pr list`) and recent commits on the default branch that touch the files you expect to change. Work another PR is already doing is duplicated effort and a pile of conflicts later; build on it, wait for it, or narrow the task, and say which in the plan.
 
-Explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, say so in the plan you show the user.
+Explore enough to have a real plan, then send it to the partner: the approach, the files and behaviour it touches, what you considered and rejected, and the parts you are least sure of. Go back and forth until you both think it's the best version, not merely an acceptable one. Usually one or two rounds; stop when replies stop changing the plan. Where you disagree and can't settle it, pick one and note the disagreement in the PR body.
 
-Then present the agreed plan to the user: concise, covering the approach, what changes, and any open disagreement. Wait for their sign-off before writing code, and take their changes back to the partner if they reshape the plan.
+Then start coding without asking the user to sign off the plan; they review the PR.
 
 ## Chunks as you go
 
