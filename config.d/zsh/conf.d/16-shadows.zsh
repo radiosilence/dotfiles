@@ -2,8 +2,8 @@
 # These are all keg-only or g-prefixed, so brew deliberately leaves them off
 # PATH — putting them on is a choice, made here in one place.
 #
-# Runs after 15-brew so these beat /opt/homebrew/bin, and before the
-# alphabetical files so ~/.dotfiles/bin still wins.
+# Runs after 15-brew so these beat /opt/homebrew/bin, and before
+# 17-dotfiles so ~/.dotfiles/scripts still wins.
 
 # GNU Make 4.4.1 — Apple froze at 3.81 (2006, pre-GPLv3): no .ONESHELL, no !=,
 # no $(file ...). Modern Makefiles simply don't run.
