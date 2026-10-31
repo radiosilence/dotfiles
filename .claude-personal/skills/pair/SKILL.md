@@ -8,9 +8,19 @@ You drive; a partner subagent navigates. The aim is that the PR needs nothing fr
 
 ## The partner
 
-Spawn one partner with the Agent tool: no `model` (it inherits yours), no `subagent_type` (a fresh general-purpose agent, not a fork, so its read isn't anchored on your context), named `pair`. Keep it for the whole task and talk to it with SendMessage so it builds up context across rounds rather than starting cold.
+The partner is a fresh session on your model, not a fork, so its read isn't anchored on your context. Keep it for the whole task so it builds up context across rounds rather than starting cold.
+
+Inside the Herdr app (`HC_TERMINAL_SOCKET` is set), run it as a terminal the user can watch and type into:
+
+1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id>`. It is a child of this terminal, so it ends when this session does.
+2. `hc wait pair-<branch>` until it is ready, then `hc send pair-<branch> "<brief>"`. Talk to it with `hc send` from then on.
+3. It replies with SendMessage to your ListAgents name, so put that name in the brief.
+4. `hc kill pair-<branch>` when the PR is done.
+
+Elsewhere, spawn it with the Agent tool: no `model` (it inherits yours), no `subagent_type`, named `pair`, and continue it with SendMessage.
 
 Its brief tells it:
+- how to reply to you;
 - it is the navigator, and does not edit files, commit or run anything with side effects; it reads code and runs read-only commands to check claims;
 - the task, the repo path and the user's CLAUDE.md rules that matter for it;
 - to be direct and specific: findings with file and line, a better alternative where it has one, and silence on things that are fine. No praise, no summary of what you said;
