@@ -22,7 +22,7 @@ Everything happens in Herdr: herdr-core (`hc`) runs the sessions and the Herdr a
 For each project the user picks that has no guvnor:
 
 1. Clone it into the workspace if it isn't checked out.
-2. Start a guvnor in its own space: `hc run --bg --keep --outlive-parent --name guv-<project> --cwd <repo> --label herdr.space=guv-<project> claude "<brief>"`. Begin the brief with `/guv`, the project's place in the ranking, what the user wants from it, and your terminal (`$HC_TERMINAL_ID`), to which it reports with `hc send`. Ask it to size its own backlog and tell you the crew it plans. Your prompt is its authority to raise that crew straight away, without asking the user. Push back if the plan looks out of proportion to the project's priority.
+2. Start a guvnor in its own space: `hc run --bg --keep --outlive-parent --name guv-<project> --cwd <repo> --label herdr.space=guv-<project> -- env CLAUDE_CONFIG_DIR="$CLAUDE_CONFIG_DIR" claude "<brief>"`. hc starts programs without your shell environment, so `env CLAUDE_CONFIG_DIR="$CLAUDE_CONFIG_DIR"` keeps it on your Claude profile; without it Claude asks to log in. Begin the brief with `/guv`, the project's place in the ranking, what the user wants from it, and your terminal (`$HC_TERMINAL_ID`), to which it reports with `hc send`. Ask it to size its own backlog and tell you the crew it plans. Your prompt is its authority to raise that crew straight away, without asking the user. Push back if the plan looks out of proportion to the project's priority.
 
 A project that already has a guvnor gets the same brief by message.
 
