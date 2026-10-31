@@ -1,9 +1,11 @@
 {
-  "zoom": 1.0,
+  "zoom": 1,
   "sounds": {
     "enabled": false
   },
-  "minimum_contrast": 1.0,
+  "font": "GeistMono Nerd Font",
+  "font_size": 14,
+  "minimum_contrast": 1,
   "option_as_alt": "on",
   "theme": "monokai-pro"
 }
