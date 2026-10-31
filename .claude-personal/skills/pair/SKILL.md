@@ -12,17 +12,17 @@ The partner is a fresh session on your model, not a fork, so its read isn't anch
 
 Inside the Herdr app (`HC_TERMINAL_SOCKET` is set), run it as a terminal the user can watch and type into:
 
-1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id>`. It is a child of this terminal, so it ends when this session does.
+1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id> --disallowedTools Edit Write NotebookEdit`. It is a child of this terminal, so it ends when this session does.
 2. `hc wait pair-<branch>` until it is ready, then `hc send pair-<branch> "<brief>"`. Talk to it with `hc send` from then on.
 3. It replies with SendMessage to your ListAgents name, so put that name in the brief.
 4. `hc kill pair-<branch>` when the PR is done.
 
-Elsewhere, spawn it with the Agent tool: no `model` (it inherits yours), no `subagent_type`, named `pair`, and continue it with SendMessage.
+Elsewhere, spawn it with the Agent tool as `subagent_type: "Plan"` (fresh and without edit tools) and `model` set to your own model, since an omitted model can resolve to a configured subagent default. Keep the agent ID from the result and continue it with SendMessage to that ID; load SendMessage with ToolSearch first.
 
 Its brief tells it:
 - how to reply to you;
 - it is the navigator, and does not edit files, commit or run anything with side effects; it reads code and runs read-only commands to check claims;
-- the task, the repo path and the user's CLAUDE.md rules that matter for it;
+- the task and the repo path (it loads CLAUDE.md itself, so don't restate it);
 - to be direct and specific: findings with file and line, a better alternative where it has one, and silence on things that are fine. No praise, no summary of what you said;
 - to push back on the approach, not just the details, when it thinks there is a simpler or more robust way.
 
@@ -34,12 +34,12 @@ Then present the agreed plan to the user: concise, covering the approach, what c
 
 ## Chunks as you go
 
-After each logical chunk (a coherent change you could describe in one commit message), send the partner what changed and why, and point it at the diff (`git diff`, or the commit) rather than pasting it. Ask about what is uncertain: an edge case, a naming choice, whether an abstraction pays for itself. Skip trivial chunks such as renames, config tweaks and docs-only edits; batch small ones together.
+After each logical chunk (a coherent change you could describe in one commit message), commit it, then send the partner the SHA and what changed and why rather than pasting the diff. A commit stays put while you carry on editing; a live `git diff` doesn't. Ask about what is uncertain: an edge case, a naming choice, whether an abstraction pays for itself. Skip trivial chunks such as renames, config tweaks and docs-only edits; batch small ones together.
 
 Keep working while it reads unless the next chunk depends on its answer. Fold its feedback in before the PR, fix what's right, and tell it briefly why you didn't take the rest so it calibrates.
 
-Push and open the PR as usual. Before reporting done, give the partner the final diff for one last pass.
+Before opening the PR, give the partner the whole branch diff for one last pass and fold that in. Then push and open the PR as usual.
 
 ## While this skill is being tuned
 
-After the PR is open, run `/code-review --comment` on it. Every finding is something the pairing missed. Report to the user, in a few lines, what the review caught that the partner didn't and what in this skill's prompt would have caught it.
+After the PR is open and the partner's final pass is in, run `/code-review medium --comment` on it; the level is pinned so runs are comparable. Triage each finding: fix it, or reply why not, then resolve the thread as for any review. Report to the user, in a few lines, which valid findings the partner missed and what in this skill's prompt would have caught them. False positives aren't misses.
