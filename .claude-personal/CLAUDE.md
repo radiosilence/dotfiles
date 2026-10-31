@@ -47,7 +47,7 @@ Inside herdr-core (`HC_TERMINAL_ID` is set), parallel work goes to teammates sta
 - Talk to it with `hc send <name>`. Its reports arrive as your next input, tagged `<hc from="...">`, and hc tells you if it is blocked or exits. Wait with `hc wait`, never sleep or poll; `hc read <name>` shows its screen.
 - When its work is accepted, `hc kill <name>` then `hc rm <name>`.
 - Short read-only lookups still go to the Agent tool's Explore agent: cheaper, and nothing to clean up.
-- A large push across many tasks is the `guv` skill; working alongside a reviewer as you go is `pair`.
+- The `guv` skill (a crew for a large push) and `pair` (a reviewer alongside you as you go) run only when the user asks for them by name. Never start either on your own judgement, however big the task looks.
 
 ## Worktrees
 
