@@ -12,7 +12,7 @@ The partner is a fresh session on your model, not a fork, so its read isn't anch
 
 Inside herdr-core (`HC_TERMINAL_ID` is set), run it as a terminal the user can watch and type into:
 
-1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- claude --model <your model id> --disallowedTools Edit Write NotebookEdit "<brief>"`. It is a child of this terminal, so it ends when this session does. If `first_message.sent` is false, `hc read` it before sending the brief with `hc send`.
+1. `hc run --json --bg --name pair-<branch> --cwd "$PWD" -- env CLAUDE_CONFIG_DIR="$CLAUDE_CONFIG_DIR" claude --model <your model id> --disallowedTools "Edit,Write,NotebookEdit" -- "<brief>"`. Pass the config dir through, or it starts at the login screen. Keep the tool list comma-joined and the `--` before the brief: `--disallowedTools` is variadic and otherwise swallows the brief as tool names. It is a child of this terminal, so it ends when this session does. `hc read` it once it starts: if `first_message.sent` is false, send the brief with `hc send`, and answer any first-run dialog with `hc send --force`.
 2. It replies with `hc send $HC_TERMINAL_ID`, so put your terminal address in the brief. Replies arrive as your next input, tagged `<hc from="... pair-<branch>">`. Talk to it with `hc send pair-<branch>`.
 3. `hc kill pair-<branch>` when the PR is done.
 
@@ -23,7 +23,9 @@ Its brief tells it:
 - it is the navigator, and does not edit files, commit or run anything with side effects; it reads code and runs read-only commands to check claims;
 - the task and the repo path (it loads CLAUDE.md itself, so don't restate it);
 - to be direct and specific: findings with file and line, a better alternative where it has one, and silence on things that are fine. No praise, no summary of what you said;
-- to push back on the approach, not just the details, when it thinks there is a simpler or more robust way.
+- to push back on the approach, not just the details, when it thinks there is a simpler or more robust way;
+- for every resource or side effect the change starts (an element playing, a listener, a timer, a subscription), to trace each path that should stop it, not just the one you mention;
+- to test each assumption you flag as uncertain against the cases it would get wrong (older versions, other platforms, other callers) rather than judging it on its face.
 
 ## Plan first
 
