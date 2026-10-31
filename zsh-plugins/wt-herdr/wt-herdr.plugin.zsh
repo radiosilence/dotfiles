@@ -1,38 +1,43 @@
-# wt-herdr — herdr backend for wt-core.
-# herdr's own worktree management is unusable here: [worktrees] directory is a
-# single global root with no {org} placeholder, so it cannot reproduce the
-# per-org layout, and its default (~/.herdr/worktrees) sits outside ~/workspace
-# where the work mise.toml never applies — agents there would run on the
-# personal Claude profile. Paths come from wt-core, which derives them from the
-# repo, so they land in the right org tree and inherit the right profile;
-# herdr is only asked to open them.
-command -v herdr >/dev/null || return
+# wt-herdr — Herdr app backend for wt-core.
+# Each worktree is a Herdr space. Herdr's own worktree mod keeps checkouts under
+# ~/.herdr/worktrees, outside ~/workspace where the work mise.toml never applies,
+# so agents there would run on the personal Claude profile. Paths come from
+# wt-core, which derives them from the repo, so they land in the right org tree
+# and inherit the right profile; Herdr is only asked to show them.
+command -v herdr-app >/dev/null || return
 
-# --cwd must be the main checkout: herdr rejects a linked worktree as the source
-# ("New and open worktree actions start from the repo parent workspace"). It
-# also reports errors as JSON with exit 0, so the payload has to be inspected.
+# wt-core calls the backend in a subshell, so the new space's terminal reaches
+# _wt_herdr_prime through a file; $$ is the same in both.
+_wt_herdr_handoff() { print -r -- "${TMPDIR:-/tmp}/wt-herdr.$$"; }
+
+# Selects the space already made for this worktree, else makes one.
 _wt_herdr() {
-  local wt=$2 root out
-  root=$(git -C "$wt" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || return 1
-  root=${root%/.git}
-  out=$(herdr worktree open --cwd "$root" --path "$wt" --focus 2>&1)
-  if [[ $out == *'"error"'* ]]; then
-    print -u2 "herdr: ${out}"
-    return 1
+  local name=$1 wt=$2 id out
+  rm -f "$(_wt_herdr_handoff)"
+  id=$(herdr-app ls 2>/dev/null | jq -r --arg wt "$wt" \
+    'first(.spaces[] | select(.folder == $wt and .machine == null) | .id) // empty')
+  if [[ -n $id ]]; then
+    herdr-app do space.select --id "$id" >/dev/null
+    return
   fi
+  out=$(herdr-app do space.new --name "$name" --folder "$wt" 2>&1) || {
+    print -u2 "herdr-app: $out"
+    return 1
+  }
+  jq -r '.terminal // empty' <<<"$out" >"$(_wt_herdr_handoff)"
 }
 
-# ── wth — upsert worktree + herdr workspace ─────────────────────────
+# ── wth — upsert worktree + Herdr space ─────────────────────────────
 # No args: fzf picker over existing worktrees, or type a name to create one.
 wth() { _wt_core _wt_herdr "$@"; }
 
-# Prime the new pane. worktree open --focus leaves it current.
+# Starts Claude on the issue in a space wth just made; an existing space is
+# left as it is.
 _wt_herdr_prime() {
-  local pane
-  pane=$(herdr pane current --current 2>/dev/null | jq -r '.result.pane.pane_id' 2>/dev/null)
-  [[ -n $pane && $pane != null ]] || return 0
-  herdr pane send-text "$pane" "claude \"Work issue #$1\"" >/dev/null 2>&1
-  herdr pane send-keys "$pane" enter >/dev/null 2>&1
+  local f=$(_wt_herdr_handoff) term
+  [[ -s $f ]] || return 0
+  term=$(<$f); rm -f "$f"
+  hc send "$term" "claude \"Work issue #$1\"" >/dev/null
 }
 
 # ── wtpr <PR-or-issue ref> / wti <issue ref> ────────────────────────
