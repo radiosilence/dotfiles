@@ -81,11 +81,11 @@ tasks:
         rmdir "$d/config.d/beets" 2>/dev/null || true
         if [ -L "$HOME/.config/beets" ] && [ ! -e "$HOME/.config/beets" ]; then rm "$HOME/.config/beets"; fi
 
-        # herdr and herdr-app keep sockets, logs and generated files beside their
-        # config, and cargo reads ~/.cargo rather than ~/.config/cargo, so these
+        # herdr-app keeps sockets, state and generated files beside its config,
+        # and cargo reads ~/.cargo rather than ~/.config/cargo, so these
         # are linked per file below.
         for f in "$d"/config.d/*; do
-          case "${f##*/}" in herdr|herdr-app|cargo) continue ;; esac
+          case "${f##*/}" in herdr-app|cargo) continue ;; esac
           ln_s "$f" "$HOME/.config/${f##*/}"
         done
 
@@ -115,13 +115,14 @@ tasks:
           .omp-personal/agent/mcp.json; do
           ln_s "$d/$p" "$HOME/$p"
         done
-        ln_s "$d/config.d/herdr/config.toml" "$HOME/.config/herdr/config.toml"
         for f in keys.json settings.json themes/monokai-pro.json "$d"/config.d/herdr-app/mods/*/; do
           f=${f#"$d/config.d/herdr-app/"}; f=${f%/}
           ln_s "$d/config.d/herdr-app/$f" "$HOME/.config/herdr-app/$f"
         done
-        ln_s "$d/config.d/herdr/claude-agent-state.sh" "$HOME/.claude-personal/hooks/herdr-agent-state.sh"
-        ln_s "$d/config.d/herdr/claude-agent-state.sh" "$HOME/.claude-work/hooks/herdr-agent-state.sh"
+        # The herdr TUI is gone; drop the links into its config and Claude hook.
+        for l in .config/herdr/config.toml .claude-personal/hooks/herdr-agent-state.sh .claude-work/hooks/herdr-agent-state.sh; do
+          if [ -L "$HOME/$l" ]; then rm "$HOME/$l"; fi
+        done
 
         touch "$HOME/.gitconfig"
         if ! grep -q .dotfiles "$HOME/.gitconfig"; then
@@ -219,7 +220,6 @@ tasks:
         golangci-lint golangci-lint completion zsh
         gt gt completion zsh
         helm helm completion zsh
-        herdr herdr completion zsh
         k9s k9s completion zsh
         kubecolor kubecolor completion zsh
         kubectl kubectl completion zsh

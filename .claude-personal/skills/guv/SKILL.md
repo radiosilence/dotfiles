@@ -1,6 +1,6 @@
 ---
 name: guv
-description: Turn this session into the guvnor of a crew of worker sessions ("fellas"), each in its own worktree and herdr workspace, and run them. Use when the user says "/guv", asks for fellas, lads or a crew, calls this session the guvnor, or wants several sessions working a project.
+description: Turn this session into the guvnor of a crew of worker sessions ("fellas"), each in its own worktree and Herdr space, and run them. Use when the user says "/guv", asks for fellas, lads or a crew, calls this session the guvnor, or wants several sessions working a project.
 argument-hint: "[what needs doing, or how many fellas]"
 ---
 
@@ -8,11 +8,11 @@ This session becomes the guvnor. It coordinates and doesn't write features: it k
 
 **The idea.** No session needs the full context of everything, only enough to make its own decisions. Detail stays with whoever does the work: a fella holds its diff, a guvnor holds its project, an area manager holds the area. Ask down for a summary rather than reading the detail yourself, and pass up conclusions rather than raw output. Every turn re-reads a session's whole context, so context kept where it's used is tokens not spent twice.
 
-Herdr does the plumbing. Check `HERDR_ENV=1`. Without it you can still run sessions the user has started, but you can't create or clear them, so tell the user. `herdr --skill` documents the CLI. Its JSON responses carry the IDs to use next, so read them rather than predicting.
+Herdr does the plumbing: herdr-core (`hc`) runs every session and the Herdr app (`herdr-app`) shows them. Check `HC_TERMINAL_ID` is set, which means this session runs in herdr-core. Without it you can still message sessions the user has started, but you can't create, read or clear them, so tell the user. `hc --skill` and `herdr-app --skill` document the CLIs. Their JSON responses carry the IDs to use next, so read them rather than predicting.
 
 ## Orient
 
-Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgents`, `herdr agent list`, and `watchdog.sh guvs` for other guvnors on this machine (see Neighbours). Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
+Run `date`. Then list open PRs and issues, worktrees, recent releases, `ListAgents`, `hc ls`, and `watchdog.sh guvs` for other guvnors on this machine (see Neighbours). Sessions the user named for an area, such as a tvOS session, own that area: they get briefs and status requests, not unrelated work. Keep a queue file in the scratchpad (crew, tasks, paused fellas, holds) so it survives compaction.
 
 ## Raise the crew
 
@@ -22,20 +22,19 @@ How many fellas is the guvnor's call. Size the crew to the work in hand and the 
 - **Conservative by default.** One or two fellas. Go above two (up to four) only when the user explicitly asks to press hard, and drop back once that push is over. Fewer still when the machine is struggling (a high load average, little free disk, heavy builds running) or the user's usage is running high. Every fella is a long Opus session re-read on every turn, and the crew is where usage goes. A fella waiting on another fella's work isn't parallel, so don't raise one for it. New small asks go to a fella already working in that area, or are batched into one cheap subagent, rather than raising another fella.
 Start small. Tell the user in one line whenever the crew changes, with the names.
 
-**Names.** Take a moment over them; they're part of the fun. Read the project and the conversation first, then name the crew after something that fits: the project's domain, its in-jokes, the mood of the push. A music player might get a crew of session musicians; a mail client, a sorting office. Give each fella a distinct, memorable name that a person would enjoy shouting across a room. Never NATO, never numbered. Names are short and lowercase (`[a-z][a-z0-9-]*`) and must not clash with any live herdr agent.
+**Names.** Take a moment over them; they're part of the fun. Read the project and the conversation first, then name the crew after something that fits: the project's domain, its in-jokes, the mood of the push. A music player might get a crew of session musicians; a mail client, a sorting office. Give each fella a distinct, memorable name that a person would enjoy shouting across a room. Never NATO, never numbered. Names are short and lowercase (`[a-z][a-z0-9-]*`) and must not clash with any live terminal name in `hc ls`.
 
 For each fella:
 
-1. `herdr worktree create --cwd <repo root> --branch fellas/<name> --base origin/main --path ~/workspace/<org>/worktrees/<project>/<name> --label <name>`. This makes the worktree and its herdr workspace. Take the root pane from the response.
-2. `herdr agent start <name> --kind claude --pane <pane>`.
-3. `herdr agent prompt <name> "<boot>"`. The boot message gives the fella:
+1. `git -C <repo root> worktree add -b fellas/<name> ~/workspace/<org>/worktrees/<project>/<name> origin/main`.
+2. `herdr-app do space.new --name <name> --folder <worktree> --argv '["claude"]' --task "<boot>"`. This gives the fella a space of its own in the window and starts Claude with the boot message. Take `space` and `terminal` from the response. If the window isn't open (`herdr-app status` fails), start it hidden instead with `hc run --bg --keep --outlive-parent --name <name> --cwd <worktree> claude "<boot>"`; the user can still `hc attach` it. The boot message gives the fella:
    - its name, and the guvnor's ListAgents name;
    - an instruction to read the repo CLAUDE.md;
    - the machine-load rules below;
    - to message the guvnor only when a PR is ready or it is blocked;
    - to wait for a brief.
 
-Then use `ListAgents` to get each fella's SendMessage name. Record the name, pane, worktree and SendMessage name in the queue file, and introduce the crew to the user.
+Then use `ListAgents` to get each fella's SendMessage name. Record the name, terminal, space, worktree and SendMessage name in the queue file, and introduce the crew to the user.
 
 ## Run the crew
 
@@ -66,13 +65,13 @@ Other guvnors may run crews on the same machine. Nobody manages the guvnors, so 
 
 ## Clearing fellas
 
-Every turn re-reads a session's whole context, so a fella's history gets more expensive the longer it runs. Clear a fella yourself, through herdr, whenever it finishes a task:
+Every turn re-reads a session's whole context, so a fella's history gets more expensive the longer it runs. Clear a fella yourself, through hc, whenever it finishes a task:
 
 1. Tell it to park: `git switch --detach origin/main`, then wait.
-2. `herdr agent prompt <name-or-pane> "/clear"`. If the name has lapsed, find the pane in `herdr agent list` by matching its `cwd` to the worktree.
-3. Check with `herdr agent read <name-or-pane>`. A cleared fella shows an empty prompt.
+2. `hc send <terminal> "/clear"`. If you've lost its terminal, find it in `hc ls` by matching its `cwd` to the worktree.
+3. Check with `hc read <terminal>`. A cleared fella shows an empty prompt.
 
-Never ask the user to clear one. A cleared fella keeps its worktree and pane, but nothing of its history, so its next brief must stand alone. Clear before a fella's context gets long; prefer clearing to compaction.
+Never ask the user to clear one. A cleared fella keeps its worktree and space, but nothing of its history, so its next brief must stand alone. Clear before a fella's context gets long; prefer clearing to compaction.
 
 ## Hygiene
 
@@ -99,7 +98,7 @@ Never ask the user to clear one. A cleared fella keeps its worktree and pane, bu
 ## Exits
 
 - **Pause** (task done, more work likely): clear it as above, list it as paused, and re-brief it when there's work.
-- **Stand down** (fella no longer needed): check its worktree has nothing unmerged, clear it, run `herdr worktree remove --workspace <id>`, delete its branches, and drop it from the queue file. Close its pane only if the user asks.
+- **Stand down** (fella no longer needed): check its worktree has nothing unmerged, clear it, run `git worktree remove <worktree>`, delete its branches, and drop it from the queue file. Close its space (`herdr-app do space.close --id <space> --confirmed true`, which ends its terminal) only if the user asks.
 - **Disband** (the push is over):
   - stand every fella down;
   - remove stray worktrees and their build output, and shut down simulators and any servers the crew started (by PID or full command line);
@@ -111,7 +110,7 @@ Never ask the user to clear one. A cleared fella keeps its worktree and pane, bu
 
 The user often runs the crew from a phone through Remote Control, so replies should stand on their own and tell them what to do next.
 
-- Inspect a fella without messaging it: `herdr agent read <name>` shows its screen, and `herdr agent wait <name>` waits for it to settle.
+- Inspect a fella without messaging it: `hc read <terminal>` shows its screen, `hc get <terminal>` its status, and `hc wait <terminal>` waits for it to settle.
 - A fella showing `blocked` is waiting on a permission prompt. Read it and tell the user; don't answer it for them.
-- Fellas on another machine: put `herdr --machine <label>` before every command, and discover IDs there; local IDs don't carry over.
+- Fellas on another machine (`hc machine ls`): pass `--machine <name>` to `space.new` and `--on <name>` to `hc run`/`hc exec`. Their terminals are addressed `<name>/t7`; local IDs don't carry over.
 - SendMessage reaches local sessions by their ListAgents name. Cloud sessions can receive messages but can't reply.

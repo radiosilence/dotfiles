@@ -1,19 +1,16 @@
 # wt-herdr
 
-[herdr](https://herdr.dev) backend for `wt-core`. Opens worktrees as herdr
-workspaces, and checks out PRs into them.
+[Herdr](https://herdr.dev) app backend for `wt-core`. Opens each worktree as a
+Herdr space, and checks out PRs and issues into them.
 
-## Why not herdr's own worktree management
+## Why not Herdr's own worktree management
 
-herdr's `[worktrees] directory` is a single global root — no `{org}` placeholder,
-no per-repo layout — and defaults to `~/.herdr/worktrees`. If you scope
-environment per directory, worktrees created there fall outside it and silently
-pick up the wrong config. `wt-core` derives paths from the repo, so they land in
-the right tree.
-
-herdr still associates them correctly: it groups workspaces by the main repo's
-`.git` path, resolved from the checkout, so worktrees created at any path nest
-under their repo in the sidebar.
+Herdr's worktree actions keep checkouts under a single global root,
+`~/.herdr/worktrees`, with no per-org layout. If you scope environment per
+directory, worktrees created there fall outside it and silently pick up the
+wrong config. `wt-core` derives paths from the repo, so they land in the right
+tree. The spaces sidebar still nests each worktree's space under its main
+checkout's, because it groups spaces by the repo's `.git` directory.
 
 ## Install (sheldon)
 
@@ -32,13 +29,13 @@ local = "~/.dotfiles/zsh-plugins/wt-herdr"
 
 | Command | Does |
 | --- | --- |
-| `wth [-b] <name> [base]` | upsert worktree, open as a herdr workspace. No args: fzf picker |
+| `wth [-b] <name> [base]` | upsert worktree, open as a Herdr space. No args: fzf picker |
 | `wtpr <n\|url\|owner/repo#n>` | PR **or** issue — a URL disambiguates, a bare number is probed |
 | `wti <n\|url\|owner/repo#n>` | worktree for a GitHub issue, named `<n>-<slug>`, with claude primed with "Work issue #<n>" |
 
 The logic lives in `wt-core`; these are bindings of `_wt_pr` / `_wt_issue` to
-the herdr backend, so the zellij backend has the same set. The popup wrappers
-(`wtpr-pick`, `wth-pick`, `wti-pick`) live in `config.d/zsh/conf.d/herdr.zsh`.
+the Herdr backend, so the zellij backend has the same set. A worktree that
+already has a space is selected rather than opened again.
 
 `wtpr` is the single entry point for both. A URL disambiguates itself (`/pull/` vs `/issues/`); a bare number is ambiguous because GitHub numbers PRs and issues from one sequence, so it probes with `gh pr view` and falls through to `wti` when that fails.
 
@@ -47,34 +44,14 @@ resolve the local checkout themselves, so it works from anywhere — the GitHub
 owner is matched against directory names under `~/workspace`. Fetches via
 `refs/pull/N/head`, so fork PRs work without the branch existing on origin.
 
-## herdr popup bindings
+`wti` primes a new space by typing `claude "Work issue #<n>"` into its terminal
+with `hc send`. `wt-core` calls the backend in a subshell, so the new terminal's
+address reaches the priming step through `$TMPDIR/wt-herdr.<pid>`.
 
-```toml
-[[keys.command]]
-key = "alt+w"
-type = "popup"
-command = "zsh -ic 'wth-pick'"
-description = "worktree picker (per-org paths)"
+## Popups
 
-[[keys.command]]
-key = "alt+shift+p"
-type = "popup"
-command = "zsh -ic 'wtpr-pick'"
-description = "PR / issue picker"
-```
-
-`wti` primes the new pane by way of `herdr pane send-text`. `claude <prompt>`
-starts an **interactive** session — `-p`/`--print` is what makes it batch — so
-the agent comes up live with the skill already invoked.
-
-Popups close the moment the command returns, so the `-pick` wrappers in
-`config.d/zsh/conf.d/herdr.zsh` hold the window open on failure — otherwise
-errors flash past unseen. `wth-pick` also refuses early when the pane's cwd
-isn't a git repo; `wtpr-pick` doesn't, so there it looks like nothing happened.
-
-## Gotcha
-
-`herdr worktree open` requires `--cwd` to be the **main checkout**; a linked
-worktree is rejected with `linked_worktree_source`. It also reports errors as
-JSON with **exit code 0**, so the payload must be inspected rather than the exit
-status — otherwise failures are silent.
+The picker wrappers (`wtpr-pick`, `wth-pick`, `wti-pick`) live in
+`config.d/zsh/conf.d/herdr.zsh`. The `popup-pr` and `popup-worktree` mods in
+`config.d/herdr-app/mods` run them in a dialog, bound to `alt-shift-p` and
+`alt-w`. The dialog closes when the command returns, so the wrappers hold it
+open on failure; otherwise errors flash past unseen.

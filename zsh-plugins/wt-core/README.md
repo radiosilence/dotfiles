@@ -1,7 +1,7 @@
 # wt-core
 
 Git worktree management for zsh. Backend-agnostic — pair it with `wt-zellij` or
-`wt-herdr` to open worktrees in a multiplexer.
+`wt-herdr` to open worktrees in a multiplexer or the Herdr app.
 
 Worktrees are created at `<repo-parent>/worktrees/<repo>/<name>`, derived from
 the repo's own location. That matters if you scope environment per directory

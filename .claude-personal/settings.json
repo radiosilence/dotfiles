@@ -14,11 +14,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude-personal}/hooks/herdr-agent-state.sh\" session",
-            "timeout": 10
-          },
-          {
-            "type": "command",
             "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude-personal}/hooks/op-service-account.sh\"",
             "timeout": 10
           }
@@ -73,7 +68,7 @@
       "**Internal sharing / snippet hosting**: None; public paste and gist services are outside the trust boundary",
       "**Sensitive remote targets**: any namespace, host or container whose name carries `prod` or `production` as a whole word or name segment",
       "**Protected IaC scopes**: IAM, RBAC, networking, quota and node-pool resources in any Pulumi stack",
-      "**Tooling**: mise, gh, op, pulumi, kubectl, herdr",
+      "**Tooling**: mise, gh, op, pulumi, kubectl, hc, herdr-app",
       "**Primary use of Claude Code**: personal software development and self-hosted infrastructure"
     ]
   }

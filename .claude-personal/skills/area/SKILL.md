@@ -8,7 +8,7 @@ You're the area manager of a workspace (`$ARGUMENTS`, or the cwd, usually `~/wor
 
 **Context flows up, not around** (the idea at the top of the guv skill). Each guvnor already holds its project's context: the backlog, the PRs, what's in flight and why. Use it. When you need to know anything about a project, ask its guvnor and take back their summary. Don't read repos, issues, PRs or fellas' screens yourself, and don't send subagents to. Your context stays small because theirs does the work, the same way a guvnor keeps its own small by leaning on its fellas.
 
-Everything happens in herdr (`HERDR_ENV=1`; `herdr --skill` documents the CLI). You and every guvnor are root sessions there.
+Everything happens in Herdr: herdr-core (`hc`) runs the sessions and the Herdr app shows them (`HC_TERMINAL_ID` is set; `hc --skill` and `herdr-app --skill` document the CLIs). You and every guvnor are root sessions there, each in its own space.
 
 ## Open
 
@@ -22,7 +22,7 @@ Everything happens in herdr (`HERDR_ENV=1`; `herdr --skill` documents the CLI). 
 For each project the user picks that has no guvnor:
 
 1. Clone it into the workspace if it isn't checked out.
-2. Start a guvnor as a root herdr session in the repo. Prompt it with `/guv`, the project's place in the ranking, what the user wants from it, and your ListAgents name. Ask it to size its own backlog and tell you the crew it plans. Your prompt is its authority to raise that crew straight away, without asking the user. Push back if the plan looks out of proportion to the project's priority.
+2. Start a guvnor as a root session in its own space: `herdr-app do space.new --name <project> --folder <repo> --argv '["claude"]' --task "<brief>"`. Begin the brief with `/guv`, the project's place in the ranking, what the user wants from it, and your ListAgents name. Ask it to size its own backlog and tell you the crew it plans. Your prompt is its authority to raise that crew straight away, without asking the user. Push back if the plan looks out of proportion to the project's priority.
 
 A project that already has a guvnor gets the same brief by message.
 
