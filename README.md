@@ -5,7 +5,7 @@ Personal dev environment. macOS and headless Linux, zsh throughout.
 ## Setup
 
 **macOS:**
-
+ASDASDSD
 ```sh
 curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
 ```
