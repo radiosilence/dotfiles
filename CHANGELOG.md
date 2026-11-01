@@ -6,6 +6,10 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### November
+
+**`wtpr-space` for programs.** The `wt-herdr` backend now records the id of the space it selects or creates, and `wtpr-space <ref> <file>` writes it to a file instead of priming an agent. Programs that open a PR or issue worktree, such as a Herdr mod starting an agent there, get the exact space rather than guessing it from a branch name, which collides across repos.
+
 ### October
 
 **`/code-review` without `--comment`.** Posting each finding as an inline PR comment, then a reply and a resolve per thread, kept hitting GitHub's rate limit for comments nobody else read. The pair skill's tuning review and CLAUDE.md now keep findings in the session; `--comment` is for reviews whose findings someone else has to act on.
