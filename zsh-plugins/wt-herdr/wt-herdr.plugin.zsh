@@ -8,7 +8,8 @@ command -v herdr-app >/dev/null || return
 
 # wt-core calls the backend in a subshell, so the space reaches its caller
 # through a file; $$ is the same in both. Line 1 is the space id, line 2 the
-# terminal of a space made just now (empty when an existing one was selected).
+# terminal of a space made just now (empty when an existing one was selected),
+# line 3 the worktree.
 _wt_herdr_handoff() { print -r -- "${TMPDIR:-/tmp}/wt-herdr.$$"; }
 
 # Selects the space already made for this worktree, else makes one.
@@ -19,14 +20,14 @@ _wt_herdr() {
     'first(.spaces[] | select(.folder == $wt and .machine == null) | .id) // empty')
   if [[ -n $id ]]; then
     herdr-app do space.select --id "$id" >/dev/null
-    print -rl -- "$id" "" >"$(_wt_herdr_handoff)"
+    print -rl -- "$id" "" "$wt" >"$(_wt_herdr_handoff)"
     return
   fi
   out=$(herdr-app do space.new --name "$name" --folder "$wt" 2>&1) || {
     print -u2 "herdr-app: $out"
     return 1
   }
-  jq -r '.space // "", .terminal // ""' <<<"$out" >"$(_wt_herdr_handoff)"
+  { jq -r '.space // "", .terminal // ""' <<<"$out"; print -r -- "$wt"; } >"$(_wt_herdr_handoff)"
 }
 
 # ── wth — upsert worktree + Herdr space ─────────────────────────────
@@ -49,15 +50,16 @@ wti()  { _wt_issue _wt_herdr _wt_herdr_prime "$@"; }
 
 # ── wtpr-space <ref> <file> ─────────────────────────────────────────
 # wtpr for programs: opens or selects the worktree's space, primes nothing, and
-# writes the space id to <file>. No file means it failed; wt-core's output (its
-# errors go to stdout) is then left in <file>.log for the caller to show.
+# writes the space id and the worktree to <file>, one per line. No file means it
+# failed; wt-core's output (its errors go to stdout) is then left in <file>.log
+# for the caller to show.
 wtpr-space() {
-  local f=$(_wt_herdr_handoff) out=$2 id
+  local f=$(_wt_herdr_handoff) out=$2 id wt
   [[ -n $1 && -n $out ]] || { print -u2 "usage: wtpr-space <ref> <file>"; return 1; }
   rm -f "$f" "$out" "$out.log"
   _wt_pr _wt_herdr : "$1" >"$out.log" 2>&1
-  id=$(sed -n 1p "$f" 2>/dev/null); rm -f "$f"
-  [[ -n $id ]] || { print -r -- "wtpr-space: no space for $1" >>"$out.log"; return 1; }
+  id=$(sed -n 1p "$f" 2>/dev/null); wt=$(sed -n 3p "$f" 2>/dev/null); rm -f "$f"
+  [[ -n $id && -n $wt ]] || { print -r -- "wtpr-space: no space for $1" >>"$out.log"; return 1; }
   rm -f "$out.log"
-  print -r -- "$id" >"$out"
+  print -rl -- "$id" "$wt" >"$out"
 }
