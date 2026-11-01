@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### November
 
+**`wtpr-space` for programs.** The `wt-herdr` backend now records the id of the space it selects or creates, and `wtpr-space <ref> <file>` writes it to a file instead of priming an agent. Programs that open a PR or issue worktree to start their own agent there get the exact space rather than guessing it from a branch name, which collides across repos.
+
 **1Password CLI dropped from mise.** Its entry was limited to Linux with `os = ["linux"]`, but mise still resolves every configured tool on each shim call before applying the OS filter, and the vfox plugin's `available` hook fetched the release list over the network each time. Every shim (`node`, as run by starship's prompt module) took about 1.2 s instead of 0.25 s, past starship's 500 ms command timeout, on macOS and Linux alike. Headless Linux boxes have no 1Password agent to talk to, so the CLI goes rather than moving.
 
 ### October

@@ -11,8 +11,12 @@ local parsed; parsed=$(_wt_ref_parse "$arg") || return 1
 local owner repo num root
 IFS=$'\t' read -r owner repo num root <<< "$parsed"
 
-_wt_gh "$root" "$owner" "$repo" pr view "$num" --json number -q .number >/dev/null 2>&1 \
-  || { _wt_issue "$go_fn" "$prime_fn" "$arg"; return; }
+# A /pull/ URL is known to be a PR, so a failed probe (network, rate limit,
+# auth) is an error rather than a reason to open it as an issue.
+if ! _wt_gh "$root" "$owner" "$repo" pr view "$num" --json number -q .number >/dev/null 2>&1; then
+  [[ $arg == */pull/* ]] && { echo "could not resolve PR $arg"; return 1; }
+  _wt_issue "$go_fn" "$prime_fn" "$arg"; return
+fi
 
 local branch
 branch=$(_wt_gh "$root" "$owner" "$repo" pr view "$num" --json headRefName -q .headRefName)
