@@ -152,12 +152,14 @@ export function repoModel(node) {
 // that repository; anything else is about the request, and `transient` tells
 // the caller to keep what it already shows.
 export function parseBoard(json, aliases) {
-  const out = { repos: {}, rate: json?.data?.rateLimit ?? null, viewer: json?.data?.viewer?.login ?? null, error: null };
+  const out = { repos: {}, rate: json?.data?.rateLimit ?? null, viewer: json?.data?.viewer?.login ?? null, error: null, reviewError: null, limited: false };
   const byAlias = {};
   for (const e of json?.errors ?? []) {
     const alias = e.path?.[0];
+    if (e.type === "RATE_LIMITED") out.limited = true;
     if (alias && alias in aliases) (byAlias[alias] ??= []).push(e);
-    else if (alias !== "review") out.error = (out.error ? out.error + "; " : "") + e.message;
+    else if (alias === "review") out.reviewError = e.message;
+    else out.error = (out.error ? out.error + "; " : "") + e.message;
   }
   const review = new Set((json?.data?.review?.nodes ?? []).filter((n) => n?.repository).map((n) => `${n.repository.nameWithOwner}#${n.number}`));
   for (const [alias, full] of Object.entries(aliases)) {
@@ -202,15 +204,16 @@ export function mergeMethod(methods) {
 
 // One PR in full, for an opened row or an item pane.
 export function prDetailQuery(full, number) {
-  const r = splitRepo(full), n = Number(number);
-  return `query { ${RATE} repository(owner: ${str(r.owner)}, name: ${str(r.name)}) {
-    squashMergeAllowed mergeCommitAllowed rebaseMergeAllowed
-    pullRequest(number: ${n}) {
-      ${prDetailFields(n)}
-    } } }`;
+  const r = splitRepo(full);
+  return {
+    query: `query($owner: String!, $name: String!, $number: Int!) { ${RATE} repository(owner: $owner, name: $name) {
+      squashMergeAllowed mergeCommitAllowed rebaseMergeAllowed
+      pullRequest(number: $number) { ${PR_DETAIL} } } }`,
+    variables: { owner: r?.owner ?? "", name: r?.name ?? "", number: Number(number) },
+  };
 }
 
-const prDetailFields = (n) => `
+const PR_DETAIL = `
   id number title url body isDraft isCrossRepository state merged closed createdAt updatedAt
   author { login } headRefName baseRefName headRefOid additions deletions changedFiles
   mergeable mergeStateStatus reviewDecision autoMergeRequest { enabledAt mergeMethod }
@@ -219,8 +222,8 @@ const prDetailFields = (n) => `
   reviewRequests(first: 10) { nodes { requestedReviewer { ... on User { login } ... on Team { name } } } }
   commits(last: 1) { nodes { commit { oid messageHeadline statusCheckRollup { state contexts(first: 100) { totalCount pageInfo { hasNextPage } nodes {
     __typename
-    ... on CheckRun { name status conclusion detailsUrl isRequired(pullRequestNumber: ${n}) checkSuite { workflowRun { databaseId } app { slug } } }
-    ... on StatusContext { context state targetUrl isRequired(pullRequestNumber: ${n}) }
+    ... on CheckRun { name status conclusion detailsUrl isRequired(pullRequestNumber: $number) checkSuite { workflowRun { databaseId } app { slug } } }
+    ... on StatusContext { context state targetUrl isRequired(pullRequestNumber: $number) }
   } } } } } }
   timelineItems(last: 40, itemTypes: [ISSUE_COMMENT, PULL_REQUEST_REVIEW, PULL_REQUEST_COMMIT, HEAD_REF_FORCE_PUSHED_EVENT, MERGED_EVENT, CLOSED_EVENT, REOPENED_EVENT]) { nodes {
     __typename
@@ -346,9 +349,17 @@ function dispatchBlock(text) {
 
 export function workflowsQuery(full) {
   const r = splitRepo(full);
-  return `query { ${RATE} repository(owner: ${str(r.owner)}, name: ${str(r.name)}) {
+  return { variables: { owner: r?.owner ?? "", name: r?.name ?? "" }, query: `query($owner: String!, $name: String!) { ${RATE} repository(owner: $owner, name: $name) {
+    defaultBranchRef { name }
     object(expression: "HEAD:.github/workflows") { ... on Tree { entries { name path object { ... on Blob { text } } } } }
-  } }`;
+    releases(first: 10, orderBy: { field: CREATED_AT, direction: DESC }) { nodes { tagName name url publishedAt isPrerelease isDraft } }
+  } }` };
+}
+
+export function releasesModel(json) {
+  return (json?.data?.repository?.releases?.nodes ?? []).map((r) => ({
+    tag: r.tagName, name: r.name || r.tagName, url: r.url, at: r.publishedAt, prerelease: r.isPrerelease, draft: r.isDraft,
+  }));
 }
 
 export function workflowsModel(json) {
@@ -366,7 +377,7 @@ export function restRunModel(r, tags = new Set()) {
     id: r.id, number: r.run_number, name: r.name ?? r.display_title, title: r.display_title, event: r.event,
     branch: r.head_branch, sha: r.head_sha, url: r.html_url, createdAt: r.created_at, updatedAt: r.updated_at,
     state: r.status === "completed" ? conclusionState(r.conclusion) : "pending", actor: r.actor?.login ?? "",
-    release: r.event === "release" || tags.has(r.head_branch) || /release|publish/i.test(r.path ?? ""),
+    release: r.event === "release" || tags.has(r.head_branch) || (r.event !== "pull_request" && /release|publish/i.test(r.path ?? "")),
   };
 }
 
@@ -388,25 +399,31 @@ export function itemLink(url) {
 // Mutations carry the head commit shown on screen, so a push that lands
 // between looking and clicking fails the action instead of merging unseen code.
 export function mergeMutation(pr, method) {
-  return `mutation { mergePullRequest(input: { pullRequestId: ${str(pr.id)}, mergeMethod: ${method}, expectedHeadOid: ${str(pr.oid)} }) { pullRequest { merged } } }`;
+  return { query: `mutation($id: ID!, $method: PullRequestMergeMethod!, $oid: GitObjectID!) {
+    mergePullRequest(input: { pullRequestId: $id, mergeMethod: $method, expectedHeadOid: $oid }) { pullRequest { merged } } }`,
+    variables: { id: pr.id, method, oid: pr.oid } };
 }
 
 export function autoMergeMutation(pr, enable, method) {
   return enable
-    ? `mutation { enablePullRequestAutoMerge(input: { pullRequestId: ${str(pr.id)}, mergeMethod: ${method}, expectedHeadOid: ${str(pr.oid)} }) { clientMutationId } }`
-    : `mutation { disablePullRequestAutoMerge(input: { pullRequestId: ${str(pr.id)} }) { clientMutationId } }`;
+    ? { query: `mutation($id: ID!, $method: PullRequestMergeMethod!, $oid: GitObjectID!) {
+        enablePullRequestAutoMerge(input: { pullRequestId: $id, mergeMethod: $method, expectedHeadOid: $oid }) { clientMutationId } }`,
+      variables: { id: pr.id, method, oid: pr.oid } }
+    : { query: `mutation($id: ID!) { disablePullRequestAutoMerge(input: { pullRequestId: $id }) { clientMutationId } }`, variables: { id: pr.id } };
 }
 
 export function updateBranchMutation(pr) {
-  return `mutation { updatePullRequestBranch(input: { pullRequestId: ${str(pr.id)}, expectedHeadOid: ${str(pr.oid)}, updateMethod: MERGE }) { clientMutationId } }`;
+  return { query: `mutation($id: ID!, $oid: GitObjectID!) {
+    updatePullRequestBranch(input: { pullRequestId: $id, expectedHeadOid: $oid, updateMethod: MERGE }) { clientMutationId } }`,
+    variables: { id: pr.id, oid: pr.oid } };
 }
 
 export function readyMutation(pr) {
-  return `mutation { markPullRequestReadyForReview(input: { pullRequestId: ${str(pr.id)} }) { clientMutationId } }`;
+  return { query: `mutation($id: ID!) { markPullRequestReadyForReview(input: { pullRequestId: $id }) { clientMutationId } }`, variables: { id: pr.id } };
 }
 
 export function commentMutation(subjectId, body) {
-  return `mutation { addComment(input: { subjectId: ${str(subjectId)}, body: ${str(body)} }) { clientMutationId } }`;
+  return { query: `mutation($id: ID!, $body: String!) { addComment(input: { subjectId: $id, body: $body }) { clientMutationId } }`, variables: { id: subjectId, body } };
 }
 
 export const viewerReposQuery = `query { viewer { repositories(first: 100, orderBy: { field: PUSHED_AT, direction: DESC }, affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER], isArchived: false) { nodes { nameWithOwner } } } }`;

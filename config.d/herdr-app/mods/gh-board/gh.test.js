@@ -116,6 +116,7 @@ test("restRunModel marks release runs by event, tag or workflow path", () => {
   assert.equal(gh.restRunModel(run({ head_branch: "v1.2.0" }), new Set(["v1.2.0"])).release, true);
   assert.equal(gh.restRunModel(run({ event: "release" })).release, true);
   assert.equal(gh.restRunModel(run({ path: ".github/workflows/release.yml" })).release, true);
+  assert.equal(gh.restRunModel(run({ event: "pull_request", path: ".github/workflows/release.yml" })).release, false);
 });
 
 test("isHot ignores pending states that have gone stale", () => {
@@ -161,16 +162,25 @@ test("itemLink", () => {
   assert.equal(gh.itemLink("https://github.com/a/b/actions/runs/3"), null);
 });
 
-test("prDetailQuery inlines the number", () => {
-  const q = gh.prDetailQuery("a/b", 12);
-  assert.match(q, /pullRequest\(number: 12\)/);
-  assert.match(q, /isRequired\(pullRequestNumber: 12\)/);
+test("prDetailQuery passes the repo and number as variables", () => {
+  const q = gh.prDetailQuery("a/b", "12");
+  assert.deepEqual(q.variables, { owner: "a", name: "b", number: 12 });
+  assert.match(q.query, /isRequired\(pullRequestNumber: \$number\)/);
 });
 
-test("mutations quote ids and carry the head oid", () => {
+test("mutations pass GitHub text as variables, with the head oid", () => {
   const p = gh.prModel(pr({ id: 'PR_"x', headRefOid: "abc" }));
-  assert.match(gh.mergeMutation(p, "SQUASH"), /pullRequestId: "PR_\\"x", mergeMethod: SQUASH, expectedHeadOid: "abc"/);
-  assert.match(gh.autoMergeMutation(p, false), /disablePullRequestAutoMerge/);
-  assert.match(gh.updateBranchMutation(p), /updateMethod: MERGE/);
-  assert.match(gh.commentMutation("I_1", 'say "hi"\n'), /body: "say \\"hi\\"\\n"/);
+  const m = gh.mergeMutation(p, "SQUASH");
+  assert.deepEqual(m.variables, { id: 'PR_"x', method: "SQUASH", oid: "abc" });
+  assert.doesNotMatch(m.query, /PR_/);
+  assert.match(gh.autoMergeMutation(p, false).query, /disablePullRequestAutoMerge/);
+  assert.match(gh.updateBranchMutation(p).query, /updateMethod: MERGE/);
+  assert.equal(gh.commentMutation("I_1", "a\ud800b").variables.body, "a\ud800b");
+});
+
+test("parseBoard flags rate limiting and a failed review search", () => {
+  const out = gh.parseBoard({ data: { r0: repo(), review: null }, errors: [{ type: "RATE_LIMITED", message: "slow down" }, { path: ["review"], message: "search broke" }] }, { r0: "a/b" });
+  assert.equal(out.limited, true);
+  assert.equal(out.reviewError, "search broke");
+  assert.equal(out.repos["a/b"].prs.length, 1);
 });
