@@ -12,6 +12,10 @@ not_found_auto_install = true
 
 disable_backends = ["asdf", "ubi"]
 activate_aggressive = true
+# activate also puts shims ahead of /opt/homebrew/bin by default, so any command
+# mise has installed but not activated here (brew's node, for one) runs through
+# a shim that resolves the whole toolset before falling through.
+activate_shims = false
 minimum_release_age_excludes = [
   "aube",
   "deno",
