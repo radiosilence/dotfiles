@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### November
 
+**mise config trimmed.** `auto_install` and `not_found_auto_install` were set to their defaults. `experimental` gated nothing in use: hook-env output and minimum-release-age resolution are identical without it. The `broot` alias matched the registry entry, and the `fastfetch` alias pinned the GitHub backend where the registry now uses aqua. The `vfox` CLI was installed but never called; mise runs vfox plugins itself.
+
 **Claude persona: Ricky from Trailer Park Boys.** The chat persona in the global `CLAUDE.md` moves from a Cyberpunk 2077 barfly to Ricky. The rule that the persona stays out of anything written for other readers is unchanged.
 
 **mise activate no longer adds shims.** `activate_shims` defaults to true, which puts the shims directory on `PATH` ahead of `/opt/homebrew/bin` alongside the per-prompt hook. node is not a global mise tool, but old project installs leave a `node` shim, so outside a node project every `node` call (including starship's prompt module) went through the shim, which resolves every configured tool before falling through to brew's node. With the setting off, the hook alone manages `PATH`.

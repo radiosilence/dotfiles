@@ -53,7 +53,6 @@ suvadu = "latest" # Agent-aware shell history (binary: `suv`) — aliased to git
 taplo = "latest" # TOML formatter
 task = "latest" # Task runner
 tfl = "latest" # TfL MCP
-vfox = "latest"
 watchwoman = "latest" # Watchman replacement
 xh = "latest" # Modern HTTP client
 yq = "latest"

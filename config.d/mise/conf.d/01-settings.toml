@@ -1,14 +1,11 @@
 [settings]
 fetch_remote_versions_cache = "30m"
-experimental = true
 trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
 env_file = ".env"
 jobs = 14
-auto_install = true
 # mise exports RUSTUP_TOOLCHAIN, which overrides rust-toolchain.toml; reading the
 # file as a version source keeps a project's pin in charge.
 idiomatic_version_file_enable_tools = ["rust"]
-not_found_auto_install = true
 
 disable_backends = ["asdf", "ubi"]
 activate_aggressive = true
