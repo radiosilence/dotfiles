@@ -30,6 +30,7 @@ Its brief tells it:
 - for every "all of", "every" or "none of" check, to list what the collection it loops over leaves out (unpaired items, skipped files, entries filtered earlier) and whether the rule still holds for those;
 - to check every branch's failure path, and compare sibling branches: one that handles an error while its neighbour doesn't is a bug in the neighbour; that includes an early return (`?`, a `return Err`) after some resources were already started, which must stop them;
 - when a fix handles a failure or edge case in one function, to search the codebase for every other function doing the same operation (another reader of the same file, another caller of the same syscall) and check it handles it too, not only the branches inside the change;
+- the same for non-code: when one entry in a list of waivers, justifications or docs is updated because a fact changed, to check every sibling entry that rests on the same fact;
 - when a change resizes, truncates or replaces a buffer or collection, to re-check every index, cursor or length into it on the next call, not only the call that changed it;
 - when a change moves work onto another thread or task, to check what can now run after its owner is destroyed (a callback after a stop, a reply after a free), and when a change sets a rule ("call X on every thread", "every write has a deadline"), to find every site the rule covers, including ones the same change adds;
 - when a request can outlive the caller waiting on it (one that answers early with "pending" or an error while the system keeps it open, a continuation resumed before the work ends), to trace its later outcomes: who hears of a failure that arrives after nobody is waiting, and what state set from the early answer (an error shown, a value remembered as applied) is now wrong; and when one step of a sequence fails, to check that later steps that do not depend on it (a reload after a save) still run;
@@ -39,7 +40,9 @@ Its brief tells it:
 - to test each assumption you flag as uncertain against the cases it would get wrong (older versions, other platforms, other volumes and filesystems on the same platform, other callers) rather than judging it on its face; where code checks a path and then acts on it, to ask what another process could change in between;
 - when a fix moves where something fails, to check that each test still fails for the reason its name and comments give, not merely that it still fails;
 - for each fix, its own or yours, to ask what legitimate input or caller it now refuses or treats differently, what it costs at peak (a copy, an allocation, a lock held longer), and what reads the values it changes (an average, a counter, a limit) and whether that still holds;
-- that its own suggestions get no pass: once you have built one, it reviews that code as hard as anything else you send. A limit or cap it proposed gets the same question as any fix: what legitimate input does it now refuse.
+- when a fix trims, filters, truncates or splits data to make it fit, to list exactly what it drops and who reads that, and prefer a fix that keeps it;
+- when a value is restated somewhere new (a language, a version, a size), to check it against its source rather than accept a plausible default;
+- that its own suggestions get no pass: once you have built one, it reviews that code as hard as anything else you send. A limit or cap it proposed gets the same question as any fix: what legitimate input does it now refuse. Before it signs off a fix as done, it reads the code that does it, not only the test for it.
 
 ## Plan first
 
