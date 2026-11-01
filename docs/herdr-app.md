@@ -46,6 +46,8 @@ The popups, the zoxide folder picker and the space stepping are [grove](https://
 
 Local changes: Claude is the only provider shown by default, and `collect.py` reads the Keychain item Claude Code uses when `CLAUDE_CONFIG_DIR` is set (`Claude Code-credentials-<first 8 hex of sha256(dir)>`); upstream skips Keychain entirely in that case. The mod passes `CLAUDE_CONFIG_DIR=~/.claude-personal` to the helper itself: mise sets it per directory, and the app's environment has neither that nor a reliable `mise exec`. The first read is denied until **Retry Keychain** in the Claude popup is clicked and macOS is told to always allow it. Reapply these changes when updating the vendored copy.
 
+The app's file watcher does not follow the symlinks `task link` makes, so an edit under `config.d/herdr-app/mods` does not hot-reload a mod already on screen. Popups load fresh code each time they open; a docked block keeps the old build until the layout is switched away and back.
+
 ## Gone
 
 These TUI actions have no app command: navigate mode, cycling panes, renaming panes, focusing agent N, native worktree actions, detach (closing the window leaves terminals running), reloading config (files apply on save), copy mode, scrollback editing, goto and jumping to a notification's target.
