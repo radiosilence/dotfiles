@@ -33,7 +33,7 @@ async function checkout(full) {
   const candidates = [`${ws}/${r.owner}/${r.name}`, ...dirs.map((d) => `${ws}/${d}/${r.name}`), `${home()}/.${r.name}`];
   for (const root of [...new Set(candidates)]) {
     const config = await readTextFile(`${root}/.git/config`).catch(() => null);
-    if (config && config.toLowerCase().includes(full.toLowerCase())) return root;
+    if (config && gh.remoteMatches(config, full)) return root;
   }
   return null;
 }
@@ -122,7 +122,7 @@ export class Board {
       else if ((this.started[full] ?? 0) <= started) {
         this.data[full] = repo;
         // Asked before the last action landed: show it, but ask again at once.
-        this.polled[full] = started < (this.touchedAt[full] ?? 0) ? 0 : Date.now();
+        this.polled[full] = gh.settledAt(started, this.touchedAt[full], Date.now());
       }
     }
   }

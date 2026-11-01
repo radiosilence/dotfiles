@@ -401,6 +401,18 @@ export function restRunModel(r, tags = new Set()) {
   };
 }
 
+// Whether a git config has a remote URL for exactly this repository.
+export function remoteMatches(config, full) {
+  const r = splitRepo(full);
+  if (!r) return false;
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^\\s*url\\s*=\\s*\\S*[/:]${esc(r.owner)}/${esc(r.name)}(\\.git)?/?\\s*$`, "im").test(config);
+}
+
+// When a repository counts as polled: an answer to a request that started
+// before the last action on it is shown, but asked again at once.
+export const settledAt = (started, touchedAt, now) => (started < (touchedAt ?? 0) ? 0 : now);
+
 export function age(iso, now = Date.now()) {
   if (!iso) return "";
   const s = Math.max(0, Math.round((now - Date.parse(iso)) / 1000));

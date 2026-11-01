@@ -4,19 +4,17 @@ A Herdr app mod for working across many GitHub repositories without the web UI. 
 
 ## What it does
 
-The board lists every repository added to it, each with its default branch's latest Actions runs, its latest release, and its open PRs. Each PR row shows its CI state, what stands between it and merging (conflicts, behind, blocked, ready), review state and auto-merge, with buttons for what can be done next:
+The board lists the open PRs of every repository added to it (type `owner/repo` in its box) with their CI, mergeability, review and auto-merge state, and acts on them in place: merge, auto-merge, update branch, rerun failed checks. Clicking a PR shows it in a preview pane beside the board; **Pin** keeps one in a pane of its own. **Actions** under a repository shows its runs, release runs, releases and dispatchable workflows.
 
-- **Merge / Admin merge**: two clicks on the same head commit within four seconds. Merge appears when the PR is ready, or when only checks that are not required are failing. Admin merge appears when GitHub reports `viewerCanMergeAsAdmin` and has finished computing whether the PR can merge.
-- **Auto / Auto off**: enables or disables auto-merge with the repository's preferred method (squash, then merge, then rebase).
-- **Update**: merges the base branch into a PR that is behind.
-- **Rerun**: reruns the failed jobs of every Actions run behind the PR's failing checks. Checks from other apps and commit statuses cannot be rerun, and are reported rather than skipped.
-- **Fix**: opens the PR's worktree as a Herdr space through `wtpr-space` (see `zsh-plugins/wt-herdr`) and starts Claude there with the conflicts, failing checks and their `gh run view --log-failed` commands. PRs from forks are excluded until #117 is fixed.
+Behaviour that is not obvious from the screen:
 
-Clicking a row shows the PR in a preview pane beside the board: description, checks, conversation and a comment box, with the same actions. **Pin** splits off a pane that keeps that PR while the preview follows later clicks. GitHub PR and issue links in descriptions and comments open in the preview rather than the browser.
-
-**Actions** under a repository shows its recent runs (with Cancel, Rerun, Rerun failed), release runs separately (runs triggered by a release, by a release tag push that appears among the recent runs, or from a workflow named for releasing or publishing), its releases, and a button for each workflow with a `workflow_dispatch` trigger. Workflows with inputs are dispatched with their defaults; GitHub's refusal is shown when an input is required.
-
-The filters are **All**, **Needs you** (your PRs that are failing, conflicting, behind, have changes requested or are ready to merge, and anyone's PR whose review is requested from you) and **Mine**. The text box filters rows; an `owner/repo` (or its URL) followed by Enter adds a repository, and focusing it lists your recently pushed repositories.
+- Merging takes two clicks on the same head commit within four seconds, and the mutation names that commit. A push that lands between looking and clicking makes the merge fail instead of merging code nobody saw.
+- **Merge** is offered when only checks that are not required are failing (GitHub's `UNSTABLE`), since anyone with write access may merge then. **Admin merge** waits until GitHub has computed whether the PR can merge at all.
+- **Fix** opens the PR's worktree as a Herdr space through `wtpr-space` (`zsh-plugins/wt-herdr`) and starts Claude there with the conflicts, the failing checks and the commands to read their logs. PRs from forks are excluded: `wtpr` can resolve a fork's branch to the wrong checkout (#117).
+- Rerun only reaches GitHub Actions runs. Failing checks from other apps and commit statuses are reported as not rerun rather than skipped silently.
+- GitHub PR and issue links in descriptions and comments open in the preview pane rather than the browser.
+- **Needs you** is your PRs that are failing, conflicting, behind, have changes requested or are ready to merge, plus anyone's PR whose review is requested from you. Bots' PRs never appear in it unless your review is requested.
+- Dispatching a workflow uses its inputs' defaults; GitHub's refusal is shown when an input is required.
 
 ## How it talks to GitHub
 
@@ -26,7 +24,7 @@ The 5,000-point hourly GraphQL budget is shared with every other `gh` call on th
 
 - The board fetches all repositories in aliased queries of eight, which cost about one point per few repositories. Per-check detail is not polled; it is read when a PR is opened or acted on.
 - Each repository is refreshed every 60 seconds while the board is shown and every 5 minutes otherwise. A repository with running checks, a mergeability GitHub has not yet computed, an auto-merge about to happen, or an action just taken is refreshed every 15 seconds. Pending states older than 45 minutes do not count, since a required status that never reports or a run waiting for approval would otherwise keep a repository on the fast schedule indefinitely.
-- A push from a local checkout under `~/workspace/<owner>/<repo>` moves its remote refs, which the board watches; that repository goes on the fast schedule for two minutes.
+- A push from a local checkout moves its remote refs, which the board watches; that repository goes on the fast schedule for two minutes. The checkout is found as wt-core finds it (`~/workspace/<owner>/<repo>`, then `~/workspace/*/<repo>`, then `~/.<repo>`) and confirmed by its remote URL.
 - Below 1,000 remaining points every interval is four times longer; a rate-limit error stops polling until the limit resets.
 - A failed request leaves the last good data on screen, marked stale, rather than clearing it.
 
@@ -38,6 +36,7 @@ GitHub has no push API a desktop mod can listen to without a public endpoint. We
 - Issues open on GitHub; an issue view is planned.
 - At most 30 open PRs per repository are listed, most recently updated first.
 - Workflow inputs cannot be entered; dispatch uses their defaults.
+- Release runs are found by `event=release`, by a release tag push among the 20 most recent runs, or by a workflow path naming release or publish. GitHub cannot filter runs by tag push, so older tag-push runs are missed.
 
 ## Development
 

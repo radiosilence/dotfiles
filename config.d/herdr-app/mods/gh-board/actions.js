@@ -164,7 +164,12 @@ let splitting = null;
 export function openItem(target) {
   setShared(PREVIEW, { repo: target.repo, number: target.number, kind: target.kind });
   const tab = activeTab();
-  if (shared(PREVIEW_AT)?.[tab]) return;
+  // A crash skips close(), so the registry is checked against the panes: the
+  // board alone in its tab means no preview, whatever was recorded.
+  if (shared(PREVIEW_AT)?.[tab]) {
+    if (panes().filter((p) => p.mod === MOD && p.tab === tab).length >= 2) return;
+    registerPreview(tab, false);
+  }
   // The new pane registers once it starts; until then a second click must not split again.
   if (splitting?.tab === tab && Date.now() - splitting.at < 2000) return;
   splitting = { tab, at: Date.now() };

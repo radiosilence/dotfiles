@@ -193,3 +193,17 @@ test("mergeAction", () => {
   assert.equal(gh.mergeAction(p({ mergeable: "UNKNOWN", mergeStateStatus: "UNKNOWN" }, { admin: true })), null);
   assert.equal(gh.mergeAction(p({ isDraft: true }, { admin: true })), null);
 });
+
+test("remoteMatches only the exact repository", () => {
+  const config = '[remote "origin"]\n\turl = git@github.com:radiosilence/sift-mcp.git\n';
+  assert.equal(gh.remoteMatches(config, "radiosilence/sift"), false);
+  assert.equal(gh.remoteMatches(config, "radiosilence/sift-mcp"), true);
+  assert.equal(gh.remoteMatches("\turl = https://github.com/a/b.c\n", "a/b.c"), true);
+  assert.equal(gh.remoteMatches("\turl = https://github.com/a/bxc\n", "a/b.c"), false);
+});
+
+test("settledAt re-polls answers older than the last action", () => {
+  assert.equal(gh.settledAt(100, 150, 200), 0);
+  assert.equal(gh.settledAt(160, 150, 200), 200);
+  assert.equal(gh.settledAt(160, undefined, 200), 200);
+});
