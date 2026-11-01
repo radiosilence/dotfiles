@@ -6,6 +6,8 @@ import { mutate, graphql, rest } from "./api.js";
 import * as gh from "./gh.js";
 
 export const MOD = "gh-board";
+// { repo, at } of the last action an item pane took, for the board to settle.
+export const TOUCHED = "gh-board.touched";
 export const PREVIEW = "gh-board.preview";
 // { [tab]: true } for each tab with a live preview pane, written by that pane
 // and cleared when it closes.
@@ -57,13 +59,7 @@ export async function updateBranch(cx, pr) {
   await mutate(cx, gh.updateBranchMutation(pr));
 }
 
-export async function markReady(cx, pr) {
-  await mutate(cx, gh.readyMutation(pr));
-}
-
-export async function comment(cx, subjectId, body) {
-  await mutate(cx, gh.commentMutation(subjectId, body));
-}
+export { mutate };
 
 // Reruns every failed Actions run behind the checks; reports the checks that
 // no rerun can reach rather than skipping them silently.

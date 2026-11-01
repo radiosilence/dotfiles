@@ -4,7 +4,7 @@
 
 import { div } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input, TextView } from "gpui-base";
-import { props, shared, theme } from "herdr";
+import { props, setShared, shared, theme } from "herdr";
 import * as gh from "./gh.js";
 import * as act from "./actions.js";
 import { badge, button, ciLabel, dot, mergeLabel, reviewLabel, stateColor } from "./ui.js";
@@ -81,7 +81,12 @@ export class Item {
     cx.spawn(async (cx) => {
       try { await fn(cx); }
       catch (e) { act.fail(`${label} ${target.repo}#${target.number}`, e); }
-      finally { if (this.busy === busy) this.busy = null; if (gen === this.gen) this.load(cx); cx.notify(); }
+      finally {
+        if (this.busy === busy) this.busy = null;
+        setShared(act.TOUCHED, { repo: target.repo, at: Date.now() });
+        if (gen === this.gen) this.load(cx);
+        cx.notify();
+      }
     });
     cx.notify();
   }
@@ -102,7 +107,7 @@ export class Item {
     const body = this.comment.value().trim(), it = this.item;
     if (!body || !it) return;
     this.do("Commenting", async (cx) => {
-      await act.comment(cx, it.id, body);
+      await act.mutate(cx, gh.commentMutation(it.id, body));
       if (this.comment.value().trim() === body) this.comment.set_value("");
     }, cx);
   }
@@ -152,7 +157,7 @@ export class Item {
     const busy = this.busyLabel();
     if (busy) return [div().text_size(11).text_color(t.working).child(`${busy}…`)];
     const out = [], open = it.state === "open";
-    if (open && it.draft) out.push(button("ready", "Ready for review", t, (_e, cx) => this.do("Marking ready", (cx) => act.markReady(cx, it), cx)));
+    if (open && it.draft) out.push(button("ready", "Ready for review", t, (_e, cx) => this.do("Marking ready", (cx) => act.mutate(cx, gh.readyMutation(it)), cx)));
     if (open && it.merge === "behind" && it.can.update) out.push(button("update", "Update branch", t, (_e, cx) => this.do("Updating", (cx) => act.updateBranch(cx, it), cx)));
     if (open && it.checks.some((c) => c.state === "fail" || c.state === "cancel")) out.push(button("rerun", "Rerun failed", t, (_e, cx) => this.do("Rerunning", (cx) => act.rerunFailed(cx, target.repo, it.checks), cx)));
     if (open && it.auto && it.can.disableAuto) out.push(button("auto", "Auto-merge off", t, (_e, cx) => this.do("Disabling auto-merge", (cx) => act.setAuto(cx, it, it.methods, false), cx)));

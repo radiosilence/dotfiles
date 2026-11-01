@@ -3,7 +3,7 @@
 
 import { div } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { home, readTextFile, setShared, shared, theme, watchFolder } from "herdr";
+import { home, panes, readTextFile, setShared, shared, theme, watchFolder } from "herdr";
 import * as fs from "fs/promises";
 import { graphql, rest } from "./api.js";
 import * as gh from "./gh.js";
@@ -54,6 +54,7 @@ export class Board {
     this.text = "";
     this.armed = null;    // { key, oid, at } of a merge awaiting its second click
     this.pausedUntil = 0;
+    this.reviewErrors = {}; // first repo of a chunk -> its review search's error
     this.input = InputState.new({ placeholder: "Filter, or owner/repo to add" });
     this.input.on("change", (_e, cx) => { this.text = this.input.value(); cx.notify(); });
     this.input.on("submit", (_e, cx) => this.submit(cx));
@@ -67,7 +68,16 @@ export class Board {
 
   close() { this.closed = true; }
 
-  shown() { return act.isShown(this.tab); }
+  // The tab is taken from focus at init, which a copy opened from a popup can
+  // get wrong; a tab with no board in it is corrected to the shown one that has one.
+  shown() {
+    const tab = act.activeTab();
+    if (!panes().some((p) => p.mod === act.MOD && p.tab === this.tab) && panes().some((p) => p.mod === act.MOD && p.tab === tab)) {
+      this.tab = tab;
+      setShared("gh-board.boardTab", tab);
+    }
+    return act.isShown(this.tab);
+  }
 
   // Decides what is due. One timer for everything, so nothing piles up.
   tick(cx, force = false) {
@@ -95,7 +105,7 @@ export class Board {
         try {
           const { query, aliases } = gh.boardQuery(part);
           const out = gh.parseBoard(await graphql(cx, query), aliases);
-          this.apply(out, started);
+          this.apply({ ...out, chunk: part[0] }, started);
         } catch (e) {
           if (e?.status === 403 || e?.status === 429) this.pause(null);
           for (const full of part) this.keep(full, act.errorText(e), started);
@@ -115,7 +125,7 @@ export class Board {
   apply(out, started) {
     if (out.rate) this.rate = out.rate;
     if (out.viewer) this.viewer = out.viewer;
-    this.reviewError = out.reviewError;
+    this.reviewErrors[out.chunk] = out.reviewError;
     if (out.limited) this.pause(out.rate?.resetAt);
     for (const [full, repo] of Object.entries(out.repos)) {
       if (repo.error && repo.transient) this.keep(full, repo.error, started);
@@ -153,8 +163,8 @@ export class Board {
           // Also ends this loop after a reload, which stops a task at its next cx use.
           cx.notify();
         }
-      } catch { /* no remotes folder yet: the board polls as usual */ }
-      this.watched.delete(full);
+        this.watched.delete(full);
+      } catch { /* no remotes folder: stays marked as watched, and the board polls as usual */ }
     });
   }
 
@@ -191,10 +201,13 @@ export class Board {
     this.do(full, pr, "Merging", (cx) => act.merge(cx, pr, repo.methods), cx);
   }
 
+  // Enter adds a repository only when the text names one and filters out
+  // every PR, so a branch name like feat/login stays a filter.
   submit(cx) {
     const text = this.text.trim();
     const r = gh.splitRepo(text.replace(/^https:\/\/github\.com\//, "").replace(/\/$/, ""));
     if (!r) return;
+    if (repoList().some((f) => { const repo = this.data[f]; return repo && !repo.error && this.visible(repo).length; })) return;
     this.addRepo(`${r.owner}/${r.name}`, cx);
   }
 
@@ -207,7 +220,12 @@ export class Board {
   }
 
   removeRepo(full, cx) {
-    if (this.removing !== full) { this.removing = full; cx.notify(); return; }
+    if (this.removing !== full) {
+      this.removing = full;
+      cx.timer.after(ARM, (cx) => { if (this.removing === full) { this.removing = null; cx.notify(); } });
+      cx.notify();
+      return;
+    }
     this.removing = null;
     setShared(REPOS, repoList().filter((x) => x !== full));
     delete this.data[full]; delete this.actions[full];
@@ -250,8 +268,10 @@ export class Board {
           rest(cx, "GET", `/repos/${full}/actions/runs?event=release&per_page=5`),
         ]);
         if (this.actions[full] !== a) return;
+        if (meta?.errors?.length && !meta?.data?.repository) throw new Error(meta.errors[0].message);
         const releases = gh.releasesModel(meta), tags = new Set(releases.map((r) => r.tag));
-        if (stale) {
+        // A partial answer leaves the workflows to be read again next time.
+        if (stale && !meta?.errors?.length) {
           a.workflows = gh.workflowsModel(meta).filter((w) => w.dispatch);
           a.branch = meta?.data?.repository?.defaultBranchRef?.name ?? "main";
           a.oid = oid;
@@ -285,12 +305,18 @@ export class Board {
     return repo.prs.filter((p) => {
       if (this.filter === "attention" && !gh.needsAttention(p, this.viewer)) return false;
       if (this.filter === "mine" && p.author !== this.viewer) return false;
-      if (!text || gh.splitRepo(text)) return true;
+      if (!text) return true;
       return `${p.number} ${p.title} ${p.author} ${p.head}`.toLowerCase().includes(text);
     });
   }
 
   render(cx) {
+    // An item pane acted on a PR: settle its repository here too.
+    const signal = shared(act.TOUCHED);
+    if (signal?.at && signal.at !== this.lastSignal) {
+      this.lastSignal = signal.at;
+      if (repoList().includes(signal.repo)) this.touched(signal.repo, cx);
+    }
     const t = theme(), repos = repoList();
     const all = repos.map((f) => this.data[f]).filter((r) => r && !r.error);
     const count = (fn) => all.reduce((n, r) => n + r.prs.filter(fn).length, 0);
@@ -317,7 +343,7 @@ export class Board {
       .child(div().id("gh-board-input").flex_1().min_w(120).h(28).px(10).flex().items_center().rounded(7).border_1()
         .border_color(this.typing ? t.accent : t.border).cursor_text().on_mouse_down("left", (_e, cx) => cx.stop_propagation())
         .child(Input.new(this.input).h_full().text_size(12).text_color(t.foreground)))
-      .when(Boolean(this.reviewError), (e) => e.child(div().text_size(11).text_color(t.dim).child("review requests unavailable")))
+      .when(Object.values(this.reviewErrors).some(Boolean), (e) => e.child(div().text_size(11).text_color(t.dim).child("review requests unavailable")))
       .child(div().text_size(11).text_color(paused ? t.ansi1 : t.dim).child(paused || [rate, newest ? `${gh.age(new Date(newest).toISOString())} ago` : ""].filter(Boolean).join(" · ")))
       .child(button("gh-refresh", this.inflight.size ? "Refreshing…" : "Refresh", t, (_e, cx) => { this.pausedUntil = 0; this.tick(cx, true); }, { disabled: !repos.length }));
   }
