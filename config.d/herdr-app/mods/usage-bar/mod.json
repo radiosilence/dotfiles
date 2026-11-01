@@ -1,0 +1,6 @@
+{
+  "title": "Usage Bar",
+  "place": "none",
+  "size": 28,
+  "overlay": { "width": 440, "height": 330 }
+}

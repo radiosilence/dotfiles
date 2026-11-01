@@ -115,7 +115,7 @@ tasks:
           .omp-personal/agent/mcp.json; do
           ln_s "$d/$p" "$HOME/$p"
         done
-        for f in keys.json settings.json themes/monokai-pro.json "$d"/config.d/herdr-app/mods/*/; do
+        for f in keys.json settings.json themes/monokai-pro.json "$d"/config.d/herdr-app/layouts/*.json "$d"/config.d/herdr-app/mods/*/; do
           f=${f#"$d/config.d/herdr-app/"}; f=${f%/}
           ln_s "$d/config.d/herdr-app/$f" "$HOME/.config/herdr-app/$f"
         done
