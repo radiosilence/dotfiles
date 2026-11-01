@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### November
 
+**Claude persona: Ricky from Trailer Park Boys.** The chat persona in the global `CLAUDE.md` moves from a Cyberpunk 2077 barfly to Ricky. The rule that the persona stays out of anything written for other readers is unchanged.
+
 **mise activate no longer adds shims.** `activate_shims` defaults to true, which puts the shims directory on `PATH` ahead of `/opt/homebrew/bin` alongside the per-prompt hook. node is not a global mise tool, but old project installs leave a `node` shim, so outside a node project every `node` call (including starship's prompt module) went through the shim, which resolves every configured tool before falling through to brew's node. With the setting off, the hook alone manages `PATH`.
 
 **gh-board: GitHub inside the Herdr app.** Reviewing, merging and unblocking PRs across a few dozen repositories meant a browser tab per repository and a page load per action. The `gh-board` mod (`cmd-shift-g`) shows every added repository's PRs and Actions in one place and acts on them without leaving Herdr; its Fix button opens a PR's worktree and starts Claude on what is failing. It uses the `gh` CLI's token and GraphQL, polls within the shared rate budget, and speeds up only for repositories where something is about to change. See `docs/gh-board.md`.
