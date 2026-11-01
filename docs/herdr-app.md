@@ -33,6 +33,7 @@ The herdr TUI ran inside Ghostty, which keeps every `cmd` shortcut for itself, s
 | Scratch shell popup | `ctrl-a ;` | `cmd-;` |
 | PR or issue to worktree popup | `alt-shift-p` | unchanged |
 | Worktree picker popup | `alt-w` | unchanged |
+| GitHub board ([gh-board](gh-board.md)) | none | `cmd-shift-g` |
 
 `cmd-[` and `cmd-]` replace the default agent bindings. They run the `space-prev` and `space-next` mods, which step through spaces in the order the sidebar shows them, with each worktree's space directly after its main checkout's. The built-in `space.next` (`cmd-alt-]`) follows creation order, which skips about once worktrees are nested.
 
