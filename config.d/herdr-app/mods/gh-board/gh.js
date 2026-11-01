@@ -195,6 +195,19 @@ export function needsAttention(pr, viewer) {
     || pr.review === "CHANGES_REQUESTED" || (pr.merge === "clean" && !pr.auto);
 }
 
+// The merge button a PR gets, if any. UNSTABLE means only checks that aren't
+// required are failing, which anyone who can write may merge; an admin merge is
+// offered only once GitHub has said whether the PR can merge at all.
+export function mergeAction(pr) {
+  if (pr.draft) return null;
+  if (pr.merge === "clean" || pr.merge === "unstable") return "Merge";
+  if (pr.can.admin && pr.merge !== "conflict" && pr.merge !== "unknown") return "Admin merge";
+  return null;
+}
+
+// Something an agent can fix.
+export const fixable = (pr) => !pr.fork && (pr.ci === "fail" || pr.merge === "conflict" || pr.merge === "behind");
+
 export function mergeMethod(methods) {
   if (methods?.squash) return "SQUASH";
   if (methods?.merge) return "MERGE";
@@ -352,6 +365,13 @@ export function workflowsQuery(full) {
   return { variables: { owner: r?.owner ?? "", name: r?.name ?? "" }, query: `query($owner: String!, $name: String!) { ${RATE} repository(owner: $owner, name: $name) {
     defaultBranchRef { name }
     object(expression: "HEAD:.github/workflows") { ... on Tree { entries { name path object { ... on Blob { text } } } } }
+    releases(first: 10, orderBy: { field: CREATED_AT, direction: DESC }) { nodes { tagName name url publishedAt isPrerelease isDraft } }
+  } }` };
+}
+
+export function releasesQuery(full) {
+  const r = splitRepo(full);
+  return { variables: { owner: r?.owner ?? "", name: r?.name ?? "" }, query: `query($owner: String!, $name: String!) { ${RATE} repository(owner: $owner, name: $name) {
     releases(first: 10, orderBy: { field: CREATED_AT, direction: DESC }) { nodes { tagName name url publishedAt isPrerelease isDraft } }
   } }` };
 }

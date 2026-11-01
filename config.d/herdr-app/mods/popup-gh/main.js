@@ -24,12 +24,14 @@ export default class PopupGh extends View {
       return;
     }
     cx.spawn(async () => {
+      let made = null;
       try {
         // space.new always starts a terminal; the board replaces its tab.
-        const made = await herdr(["space.new", "--name", "GitHub", "--folder", home()]);
+        made = await herdr(["space.new", "--name", "GitHub", "--folder", home()]);
         await herdr(["tab.new", "--space", made.space, "--name", "Board", "--mod", "gh-board"]);
         await herdr(["tab.close", "--id", made.tab, "--confirmed", "true"]);
       } catch (e) {
+        if (made?.space) await herdr(["space.close", "--id", made.space, "--confirmed", "true"]).catch(() => {});
         notify({ title: "gh-board", body: String(e?.message ?? e), level: "error" });
       } finally {
         if (self) closeOverlay(self);

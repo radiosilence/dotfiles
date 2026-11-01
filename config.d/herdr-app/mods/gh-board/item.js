@@ -4,7 +4,7 @@
 
 import { div } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input, TextView } from "gpui-base";
-import { props, setShared, shared, theme } from "herdr";
+import { props, shared, theme } from "herdr";
 import * as gh from "./gh.js";
 import * as act from "./actions.js";
 import { badge, button, ciLabel, dot, mergeLabel, reviewLabel, stateColor } from "./ui.js";
@@ -22,13 +22,13 @@ export class Item {
     this.comment.on("focus", (_e, cx) => { this.typing = true; cx.notify(); });
     this.comment.on("blur", (_e, cx) => { this.typing = false; cx.notify(); });
     this.comment.on("submit", (_e, cx) => this.send(cx));
-    if (this.preview) setShared(act.PREVIEW_AT, { tab: this.tab });
+    if (this.preview) act.registerPreview(this.tab, true);
     cx.timer.every(5000, (cx) => this.tick(cx));
     this.follow(cx);
   }
 
   async close() {
-    if (this.preview && shared(act.PREVIEW_AT)?.tab === this.tab) setShared(act.PREVIEW_AT, null);
+    if (this.preview) act.registerPreview(this.tab, false);
   }
 
   target() {
@@ -46,14 +46,13 @@ export class Item {
 
   tick(cx) {
     if (!act.isShown(this.tab) || this.loading) return;
-    const hot = this.item && (this.item.ci === "pending" || this.item.merge === "unknown" || this.busy);
+    const hot = this.item && (this.item.ci === "pending" || this.item.merge === "unknown" || this.busyLabel());
     if (Date.now() - this.at >= (hot ? HOT : IDLE)) this.load(cx);
   }
 
   load(cx) {
     const target = this.target(), gen = ++this.gen;
-    if (!target) { cx.notify(); return; }
-    if (target.kind !== "pr") { this.error = null; cx.notify(); return; }
+    if (!target || target.kind !== "pr") { this.loading = false; this.error = null; cx.notify(); return; }
     this.loading = true;
     cx.spawn(async (cx) => {
       try {
@@ -71,14 +70,18 @@ export class Item {
     });
   }
 
+  // Busy belongs to the item it was started on, so the preview moving on to
+  // another item doesn't lock that one.
+  busyLabel() { return this.busy?.key === this.key ? this.busy.label : null; }
+
   do(label, fn, cx) {
-    if (this.busy) return;
-    const target = this.target(), gen = this.gen;
-    this.busy = label;
+    if (this.busyLabel()) return;
+    const target = this.target(), gen = this.gen, busy = { key: this.key, label };
+    this.busy = busy;
     cx.spawn(async (cx) => {
       try { await fn(cx); }
       catch (e) { act.fail(`${label} ${target.repo}#${target.number}`, e); }
-      finally { this.busy = null; if (gen === this.gen) this.load(cx); cx.notify(); }
+      finally { if (this.busy === busy) this.busy = null; if (gen === this.gen) this.load(cx); cx.notify(); }
     });
     cx.notify();
   }
@@ -98,7 +101,10 @@ export class Item {
   send(cx) {
     const body = this.comment.value().trim(), it = this.item;
     if (!body || !it) return;
-    this.do("Commenting", async (cx) => { await act.comment(cx, it.id, body); this.comment.set_value(""); }, cx);
+    this.do("Commenting", async (cx) => {
+      await act.comment(cx, it.id, body);
+      if (this.comment.value().trim() === body) this.comment.set_value("");
+    }, cx);
   }
 
   render(cx) {
@@ -116,7 +122,7 @@ export class Item {
       .child(v_flex().id("gh-item-scroll").flex_1().min_h(0).overflow_y_scrollbar().p(14).gap(14)
         .child(this.checks(target, it, t))
         .child(this.markdown("gh-item-body", it.body || "_No description._", t))
-        .children(it.timeline.map((e, i) => this.event(e, i, t))))
+        .children(it.timeline.map((e) => this.event(e, t))))
       .child(this.composer(it, t));
   }
 
@@ -143,18 +149,17 @@ export class Item {
   }
 
   buttons(target, it, t) {
-    if (this.busy) return [div().text_size(11).text_color(t.working).child(`${this.busy}…`)];
+    const busy = this.busyLabel();
+    if (busy) return [div().text_size(11).text_color(t.working).child(`${busy}…`)];
     const out = [], open = it.state === "open";
     if (open && it.draft) out.push(button("ready", "Ready for review", t, (_e, cx) => this.do("Marking ready", (cx) => act.markReady(cx, it), cx)));
     if (open && it.merge === "behind" && it.can.update) out.push(button("update", "Update branch", t, (_e, cx) => this.do("Updating", (cx) => act.updateBranch(cx, it), cx)));
     if (open && it.checks.some((c) => c.state === "fail" || c.state === "cancel")) out.push(button("rerun", "Rerun failed", t, (_e, cx) => this.do("Rerunning", (cx) => act.rerunFailed(cx, target.repo, it.checks), cx)));
     if (open && it.auto && it.can.disableAuto) out.push(button("auto", "Auto-merge off", t, (_e, cx) => this.do("Disabling auto-merge", (cx) => act.setAuto(cx, it, it.methods, false), cx)));
     else if (open && !it.auto && it.can.enableAuto) out.push(button("auto", "Auto-merge", t, (_e, cx) => this.do("Enabling auto-merge", (cx) => act.setAuto(cx, it, it.methods, true), cx)));
-    if (open && (it.merge === "clean" || (it.can.admin && it.merge !== "conflict" && !it.draft))) {
-      const label = it.merge === "clean" ? "Merge" : "Admin merge";
-      out.push(button("merge", this.armed ? `${label}?` : label, t, (_e, cx) => this.merge(cx), { primary: it.merge === "clean", armed: this.armed }));
-    }
-    if (open && !it.fork) out.push(button("fix", act.starting.has(`${target.repo}#${it.number}`) ? "Opening…" : "Agent", t, (_e, cx) => this.do("Starting agent", (cx) => act.fixWithAgent(cx, target.repo, it), cx)));
+    const label = open ? gh.mergeAction(it) : null;
+    if (label) out.push(button("merge", this.armed ? `${label}?` : label, t, (_e, cx) => this.merge(cx), { primary: it.merge === "clean", armed: this.armed }));
+    if (open && gh.fixable(it)) out.push(button("fix", act.starting.has(`${target.repo}#${it.number}`) ? "Opening…" : "Fix", t, (_e, cx) => this.do("Starting agent", (cx) => act.fixWithAgent(cx, target.repo, it), cx)));
     out.push(div().flex_1());
     if (this.preview) out.push(button("pin", "Pin", t, () => act.pinItem(target)));
     out.push(button("reload", "Reload", t, (_e, cx) => this.load(cx)));
@@ -182,7 +187,8 @@ export class Item {
       .on_link_click((url, cx) => act.openUrl(url, cx));
   }
 
-  event(e, i, t) {
+  event(e, t) {
+    const id = `gh-ev-${e.url ?? `${e.kind}-${e.at}-${e.oid ?? ""}`}`;
     if (e.kind === "commit") {
       return h_flex().gap(8).items_center().text_size(12).text_color(t.muted)
         .child(div().text_color(t.dim).font_family("JetBrains Mono").child(e.oid.slice(0, 7))).child(div().flex_1().min_w(0).truncate().child(e.body)).child(div().text_color(t.dim).child(gh.age(e.at)));
@@ -194,7 +200,7 @@ export class Item {
     return v_flex().rounded(8).border_1().border_color(tone).overflow_hidden()
       .child(h_flex().px(10).h(26).gap(6).items_center().bg(t.surface).text_size(11).text_color(t.muted)
         .child(div().font_semibold().text_color(t.foreground).child(e.who)).child(div().child(`${verb} · ${gh.age(e.at)} ago`)))
-      .child(div().p(10).child(this.markdown(`gh-ev-${i}`, e.body, t)));
+      .child(div().p(10).child(this.markdown(id, e.body, t)));
   }
 
   composer(it, t) {
@@ -202,6 +208,6 @@ export class Item {
       .child(div().id("gh-comment").flex_1().min_w(0).h(30).px(10).flex().items_center().rounded(7).border_1()
         .border_color(this.typing ? t.accent : t.border).cursor_text().on_mouse_down("left", (_e, cx) => cx.stop_propagation())
         .child(Input.new(this.comment).h_full().text_size(12).text_color(t.foreground)))
-      .child(button("send", "Comment", t, (_e, cx) => this.send(cx), { primary: true, disabled: Boolean(this.busy) }));
+      .child(button("send", "Comment", t, (_e, cx) => this.send(cx), { primary: true, disabled: Boolean(this.busyLabel()) }));
   }
 }

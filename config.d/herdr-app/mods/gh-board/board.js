@@ -3,7 +3,8 @@
 
 import { div } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { home, notify, readTextFile, setShared, shared, theme, watchFolder } from "herdr";
+import { home, readTextFile, setShared, shared, theme, watchFolder } from "herdr";
+import * as fs from "fs/promises";
 import { graphql, rest } from "./api.js";
 import * as gh from "./gh.js";
 import * as act from "./actions.js";
@@ -21,6 +22,22 @@ const ARM = 4000;
 
 const repoList = () => (shared(REPOS) ?? []).filter((r) => typeof r === "string");
 
+// The local checkout of a repository, found as wt-core finds it: under
+// ~/workspace/<owner>/<repo>, else any ~/workspace/*/<repo>, plus ~/.dotfiles;
+// whichever has a remote pointing at it.
+async function checkout(full) {
+  const r = gh.splitRepo(full);
+  if (!r) return null;
+  const ws = `${home()}/workspace`;
+  const dirs = await fs.readdir(ws).catch(() => []);
+  const candidates = [`${ws}/${r.owner}/${r.name}`, ...dirs.map((d) => `${ws}/${d}/${r.name}`), `${home()}/.${r.name}`];
+  for (const root of [...new Set(candidates)]) {
+    const config = await readTextFile(`${root}/.git/config`).catch(() => null);
+    if (config && config.toLowerCase().includes(full.toLowerCase())) return root;
+  }
+  return null;
+}
+
 export class Board {
   init(cx) {
     this.tab = act.ownTab();
@@ -29,13 +46,13 @@ export class Board {
     this.started = {};    // full -> ms the newest request for it started
     this.inflight = new Set();
     this.hotUntil = {};   // full -> ms; after an action or a local push
+    this.touchedAt = {};  // full -> ms of the last action, so an older answer can't settle it
     this.busy = {};       // `${full}#${n}` -> label of the running action
     this.actions = {};    // full -> lazily loaded runs/workflows/releases, when opened
     this.watched = new Set();
     this.filter = "all";
     this.text = "";
     this.armed = null;    // { key, oid, at } of a merge awaiting its second click
-    this.wasShown = true;
     this.pausedUntil = 0;
     this.input = InputState.new({ placeholder: "Filter, or owner/repo to add" });
     this.input.on("change", (_e, cx) => { this.text = this.input.value(); cx.notify(); });
@@ -102,7 +119,11 @@ export class Board {
     if (out.limited) this.pause(out.rate?.resetAt);
     for (const [full, repo] of Object.entries(out.repos)) {
       if (repo.error && repo.transient) this.keep(full, repo.error, started);
-      else if ((this.started[full] ?? 0) <= started) { this.data[full] = repo; this.polled[full] = Date.now(); }
+      else if ((this.started[full] ?? 0) <= started) {
+        this.data[full] = repo;
+        // Asked before the last action landed: show it, but ask again at once.
+        this.polled[full] = started < (this.touchedAt[full] ?? 0) ? 0 : Date.now();
+      }
     }
   }
 
@@ -120,17 +141,17 @@ export class Board {
   watch(full, cx) {
     if (this.watched.has(full)) return;
     this.watched.add(full);
-    const r = gh.splitRepo(full);
-    if (!r) return;
-    const root = `${home()}/workspace/${r.owner}/${r.name}`;
     cx.spawn(async (cx) => {
-      if ((await readTextFile(`${root}/.git/HEAD`)) === null) return;
+      const root = await checkout(full);
+      if (!root) return;
       try {
         while (!this.closed && repoList().includes(full)) {
           await watchFolder(`${root}/.git/refs/remotes`);
           if (this.closed || !repoList().includes(full)) break;
           this.hotUntil[full] = Date.now() + 2 * 60 * 1000;
           this.polled[full] = Math.min(this.polled[full] ?? 0, Date.now() - (HOT - 2) * 1000);
+          // Also ends this loop after a reload, which stops a task at its next cx use.
+          cx.notify();
         }
       } catch { /* no remotes folder yet: the board polls as usual */ }
       this.watched.delete(full);
@@ -139,6 +160,7 @@ export class Board {
 
   // After an action, poll the repository at once and keep it hot a while.
   touched(full, cx) {
+    this.touchedAt[full] = Date.now();
     this.hotUntil[full] = Date.now() + 3 * 60 * 1000;
     this.polled[full] = 0;
     this.tick(cx);
@@ -218,16 +240,28 @@ export class Board {
     a.loading = true;
     cx.spawn(async (cx) => {
       try {
-        const [meta, runs] = await Promise.all([
-          graphql(cx, gh.workflowsQuery(full)),
+        // Workflow files change only with the default branch, so they are read
+        // again only when its head moves; runs and releases keep their cadence.
+        const oid = this.data[full]?.branchOid ?? null;
+        const stale = !a.workflows || a.oid !== oid;
+        const [meta, runs, releaseRuns] = await Promise.all([
+          graphql(cx, stale ? gh.workflowsQuery(full) : gh.releasesQuery(full)),
           rest(cx, "GET", `/repos/${full}/actions/runs?per_page=20`),
+          rest(cx, "GET", `/repos/${full}/actions/runs?event=release&per_page=5`),
         ]);
         if (this.actions[full] !== a) return;
         const releases = gh.releasesModel(meta), tags = new Set(releases.map((r) => r.tag));
-        a.workflows = gh.workflowsModel(meta).filter((w) => w.dispatch);
-        a.branch = meta?.data?.repository?.defaultBranchRef?.name ?? "main";
+        if (stale) {
+          a.workflows = gh.workflowsModel(meta).filter((w) => w.dispatch);
+          a.branch = meta?.data?.repository?.defaultBranchRef?.name ?? "main";
+          a.oid = oid;
+        }
         a.releases = releases;
-        a.runs = (runs?.workflow_runs ?? []).map((r) => gh.restRunModel(r, tags));
+        const seen = new Set();
+        a.runs = [...(runs?.workflow_runs ?? []), ...(releaseRuns?.workflow_runs ?? [])]
+          .filter((r) => !seen.has(r.id) && seen.add(r.id))
+          .map((r) => gh.restRunModel(r, tags))
+          .sort((x, y) => Date.parse(y.createdAt) - Date.parse(x.createdAt));
         a.error = null;
       } catch (e) { a.error = act.errorText(e); }
       finally { a.loading = false; a.at = Date.now(); cx.notify(); }
@@ -257,9 +291,6 @@ export class Board {
   }
 
   render(cx) {
-    const shown = this.shown();
-    if (shown && !this.wasShown) this.tick(cx);
-    this.wasShown = shown;
     const t = theme(), repos = repoList();
     const all = repos.map((f) => this.data[f]).filter((r) => r && !r.error);
     const count = (fn) => all.reduce((n, r) => n + r.prs.filter(fn).length, 0);
@@ -358,12 +389,9 @@ export class Board {
     }, cx)));
     if (pr.auto && pr.can.disableAuto) out.push(button(`auto-${full}-${pr.number}`, "Auto off", t, (_e, cx) => this.do(full, pr, "Disabling auto-merge", (cx) => act.setAuto(cx, pr, repo.methods, false), cx)));
     else if (!pr.auto && pr.can.enableAuto && repo.autoMergeAllowed) out.push(button(`auto-${full}-${pr.number}`, "Auto", t, (_e, cx) => this.do(full, pr, "Enabling auto-merge", (cx) => act.setAuto(cx, pr, repo.methods, true), cx)));
-    const canMerge = pr.merge === "clean" || (pr.can.admin && pr.merge !== "conflict" && !pr.draft);
-    if (canMerge) {
-      const label = pr.merge === "clean" ? "Merge" : "Admin merge";
-      out.push(button(`merge-${full}-${pr.number}`, armed ? `${label}?` : label, t, (_e, cx) => this.merge(full, repo, pr, cx), { primary: pr.merge === "clean", armed }));
-    }
-    if (!pr.fork && (pr.ci === "fail" || pr.merge === "conflict" || pr.merge === "behind")) {
+    const label = gh.mergeAction(pr);
+    if (label) out.push(button(`merge-${full}-${pr.number}`, armed ? `${label}?` : label, t, (_e, cx) => this.merge(full, repo, pr, cx), { primary: pr.merge === "clean", armed }));
+    if (gh.fixable(pr)) {
       out.push(button(`fix-${full}-${pr.number}`, "Fix", t, (_e, cx) => this.do(full, pr, "Starting agent", (cx) => act.fixWithAgent(cx, full, pr), cx)));
     }
     out.push(button(`web-${full}-${pr.number}`, "↗", t, (_e, cx) => cx.open_url(pr.url)));

@@ -184,3 +184,12 @@ test("parseBoard flags rate limiting and a failed review search", () => {
   assert.equal(out.reviewError, "search broke");
   assert.equal(out.repos["a/b"].prs.length, 1);
 });
+
+test("mergeAction", () => {
+  const p = (o, can = {}) => ({ ...gh.prModel(pr(o)), can: { admin: false, ...can } });
+  assert.equal(gh.mergeAction(p({ mergeStateStatus: "UNSTABLE" })), "Merge");
+  assert.equal(gh.mergeAction(p({ mergeStateStatus: "BLOCKED" })), null);
+  assert.equal(gh.mergeAction(p({ mergeStateStatus: "BLOCKED" }, { admin: true })), "Admin merge");
+  assert.equal(gh.mergeAction(p({ mergeable: "UNKNOWN", mergeStateStatus: "UNKNOWN" }, { admin: true })), null);
+  assert.equal(gh.mergeAction(p({ isDraft: true }, { admin: true })), null);
+});

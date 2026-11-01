@@ -6,7 +6,7 @@ A Herdr app mod for working across many GitHub repositories without the web UI. 
 
 The board lists every repository added to it, each with its default branch's latest Actions runs, its latest release, and its open PRs. Each PR row shows its CI state, what stands between it and merging (conflicts, behind, blocked, ready), review state and auto-merge, with buttons for what can be done next:
 
-- **Merge / Admin merge**: two clicks on the same head commit within four seconds. Admin merge appears only when GitHub reports `viewerCanMergeAsAdmin`.
+- **Merge / Admin merge**: two clicks on the same head commit within four seconds. Merge appears when the PR is ready, or when only checks that are not required are failing. Admin merge appears when GitHub reports `viewerCanMergeAsAdmin` and has finished computing whether the PR can merge.
 - **Auto / Auto off**: enables or disables auto-merge with the repository's preferred method (squash, then merge, then rebase).
 - **Update**: merges the base branch into a PR that is behind.
 - **Rerun**: reruns the failed jobs of every Actions run behind the PR's failing checks. Checks from other apps and commit statuses cannot be rerun, and are reported rather than skipped.
@@ -14,7 +14,7 @@ The board lists every repository added to it, each with its default branch's lat
 
 Clicking a row shows the PR in a preview pane beside the board: description, checks, conversation and a comment box, with the same actions. **Pin** splits off a pane that keeps that PR while the preview follows later clicks. GitHub PR and issue links in descriptions and comments open in the preview rather than the browser.
 
-**Actions** under a repository shows its recent runs (with Cancel, Rerun, Rerun failed), runs from releases separately, its releases, and a button for each workflow with a `workflow_dispatch` trigger. Workflows with inputs are dispatched with their defaults; GitHub's refusal is shown when an input is required.
+**Actions** under a repository shows its recent runs (with Cancel, Rerun, Rerun failed), release runs separately (runs triggered by a release, by a release tag push that appears among the recent runs, or from a workflow named for releasing or publishing), its releases, and a button for each workflow with a `workflow_dispatch` trigger. Workflows with inputs are dispatched with their defaults; GitHub's refusal is shown when an input is required.
 
 The filters are **All**, **Needs you** (your PRs that are failing, conflicting, behind, have changes requested or are ready to merge, and anyone's PR whose review is requested from you) and **Mine**. The text box filters rows; an `owner/repo` (or its URL) followed by Enter adds a repository, and focusing it lists your recently pushed repositories.
 

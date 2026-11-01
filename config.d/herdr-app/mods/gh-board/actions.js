@@ -7,8 +7,16 @@ import * as gh from "./gh.js";
 
 export const MOD = "gh-board";
 export const PREVIEW = "gh-board.preview";
-// { tab } of the live preview pane, written by that pane and cleared when it closes.
+// { [tab]: true } for each tab with a live preview pane, written by that pane
+// and cleared when it closes.
 export const PREVIEW_AT = "gh-board.preview.at";
+
+export function registerPreview(tab, live) {
+  if (!tab) return;
+  const tabs = { ...(shared(PREVIEW_AT) ?? {}) };
+  if (live) tabs[tab] = true; else delete tabs[tab];
+  setShared(PREVIEW_AT, tabs);
+}
 
 export const activeTab = () => spaces().find((s) => s.active)?.tabs.find((t) => t.active)?.id ?? null;
 
@@ -156,7 +164,7 @@ let splitting = null;
 export function openItem(target) {
   setShared(PREVIEW, { repo: target.repo, number: target.number, kind: target.kind });
   const tab = activeTab();
-  if (shared(PREVIEW_AT)?.tab === tab) return;
+  if (shared(PREVIEW_AT)?.[tab]) return;
   // The new pane registers once it starts; until then a second click must not split again.
   if (splitting?.tab === tab && Date.now() - splitting.at < 2000) return;
   splitting = { tab, at: Date.now() };
