@@ -38,7 +38,7 @@ The logic lives in `wt-core`; these are bindings of `_wt_pr` / `_wt_issue` to
 the Herdr backend, so the zellij backend has the same set. A worktree that
 already has a space is selected rather than opened again.
 
-`wtpr` is the single entry point for both. A URL disambiguates itself (`/pull/` vs `/issues/`); a bare number is ambiguous because GitHub numbers PRs and issues from one sequence, so it probes with `gh pr view` and falls through to `wti` when that fails.
+`wtpr` is the single entry point for both. A URL disambiguates itself (`/pull/` vs `/issues/`); a bare number is ambiguous because GitHub numbers PRs and issues from one sequence, so it probes with `gh pr view` and falls through to `wti` when that fails. A `/pull/` URL never falls through: if the probe fails, `wtpr` reports the error.
 
 It takes a number (repo from `$PWD`), a full URL, or `owner/repo#n`. URLs
 resolve the local checkout themselves, so it works from anywhere — the GitHub
