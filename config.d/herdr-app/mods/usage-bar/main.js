@@ -1,6 +1,6 @@
 import { View, div, svg } from "gpui-kit";
 import { Button, Checkbox, h_flex, v_flex } from "gpui-base";
-import { appHome, exec, theme, props, openOverlay, closeOverlay,
+import { appHome, home, exec, theme, props, openOverlay, closeOverlay,
   shared, setShared, nextCommand, spaces, agents, run, window } from "herdr";
 
 const NAMES = { codex: "Codex", claude: "Claude", cursor: "Cursor" };
@@ -82,7 +82,7 @@ export default class UsageBar extends View {
     if (this.detail || this.settings) return;
     setShared(SNAPSHOT, {});
     this.refreshAll(cx);
-    cx.timer.every(120000, cx => this.refreshAll(cx));
+    cx.timer.every(30000, cx => this.refreshAll(cx));
     cx.spawn(async cx => {
       for (;;) {
         const command = await nextCommand();
@@ -108,8 +108,9 @@ export default class UsageBar extends View {
         const args = [`${appHome()}/mods/usage-bar/collect.py`, provider];
         if (allowKeychain) args.push("--allow-keychain-prompt");
         if (copiedSession) args.push("--cursor-session-from-clipboard");
-        // mise sets CLAUDE_CONFIG_DIR, which the app's environment lacks.
-        const result = await exec("mise", ["exec", "--", "python3", ...args]);
+        // mise sets CLAUDE_CONFIG_DIR, which the app's environment lacks; work
+        // folders override it, so resolve it from home.
+        const result = await exec("mise", ["exec", "--", "python3", ...args], { cwd: home() });
         if (result.code !== 0) throw new Error("helper");
         const record = JSON.parse(result.stdout);
         if (record.provider !== provider || !Array.isArray(record.windows)) throw new Error("data");
@@ -218,7 +219,7 @@ export default class UsageBar extends View {
             .child("Additional usage credits, separate from your plan’s rolling limits.")));
       }
       body.child(div().text_size(11).text_color(t.dim)
-        .child(`Updated ${new Date(record.updated * 1000).toLocaleTimeString()} · refreshes every 2 minutes`));
+        .child(`Updated ${new Date(record.updated * 1000).toLocaleTimeString()} · refreshes every 30 seconds`));
     } else {
       body.child(div().font_semibold().text_color(t.working).child(ERRORS[record?.code] || "Usage unavailable"))
         .child(div().text_color(t.muted).child(record?.error || "Reading usage…"));
@@ -281,7 +282,7 @@ export default class UsageBar extends View {
         .child(Button.new("refresh-usage").px(8).h(24).flex_shrink_0().rounded(4).cursor_pointer()
           .text_color(t.muted).hover(s => s.bg(t.raised)).child("↻")
           .accessibility_label("Refresh usage for Codex, Claude and Cursor")
-          .tooltip("Refresh usage · automatic refresh every 2 minutes")
+          .tooltip("Refresh usage · automatic refresh every 30 seconds")
           .on_click((_event, cx) => this.refreshAll(cx))))
       .when(workspaceStatus, el => el.child(div().flex_1()))
       .when(workspaceStatus && this.width > 900, el => el.child(Button.new("usage-commands").pr(8).text_color(t.dim)
