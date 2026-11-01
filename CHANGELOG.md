@@ -6,6 +6,10 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ## 2026
 
+### November
+
+**gh-board: GitHub inside the Herdr app.** Reviewing, merging and unblocking PRs across a few dozen repositories meant a browser tab per repository and a page load per action. The `gh-board` mod (`cmd-shift-g`) lists every added repository's open PRs with their CI, mergeability, review and auto-merge state, and merges, toggles auto-merge, updates branches and reruns failed checks in place. A PR opens in a pane beside the board with its checks and conversation, and its Fix button opens the PR's worktree and starts Claude on what is failing. Each repository's Actions runs, releases and dispatchable workflows are one click away. It uses the `gh` CLI's token and GraphQL, polls within the shared rate budget, and speeds up only for repositories where something is about to change. See `docs/gh-board.md`.
+
 ### October
 
 **`/code-review` without `--comment`.** Posting each finding as an inline PR comment, then a reply and a resolve per thread, kept hitting GitHub's rate limit for comments nobody else read. The pair skill's tuning review and CLAUDE.md now keep findings in the session; `--comment` is for reviews whose findings someone else has to act on.
