@@ -129,9 +129,11 @@ tasks:
           git clone -q https://github.com/radiosilence/grove.git "$g" || printf "{{.WARN}} grove: clone failed\n"
         fi
         if [ -x "$g/bin/install" ]; then "$g/bin/install" >/dev/null; fi
-        # Mods removed from the dotfiles leave dangling links behind.
+        # Mods removed from the dotfiles leave links behind. Their folders
+        # outlive git, since the app writes ignored type files into them, so a
+        # link counts as stale once its folder has no main.js.
         for l in "$HOME"/.config/herdr-app/mods/*; do
-          if [ -L "$l" ] && [ ! -e "$l" ]; then rm "$l"; fi
+          if [ -L "$l" ] && [ ! -f "$l/main.js" ]; then rm "$l"; fi
         done
         # The herdr TUI is gone; drop the links into its config and Claude hook.
         for l in .config/herdr/config.toml .claude-personal/hooks/herdr-agent-state.sh .claude-work/hooks/herdr-agent-state.sh; do
