@@ -7,7 +7,7 @@ import { home, notify, readTextFile, setShared, shared, theme, watchFolder } fro
 import { graphql, rest } from "./api.js";
 import * as gh from "./gh.js";
 import * as act from "./actions.js";
-import { badge, button, ciLabel, dot, mergeLabel, reviewLabel, stateColor } from "./ui.js";
+import { alpha, badge, button, ciLabel, dot, mergeLabel, reviewLabel, stateColor } from "./ui.js";
 
 const REPOS = "gh-board.repos";
 const CHUNK = 8;
@@ -335,7 +335,7 @@ export class Board {
     const review = reviewLabel(pr.review);
     const target = { repo: full, number: pr.number, kind: "pr" };
     const buttons = busy ? [div().text_size(11).text_color(t.working).child(`${busy}…`)] : this.prButtons(full, repo, pr, t, armed);
-    return h_flex().id(`pr-${key}`).h(32).flex_none().px(12).gap(8).items_center().border_b(1).border_color(t.border + "66").cursor_pointer()
+    return h_flex().id(`pr-${key}`).h(32).flex_none().px(12).gap(8).items_center().border_b(1).border_color(alpha(t.border, "66")).cursor_pointer()
       .hover((s) => s.bg(t.hover)).on_click((_e, cx) => act.openItem(target))
       .child(dot(pr.ci, t))
       .child(div().w(44).flex_none().text_color(t.dim).text_size(12).child(`#${pr.number}`))

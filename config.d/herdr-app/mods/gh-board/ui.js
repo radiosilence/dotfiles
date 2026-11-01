@@ -3,6 +3,9 @@
 import { div } from "gpui-kit";
 import { h_flex } from "gpui-base";
 
+// Theme colors may already carry alpha (#rrggbbaa); this replaces it.
+export const alpha = (color, aa) => /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(color) ? color.slice(0, 7) + aa : color;
+
 export function stateColor(state, t) {
   switch (state) {
     case "pass": case "clean": case "merged": return t.ansi2;
@@ -28,14 +31,14 @@ export function dot(state, t, size = 8) {
 }
 
 export function badge(text, color, t) {
-  return div().flex_none().px(6).h(18).flex().items_center().rounded(4).border_1().border_color(color + "66").text_color(color).text_size(10).child(text);
+  return div().flex_none().px(6).h(18).flex().items_center().rounded(4).border_1().border_color(alpha(color, "66")).text_color(color).text_size(10).child(text);
 }
 
 // A button that stops its press, so it works inside a draggable window and
 // doesn't also fire the row's click beneath it.
 export function button(id, label, t, onClick, { primary = false, danger = false, disabled = false, armed = false } = {}) {
   const fg = disabled ? t.dim : armed || danger ? t.ansi1 : primary ? t.solid_foreground : t.foreground;
-  const bg = disabled ? t.raised : armed ? t.ansi1 + "22" : primary ? t.solid : t.raised;
+  const bg = disabled ? t.raised : armed ? alpha(t.ansi1, "22") : primary ? t.solid : t.raised;
   return div().id(id).flex_none().h(22).px(8).flex().items_center().rounded(5).text_size(11).text_color(fg).bg(bg)
     .border_1().border_color(armed ? t.ansi1 : t.border)
     .when(!disabled, (e) => e.cursor_pointer().hover((s) => s.border_color(t.accent)))
