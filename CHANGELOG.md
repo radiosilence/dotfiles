@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### November
 
+**Herdr pickers move to grove.** The worktree, PR, issue and zoxide popups ran fzf in hidden herdr-core terminals, one mod and one zsh wrapper each, and could show nothing the shell command didn't print. [grove](https://github.com/radiosilence/grove) replaces them, and the duplicated `space-next`/`space-prev` mods, with one native dialog that shows open spaces, uncommitted changes, PR state and a preview, and adds worktree removal and cleanup. It also fixes fork PRs opening the wrong checkout (#117) for the app; `wtpr` in the shell still has it. It is a separate repo so it can be shared on herdr.dev; `task link` clones it to `~/.local/share/grove` and copies its mods in, because the app draws icons only from inside its own folder. `alt-shift-i` opens the issues tab. The `wtpr-pick`, `wth-pick` and `wti-pick` wrappers are gone; `wt`, `wth`, `wtpr` and `wti` stay for the shell.
+
 **mise config trimmed.** `auto_install` and `not_found_auto_install` were set to their defaults. `experimental` gated nothing in use: hook-env output and minimum-release-age resolution are identical without it. The `broot` alias matched the registry entry, and the `fastfetch` alias pinned the GitHub backend where the registry now uses aqua. The `vfox` CLI was installed but never called; mise runs vfox plugins itself.
 
 **Claude persona: Ricky from Trailer Park Boys.** The chat persona in the global `CLAUDE.md` moves from a Cyberpunk 2077 barfly to Ricky. The rule that the persona stays out of anything written for other readers is unchanged.
