@@ -26,7 +26,7 @@ _wt_herdr() {
     print -u2 "herdr-app: $out"
     return 1
   }
-  jq -r '.space // empty, .terminal // empty' <<<"$out" >"$(_wt_herdr_handoff)"
+  jq -r '.space // "", .terminal // ""' <<<"$out" >"$(_wt_herdr_handoff)"
 }
 
 # ── wth — upsert worktree + Herdr space ─────────────────────────────
@@ -49,14 +49,15 @@ wti()  { _wt_issue _wt_herdr _wt_herdr_prime "$@"; }
 
 # ── wtpr-space <ref> <file> ─────────────────────────────────────────
 # wtpr for programs: opens or selects the worktree's space, primes nothing, and
-# writes the space id to <file>. The gh-board Herdr mod starts its agent in that
-# space. No file means it failed.
+# writes the space id to <file>. No file means it failed; wt-core's output (its
+# errors go to stdout) is then left in <file>.log for the caller to show.
 wtpr-space() {
   local f=$(_wt_herdr_handoff) out=$2 id
   [[ -n $1 && -n $out ]] || { print -u2 "usage: wtpr-space <ref> <file>"; return 1; }
-  rm -f "$f" "$out"
-  _wt_pr _wt_herdr : "$1" || { rm -f "$f"; return 1; }
+  rm -f "$f" "$out" "$out.log"
+  _wt_pr _wt_herdr : "$1" >"$out.log" 2>&1
   id=$(sed -n 1p "$f" 2>/dev/null); rm -f "$f"
-  [[ -n $id ]] || { print -u2 "wtpr-space: no space for $1"; return 1; }
+  [[ -n $id ]] || { print -r -- "wtpr-space: no space for $1" >>"$out.log"; return 1; }
+  rm -f "$out.log"
   print -r -- "$id" >"$out"
 }

@@ -8,7 +8,7 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### November
 
-**`wtpr-space` for programs.** The `wt-herdr` backend now records the id of the space it selects or creates, and `wtpr-space <ref> <file>` writes it to a file instead of priming an agent. Programs that open a PR or issue worktree, such as a Herdr mod starting an agent there, get the exact space rather than guessing it from a branch name, which collides across repos.
+**`wtpr-space` for programs.** The `wt-herdr` backend now records the id of the space it selects or creates, and `wtpr-space <ref> <file>` writes it to a file instead of priming an agent. Programs that open a PR or issue worktree to start their own agent there get the exact space rather than guessing it from a branch name, which collides across repos.
 
 ### October
 
