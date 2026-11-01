@@ -1,7 +1,6 @@
 // Small pieces both views draw.
 
 import { div } from "gpui-kit";
-import { h_flex } from "gpui-base";
 
 // Theme colors may already carry alpha (#rrggbbaa); this replaces it.
 export const alpha = (color, aa) => /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(color) ? color.slice(0, 7) + aa : color;
@@ -47,6 +46,3 @@ export function button(id, label, t, onClick, { primary = false, danger = false,
     .child(label);
 }
 
-export function row(...children) {
-  return h_flex().gap(6).items_center().children(children.filter(Boolean));
-}
