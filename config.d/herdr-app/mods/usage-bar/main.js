@@ -108,7 +108,8 @@ export default class UsageBar extends View {
         const args = [`${appHome()}/mods/usage-bar/collect.py`, provider];
         if (allowKeychain) args.push("--allow-keychain-prompt");
         if (copiedSession) args.push("--cursor-session-from-clipboard");
-        const result = await exec("python3", args);
+        // mise sets CLAUDE_CONFIG_DIR, which the app's environment lacks.
+        const result = await exec("mise", ["exec", "--", "python3", ...args]);
         if (result.code !== 0) throw new Error("helper");
         const record = JSON.parse(result.stdout);
         if (record.provider !== provider || !Array.isArray(record.windows)) throw new Error("data");

@@ -44,7 +44,7 @@ The popups, the zoxide folder picker and the space stepping are [grove](https://
 
 `layouts/main-usage.json` is a clone of the shipped `main` layout with [herdr-usage-bar](https://github.com/berkeatac/herdr-usage-bar) (vendored at `422ae65` in `mods/usage-bar`) left of the status bar. It is a clone because shipped layouts are overwritten on update. The mod's helper reads provider logins and calls their usage endpoints every two minutes.
 
-Two local changes: Claude is the only provider shown by default, and `collect.py` reads the Keychain item Claude Code uses when `CLAUDE_CONFIG_DIR` is set (`Claude Code-credentials-<first 8 hex of sha256(dir)>`); upstream skips Keychain entirely in that case. The first read is denied until **Retry Keychain** in the Claude popup is clicked and macOS is told to always allow it. Reapply both changes when updating the vendored copy.
+Local changes: Claude is the only provider shown by default, and `collect.py` reads the Keychain item Claude Code uses when `CLAUDE_CONFIG_DIR` is set (`Claude Code-credentials-<first 8 hex of sha256(dir)>`); upstream skips Keychain entirely in that case. The helper runs under `mise exec` because `CLAUDE_CONFIG_DIR` comes from mise, which the app's environment does not load. The first read is denied until **Retry Keychain** in the Claude popup is clicked and macOS is told to always allow it. Reapply these changes when updating the vendored copy.
 
 ## Gone
 
