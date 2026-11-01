@@ -66,7 +66,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 - `wt` / `wt <name>` — Upsert worktree + cd (fzf picker with no args)
 - `wtt` / `wth` — Same, opening a Zellij tab / Herdr app space instead (keys: [docs/herdr-app.md](docs/herdr-app.md))
 - `wt -b <name>` — Branch from current HEAD instead of origin/main
-- `wtpr <n|url>` — Worktree for a GitHub PR **or** issue (handles forks); `wti` for issues only, `wtpr-pick` to fzf over both
+- `wtpr <n|url>` — Worktree for a GitHub PR **or** issue (handles forks); `wti` for issues only. In the Herdr app, [grove](https://github.com/radiosilence/grove) picks worktrees, PRs, issues and folders in one dialog
 - `wtrm [name]` — Remove the worktree you're in (or a named one) + its branch
 - `wtclean [-n]` — GC worktrees and branches whose PR is merged or closed, per `gh`. Keeps anything dirty
 

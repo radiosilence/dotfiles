@@ -51,10 +51,8 @@ owner is matched against directory names under `~/workspace`. Fetches via
 with `hc send`. `wt-core` calls the backend in a subshell, so the new terminal's
 address reaches the priming step through `$TMPDIR/wt-herdr.<pid>`.
 
-## Popups
+## In the app
 
-The picker wrappers (`wtpr-pick`, `wth-pick`, `wti-pick`) live in
-`config.d/zsh/conf.d/herdr.zsh`. The `popup-pr` and `popup-worktree` mods in
-`config.d/herdr-app/mods` run them in a dialog, bound to `alt-shift-p` and
-`alt-w`. The dialog closes when the command returns, so the wrappers hold it
-open on failure; otherwise errors flash past unseen.
+The pickers in the Herdr app are [grove](https://github.com/radiosilence/grove),
+a native mod with the same worktree layout and PR/issue handling, installed by
+`task link`. These commands remain for the shell.

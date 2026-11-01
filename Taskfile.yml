@@ -119,6 +119,20 @@ tasks:
           f=${f#"$d/config.d/herdr-app/"}; f=${f%/}
           ln_s "$d/config.d/herdr-app/$f" "$HOME/.config/herdr-app/$f"
         done
+        # Grove (worktrees, PRs, issues and folders as Herdr spaces) is its own
+        # repo, and herdr-app has no installer: clone or update it, then copy
+        # its mods in. A failure here (offline) leaves the installed copy.
+        g="${XDG_DATA_HOME:-$HOME/.local/share}/grove"
+        if [ -d "$g/.git" ]; then
+          git -C "$g" pull -q --ff-only || printf "{{.WARN}} grove: pull failed, keeping the installed copy\n"
+        else
+          git clone -q https://github.com/radiosilence/grove.git "$g" || printf "{{.WARN}} grove: clone failed\n"
+        fi
+        if [ -x "$g/bin/install" ]; then "$g/bin/install" >/dev/null; fi
+        # Mods removed from the dotfiles leave dangling links behind.
+        for l in "$HOME"/.config/herdr-app/mods/*; do
+          if [ -L "$l" ] && [ ! -e "$l" ]; then rm "$l"; fi
+        done
         # The herdr TUI is gone; drop the links into its config and Claude hook.
         for l in .config/herdr/config.toml .claude-personal/hooks/herdr-agent-state.sh .claude-work/hooks/herdr-agent-state.sh; do
           if [ -L "$HOME/$l" ]; then rm "$HOME/$l"; fi
