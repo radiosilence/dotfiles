@@ -6,6 +6,15 @@ export const REST = "https://api.github.com";
 
 const RATE = "rateLimit { cost remaining resetAt }";
 
+// GitHub Actions' app id. Other apps open a check suite per push that can stay
+// queued forever, so the default branch's runs are Actions' suites only.
+const ACTIONS_APP = 15368;
+
+// Pending or unknown states only make a repository hot while recent: a
+// required status nobody reports, or a run waiting for approval, stays
+// pending indefinitely and would otherwise be polled fast forever.
+const HOT_FOR = 45 * 60 * 1000;
+
 // Poll fields per repository. Check contexts are left out: GraphQL cost follows
 // the connection sizes requested, and contexts(first: 50) on every PR multiplies
 // it. Rows load them when opened.
@@ -16,7 +25,7 @@ const REPO = `
   latestRelease { tagName url publishedAt }
   defaultBranchRef { name target { ... on Commit {
     oid statusCheckRollup { state }
-    checkSuites(last: 12) { nodes { status conclusion workflowRun {
+    checkSuites(first: 20, filterBy: { appId: ${ACTIONS_APP} }) { nodes { status conclusion workflowRun {
       databaseId runNumber event url createdAt updatedAt workflow { name } } } }
   } } }
   pullRequests(states: OPEN, first: 30, orderBy: { field: UPDATED_AT, direction: DESC }) {
@@ -40,14 +49,21 @@ const str = (s) => JSON.stringify(s);
 
 // One aliased query for a set of repositories. GitHub answers per alias, so a
 // renamed or forbidden repository becomes an error on its alias, not the request.
+// The search finds PRs awaiting the viewer's review in the same request, which
+// is cheaper than reading every PR's review requests.
 export function boardQuery(repos) {
   const aliases = {};
+  const valid = repos.filter((full) => splitRepo(full));
   const parts = repos.map((full, i) => {
     const r = splitRepo(full);
     aliases[`r${i}`] = full;
     return r ? `r${i}: repository(owner: ${str(r.owner)}, name: ${str(r.name)}) {${REPO}}` : "";
   });
-  return { query: `query { viewer { login } ${RATE} ${parts.join("\n")} }`, aliases };
+  const scope = valid.map((full) => `repo:${full}`).join(" ");
+  const review = valid.length
+    ? `review: search(type: ISSUE, first: 50, query: ${str(`is:open is:pr review-requested:@me ${scope}`)}) { nodes { ... on PullRequest { number repository { nameWithOwner } } } }`
+    : "";
+  return { query: `query { viewer { login } ${RATE} ${review} ${parts.join("\n")} }`, aliases };
 }
 
 export function chunk(list, size) {
@@ -132,33 +148,49 @@ export function repoModel(node) {
 
 // Splits a GraphQL answer into one model or error per alias. A partial answer
 // carries both data and errors; each error's path names the alias it belongs to.
+// An error with a type GitHub gives per alias (NOT_FOUND, FORBIDDEN) is about
+// that repository; anything else is about the request, and `transient` tells
+// the caller to keep what it already shows.
 export function parseBoard(json, aliases) {
   const out = { repos: {}, rate: json?.data?.rateLimit ?? null, viewer: json?.data?.viewer?.login ?? null, error: null };
   const byAlias = {};
   for (const e of json?.errors ?? []) {
     const alias = e.path?.[0];
-    if (alias && alias in aliases) (byAlias[alias] ??= []).push(e.message);
-    else out.error = (out.error ? out.error + "; " : "") + e.message;
+    if (alias && alias in aliases) (byAlias[alias] ??= []).push(e);
+    else if (alias !== "review") out.error = (out.error ? out.error + "; " : "") + e.message;
   }
+  const review = new Set((json?.data?.review?.nodes ?? []).filter((n) => n?.repository).map((n) => `${n.repository.nameWithOwner}#${n.number}`));
   for (const [alias, full] of Object.entries(aliases)) {
     const node = json?.data?.[alias];
-    if (node) out.repos[full] = repoModel(node);
-    else out.repos[full] = { full, error: byAlias[alias]?.join("; ") ?? out.error ?? (splitRepo(full) ? "No data" : "Not owner/name") };
+    if (node) {
+      const repo = repoModel(node);
+      for (const p of repo.prs) p.reviewRequested = review.has(`${repo.full}#${p.number}`);
+      out.repos[full] = repo;
+    } else if (byAlias[alias]) {
+      const errs = byAlias[alias];
+      out.repos[full] = { full, error: errs.map((e) => e.message).join("; "), transient: !errs.every((e) => e.type === "NOT_FOUND" || e.type === "FORBIDDEN") };
+    } else {
+      out.repos[full] = splitRepo(full) ? { full, error: out.error ?? "No data", transient: true } : { full, error: "Not owner/name", transient: false };
+    }
   }
   return out;
 }
 
 // Polled fast: something on it is about to change by itself.
-export function isHot(repo) {
+export function isHot(repo, now = Date.now()) {
   if (!repo || repo.error) return false;
-  return repo.branchCi === "pending" || repo.runs.some((r) => r.state === "pending")
-    || repo.prs.some((p) => p.ci === "pending" || p.merge === "unknown" || p.auto);
+  const recent = (iso) => iso && now - Date.parse(iso) < HOT_FOR;
+  return (repo.branchCi === "pending" && repo.runs.some((r) => recent(r.updatedAt ?? r.createdAt)))
+    || repo.runs.some((r) => r.state === "pending" && recent(r.updatedAt ?? r.createdAt))
+    || repo.prs.some((p) => recent(p.updatedAt) && (p.ci === "pending" || p.merge === "unknown" || (p.auto && p.merge === "clean")));
 }
 
+// Yours when something needs doing to it; anyone's when your review is asked for.
 export function needsAttention(pr, viewer) {
-  if (pr.draft) return false;
+  if (pr.reviewRequested) return true;
+  if (pr.draft || pr.author !== viewer) return false;
   return pr.ci === "fail" || pr.merge === "conflict" || pr.merge === "behind"
-    || (pr.author === viewer && pr.merge === "clean" && !pr.auto);
+    || pr.review === "CHANGES_REQUESTED" || (pr.merge === "clean" && !pr.auto);
 }
 
 export function mergeMethod(methods) {
@@ -185,7 +217,7 @@ const prDetailFields = (n) => `
   viewerCanMergeAsAdmin viewerCanEnableAutoMerge viewerCanDisableAutoMerge viewerCanUpdateBranch
   labels(first: 10) { nodes { name color } }
   reviewRequests(first: 10) { nodes { requestedReviewer { ... on User { login } ... on Team { name } } } }
-  commits(last: 1) { nodes { commit { oid messageHeadline statusCheckRollup { state contexts(first: 100) { nodes {
+  commits(last: 1) { nodes { commit { oid messageHeadline statusCheckRollup { state contexts(first: 100) { totalCount pageInfo { hasNextPage } nodes {
     __typename
     ... on CheckRun { name status conclusion detailsUrl isRequired(pullRequestNumber: ${n}) checkSuite { workflowRun { databaseId } app { slug } } }
     ... on StatusContext { context state targetUrl isRequired(pullRequestNumber: ${n}) }
@@ -222,8 +254,11 @@ function statusState(s) {
 
 const ORDER = { fail: 0, pending: 1, cancel: 2, pass: 3, skip: 4 };
 
-export function checksModel(contexts) {
-  return (contexts ?? []).map(checkModel).sort((a, b) => ORDER[a.state] - ORDER[b.state] || a.name.localeCompare(b.name));
+// `more`: GitHub had more contexts than were read, so failures may be missing.
+export function checksModel(contexts, total = 0) {
+  const list = (contexts ?? []).map(checkModel).sort((a, b) => ORDER[a.state] - ORDER[b.state] || a.name.localeCompare(b.name));
+  list.more = Math.max(0, total - list.length);
+  return list;
 }
 
 // Failed checks split by whether a rerun can reach them: only GitHub Actions
@@ -247,7 +282,7 @@ export function prDetailModel(json) {
     labels: (p.labels?.nodes ?? []).map((l) => ({ name: l.name, color: l.color })),
     reviewers: (p.reviewRequests?.nodes ?? []).map((r) => r.requestedReviewer?.login ?? r.requestedReviewer?.name).filter(Boolean),
     headline: commit?.messageHeadline ?? "",
-    checks: checksModel(commit?.statusCheckRollup?.contexts?.nodes),
+    checks: checksModel(commit?.statusCheckRollup?.contexts?.nodes, commit?.statusCheckRollup?.contexts?.totalCount),
     timeline: (p.timelineItems?.nodes ?? []).map(timelineModel).filter(Boolean),
   };
 }
@@ -269,27 +304,44 @@ export function timelineModel(n) {
 // now, so the agent does not have to rediscover it.
 export function agentPrompt(full, pr, checks) {
   const lines = [`Get ${full}#${pr.number} (${pr.url}) mergeable. Branch ${pr.head}, base ${pr.base}.`];
-  lines.push(`First run \`git pull --ff-only\` and confirm HEAD is ${pr.oid}; stop and say so if it is not.`);
+  lines.push(`First run \`git fetch origin && git merge --ff-only origin/${pr.head}\` and confirm HEAD is ${pr.oid}; stop and say so if it is not.`);
   if (pr.merge === "conflict") lines.push(`It conflicts with ${pr.base}: merge origin/${pr.base} in (do not rebase) and resolve the conflicts.`);
   else if (pr.merge === "behind") lines.push(`It is behind ${pr.base}: merge origin/${pr.base} in (do not rebase).`);
   const { runs, stuck } = rerunPlan(checks ?? []);
   const failing = (checks ?? []).filter((c) => c.state === "fail");
+  if (!failing.length && checks?.more) lines.push(`Some checks may be failing; there are more than were read, so see the PR page.`);
   if (failing.length) {
     lines.push(`Failing checks: ${failing.map((c) => c.name).join(", ")}.`);
     if (runs.length) lines.push(`Read their logs with ${runs.map((id) => `\`gh run view ${id} -R ${full} --log-failed\``).join(", ")}.`);
     if (stuck.length) lines.push(`Not from GitHub Actions (see the PR page): ${stuck.join(", ")}.`);
+    if (checks.more) lines.push(`There are more checks than listed here; see the PR page for the rest.`);
     lines.push("Fix the causes rather than the tests' expectations, unless the expectation is what is wrong.");
   }
   lines.push("Commit, push, and check CI passes.");
   return lines.join(" ");
 }
 
-// Which workflows can be started by hand, from their YAML. Without a YAML
-// parser this looks for the trigger and for inputs marked required.
+// Which workflows can be started by hand, from their YAML. There is no YAML
+// parser here, so inputs are only a hint: Run is offered either way and
+// GitHub's refusal, if any, is shown.
 export function dispatchInfo(yaml) {
   const text = yaml ?? "";
-  const dispatch = /^\s*(-\s*)?workflow_dispatch\s*:?/m.test(text) || /\bon\s*:\s*\[[^\]]*workflow_dispatch/.test(text);
-  return { dispatch, requiredInputs: dispatch && /required\s*:\s*true/.test(text.slice(text.indexOf("workflow_dispatch"))) };
+  const dispatch = /^\s*(-\s*)?workflow_dispatch\s*:?\s*(#.*)?$/m.test(text)
+    || /^["']?on["']?\s*:\s*workflow_dispatch\b/m.test(text)
+    || /^["']?on["']?\s*:\s*\[[^\]]*workflow_dispatch/m.test(text);
+  return { dispatch, inputs: dispatch && dispatchBlock(text).some((l) => /^\s*inputs\s*:/.test(l)) };
+}
+
+// The lines indented under `workflow_dispatch:`.
+function dispatchBlock(text) {
+  const lines = text.split("\n"), at = lines.findIndex((l) => /^\s*workflow_dispatch\s*:/.test(l));
+  if (at < 0) return [];
+  const indent = /^\s*/.exec(lines[at])[0].length, out = [];
+  for (const l of lines.slice(at + 1)) {
+    if (l.trim() && /^\s*/.exec(l)[0].length <= indent) break;
+    out.push(l);
+  }
+  return out;
 }
 
 export function workflowsQuery(full) {
@@ -303,17 +355,18 @@ export function workflowsModel(json) {
   const entries = json?.data?.repository?.object?.entries ?? [];
   return entries.filter((e) => /\.ya?ml$/.test(e.name)).map((e) => {
     const text = e.object?.text ?? "";
-    const name = /^name\s*:\s*["']?(.+?)["']?\s*$/m.exec(text)?.[1] ?? e.name;
+    const name = /^name\s*:\s*["']?(.+?)["']?\s*(#.*)?$/m.exec(text)?.[1] ?? e.name;
     return { file: e.name, path: e.path, name, ...dispatchInfo(text) };
   });
 }
 
-export function restRunModel(r) {
+// `tags`: the repository's release tags, since a tag push's head_branch is the tag.
+export function restRunModel(r, tags = new Set()) {
   return {
     id: r.id, number: r.run_number, name: r.name ?? r.display_title, title: r.display_title, event: r.event,
     branch: r.head_branch, sha: r.head_sha, url: r.html_url, createdAt: r.created_at, updatedAt: r.updated_at,
     state: r.status === "completed" ? conclusionState(r.conclusion) : "pending", actor: r.actor?.login ?? "",
-    release: r.event === "release" || (r.event === "push" && /^v?\d/.test(r.head_branch ?? "") && r.head_branch !== r.repository?.default_branch),
+    release: r.event === "release" || tags.has(r.head_branch) || /release|publish/i.test(r.path ?? ""),
   };
 }
 
@@ -331,3 +384,29 @@ export function itemLink(url) {
   const m = /^https:\/\/github\.com\/([\w.-]+\/[\w.-]+)\/(pull|issues)\/(\d+)(?:[/?#].*)?$/.exec(url ?? "");
   return m ? { repo: m[1], kind: m[2] === "pull" ? "pr" : "issue", number: Number(m[3]) } : null;
 }
+
+// Mutations carry the head commit shown on screen, so a push that lands
+// between looking and clicking fails the action instead of merging unseen code.
+export function mergeMutation(pr, method) {
+  return `mutation { mergePullRequest(input: { pullRequestId: ${str(pr.id)}, mergeMethod: ${method}, expectedHeadOid: ${str(pr.oid)} }) { pullRequest { merged } } }`;
+}
+
+export function autoMergeMutation(pr, enable, method) {
+  return enable
+    ? `mutation { enablePullRequestAutoMerge(input: { pullRequestId: ${str(pr.id)}, mergeMethod: ${method}, expectedHeadOid: ${str(pr.oid)} }) { clientMutationId } }`
+    : `mutation { disablePullRequestAutoMerge(input: { pullRequestId: ${str(pr.id)} }) { clientMutationId } }`;
+}
+
+export function updateBranchMutation(pr) {
+  return `mutation { updatePullRequestBranch(input: { pullRequestId: ${str(pr.id)}, expectedHeadOid: ${str(pr.oid)}, updateMethod: MERGE }) { clientMutationId } }`;
+}
+
+export function readyMutation(pr) {
+  return `mutation { markPullRequestReadyForReview(input: { pullRequestId: ${str(pr.id)} }) { clientMutationId } }`;
+}
+
+export function commentMutation(subjectId, body) {
+  return `mutation { addComment(input: { subjectId: ${str(subjectId)}, body: ${str(body)} }) { clientMutationId } }`;
+}
+
+export const viewerReposQuery = `query { viewer { repositories(first: 100, orderBy: { field: PUSHED_AT, direction: DESC }, affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER], isArchived: false) { nodes { nameWithOwner } } } }`;
