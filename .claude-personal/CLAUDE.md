@@ -107,7 +107,10 @@ If a reader six months from now would find a sentence misleading, it doesn't bel
 
 **PR bodies are for a tired human who has to verify the diff.** Give them what it does, the load-bearing decisions, how to confirm it works (key paths, what's tested), and an explicit dependency list naming exactly what each blocked piece needs. Don't narrate how you built it.
 
-**One focused change per PR.** No gold-plating, opportunistic refactors, speculative abstractions or scope creep. Anything extra worth doing is its own PR.
+**PR size depends on the context.**
+
+- **Professional work** (anything a human colleague reviews): one focused change per PR. No gold-plating, opportunistic refactors, speculative abstractions or scope creep; anything extra worth doing is its own PR.
+- **Hobby projects** (koan and the user's other personal repos): low overhead and speed come first. Move fast and break stuff; fix forward. A PR can be a whole body of work, grouped to make the most of each build and CI cycle. Agents review one large PR as well as many small ones, so splitting work up only adds builds, merges and conflicts. No gold-plating still applies.
 
 ## Workflow
 
