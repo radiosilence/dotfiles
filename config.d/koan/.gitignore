@@ -11,3 +11,10 @@ device-keys.json
 watch.lock
 autoeq/
 dsp/
+desktop-device-id
+desktop-device.lock
+desktop-devices.json
+desktop-window
+gui-instance.lock
+gui-state.json
+gui-cover-*
