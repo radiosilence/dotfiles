@@ -18,3 +18,5 @@ desktop-window
 gui-instance.lock
 gui-state.json
 gui-cover-*
+covers/
+koan.db-codecs-settled

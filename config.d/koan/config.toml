@@ -6,6 +6,7 @@ ticker_fps = 8
 target_fps = 100
 show_fps = true
 pre_amp_db = 0.0
+fade_on_pause = true
 
 [remote]
 username = ""
@@ -59,4 +60,7 @@ acoustic_weight = 0.5
 theme = "koan"
 theme_icons = true
 wash_window = true
-wash_tint = 100
+wash_tint = 80
+record_colours = true
+wash_turn = 4
+wash_drift = 50
