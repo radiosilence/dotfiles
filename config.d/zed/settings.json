@@ -103,6 +103,7 @@
     "terraform": true,
     "toml": true,
     "tsgo": true,
+    "typst": true,
     "zedokai": true,
   },
   "agent": {
@@ -215,14 +216,7 @@
           "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
         },
       },
-      "language_servers": [
-        "dexter",
-        "!expert",
-        "!elixir-ls",
-        "!next-ls",
-        "!lexical",
-        "...",
-      ],
+      "language_servers": ["dexter", "!expert", "!elixir-ls", "!next-ls", "!lexical", "..."],
       "format_on_save": "on",
     },
     "EEx": {
@@ -233,14 +227,7 @@
           "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
         },
       },
-      "language_servers": [
-        "dexter",
-        "!expert",
-        "!elixir-ls",
-        "!next-ls",
-        "!lexical",
-        "...",
-      ],
+      "language_servers": ["dexter", "!expert", "!elixir-ls", "!next-ls", "!lexical", "..."],
       "format_on_save": "on",
     },
     "HEEx": {
@@ -251,14 +238,7 @@
           "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"],
         },
       },
-      "language_servers": [
-        "dexter",
-        "!expert",
-        "!elixir-ls",
-        "!next-ls",
-        "!lexical",
-        "...",
-      ],
+      "language_servers": ["dexter", "!expert", "!elixir-ls", "!next-ls", "!lexical", "..."],
       "format_on_save": "on",
     },
     "Ruby": {

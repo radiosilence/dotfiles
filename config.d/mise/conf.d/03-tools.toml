@@ -12,6 +12,7 @@ dagger = "latest"
 delta = "latest" # Better git diffs
 dexter = "latest" # Elixir LSP
 deno = "latest" # Secure JS/TS runtime
+dust = "latest"
 fastfetch = "latest" # System info
 fastmail = "latest" # Fastmail CLI
 fd = "latest" # Fast find alternative
