@@ -16,7 +16,7 @@ keybind = alt+shift+minus=text:—
 keybind = shift+enter=text:\n
 clipboard-paste-protection = false
 
-# Cmd+K → Ctrl+L (form feed) so the focused shell inside zellij clears its own buffer.
+# Cmd+K → Ctrl+L (form feed) so the focused shell clears its own buffer.
 keybind = cmd+k=text:\x0c
 
 

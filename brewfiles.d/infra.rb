@@ -1,5 +1,4 @@
 # Infra — cloud, orchestration, DevOps
-tap 'hashicorp/tap'
 
 brew 'awscli'
 brew 'aws-sso-util'

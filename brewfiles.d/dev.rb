@@ -1,6 +1,4 @@
 # Dev tools — editors, IDEs, clients
-tap 'withgraphite/tap'
-tap 'metalbear-co/mirrord'
 
 cask 'zed'
 cask 'fork'

@@ -1,5 +1,0 @@
-*
-!.gitignore
-!agent/
-agent/*
-!agent/config.yml

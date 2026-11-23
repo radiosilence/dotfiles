@@ -34,7 +34,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 - **`scripts/`** — System maintenance, git workflow, media processing, file operations, in zsh
 - **Taskfile.yml** — DAG-based system management (bootstrap, update, completions, fonts)
 - **Tool management** — mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
-- **Terminal configs** — zellij, ghostty, starship prompt
+- **Terminal configs** — ghostty, herdr-app, starship prompt
 - **Editor configs** — helix (LSP, tree-sitter, formatters for 15+ languages), zed
 
 ## Documentation
@@ -42,7 +42,6 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 | Doc                                                   | Description                                                  |
 | ----------------------------------------------------- | ------------------------------------------------------------ |
 | [cheatsheet.md](docs/cheatsheet.md)                   | Complete reference — all commands, aliases, functions        |
-| [new-tools.md](docs/new-tools.md)                     | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
 | [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews                         |
 | [CHANGELOG.md](CHANGELOG.md)                          | Full history from 2018 to present                            |
 
@@ -61,10 +60,10 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 - `git squash` — Squash commits for clean PRs
 - `fm` / `fr` — Fuzzy merge/rebase with fzf
 
-**Worktrees** (`wt*`) — git worktree management, as local zsh plugins under `zsh-plugins/`: `wt-core` plus a backend per multiplexer (`wt-herdr`, `wt-zellij`). Worktrees live in `<repo-parent>/worktrees/<repo>/<name>/` — outside the repo so editors don't recurse into them.
+**Worktrees** (`wt*`) — git worktree management, as local zsh plugins under `zsh-plugins/`: `wt-core` plus the `wt-herdr` backend. Worktrees live in `<repo-parent>/worktrees/<repo>/<name>/` — outside the repo so editors don't recurse into them.
 
 - `wt` / `wt <name>` — Upsert worktree + cd (fzf picker with no args)
-- `wtt` / `wth` — Same, opening a Zellij tab / Herdr app space instead (keys: [docs/herdr-app.md](docs/herdr-app.md))
+- `wth` — Same, opening a Herdr app space instead (keys: [docs/herdr-app.md](docs/herdr-app.md))
 - `wt -b <name>` — Branch from current HEAD instead of origin/main
 - `wtpr <n|url>` — Worktree for a GitHub PR **or** issue (handles forks); `wti` for issues only. In the Herdr app, [grove](https://github.com/radiosilence/grove) picks worktrees, PRs, issues and folders in one dialog
 - `wtrm [name]` — Remove the worktree you're in (or a named one) + its branch

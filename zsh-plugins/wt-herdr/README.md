@@ -35,7 +35,7 @@ local = "~/.dotfiles/zsh-plugins/wt-herdr"
 | `wtpr-space <ref> <file>` | `wtpr` for programs: primes nothing and writes the space id and worktree path to `<file>` (on failure, the reason to `<file>.log`) |
 
 The logic lives in `wt-core`; these are bindings of `_wt_pr` / `_wt_issue` to
-the Herdr backend, so the zellij backend has the same set. A worktree that
+the Herdr backend, so another backend gets the same set. A worktree that
 already has a space is selected rather than opened again.
 
 `wtpr` is the single entry point for both. A URL disambiguates itself (`/pull/` vs `/issues/`); a bare number is ambiguous because GitHub numbers PRs and issues from one sequence, so it probes with `gh pr view` and falls through to `wti` when that fails. A `/pull/` URL never falls through: if the probe fails, `wtpr` reports the error.
