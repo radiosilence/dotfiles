@@ -1,2 +1,5 @@
+# frozen_string_literal: true
+
 # VPNs
-cask 'sfm'
+
+cask 'radiosilence/tap/sbr'
