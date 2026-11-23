@@ -1,10 +1,10 @@
 {
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Bash(gh pr merge:*)",
       "Bash(gh workflow run:*)"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "model": "opus",
   "hooks": {
@@ -71,5 +71,10 @@
       "**Tooling**: mise, gh, op, pulumi, kubectl, hc, herdr-app",
       "**Primary use of Claude Code**: personal software development and self-hosted infrastructure"
     ]
+  },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    }
   }
 }
