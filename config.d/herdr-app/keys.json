@@ -62,8 +62,7 @@
     "alt-shift-p": "mod.open:grove-prs",
     "alt-w": "mod.open:grove-worktrees",
     "cmd-shift-n": "mod.open:grove-folders",
-    "alt-shift-i": "mod.open:grove-issues",
-    "cmd-shift-g": "mod.open:popup-gh"
+    "alt-shift-i": "mod.open:grove-issues"
   },
   "terminal": {
     "cmd-c": "terminal.copy",

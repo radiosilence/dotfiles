@@ -8,6 +8,6 @@ height = 20
 max_width = 240
 
 [behavior]
-# Commands with no Fig spec (wt, the scripts/ commands, the k8s aliases, koan,
+# Commands with no Fig spec (the scripts/ commands, the k8s aliases, koan,
 # sift) fall back to their zsh completion functions before --help parsing.
 completers = ["shell"]

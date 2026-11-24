@@ -1,2 +1,0 @@
-autoload -Uz _wt_dir
-echo "$(_wt_dir)/${1}"

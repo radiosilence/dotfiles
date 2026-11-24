@@ -1,3 +1,0 @@
-local ref
-ref=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null) \
-  && echo "${ref##refs/remotes/origin/}" || echo "main"
