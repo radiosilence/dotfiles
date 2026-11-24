@@ -85,7 +85,7 @@ zstyle ':completion:*' squeeze-slashes true
 
 # Group completions by category with descriptions
 zstyle ':completion:*' group-name ''
-zstyle ':completion:*:descriptions' format ''
+zstyle ':completion:*:descriptions' format $'\e[33m── %d ──\e[0m'
 zstyle ':completion:*:messages'     format $'\e[35m── %d ──\e[0m'
 zstyle ':completion:*:warnings'     format $'\e[31m── no matches ──\e[0m'
 

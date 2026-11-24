@@ -18,9 +18,13 @@ done
 # Zed MCP secrets
 [[ -f ~/.config/zed/.secrets ]] && source ~/.config/zed/.secrets
 
-# After plugins and prompt, so lig's widgets wrap the final ZLE setup.
+# After plugins and prompt, so lig's widgets wrap the final ZLE setup. The
+# cache is named after the resolved version: mise keeps the release's mtime, so
+# an mtime check would not notice an upgrade.
 # >>> lig post >>>
-if [[ $LIG_TTY == $TTY ]]; then
-  _cached_eval lig "~/.local/share/mise/installs/lig/latest/lig init zsh post" ~/.local/share/mise/installs/lig/latest/lig
+_lig=~/.local/share/mise/installs/lig/latest/lig
+if [[ -n $LIG_TTY && $LIG_TTY == $TTY && -x $_lig ]]; then
+  _cached_eval "lig-${_lig:A:h:t}" "$_lig init zsh post"
 fi
+unset _lig
 # <<< lig post <<<

@@ -2,7 +2,7 @@
 
 The herdr TUI ran inside Ghostty, which keeps every `cmd` shortcut for itself, so its bindings went on a `ctrl-a` prefix and on `alt`. The Herdr app is its own window and binds `cmd` directly. `config.d/herdr-app/keys.json` is therefore the app's default keymap plus the bindings it has no default for; everything else uses the default.
 
-`ctrl-a` no longer belongs to Herdr, so it is beginning-of-line again in zsh and readline. `ctrl-t` (fzf file widget) and `alt-n`, `alt-o`, `alt-[`, `alt-]` also go back to the terminal.
+`ctrl-a` no longer belongs to Herdr, so it is beginning-of-line again in zsh and readline. `ctrl-t` and `alt-n`, `alt-o`, `alt-[`, `alt-]` also go back to the terminal.
 
 ## Old key to new key
 
