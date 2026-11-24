@@ -1,0 +1,6 @@
+*
+!.gitignore
+!config.toml
+!specs/
+specs/*
+!specs/gh.json

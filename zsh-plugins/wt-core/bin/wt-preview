@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # Preview for the wt fzf pickers: PR details when a PR exists, otherwise git
-# log plus a file tree. fzf-tab sends the whole "branch<TAB>path" line, so the
+# log plus a file tree. the picker sends the whole "branch<TAB>path" line, so the
 # branch is taken up to the first tab.
 
 autoload +X -Uz zarg || exit 1

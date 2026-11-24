@@ -29,6 +29,7 @@ k9s = "latest"
 koan = "latest" # TUI music player
 kubecolor = "latest" # Terminal kubectl colorizer
 kubectl = "latest"
+lig = "latest" # IDE-style completion popup; wraps the shell in a pty, see .zshrc
 lsd = "latest" # Modern ls replacement
 mainlynorfolk = "latest" # Folk MCP
 mergiraf = "latest" # Syntax-aware git merge driver

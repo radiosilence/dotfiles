@@ -85,9 +85,7 @@ zstyle ':completion:*' squeeze-slashes true
 
 # Group completions by category with descriptions
 zstyle ':completion:*' group-name ''
-# Empty descriptions format: fzf-tab still detects groups (and colours items
-# per-group), but no header text is rendered.
-zstyle ':completion:*:descriptions' format ''
+zstyle ':completion:*:descriptions' format $'\e[33m── %d ──\e[0m'
 zstyle ':completion:*:messages'     format $'\e[35m── %d ──\e[0m'
 zstyle ':completion:*:warnings'     format $'\e[31m── no matches ──\e[0m'
 
@@ -125,15 +123,6 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 
 # Git completion tweaks
 zstyle ':completion:*:git-checkout:*' sort false
-
-# fzf-tab config (if loaded)
-zstyle ':fzf-tab:*' fzf-flags --height=50% --layout=reverse --border=rounded --info=inline
-zstyle ':fzf-tab:*' switch-group '<' '>'
-zstyle ':fzf-tab:*' prefix ''  # drop the leading "·" on every entry
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always $realpath 2>/dev/null || ls -1 --color=always $realpath'
-zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --style=numbers --color=always --line-range=:100 $realpath 2>/dev/null || cat $realpath 2>/dev/null || lsd -1 --color=always $realpath 2>/dev/null || echo $desc'
-zstyle ':fzf-tab:complete:kill:*' fzf-preview 'ps -p $word -o pid,user,%cpu,%mem,command --no-headers 2>/dev/null'
-zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word 2>/dev/null'
 
 # Auto-compile zsh files in background for faster subsequent loads
 {

@@ -33,7 +33,3 @@ if (( $+functions[compdef] )); then
   compdef _wt_comp wt
   compdef '_arguments "1:branch:_wt_branches"' wtrm
 fi
-
-# ── fzf-tab previews ────────────────────────────────────────────────
-zstyle ':fzf-tab:complete:wt:*'   fzf-preview "$WT_CORE_BIN/wt-preview $word"
-zstyle ':fzf-tab:complete:wtrm:*' fzf-preview "$WT_CORE_BIN/wt-preview $word"

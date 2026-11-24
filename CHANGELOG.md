@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### November
 
+**lig replaces fzf-tab.** fzf-tab only opened on Tab and could only show what zsh's completers produced; [lig](https://github.com/KevenGoncalves/lig) completes as you type from Fig's specs, with zsh's completers as a fallback. Inside lig, fzf's shell integration is not loaded and Ctrl+R is lig's history, so there is one picker; shells lig does not wrap keep fzf. `ssh` is aliased to `lig ssh`. lig is launched from the mise `latest` path because `.zshrc` re-execs into it before mise activates, and its hook cache is keyed on the resolved version because mise keeps release mtimes. `specs/gh.json` is lig 1.4.0's built-in gh spec with two fixes so repository arguments complete: the GraphQL query was passed with literal shell quotes, and the `--jq` output (one JSON document per line) was read as an array. It can go once lig ships the fix.
+
 **Unused tools removed.** herdr-app replaced zellij as the multiplexer, so zellij goes with everything built for it: its config, the `wt-zellij` backend (`wtt`), autoattach, `zj`/`zp`, the socket-dir workaround, and the `zellij-urls` picker. omp (Oh My Pi), the gram editor and the ni retraining aliases go too; each was unused or uninstalled, and git history keeps them if they come back. `docs/new-tools.md` restated upstream usage for tools that have their own `--help`.
 
 **Brew roles match the Brewfiles.** Three taps provided nothing still listed (graphite, mirrord, hashicorp), and `tailscale-app` was in both `networking` and `tailscale`. The role comments in the template described packages long since dropped.

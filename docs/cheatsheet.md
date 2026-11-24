@@ -190,8 +190,6 @@ z <partial>   zoxide - smart cd with frecency
 
 ### Kubernetes (`k8s.zsh`)
 
-All have fzf-tab completion with coloured pod/resource previews.
-
 ```
 klg <pod>     kubectl logs -f (follow logs)
 ksh <pod>     kubectl exec -it -- /bin/sh (shell into pod)
@@ -231,26 +229,19 @@ These are configured as defaults or available directly.
 
 ---
 
-## fzf-tab Completions
+## Completion popup (lig)
 
-Tab completion opens fzf instead of zsh's default menu.
+[lig](https://github.com/KevenGoncalves/lig) wraps the shell in a pty and shows completions in a popup as you type, from Fig's specs or a command's `--help`. Settings are in `~/.config/lig/config.toml`; `lig config` prints every option.
 
-**Keys**
+- `Enter` - Accept the suggestion, or run a line that is already complete
+- `Tab` / arrows - Move through suggestions
+- `Esc` - Close; `Tab` then falls back to zsh's own completion
+- `Ctrl-Space` - Toggle the popup
+- `Ctrl-R` / `Alt-R` - History, all or this directory
 
-- `Tab` - Open completion popup
-- Type to fuzzy filter
-- `Enter` - Select
-- `<` / `>` - Switch completion groups
-- `Ctrl-Space` - Multi-select
+`ssh` runs as `lig ssh`, so the popup works on remote hosts too. fzf's own Ctrl-T, Alt-C and `**` bindings are not loaded.
 
-**Previews**
-
-- Files: syntax-highlighted content (bat)
-- Directories: contents (lsd)
-- Processes: pid/user/cpu/mem
-- Git branches: recent commits
-
-See [fzf-tab-completions.md](fzf-tab-completions.md) for setup details.
+Setting `LIG_DISABLE=1` in the environment the terminal starts its shell with turns it off; `LIG_DISABLE=1 zsh` from a prompt still runs inside the outer lig.
 
 ---
 

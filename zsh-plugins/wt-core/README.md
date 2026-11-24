@@ -115,7 +115,7 @@ noise of starting zsh at all, so treat it as structure rather than speed.
 
 What must stay eager lives in the loader: `WT_CORE_BIN`, the `_wt_prs` map (an
 *undeclared* one turns `${_wt_prs[feat/x]}` into an arithmetic subscript where
-`feat/x` is a division), the `compdef` registrations, and the fzf-tab `zstyle`s.
+`feat/x` is a division), and the `compdef` registrations.
 
 ## Exports
 

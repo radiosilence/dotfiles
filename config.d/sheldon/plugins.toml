@@ -21,11 +21,6 @@ github = "zsh-users/zsh-autosuggestions"
 [plugins.zsh-completions]
 github = "zsh-users/zsh-completions"
 
-# fzf-tab: Replace zsh's default completion menu with fzf
-# Fuzzy search through completions, file previews, the works
-[plugins.fzf-tab]
-github = "Aloxaf/fzf-tab"
-
 # Claude Code CLI completions
 [plugins.claude-code-completion]
 github = "1160054/claude-code-zsh-completion"
