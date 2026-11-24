@@ -59,14 +59,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 - `git squash` — Squash commits for clean PRs
 - `fm` / `fr` — Fuzzy merge/rebase with fzf
 
-**Worktrees** (`wt*`) — git worktree management, as local zsh plugins under `zsh-plugins/`: `wt-core` plus the `wt-herdr` backend. Worktrees live in `<repo-parent>/worktrees/<repo>/<name>/` — outside the repo so editors don't recurse into them.
-
-- `wt` / `wt <name>` — Upsert worktree + cd (fzf picker with no args)
-- `wth` — Same, opening a Herdr app space instead (keys: [docs/herdr-app.md](docs/herdr-app.md))
-- `wt -b <name>` — Branch from current HEAD instead of origin/main
-- `wtpr <n|url>` — Worktree for a GitHub PR **or** issue (handles forks); `wti` for issues only. In the Herdr app, [grove](https://github.com/radiosilence/grove) picks worktrees, PRs, issues and folders in one dialog
-- `wtrm [name]` — Remove the worktree you're in (or a named one) + its branch
-- `wtclean [-n]` — GC worktrees and branches whose PR is merged or closed, per `gh`. Keeps anything dirty
+**Worktrees** — [grove](https://github.com/radiosilence/grove) in the Herdr app creates, opens and cleans up worktrees for branches, PRs and issues. They live in `<repo-parent>/worktrees/<repo>/<name>/`, outside the repo so editors don't recurse into them.
 
 **Media**
 

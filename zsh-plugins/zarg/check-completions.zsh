@@ -18,9 +18,8 @@ if (( $# )); then
   targets=("$@")
 else
   # Executable regular files only: the README documents zarg and would other-
-  # wise match the grep below, then get run. Plugin bin/ dirs are in scope too
-  # — wtclean is a zarg script that just doesn't live on $PATH.
-  targets=($root/scripts/*(N-.x) $root/zsh-plugins/*/bin/*(N-.x))
+  # wise match the grep below, then get run.
+  targets=($root/scripts/*(N-.x))
 fi
 
 local -i failures=0

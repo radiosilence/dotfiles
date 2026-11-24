@@ -219,8 +219,8 @@ tasks:
         }
 
         # A tool that isn't installed fails its command and is skipped.
-        # scripts/ and the wt plugins are zarg scripts, whose completions come
-        # from the same spec they parse flags with.
+        # scripts/ are zarg scripts, whose completions come from the same spec
+        # they parse flags with.
         while read -r tool cmd; do
           gen "$dir/_$tool" "$cmd" &
         done <<'EOF'
@@ -281,9 +281,6 @@ tasks:
         unfuck-xcode unfuck-xcode --completions zsh
         url2base64 url2base64 --completions zsh
         vimv vimv --completions zsh
-        wtclean {{.DOTFILES}}/zsh-plugins/wt-core/bin/wtclean --completions zsh
-        wt-list {{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-list --completions zsh
-        wt-preview {{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-preview --completions zsh
         EOF
         # npm's completion is a script to source, not a compdef.
         gen "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" "npm completion" &

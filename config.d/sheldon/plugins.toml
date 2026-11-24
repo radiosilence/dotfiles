@@ -31,15 +31,8 @@ github = "1160054/claude-code-zsh-completion"
 github = "zsh-users/zsh-history-substring-search"
 
 # ============================================================================
-# Local worktree plugins (zsh-plugins/) — sheldon handles sourcing; see each
-# plugin's README. wt-core is backend-agnostic; wt-herdr is its backend.
+# Local plugins (zsh-plugins/)
 # ============================================================================
 
 [plugins.zarg]
 local = "~/.dotfiles/zsh-plugins/zarg"
-
-[plugins.wt-core]
-local = "~/.dotfiles/zsh-plugins/wt-core"
-
-[plugins.wt-herdr]
-local = "~/.dotfiles/zsh-plugins/wt-herdr"
