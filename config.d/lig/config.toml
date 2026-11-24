@@ -4,8 +4,8 @@
 # Draw with the terminal's own palette, so the popup matches Ghostty and Herdr.
 theme = "terminal"
 # Defaults are 8 rows and 100 columns; room for long branch names and descriptions.
-height = 14
-max_width = 160
+height = 20
+max_width = 240
 
 [behavior]
 # Commands with no Fig spec (wt, the scripts/ commands, the k8s aliases, koan,
