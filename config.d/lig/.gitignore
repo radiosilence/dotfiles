@@ -4,3 +4,4 @@
 !specs/
 specs/*
 !specs/gh.json
+!specs/just.json
