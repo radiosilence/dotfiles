@@ -227,8 +227,6 @@ These are configured as defaults or available directly.
 | `wrk`   | `oha`    | HTTP load testing with live TUI                    |
 | `wc -l` | `tokei`  | Code stats per language                            |
 
-See [new-tools.md](new-tools.md) for detailed usage.
-
 ---
 
 ## Completion popup (lig)
@@ -258,7 +256,7 @@ mise use node@22   # set version for project
 mise ls            # list installed
 ```
 
-Current defaults in `mise.toml`: elixir, erlang, node 24
+Global tools are in `config.d/mise/conf.d/03-tools.toml`; the repo-root `mise.toml` only holds lefthook and shellcheck for this repo.
 
 ### Homebrew
 
@@ -278,7 +276,7 @@ See `Brewfile` for full package list.
 ├── scripts/                # Standalone commands (zsh)
 │   └── lib/functions/     # Shared output helpers, autoloaded
 ├── zsh-plugins/            # Local zsh plugins (zarg, wt-*)
-├── config/
+├── config.d/
 │   └── zsh/
 │       ├── conf.d/        # Modular zsh configs, loaded alphabetically
 │       ├── functions/     # Custom shell functions

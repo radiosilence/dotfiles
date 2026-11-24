@@ -68,7 +68,7 @@ tasks:
         for f in "$d"/.*; do
           case "${f##*/}" in
             .|..|.git|.gitignore|.github|.vscode|.sonarlint|.editorconfig|\
-            .codeowners-lsp|.ruby-lsp|.claude|.claude-work|.omp|.omp-personal|\
+            .codeowners-lsp|.ruby-lsp|.claude|.claude-work|\
             .claude-personal) continue ;;
           esac
           ln_s "$f" "$HOME/${f##*/}"
@@ -108,11 +108,7 @@ tasks:
           .claude-personal/hooks/reminders.sh \
           .claude-work/CLAUDE.md \
           .claude-work/skills \
-          .claude-work/settings.json \
-          .omp/agent/config.yml \
-          .omp/agent/mcp.json \
-          .omp-personal/agent/config.yml \
-          .omp-personal/agent/mcp.json; do
+          .claude-work/settings.json; do
           ln_s "$d/$p" "$HOME/$p"
         done
         for f in keys.json settings.json themes/monokai-pro.json "$d"/config.d/herdr-app/layouts/*.json "$d"/config.d/herdr-app/mods/*/; do
@@ -245,7 +241,6 @@ tasks:
         orbctl orbctl completion zsh
         procs procs completion zsh
         pulumi pulumi completion zsh
-        sesh sesh completion zsh
         tilt tilt completion zsh
         watchwoman watchwoman completion zsh
         yq yq completion zsh
@@ -289,8 +284,6 @@ tasks:
         wtclean {{.DOTFILES}}/zsh-plugins/wt-core/bin/wtclean --completions zsh
         wt-list {{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-list --completions zsh
         wt-preview {{.DOTFILES}}/zsh-plugins/wt-core/bin/wt-preview --completions zsh
-        wt-picker {{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-picker --completions zsh
-        wt-shell {{.DOTFILES}}/zsh-plugins/wt-zellij/bin/wt-shell --completions zsh
         EOF
         # npm's completion is a script to source, not a compdef.
         gen "{{.DOTFILES}}/config.d/zsh/conf.d/npm-completion.zsh" "npm completion" &

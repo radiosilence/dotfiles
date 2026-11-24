@@ -26,8 +26,3 @@ if ! git branch -d "$name" 2>/dev/null; then
 fi
 echo "removed: $name"
 
-# Only when the tab being closed is the one we were standing in — otherwise
-# close-tab kills whichever tab is current, which is the wrong one.
-if [[ -n $ZELLIJ && $here == "$wt" ]]; then
-  zellij action close-tab
-fi

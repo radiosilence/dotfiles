@@ -222,7 +222,7 @@ alias glum='git pull upstream master'
 alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
 alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign -m "--wip-- [skip ci]"'
 
-# Live git status watcher — useful as a zellij subpane
+# Live git status watcher, for a split pane
 gwatch() {
   local interval=${1:-1}
   local tmp=$(mktemp)
