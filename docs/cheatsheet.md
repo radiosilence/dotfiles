@@ -241,6 +241,8 @@ See [new-tools.md](new-tools.md) for detailed usage.
 - `Ctrl-Space` - Toggle the popup
 - `Ctrl-R` / `Alt-R` - History, all or this directory
 
+`ssh` runs as `lig ssh`, so the popup works on remote hosts too. fzf's own Ctrl-T, Alt-C and `**` bindings are not loaded.
+
 `LIG_DISABLE=1 zsh` starts a shell without it.
 
 ---

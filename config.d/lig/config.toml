@@ -1,0 +1,10 @@
+# Only settings that differ from lig's defaults; `lig config` prints the rest.
+
+[ui]
+# Draw with the terminal's own palette, so the popup matches Ghostty and Herdr.
+theme = "terminal"
+
+[behavior]
+# Commands with no Fig spec (wt, the scripts/ commands, the k8s aliases, koan,
+# sift) fall back to their zsh completion functions before --help parsing.
+completers = ["shell"]
