@@ -10,12 +10,6 @@ alias klg='kubectl logs -f'
 alias kcme='kubectl edit configmap'
 alias kd='kubectl describe'
 
-# fzf-tab previews
-zstyle ':fzf-tab:complete:klg:*' fzf-preview 'kubecolor get pod $word -o wide --force-colors 2>/dev/null'
-zstyle ':fzf-tab:complete:ksh:*' fzf-preview 'kubecolor get pod $word -o wide --force-colors 2>/dev/null'
-zstyle ':fzf-tab:complete:kcme:*' fzf-preview 'kubecolor get configmap $word -o yaml --force-colors 2>/dev/null | head -50'
-zstyle ':fzf-tab:complete:ksv:*' fzf-preview 'kubectl get secret $word -o jsonpath="{.data}" 2>/dev/null | tr "," "\n" | cut -d: -f1'
-zstyle ':fzf-tab:complete:kd:*' fzf-preview 'kubecolor get ${words[2]} $word -o wide --force-colors 2>/dev/null'
 
 # Completion helpers for functions
 _k8s_pods() {

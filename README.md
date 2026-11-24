@@ -30,7 +30,7 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 
 ## What's Here
 
-- **Shell configs** — Modular zsh setup with 30+ config files, 80+ git aliases, fzf-tab completions
+- **Shell configs** — Modular zsh setup with 30+ config files, 80+ git aliases, lig completion popup
 - **`scripts/`** — System maintenance, git workflow, media processing, file operations, in zsh
 - **Taskfile.yml** — DAG-based system management (bootstrap, update, completions, fonts)
 - **Tool management** — mise for runtimes, role-based Brewfile for system packages (`brewfiles.d/`)
@@ -43,7 +43,6 @@ Run `upd` (or `converge`) anytime to update everything. Tasks that need gh auth 
 | ----------------------------------------------------- | ------------------------------------------------------------ |
 | [cheatsheet.md](docs/cheatsheet.md)                   | Complete reference — all commands, aliases, functions        |
 | [new-tools.md](docs/new-tools.md)                     | Modern CLI replacements (dust, procs, delta, xh, oha, tokei) |
-| [fzf-tab-completions.md](docs/fzf-tab-completions.md) | Fuzzy completion setup with previews                         |
 | [CHANGELOG.md](CHANGELOG.md)                          | Full history from 2018 to present                            |
 
 ## Highlights
