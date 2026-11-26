@@ -48,6 +48,11 @@
     "rust-analyzer-lsp@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true
   },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
   "remoteControlAtStartup": true,
@@ -71,10 +76,5 @@
       "**Tooling**: mise, gh, op, pulumi, kubectl, hc, herdr-app",
       "**Primary use of Claude Code**: personal software development and self-hosted infrastructure"
     ]
-  },
-  "modelSettings": {
-    "claude-opus-5-5": {
-      "effortLevel": "medium"
-    }
   }
 }
