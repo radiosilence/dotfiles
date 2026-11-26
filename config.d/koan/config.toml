@@ -63,4 +63,4 @@ wash_window = true
 wash_tint = 80
 record_colours = true
 wash_turn = 4
-wash_drift = 50
+wash_drift = 100
