@@ -74,6 +74,7 @@
     "cmd-left": "send:\u0001",
     "cmd-right": "send:\u0005",
     "cmd-backspace": "send:\u0015",
+    "cmd-k": "send:\u000c",
     "alt-3": "send:#",
     "alt-2": "send:\u20ac"
   }
