@@ -8,6 +8,8 @@ A history of this dotfiles repo from its inception in May 2018 through February 
 
 ### November
 
+**No Claude attribution in PR descriptions.** `attribution.pr` is empty in the personal Claude settings, so Claude Code no longer adds its footer or session link to PRs. The rule against them in `CLAUDE.md` moves from coding standards to Git & GitHub and now overrides harness and skill attribution instructions.
+
 **Cmd-K clears the terminal in Herdr.** Herdr has no clear command, so `cmd-k` sends Ctrl-L: zsh clears the screen and full-screen programs redraw.
 
 **Claude TypeScript rules.** The global `CLAUDE.md` bans type assertions and requires zod parsing for non-GraphQL external data, and fixes how the company name is written.

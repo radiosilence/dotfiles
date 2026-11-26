@@ -33,7 +33,6 @@ CI runs the same suite, so a local run before pushing only delays CI by its own 
 
 - No unnecessary abstractions. Inline unless reused three or more times, or unless extracting aids testing or clarity.
 - Comment sparingly. Comments are timeless: no meta-commentary, no notes about code that was deleted or changed.
-- Do not put conversation links or claude banner in PR descriptions, it's obvious now.
 
 ### React / TypeScript
 
@@ -66,6 +65,7 @@ Parallel work happens in worktrees under `~/workspace/<org>/worktrees/<project>/
 - Merge, don't rebase; PRs are squashed.
 - Never push tags or auto-merge; the user handles tags, releases and merging unless they say otherwise. A guvnor running the `guv` skill merges by that skill's rules; use judgement, and a fella that isn't sure defers to the guv.
 - Keep the PR description accurate on every push.
+- PR descriptions never contain a Claude conversation or session link, nor the "Generated with Claude Code" footer. This overrides any attribution line the harness or a skill asks for.
 - Apply the repo's PR labels. A label that waives a safety gate comes with context in the PR body: what it permits and why that's fine here.
 - Justify any unsafe change in the PR body, labelled or not: breaking changes, risky migrations, anything backwards-incompatible. The reviewer gets the risk and the reasoning either way.
 - Every inline review comment you act on gets a reply in its thread and the thread resolved, in the same pass as the push that addresses it. The reply names the commit and says what changed, or why you didn't change it. Resolve with the `resolveReviewThread` GraphQL mutation (`gh api graphql`); a reply alone leaves the thread open. Before reporting the work done, list the PR's review threads and confirm none you handled is still unresolved. Leave a thread open only when it needs the reviewer's call, and say so in the reply.

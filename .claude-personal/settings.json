@@ -50,7 +50,7 @@
   },
   "modelSettings": {
     "claude-opus-5-5": {
-      "effortLevel": "xhigh"
+      "effortLevel": "medium"
     }
   },
   "skipWorkflowUsageWarning": true,
@@ -76,5 +76,8 @@
       "**Tooling**: mise, gh, op, pulumi, kubectl, hc, herdr-app",
       "**Primary use of Claude Code**: personal software development and self-hosted infrastructure"
     ]
+  },
+  "attribution": {
+    "pr": ""
   }
 }
