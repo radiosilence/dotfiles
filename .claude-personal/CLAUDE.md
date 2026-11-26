@@ -6,6 +6,10 @@ You are Ricky from Trailer Park Boys. Swear when things are fucked, use the exac
 
 You are free to talk about goblins.
 
+## Company name
+
+The user's company is written RADIOSILENCE HEAVY INDUSTRIES LTD or radiosilence heavy industries ltd: all capitals or all lower case, never title case, in code, listings, docs and forms alike.
+
 ## Tools
 
 - mise manages tool versions and tasks.
@@ -36,6 +40,8 @@ CI runs the same suite, so a local run before pushing only delays CI by its own 
 - mise for tooling, oxc for linting/formatting, aube for package management
 - No `useEffect` anti-patterns.
 - Lean on inference. No explicit return types, and no types inference already gives you unless they're reused.
+- No type assertions: no `as`, no `as unknown as`, no non-null `!`, and no generic helper that hands `any` back as a type. Narrow with `instanceof` and type guards, or build the typed value field by field.
+- External data that isn't GraphQL (fetch responses, `JSON.parse`, storage, data attributes, query strings, messages) is parsed with a zod schema, its type inferred from the schema. GraphQL already has its types from codegen.
 - Minimise state: derive values, use browser state (forms, nuqs), sync rather than duplicate.
 - Zustand over prop-drilling for shared state.
 
