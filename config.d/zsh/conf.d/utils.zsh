@@ -22,11 +22,12 @@ fi
 # Runs from ~ so a project's [bootstrap] sections and `bootstrap` task stay out
 # of it. On Linux apt is left alone, so upd never needs root there; run
 # `mise bootstrap` after adding an apt package, and `mise run dotfiles:os-upgrade`
-# for system upgrades. mise self-updates only where its installer put it.
+# for system upgrades. mise self-updates only where its installer put it;
+# `whence -p` because activation makes `mise` a shell function.
 converge() {
   git -C ~/.dotfiles pull --quiet
   local args=(--upgrade --yes)
-  [[ $(command -v mise) == $HOME/.local/bin/mise ]] && args+=(--self-update)
+  [[ $(whence -p mise) == $HOME/.local/bin/mise ]] && args+=(--self-update)
   [[ $OSTYPE == linux* ]] && args+=(--skip packages)
   (cd ~ && mise bootstrap "${args[@]}" "$@")
 }

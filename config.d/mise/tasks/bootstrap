@@ -33,7 +33,7 @@ local_config() {
     ok "roles moved from dotfiles-roles.yml to config.local.toml"
   else
     cp "$cfg.template" "$cfg"
-    warn "created config.local.toml: enable this machine's roles there and run upd again"
+    [ "$(uname)" = Darwin ] && warn "created config.local.toml: enable this machine's roles there and run upd again"
   fi
   if [ -d "$dotfiles/.claude-work" ]; then
     cat >>"$cfg" <<'EOF'
