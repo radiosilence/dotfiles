@@ -7,7 +7,7 @@
 "~/.ssh/config" = { permissions = "0600" }
 "~/.ssh/config/dotfiles" = { line = "Include ~/.dotfiles/ssh.d/*.conf" }
 
-# Links the Brewfile and the herdr TUI left behind.
+# Stale links on machines set up before these files were removed.
 "~/Brewfile" = { mode = "absent" }
 "~/.config/herdr/config.toml" = { mode = "absent" }
 "~/.claude-personal/hooks/herdr-agent-state.sh" = { mode = "absent" }
@@ -66,14 +66,18 @@ exclude = [".gitignore"]
 [bootstrap.directories."~/.ssh"]
 mode = "0700"
 
+# zsh on Linux. macOS keeps whichever zsh the account already uses.
 [bootstrap.user]
-login_shell = "{% if os() == 'macos' %}/bin/zsh{% else %}zsh{% endif %}"
+login_shell = "{% if os() == 'macos' %}{{ env.SHELL }}{% else %}zsh{% endif %}"
 
 [bootstrap.hooks.post-packages]
-description = "Upgrade casks that Homebrew installed, which mise leaves to Homebrew"
+description = "Upgrade what Homebrew installed and mise leaves to Homebrew"
 run = '''
 if command -v brew >/dev/null; then
   brew upgrade --cask --greedy --quiet || echo "brew upgrade --cask failed; continuing" >&2
+  if brew list --formula mise >/dev/null 2>&1; then
+    brew upgrade --quiet mise || echo "brew upgrade mise failed; continuing" >&2
+  fi
   brew cleanup --quiet || true
 fi
 '''
@@ -91,8 +95,9 @@ mise install aube >/dev/null
 '''
 
 [bootstrap.hooks.pre-dotfiles]
-description = "Turn a linked ~/.cargo back into a real directory"
+description = "Create ~/.ssh/config private, and turn a linked ~/.cargo back into a directory"
 run = '''
+[ -e ~/.ssh/config ] || install -m 600 /dev/null ~/.ssh/config
 d=~/.dotfiles/config.d/cargo
 if [ "$(readlink ~/.cargo)" = "$d" ]; then
   rm ~/.cargo && mkdir ~/.cargo

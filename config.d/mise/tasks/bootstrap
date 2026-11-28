@@ -18,15 +18,22 @@ fail() {
   status=1
 }
 
-# Roles used to be a list in dotfiles-roles.yml that the Brewfile read. They
-# are now includes in config.local.toml, which takes effect on the next run.
+# Creates config.local.toml, converting a dotfiles-roles.yml (the Brewfile's
+# role list) into includes when there is one. It loads from the next run.
 local_config() {
   local cfg=$dotfiles/config.d/mise/config.local.toml
   [ -e "$cfg" ] && return
   if [ -f "$dotfiles/dotfiles-roles.yml" ]; then
+    # A missing include breaks every mise command, so unknown roles are dropped.
     {
       echo "include = ["
-      sed -n 's/^ *- *\([a-z0-9-]*\).*/  "roles\/\1.toml",/p' "$dotfiles/dotfiles-roles.yml"
+      sed -n 's/^ *- *\([a-z0-9-]*\).*/\1/p' "$dotfiles/dotfiles-roles.yml" | while read -r role; do
+        if [ -f "$dotfiles/config.d/mise/roles/$role.toml" ]; then
+          echo "  \"roles/$role.toml\","
+        else
+          warn "unknown role '$role' in dotfiles-roles.yml, skipping"
+        fi
+      done
       echo "]"
     } >"$cfg"
     rm "$dotfiles/dotfiles-roles.yml"
@@ -154,6 +161,9 @@ op_ssh_agent() {
 }
 
 local_config || fail "config.local.toml"
+for f in "$dotfiles/Brewfile.local" ~/Brewfile.local; do
+  [ -f "$f" ] && warn "$f is no longer read; move its packages to [bootstrap.packages] in config.local.toml"
+done
 gitconfig_include || fail "gitconfig include"
 claude_code || fail "claude code install"
 
