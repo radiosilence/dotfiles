@@ -49,6 +49,7 @@ aube aube completion zsh
 nr nr --completion-zsh
 gh gh completion -s zsh
 koan koan completions zsh
+sdo sdo completions zsh
 codeowners-cli codeowners-cli completions zsh
 task task --completion zsh
 just just --completions zsh

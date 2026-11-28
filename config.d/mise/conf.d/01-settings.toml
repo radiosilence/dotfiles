@@ -1,6 +1,8 @@
 [settings]
 fetch_remote_versions_cache = "30m"
-trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise"]
+# ~/.cargo/git/checkouts: a git dependency's checkout carries its repo's
+# mise.toml, which sccache's mise shim otherwise refuses mid-build.
+trusted_config_paths = ["~/workspace", "~/.dotfiles", "~/.config/mise", "~/.cargo/git/checkouts"]
 env_file = ".env"
 jobs = 14
 # mise exports RUSTUP_TOOLCHAIN, which overrides rust-toolchain.toml; reading the
@@ -25,6 +27,7 @@ minimum_release_age_excludes = [
   "codeowners-lsp",
   "caldav",
   "sift",
+  "sando",
 ]
 
 [settings.github]
