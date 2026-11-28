@@ -1,5 +1,5 @@
 [bootstrap.packages]
-"brew-cask:discord" = "latest"
-"brew-cask:signal" = "latest"
-"brew-cask:telegram" = "latest"
-"brew-cask:whatsapp" = "latest"
+"brew-cask:discord" = { os = "macos" }
+"brew-cask:signal" = { os = "macos" }
+"brew-cask:telegram" = { os = "macos" }
+"brew-cask:whatsapp" = { os = "macos" }

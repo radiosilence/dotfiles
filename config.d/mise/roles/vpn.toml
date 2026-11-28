@@ -1,2 +1,2 @@
 [bootstrap.packages]
-"brew-cask:radiosilence/tap/sbr" = "latest"
+"brew-cask:radiosilence/tap/sbr" = { os = "macos" }

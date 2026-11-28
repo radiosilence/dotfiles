@@ -1,8 +1,8 @@
 # Editors, IDEs and clients
 [bootstrap.packages]
-"brew-cask:zed" = "latest"
-"brew-cask:fork" = "latest"
-"brew-cask:lens" = "latest"
+"brew-cask:zed" = { os = "macos" }
+"brew-cask:fork" = { os = "macos" }
+"brew-cask:lens" = { os = "macos" }
 
 "brew:postgresql@19" = { os = "macos" }
 "brew:libpq" = { os = "macos" }

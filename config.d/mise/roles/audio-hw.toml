@@ -1,3 +1,3 @@
 # Audio interface drivers and control apps
 [bootstrap.packages]
-"brew-cask:focusrite-control-2" = "latest"
+"brew-cask:focusrite-control-2" = { os = "macos" }

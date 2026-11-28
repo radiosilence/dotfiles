@@ -1,2 +1,2 @@
 [bootstrap.packages]
-"brew-cask:orbstack" = "latest"
+"brew-cask:orbstack" = { os = "macos" }

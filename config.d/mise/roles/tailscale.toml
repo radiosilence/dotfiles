@@ -1,2 +1,2 @@
 [bootstrap.packages]
-"brew-cask:tailscale-app" = "latest"
+"brew-cask:tailscale-app" = { os = "macos" }

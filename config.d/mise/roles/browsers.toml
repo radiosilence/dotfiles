@@ -1,7 +1,7 @@
 [bootstrap.packages]
-"brew-cask:zen" = "latest"
-"brew-cask:radiosilence/tap/browser-schedule" = "latest"
-"brew-cask:thebrowsercompany-dia" = "latest"
-"brew-cask:helium-browser" = "latest"
+"brew-cask:zen" = { os = "macos" }
+"brew-cask:radiosilence/tap/browser-schedule" = { os = "macos" }
+"brew-cask:thebrowsercompany-dia" = { os = "macos" }
+"brew-cask:helium-browser" = { os = "macos" }
 "mas:1569813296" = "latest" # 1Password for Safari
 "mas:6745342698" = "latest" # uBlock Origin Lite

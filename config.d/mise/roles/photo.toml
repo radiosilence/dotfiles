@@ -1,2 +1,2 @@
 [bootstrap.packages]
-"brew-cask:adobe-creative-cloud" = "latest"
+"brew-cask:adobe-creative-cloud" = { os = "macos" }

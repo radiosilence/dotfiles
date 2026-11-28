@@ -7,4 +7,4 @@
 "brew:ios-deploy" = { os = "macos" }
 # A cask rather than mise's gcloud on macOS: vfox-gcloud's env hook probes for
 # Python on every mise hook-env, about 100ms per shell start and directory change.
-"brew-cask:gcloud-cli" = "latest"
+"brew-cask:gcloud-cli" = { os = "macos" }

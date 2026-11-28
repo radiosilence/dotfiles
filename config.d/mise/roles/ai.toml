@@ -1,2 +1,2 @@
 [bootstrap.packages]
-"brew-cask:claude" = "latest"
+"brew-cask:claude" = { os = "macos" }
