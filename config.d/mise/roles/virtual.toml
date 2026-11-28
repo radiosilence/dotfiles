@@ -1,0 +1,3 @@
+# lima, the payload-detonation sandbox
+[bootstrap.packages]
+"brew:lima" = { os = "macos" }

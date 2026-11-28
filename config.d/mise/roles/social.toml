@@ -1,0 +1,5 @@
+[bootstrap.packages]
+"brew-cask:discord" = "latest"
+"brew-cask:signal" = "latest"
+"brew-cask:telegram" = "latest"
+"brew-cask:whatsapp" = "latest"

@@ -19,9 +19,16 @@ if command -v glow >/dev/null && command -v fd >/dev/null && command -v fzf >/de
   gzf() { glow "$(fd -e md | fzf --ansi --reverse --preview 'glow -s dark {}')"; }
 fi
 
+# Runs from ~ so a project's [bootstrap] sections and `bootstrap` task stay out
+# of it. On Linux apt is left alone, so upd never needs root there; run
+# `mise bootstrap` after adding an apt package, and `mise run dotfiles:os-upgrade`
+# for system upgrades. mise self-updates only where its installer put it.
 converge() {
   git -C ~/.dotfiles pull --quiet
-  task --taskfile ~/.dotfiles/Taskfile.yml converge
+  local args=(--upgrade --yes)
+  [[ $(command -v mise) == $HOME/.local/bin/mise ]] && args+=(--self-update)
+  [[ $OSTYPE == linux* ]] && args+=(--skip packages)
+  (cd ~ && mise bootstrap "${args[@]}" "$@")
 }
 alias upd='converge'
 

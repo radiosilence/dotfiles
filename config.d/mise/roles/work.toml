@@ -1,0 +1,7 @@
+# Productivity and collaboration
+[bootstrap.packages]
+"brew-cask:notion" = "latest"
+"brew-cask:notion-calendar" = "latest"
+"brew-cask:slack" = "latest"
+"brew-cask:figma" = "latest"
+"brew-cask:aws-vpn-client" = "latest"

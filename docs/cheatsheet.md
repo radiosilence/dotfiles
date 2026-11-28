@@ -10,7 +10,7 @@ zsh, on `$PATH` directly — nothing to build. Run any with `--help` for full op
 
 | Command                      | Description                                                            |
 | ---------------------------- | ---------------------------------------------------------------------- |
-| `upd [-v]`                   | Update everything - pulls dotfiles, runs brew/mise, regenerates completions |
+| `upd [-v]`                   | Update everything - pulls dotfiles, runs `mise bootstrap --upgrade`    |
 | `kill-port <port> [-n]`      | Kill process on port (`-n` dry-run, `-s` signal)                       |
 | `prune [paths] [-s kb] [-y]` | Find and delete small directories (default 3MB threshold)              |
 | `unfuck-xcode`               | Reset Xcode CLI tools when they're corrupted                           |
@@ -176,7 +176,6 @@ sizes [path]      dust -d 2 - disk usage breakdown
 
 ```
 b / ba / bi / bt   bun / bun add / bun install / bun test
-bb                 brew bundle
 m / mi             mise / mise install
 ```
 
@@ -258,14 +257,15 @@ mise ls            # list installed
 
 Global tools are in `config.d/mise/conf.d/03-tools.toml`; the repo-root `mise.toml` only holds lefthook and shellcheck for this repo.
 
-### Homebrew
+### Packages
 
 ```bash
-bb            # brew bundle (install from Brewfile)
-brew upgrade  # upgrade all packages
+mise bootstrap --dry-run        # what upd would change
+mise bootstrap status           # every part, and what differs from the config
+mise bootstrap packages status  # every declared brew, cask, mas and apt package
 ```
 
-See `Brewfile` for full package list.
+Core packages are in `config.d/mise/conf.d/04-packages.toml`, roles in `config.d/mise/roles/`, and a machine's roles in its gitignored `config.d/mise/config.local.toml`.
 
 ---
 
@@ -277,6 +277,7 @@ See `Brewfile` for full package list.
 │   └── lib/functions/     # Shared output helpers, autoloaded
 ├── zsh-plugins/            # Local zsh plugins (zarg)
 ├── config.d/
+│   ├── mise/              # Global mise config: tools, packages, roles, links, tasks
 │   └── zsh/
 │       ├── conf.d/        # Modular zsh configs, loaded alphabetically
 │       ├── functions/     # Custom shell functions
@@ -286,7 +287,6 @@ See `Brewfile` for full package list.
 ├── git.d/                  # Git config
 ├── ssh.d/                  # SSH config
 ├── .zshrc                  # Shell entry point
-├── Brewfile               # Homebrew packages
 ├── mise.toml              # Runtime versions
 └── setup-macos             # Bootstrap script
 ```

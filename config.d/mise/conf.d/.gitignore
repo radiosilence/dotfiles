@@ -3,4 +3,6 @@
 !01-settings.toml
 !02-aliases.toml
 !03-tools.toml
+!04-packages.toml
+!05-dotfiles.toml
 !99-claude.toml

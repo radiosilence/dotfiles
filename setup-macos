@@ -2,12 +2,17 @@
 # Bootstrap script — run this on a fresh macOS system.
 # Usage: curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-macos | zsh
 #
-# Sequential, interactive bootstrap. Each step blocks until done so brew's
-# sudo prompts, GitHub auth, and 1Password's manual setup can't race the
-# pipeline. Once this finishes, `task converge` parallelises everything else.
+# Only the steps that wait on a person live here: Xcode tools, Touch ID for
+# sudo, GitHub auth and the 1Password agent. Everything else is declared in
+# config.d/mise and applied by `mise bootstrap`, which installs Homebrew
+# formulae and casks itself, so Homebrew is never installed.
+#
+# The script arrives on stdin, so commands that prompt read the terminal
+# instead, or they would consume the rest of the script.
 set -e
 
-DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+DOTFILES="$HOME/.dotfiles"
+REPO=https://github.com/radiosilence/dotfiles.git
 
 OK=$'\033[32m󰄬\033[0m'
 WARN=$'\033[33m\033[0m'
@@ -18,19 +23,19 @@ RESET=$'\033[0m'
 print -P "\n  ${BOLD}\033[35m⟢${RESET} ${BOLD}dotfiles bootstrap${RESET}\n"
 
 # ---------------------------------------------------------------------------
-# 1. Xcode CLI Tools — provides git
+# 1. Xcode CLI Tools — git, and the compiler for formulae without a bottle.
+#    /usr/bin/git exists before they are installed, so check xcode-select.
 # ---------------------------------------------------------------------------
-if ! command -v git >/dev/null 2>&1; then
+if ! xcode-select -p >/dev/null 2>&1; then
   print -P "  ${WARN} installing Xcode Command Line Tools (GUI prompt)"
   xcode-select --install 2>/dev/null || true
-  while ! command -v git >/dev/null 2>&1; do sleep 0.5; done
-  exit
+  until xcode-select -p >/dev/null 2>&1; do sleep 0.5; done
 fi
 print -P "  ${OK} xcode cli tools"
 
 # ---------------------------------------------------------------------------
 # 2. Touch ID for sudo — one password prompt now, biometric forever after.
-#    Without this, brew's sudo asks hang silently because the pipe has no TTY.
+#    mise uses sudo to create /opt/homebrew and to run pkg installers.
 # ---------------------------------------------------------------------------
 if ! sudo grep -q pam_tid /etc/pam.d/sudo_local 2>/dev/null; then
   print -P "  ${WARN} enabling Touch ID for sudo (enter password once)"
@@ -39,51 +44,42 @@ fi
 print -P "  ${OK} touchid sudo"
 
 # ---------------------------------------------------------------------------
-# 3. Homebrew — official .pkg installer; `latest/download` is a stable URL so
-#    no version pinning. sudo resolves via Touch ID from step 2.
+# 3. mise, from its installer into ~/.local/bin, where `upd` self-updates it.
+#    mise links the formulae it installs into /opt/homebrew/bin.
 # ---------------------------------------------------------------------------
-if ! command -v brew >/dev/null 2>&1; then
-  print -P "  ${WORK} installing Homebrew"
-  pkg="$(mktemp -d)/Homebrew.pkg"
-  curl -fsSL -o "$pkg" https://github.com/Homebrew/brew/releases/latest/download/Homebrew.pkg
-  sudo installer -pkg "$pkg" -target /
-  rm -rf "${pkg:h}"
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
+if ! command -v mise >/dev/null 2>&1; then
+  print -P "  ${WORK} installing mise"
+  curl -fsSL https://mise.run | sh
 fi
-if [[ -d /opt/homebrew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-  eval "$(/usr/local/bin/brew shellenv)"
-fi
-print -P "  ${OK} homebrew"
+print -P "  ${OK} mise"
 
 # ---------------------------------------------------------------------------
-# 4. Install gh + mise immediately — the rest of bootstrap needs both. brew
-#    bundle (in task converge later) will see them already there and skip.
+# 4. 1Password and a browser for the sign-ins below.
 # ---------------------------------------------------------------------------
-print -P "  ${WORK} installing gh + mise + 1password + zen"
-brew install --quiet gh mise
-brew install --cask 1password zen
-print -P "  ${OK} gh + mise + 1password + zen"
+print -P "  ${WORK} installing 1Password and zen"
+mise bootstrap packages apply --yes brew-cask:1password brew-cask:1password-cli brew-cask:zen </dev/tty
+print -P "  ${OK} 1password + zen"
 
 # ---------------------------------------------------------------------------
-# 5. GitHub auth — mise reads tokens directly from gh's hosts.yml via its
-#    github.gh_cli_tokens setting (default on), so as long as gh is authed
-#    mise can fetch release metadata without hitting the unauthenticated
-#    rate limit. No need to export GITHUB_TOKEN globally.
+# 5. GitHub auth before mise touches the network: nearly every tool in
+#    03-tools.toml is a GitHub release, and the anonymous rate limit runs out
+#    long before the list does. gh comes from mise until bootstrap installs
+#    it, so the token is exported for this run.
 # ---------------------------------------------------------------------------
+gh() { mise exec gh@latest -- gh "$@"; }
 if ! gh auth status &>/dev/null; then
-  print -P "  ${WARN} run ${BOLD}gh auth login${RESET} in another terminal"
-  while ! gh auth status &>/dev/null; do sleep 0.5; done
+  print -P "  ${WARN} authenticating gh"
+  gh auth login --hostname github.com --git-protocol https --web </dev/tty
 fi
+GITHUB_TOKEN="$(gh auth token)"
+export GITHUB_TOKEN
 print -P "  ${OK} gh authed"
 
 # ---------------------------------------------------------------------------
-# 6. 1Password — install app + CLI, then block until SSH agent is enabled.
-#    Everything downstream (ssh git, op secrets) depends on this.
+# 6. Block until the 1Password SSH agent is enabled. Git signing and the SSH
+#    remote depend on it.
 # ---------------------------------------------------------------------------
-print -P "  ${WORK} installing 1Password (app + CLI)"
-brew install --cask --quiet 1password 1password-cli
-
 sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 if [[ ! -S "$sock" ]]; then
   print -P "  ${WARN} open 1Password → Settings → Developer, then enable:"
@@ -94,51 +90,20 @@ fi
 print -P "  ${OK} 1password agent ready"
 
 # ---------------------------------------------------------------------------
-# 7. Clone (or fast-forward) dotfiles to the real location
+# 7. Clone the repo, link ~/.config/mise to config.d/mise in it, and apply
+#    it. A re-run applies the existing checkout.
 # ---------------------------------------------------------------------------
-if [[ ! -d "$DOTFILES" ]]; then
-  git clone https://github.com/radiosilence/dotfiles "$DOTFILES"
+print -P "  ${WORK} mise bootstrap\n"
+cd "$HOME"
+if [[ -d "$DOTFILES/.git" ]]; then
+  if [[ ! -e "$HOME/.config/mise" ]]; then
+    mkdir -p "$HOME/.config"
+    ln -s "$DOTFILES/config.d/mise" "$HOME/.config/mise"
+  fi
+  mise bootstrap --yes </dev/tty
 else
-  # Force HTTPS for this fetch in case use-ssh switched the remote during a
-  # previous partial run — we don't want pull blocking on SSH config that
-  # hasn't been linked yet.
-  git -C "$DOTFILES" -c "remote.origin.url=https://github.com/radiosilence/dotfiles" \
-    pull --ff-only --quiet origin main 2>/dev/null || \
-    print -P "  ${WARN} couldn't fast-forward — using existing checkout"
+  mise bootstrap --yes --from "$REPO" --from-dir "$DOTFILES" --config-dir config.d/mise </dev/tty
 fi
-print -P "  ${OK} dotfiles at $DOTFILES"
 
-# ---------------------------------------------------------------------------
-# 8. Link the mise config before installing anything through it. A shim only
-#    resolves if some config file declares the tool: `mise install task@latest`
-#    on its own leaves a shim that dies with "No version is set for shim: task",
-#    and $DOTFILES/mise.toml only declares lefthook and shellcheck. brew hid
-#    this for gh and mise by installing real binaries at step 4 — task has no
-#    such cover, so converge never started on a genuinely fresh machine.
-#    `task link` later sees the symlink already correct and no-ops.
-# ---------------------------------------------------------------------------
-mkdir -p "$HOME/.config"
-if [[ "$(readlink "$HOME/.config/mise" 2>/dev/null)" != "$DOTFILES/config.d/mise" ]]; then
-  rm -rf "$HOME/.config/mise"
-  ln -s "$DOTFILES/config.d/mise" "$HOME/.config/mise"
-fi
-print -P "  ${OK} mise config linked"
-
-# ---------------------------------------------------------------------------
-# 9. Install task + aube via mise. task drives `converge`; aube is the
-#    npm-backend package_manager configured in mise.toml — without it,
-#    `mise install` blows up on any npm: tool. Versions come from
-#    conf.d/03-tools.toml, linked above.
-# ---------------------------------------------------------------------------
-print -P "  ${WORK} installing task + aube via mise"
-mise install task aube >/dev/null
-export PATH="$HOME/.local/share/mise/shims:$PATH"
-print -P "  ${OK} task + aube installed via mise"
-
-# ---------------------------------------------------------------------------
-# 10. Hand off — task converge handles everything else (parallel from here)
-# ---------------------------------------------------------------------------
-print -P "  ${OK} bootstrap done — handing off to Taskfile\n"
-
-cd "$DOTFILES"
-task converge
+print -P "\n  ${OK} done. Enable this machine's roles in ${BOLD}~/.config/mise/config.local.toml${RESET},"
+print -P "     then run ${BOLD}upd${RESET} in a new terminal to install them and the App Store apps."

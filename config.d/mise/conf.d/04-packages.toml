@@ -1,0 +1,79 @@
+# Host packages for `mise bootstrap`. mise installs brew formulae and casks
+# itself, so a new Mac needs no Homebrew; an existing Homebrew sees and can
+# manage what mise installs.
+#
+# Unprefixed keys use the host's manager: apt on Debian and Ubuntu, brew on
+# macOS. mise's brew manager also runs on Linux, so every `brew:` formula and
+# font cask carries `os = "macos"` to keep Linuxbrew off headless boxes. App
+# casks and `mas:` entries are skipped on Linux without it.
+#
+# Per-machine roles live in ../roles and are pulled in by `include` in the
+# gitignored ../config.local.toml; one-off packages can go there directly.
+
+[bootstrap.brew]
+# Take over an identical app already in /Applications instead of replacing
+# it, which can drop its privacy permissions.
+adopt = true
+
+[bootstrap.packages]
+aria2 = "latest"
+curl = "latest"
+gh = "latest"
+git = "latest"
+gnupg = "latest"
+rsync = "latest"
+zsh = "latest"
+
+# Headless Linux base. aria2c, unzip, lsof and exiftool back parallel-dl-extract,
+# kill-port and clean-exif; macOS ships the rest.
+"apt:ca-certificates" = "latest"
+"apt:libimage-exiftool-perl" = "latest"
+"apt:lsof" = "latest"
+"apt:unzip" = "latest"
+
+"brew:coreutils" = { os = "macos" }
+"brew:findutils" = { os = "macos" }
+"brew:openssl@3" = { os = "macos" }
+"brew:libressl" = { os = "macos" } # shadows /usr/bin/openssl (LibreSSL 3.3.6, 2021); see 16-shadows.zsh
+"brew:node" = { os = "macos" } # a global npm for mise's npm: backend even when aube is the resolver
+"brew:uv" = { os = "macos" } # global uv/uvx for mise's pipx: backend; packages install before tools
+"brew:pam-reattach" = { os = "macos" } # Touch ID for sudo inside detached terminal sessions
+
+# Build tools
+"brew:cmake" = { os = "macos" }
+"brew:make" = { os = "macos" }
+"brew:llvm" = { os = "macos" }
+
+# CLI utils
+"brew:fcp" = { os = "macos" }
+"brew:htop" = { os = "macos" }
+"brew:btop" = { os = "macos" }
+"brew:mas" = { os = "macos" } # on PATH from the second run, so mas: entries install then
+"brew:tokei" = { os = "macos" }
+"brew:cmatrix" = { os = "macos" }
+"brew:unar" = { os = "macos" }
+"brew:testdisk" = { os = "macos" }
+
+# Sync
+"brew:fswatch" = { os = "macos" }
+"brew:parallel" = { os = "macos" }
+
+# Libs
+"brew:gmp" = { os = "macos" }
+"brew:libyaml" = { os = "macos" }
+"brew:ossp-uuid" = { os = "macos" }
+"brew:readline" = { os = "macos" }
+"brew:xz" = { os = "macos" }
+
+"brew-cask:ghostty" = "latest"
+"brew-cask:herdr-app" = "latest" # herdr-core (hc) has no formula; the app updates it on each app update
+"brew-cask:1password" = "latest"
+"brew-cask:1password-cli" = "latest"
+"brew-cask:betterdisplay" = "latest"
+"brew-cask:raycast" = "latest"
+
+"brew-cask:font-geist" = { os = "macos" }
+"brew-cask:font-geist-mono" = { os = "macos" }
+"brew-cask:font-geist-mono-nerd-font" = { os = "macos" }
+"brew-cask:font-departure-mono" = { os = "macos" }
+"brew-cask:font-departure-mono-nerd-font" = { os = "macos" }

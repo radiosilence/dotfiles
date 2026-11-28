@@ -3,9 +3,8 @@
 *.code-workspace
 .ruby-lsp
 
-# Local brew config (per-machine)
-dotfiles-roles.yml
-Brewfile.local
+# Per-machine roles and packages
+config.d/mise/config.local.toml
 
 # Zsh compiled files
 *.zwc

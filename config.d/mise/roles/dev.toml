@@ -1,0 +1,10 @@
+# Editors, IDEs and clients
+[bootstrap.packages]
+"brew-cask:zed" = "latest"
+"brew-cask:fork" = "latest"
+"brew-cask:lens" = "latest"
+
+"brew:postgresql@19" = { os = "macos" }
+"brew:libpq" = { os = "macos" }
+
+"brew:vscode-langservers-extracted" = { os = "macos" }

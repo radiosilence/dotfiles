@@ -1,0 +1,102 @@
+# Links from ~ into the checkout, and the rest of the machine state that
+# `mise bootstrap` can declare. A group's relative `root` and sources resolve
+# from `dotfiles.root`, which defaults to ~/.dotfiles.
+
+[dotfiles]
+"~/.zshrc" = {}
+"~/.ssh/config" = { permissions = "0600" }
+"~/.ssh/config/dotfiles" = { line = "Include ~/.dotfiles/ssh.d/*.conf" }
+
+# Links the Brewfile and the herdr TUI left behind.
+"~/Brewfile" = { mode = "absent" }
+"~/.config/herdr/config.toml" = { mode = "absent" }
+"~/.claude-personal/hooks/herdr-agent-state.sh" = { mode = "absent" }
+"~/.claude-work/hooks/herdr-agent-state.sh" = { mode = "absent" }
+
+# Each application directory is linked whole, so what an application writes
+# lands in the checkout. herdr-app keeps sockets, state and generated files
+# beside its config, so the walk links its tracked files one by one instead,
+# as it would any directory added here without an entry.
+[dotfile_groups.config]
+root = "config.d"
+target = "~/.config"
+manifest = "git"
+exclude = [".gitignore"]
+
+[dotfile_groups.config.entries]
+"~/.config/broot" = { mode = "symlink" }
+"~/.config/browser-schedule" = { mode = "symlink" }
+"~/.config/btop" = { mode = "symlink" }
+"~/.config/ghostty" = { mode = "symlink" }
+"~/.config/helix" = { mode = "symlink" }
+"~/.config/k9s" = { mode = "symlink" }
+"~/.config/koan" = { mode = "symlink" }
+"~/.config/lig" = { mode = "symlink" }
+"~/.config/lima" = { mode = "symlink" }
+"~/.config/mise" = { mode = "symlink" }
+"~/.config/ni" = { mode = "symlink" }
+"~/.config/sheldon" = { mode = "symlink" }
+"~/.config/sift" = { mode = "symlink" }
+"~/.config/starship" = { mode = "symlink" }
+"~/.config/suvadu" = { mode = "symlink" }
+"~/.config/zed" = { mode = "symlink" }
+"~/.config/zsh" = { mode = "symlink" }
+# A symlinked CARGO_HOME breaks crates that resolve paths against it (askama
+# via uniffi), so only the config file is linked.
+"~/.cargo/config.toml" = { source = "cargo/config.toml" }
+
+# Agent profiles: config is versioned, runtime state and PII stay in ~. The
+# work profile is local-only, so its group lives in config.local.toml on the
+# machines that have one; see config.local.toml.template.
+[dotfile_groups.claude-personal]
+root = ".claude-personal"
+target = "~/.claude-personal"
+manifest = "git"
+exclude = [".gitignore"]
+
+[dotfile_groups.claude-personal.entries]
+"~/.claude-personal/skills" = { mode = "symlink" }
+
+# Grove (worktrees, PRs, issues and folders as Herdr spaces) is its own repo,
+# and herdr-app has no installer, so its mods are copied in after each pull.
+[bootstrap.repos]
+"~/.local/share/grove" = { url = "https://github.com/radiosilence/grove.git", ref = "main" }
+
+# Created here rather than by the ssh config edit, which would leave it 0755.
+[bootstrap.directories."~/.ssh"]
+mode = "0700"
+
+[bootstrap.user]
+login_shell = "{% if os() == 'macos' %}/bin/zsh{% else %}zsh{% endif %}"
+
+[bootstrap.hooks.post-packages]
+description = "Upgrade casks that Homebrew installed, which mise leaves to Homebrew"
+run = '''
+if command -v brew >/dev/null; then
+  brew upgrade --cask --greedy --quiet || echo "brew upgrade --cask failed; continuing" >&2
+  brew cleanup --quiet || true
+fi
+'''
+
+[bootstrap.hooks.post-repos]
+description = "Install grove's mods into herdr-app"
+run = "~/.local/share/grove/bin/install >/dev/null"
+
+# The npm: backend resolves packages with aube when it is installed.
+[bootstrap.hooks.pre-tools]
+description = "Check gh auth and install aube before the other tools"
+run = '''
+gh auth status >/dev/null 2>&1 || echo "gh is not authenticated, so release lookups use the anonymous rate limit (gh auth login)" >&2
+mise install aube >/dev/null
+'''
+
+[bootstrap.hooks.pre-dotfiles]
+description = "Turn a linked ~/.cargo back into a real directory"
+run = '''
+d=~/.dotfiles/config.d/cargo
+if [ "$(readlink ~/.cargo)" = "$d" ]; then
+  rm ~/.cargo && mkdir ~/.cargo
+  find "$d" -mindepth 1 -maxdepth 1 ! -name config.toml ! -name .gitignore -exec mv {} ~/.cargo/ \;
+  rm -f "$d/.gitignore"
+fi
+'''
