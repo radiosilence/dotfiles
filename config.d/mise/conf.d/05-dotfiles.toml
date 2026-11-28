@@ -66,10 +66,6 @@ exclude = [".gitignore"]
 [bootstrap.directories."~/.ssh"]
 mode = "0700"
 
-# zsh on Linux. macOS keeps whichever zsh the account already uses.
-[bootstrap.user]
-login_shell = "{% if os() == 'macos' %}{{ env.SHELL }}{% else %}zsh{% endif %}"
-
 [bootstrap.hooks.post-packages]
 description = "Upgrade what Homebrew installed and mise leaves to Homebrew"
 run = '''

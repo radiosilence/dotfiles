@@ -18,7 +18,7 @@ Runs the steps that wait on a person (Xcode tools → Touch ID for sudo → mise
 curl -fsSL https://raw.githubusercontent.com/radiosilence/dotfiles/main/setup-linux | bash
 ```
 
-bash, because zsh isn't installed yet. Shorter path — curl, git and gh from apt → gh device-flow auth → mise → `mise bootstrap`, which installs the rest of the apt list, links the configs, makes zsh the login shell and installs the tools. Same config, same `upd`; casks, App Store apps and the macOS steps skip themselves.
+bash, because zsh isn't installed yet. Shorter path — curl, git, gh and zsh from apt → zsh as the login shell → gh device-flow auth → mise → `mise bootstrap`, which installs the rest of the apt list, links the configs and installs the tools. The login shell is set with `sudo chsh` here rather than by mise, whose plain `chsh` needs a password that a box with key-only logins doesn't have. Same config, same `upd`; casks, App Store apps and the macOS steps skip themselves.
 
 No 1Password on a headless box, so git auth is gh's credential helper over HTTPS and secrets aren't populated. If you want signed commits there, `ssh -A` in from a machine that has the agent.
 
@@ -99,11 +99,11 @@ one stops reminders for it in all of them. Haiku is asked at most once per 15 mi
 (`REMINDERS_INTERVAL`, in seconds) across all sessions; the other prompts only update a
 timestamp. Without `~/REMINDERS.md` the hook does nothing.
 
-**Bootstrap layout** — `mise bootstrap` applies `config.d/mise` in a fixed order: packages, system files, repos, dotfiles, login shell, tools, then the `bootstrap` task. Everything runs on every `upd`, and each part changes only what differs.
+**Bootstrap layout** — `mise bootstrap` applies `config.d/mise` in a fixed order: packages, system files, repos, dotfiles, tools, then the `bootstrap` task. Everything runs on every `upd`, and each part changes only what differs.
 
 - `conf.d/04-packages.toml` holds what every machine gets. Unprefixed keys install through apt on Linux and brew on macOS. mise's brew manager also runs on Linux, so every `brew:` and `brew-cask:` entry carries `os = "macos"`: formulae would install into Linuxbrew, and a cask with no Linux build fails there rather than being skipped.
 - `roles/*.toml` are optional package sets. A machine picks them with `include` in its gitignored `config.local.toml`, which the first bootstrap creates from `config.local.toml.template`, and one-off packages go in the same file. Config environments would also select each role, but an environment chosen in the global `miserc.toml` also loads every project's `mise.<env>.toml` and reaches project tasks as `MISE_ENV`, and role names such as `dev` and `work` would collide there.
-- `conf.d/05-dotfiles.toml` links `config.d` into `~/.config` and `.claude-personal` into `~/.claude-personal`, clones grove, and sets the login shell. Application directories are linked whole, so what an application writes lands in the checkout; herdr-app keeps state beside its config, so its tracked files are linked one by one, as any new `config.d` directory without an entry would be. The work profile is local-only, so its links live in `config.local.toml` on the machines that have one: mise stops on a missing source.
+- `conf.d/05-dotfiles.toml` links `config.d` into `~/.config` and `.claude-personal` into `~/.claude-personal`, and clones grove. Application directories are linked whole, so what an application writes lands in the checkout; herdr-app keeps state beside its config, so its tracked files are linked one by one, as any new `config.d` directory without an entry would be. The work profile is local-only, so its links live in `config.local.toml` on the machines that have one: mise stops on a missing source.
 - `tasks/bootstrap` holds what no section can declare: the PAM edit with its revert, Rosetta, git signing from 1Password, the SSH remote and agent, the gitconfig include and Claude Code. It runs on every bootstrap, so each step checks first.
 
 Casks that Homebrew installed before the switch stay Homebrew's: mise counts them as installed and never upgrades them, so a post-packages hook runs `brew upgrade --cask --greedy` wherever `brew` exists. mise's brew manager runs only on Apple Silicon, so an Intel Mac gets casks and App Store apps but no formulae.

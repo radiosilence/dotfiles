@@ -4,8 +4,8 @@
 #
 # bash, not zsh: zsh isn't installed yet. Only GitHub auth waits on a person;
 # everything else is declared in config.d/mise and applied by
-# `mise bootstrap`, which installs the apt packages, links the configs, makes
-# zsh the login shell and installs the tools.
+# `mise bootstrap`, which installs the apt packages, links the configs and
+# installs the tools.
 #
 # No casks and no 1Password: a headless box has no GUI to run the app, so git
 # auth goes through gh's credential helper over HTTPS and secrets stay on the
@@ -27,20 +27,36 @@ RESET=$'\033[0m'
 printf "\n  %s\033[35m⟢%s %sdotfiles bootstrap (linux)%s\n\n" "$BOLD" "$RESET" "$BOLD" "$RESET"
 
 # ---------------------------------------------------------------------------
-# 1. What it takes to reach mise: curl for its installer, git for the clone,
-#    and gh from apt. gh's credential helper records the path of the binary
-#    that set it up, and /usr/bin/gh outlives mise's versioned install paths.
-#    The rest of the apt list is in conf.d/04-packages.toml.
+# 1. What it takes to reach mise and a login shell: curl for its installer,
+#    git for the clone, zsh, and gh from apt. gh's credential helper records
+#    the path of the binary that set it up, and /usr/bin/gh outlives mise's
+#    versioned install paths. The rest of the apt list is in
+#    conf.d/04-packages.toml.
 # ---------------------------------------------------------------------------
-if ! command -v curl >/dev/null || ! command -v git >/dev/null || ! command -v gh >/dev/null; then
-  printf "  %s installing curl, git and gh (sudo)\n" "$WORK"
+if ! command -v curl >/dev/null || ! command -v git >/dev/null ||
+  ! command -v gh >/dev/null || ! command -v zsh >/dev/null; then
+  printf "  %s installing curl, git, gh and zsh (sudo)\n" "$WORK"
   sudo apt-get update -qq
-  sudo apt-get install -y -qq curl ca-certificates git gh
+  sudo apt-get install -y -qq curl ca-certificates git gh zsh
 fi
-printf "  %s curl, git, gh\n" "$OK"
+printf "  %s curl, git, gh, zsh\n" "$OK"
 
 # ---------------------------------------------------------------------------
-# 2. GitHub auth before mise touches the network: nearly every tool in
+# 2. zsh as the login shell, through sudo. mise's [bootstrap.user] runs plain
+#    chsh, which asks for the account's password, and a box with key-only
+#    logins has none.
+# ---------------------------------------------------------------------------
+zsh_path="$(command -v zsh)"
+if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$zsh_path" ]; then
+  grep -qxF "$zsh_path" /etc/shells || echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
+  sudo chsh -s "$zsh_path" "$USER"
+  printf "  %s login shell → zsh (takes effect next login)\n" "$OK"
+else
+  printf "  %s login shell is zsh\n" "$OK"
+fi
+
+# ---------------------------------------------------------------------------
+# 3. GitHub auth before mise touches the network: nearly every tool in
 #    03-tools.toml is a GitHub release, and the anonymous rate limit runs out
 #    long before the list does. Device flow: gh prints a code you paste on
 #    whatever machine you're sitting at, so a box with no browser works.
@@ -55,7 +71,7 @@ export GITHUB_TOKEN
 printf "  %s gh authed\n" "$OK"
 
 # ---------------------------------------------------------------------------
-# 3. mise, from its installer into ~/.local/bin, where `upd` self-updates it.
+# 4. mise, from its installer into ~/.local/bin, where `upd` self-updates it.
 # ---------------------------------------------------------------------------
 export PATH="$HOME/.local/bin:$PATH"
 if ! command -v mise >/dev/null; then
@@ -65,7 +81,7 @@ fi
 printf "  %s mise\n" "$OK"
 
 # ---------------------------------------------------------------------------
-# 4. Clone the repo, link ~/.config/mise to config.d/mise in it, and apply
+# 5. Clone the repo, link ~/.config/mise to config.d/mise in it, and apply
 #    it. HTTPS stays HTTPS: the SSH key lives in the 1Password desktop agent.
 #    A re-run applies the existing checkout.
 # ---------------------------------------------------------------------------
