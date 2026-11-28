@@ -1,0 +1,10 @@
+# Cloud, orchestration and DevOps
+[bootstrap.packages]
+"brew:awscli" = { os = "macos" }
+"brew:aws-sso-util" = { os = "macos" }
+"brew:cf-terraforming" = { os = "macos" }
+"brew:qemu" = { os = "macos" }
+"brew:ios-deploy" = { os = "macos" }
+# A cask rather than mise's gcloud on macOS: vfox-gcloud's env hook probes for
+# Python on every mise hook-env, about 100ms per shell start and directory change.
+"brew-cask:gcloud-cli" = { os = "macos" }

@@ -1,0 +1,35 @@
+# This machine's roles and one-off packages. The first `mise bootstrap`
+# copies this file to config.local.toml, which git ignores. Uncomment the
+# roles this machine needs and run `upd`; conf.d/04-packages.toml always
+# installs. Linux boxes take no roles: every one of them is macOS software.
+
+include = [
+  # "roles/ai.toml",         # claude
+  # "roles/audio-hw.toml",   # focusrite control
+  # "roles/browsers.toml",   # zen, dia, helium, browser-schedule
+  # "roles/dev.toml",        # zed, fork, lens, postgres
+  # "roles/docker.toml",     # orbstack
+  # "roles/gaming.toml",     # steam
+  # "roles/infra.toml",      # aws, cf-terraforming, qemu, gcloud
+  # "roles/media.toml",      # ffmpeg, flac, sox, foobar2000, iina, koan
+  # "roles/networking.toml", # nmap, iperf3, telnet, unbound
+  # "roles/photo.toml",      # adobe creative cloud
+  # "roles/sharing.toml",    # syncthing
+  # "roles/social.toml",     # discord, signal, telegram, whatsapp
+  # "roles/tailscale.toml",  # tailscale
+  # "roles/virtual.toml",    # lima (payload-detonation sandbox)
+  # "roles/vpn.toml",        # sbr
+  # "roles/work.toml",       # notion, notion calendar, slack, figma, aws vpn
+]
+
+# [bootstrap.packages]
+# "brew-cask:some-app" = "latest"
+
+# A machine with the local-only work profile in ~/.dotfiles/.claude-work:
+# [dotfile_groups.claude-work]
+# root = ".claude-work"
+# target = "~/.claude-work"
+# exclude = [".gitignore"]
+#
+# [dotfile_groups.claude-work.entries]
+# "~/.claude-work/skills" = { mode = "symlink" }

@@ -1,0 +1,7 @@
+# Productivity and collaboration
+[bootstrap.packages]
+"brew-cask:notion" = { os = "macos" }
+"brew-cask:notion-calendar" = { os = "macos" }
+"brew-cask:slack" = { os = "macos" }
+"brew-cask:figma" = { os = "macos" }
+"brew-cask:aws-vpn-client" = { os = "macos" }

@@ -1,0 +1,13 @@
+# Audio and video processing and playback
+[bootstrap.packages]
+"brew:ffmpeg" = { os = "macos" }
+"brew:flac" = { os = "macos" }
+"brew:sox" = { os = "macos" }
+"brew:libsndfile" = { os = "macos" }
+"brew:atomicparsley" = { os = "macos" }
+"brew:exiftool" = { os = "macos" }
+
+"brew-cask:foobar2000" = { os = "macos" }
+"brew-cask:iina" = { os = "macos" }
+"brew-cask:radiosilence/tap/koan-app" = { os = "macos" }
+"mas:1136220934" = "latest" # Infuse

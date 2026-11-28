@@ -1,0 +1,185 @@
+#!/usr/bin/env bash
+#MISE description="Machine setup that the [bootstrap] sections cannot declare"
+#MISE hide=true
+#MISE depends=["dotfiles:completions"]
+# `mise bootstrap` runs this last, after packages, dotfiles and tools, and on
+# every run, so each step checks whether it is already done. A failed step is
+# reported and the rest still run.
+set -uo pipefail
+
+dotfiles=~/.dotfiles
+op_sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+status=0
+
+ok() { printf '\033[32m󰄬\033[0m %s\n' "$*"; }
+warn() { printf '\033[33m\033[0m %s\n' "$*" >&2; }
+fail() {
+  printf '\033[31m󰅖\033[0m %s\n' "$*" >&2
+  status=1
+}
+
+# Creates config.local.toml, converting a dotfiles-roles.yml (the Brewfile's
+# role list) into includes when there is one. It loads from the next run.
+local_config() {
+  local cfg=$dotfiles/config.d/mise/config.local.toml
+  [ -e "$cfg" ] && return
+  if [ -f "$dotfiles/dotfiles-roles.yml" ]; then
+    # A missing include breaks every mise command, so unknown roles are dropped.
+    {
+      echo "include = ["
+      sed -n 's/^ *- *\([a-z0-9-]*\).*/\1/p' "$dotfiles/dotfiles-roles.yml" | while read -r role; do
+        if [ -f "$dotfiles/config.d/mise/roles/$role.toml" ]; then
+          echo "  \"roles/$role.toml\","
+        else
+          warn "unknown role '$role' in dotfiles-roles.yml, skipping"
+        fi
+      done
+      echo "]"
+    } >"$cfg"
+    rm "$dotfiles/dotfiles-roles.yml"
+    ok "roles moved from dotfiles-roles.yml to config.local.toml"
+  else
+    cp "$cfg.template" "$cfg"
+    [ "$(uname)" = Darwin ] && warn "created config.local.toml: enable this machine's roles there and run upd again"
+  fi
+  if [ -d "$dotfiles/.claude-work" ]; then
+    cat >>"$cfg" <<'EOF'
+
+[dotfile_groups.claude-work]
+root = ".claude-work"
+target = "~/.claude-work"
+exclude = [".gitignore"]
+
+[dotfile_groups.claude-work.entries]
+"~/.claude-work/skills" = { mode = "symlink" }
+EOF
+  fi
+}
+
+# A block edit would add a second include on machines that already have this
+# one, which was appended without markers.
+gitconfig_include() {
+  touch ~/.gitconfig
+  grep -q .dotfiles ~/.gitconfig && return
+  printf '\n[include]\npath = ~/.dotfiles/git.d/core.conf\n' >>~/.gitconfig
+  ok "gitconfig include"
+}
+
+claude_code() {
+  command -v claude >/dev/null && return
+  curl -fsSL https://claude.ai/install.sh | bash || return 1
+  ok "claude code"
+}
+
+# Touch ID for sudo inside detached terminal sessions. A sudo_local that
+# references a missing module bricks sudo entirely, and recovery means
+# enabling the root user in Directory Utility.
+sudo_reattach() {
+  grep -q pam_reattach /etc/pam.d/sudo_local 2>/dev/null && return
+  local prefix so backup
+  prefix=$(mise bootstrap packages where brew:pam-reattach) || return 1
+  so="$prefix/lib/pam/pam_reattach.so"
+  if [ ! -f "$so" ]; then
+    fail "pam_reattach.so missing at $so; refusing to edit sudo_local"
+    return
+  fi
+  backup=$(mktemp)
+  sudo cp /etc/pam.d/sudo_local "$backup" || return 1
+  sudo sh -c "{ printf 'auth       optional       %s\n' '$so'; cat /etc/pam.d/sudo_local; } > /etc/pam.d/sudo_local.tmp && mv /etc/pam.d/sudo_local.tmp /etc/pam.d/sudo_local"
+  if sudo -n true 2>&1 | grep -q "initialize PAM"; then
+    sudo cp "$backup" /etc/pam.d/sudo_local
+    rm -f "$backup"
+    fail "sudo PAM broke after the edit; reverted"
+    return
+  fi
+  rm -f "$backup"
+  ok "sudo reattach"
+}
+
+# Not a [bootstrap.files] entry: the file is unreadable without root, so
+# checking it would ask for sudo on every run.
+sudo_timeout() {
+  [ -f /etc/sudoers.d/timeout ] && return
+  sudo sh -c 'echo "Defaults timestamp_timeout=30" > /etc/sudoers.d/timeout && chmod 0440 /etc/sudoers.d/timeout' || return 1
+  ok "sudo timeout"
+}
+
+rosetta() {
+  [ "$(uname -m)" != arm64 ] && return
+  /usr/bin/pgrep -q oahd && return
+  /usr/sbin/softwareupdate --install-rosetta --agree-to-license || return 1
+  ok "rosetta 2"
+}
+
+# git.d/sign.conf sets the format, program and gpgsign; the identity half is
+# per-machine and lives in ~/.gitconfig, read from 1Password so no key is in
+# the repo.
+git_signing() {
+  [ -n "$(git config --global user.signingkey)" ] && return
+  local key email signers
+  key=$(SSH_AUTH_SOCK="$op_sock" ssh-add -L 2>/dev/null | grep -m1 '^ssh-ed25519')
+  if [ -z "$key" ]; then
+    fail "no ed25519 key in the 1Password agent; enable the key for this vault"
+    return
+  fi
+  email=$(op account list --format=json | yq -oy '.[0].email')
+  if [ -z "$email" ] || [ "$email" = "null" ]; then
+    fail "could not read the account email from op"
+    return
+  fi
+  git config --global user.email "$email"
+  git config --global user.signingkey "$key"
+  git config --global tag.gpgsign true
+  # git refuses to verify an SSH signature without a signers file.
+  signers="$HOME/.config/git/allowed_signers"
+  mkdir -p "$(dirname "$signers")"
+  printf '%s %s\n' "$email" "$key" >"$signers"
+  git config --global gpg.ssh.allowedSignersFile "$signers"
+  ok "git signing ($email)"
+}
+
+# The key lives in the 1Password desktop agent, so headless Linux boxes stay
+# on HTTPS through gh's credential helper.
+use_ssh() {
+  git -C "$dotfiles" remote get-url origin | grep -q '^git@' && return
+  if [ ! -S "$op_sock" ]; then
+    warn "1Password SSH agent not running; dotfiles remote stays on HTTPS"
+    return
+  fi
+  local url
+  url=$(git -C "$dotfiles" remote get-url origin | sed -E 's|https://github.com/(.+)|git@github.com:\1|')
+  git -C "$dotfiles" remote set-url origin "$url"
+  ok "dotfiles remote switched to $url"
+}
+
+# A block edit can't be macOS-only, and would duplicate the block that older
+# runs appended without markers.
+op_ssh_agent() {
+  grep -q 2BUA8C4S2C.com.1password ~/.ssh/config 2>/dev/null && return
+  printf '\nHost *\n  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"\n' >>~/.ssh/config
+  ok "1password ssh agent"
+}
+
+local_config || fail "config.local.toml"
+for f in "$dotfiles/Brewfile.local" ~/Brewfile.local; do
+  [ -f "$f" ] && warn "$f is no longer read; move its packages to [bootstrap.packages] in config.local.toml"
+done
+gitconfig_include || fail "gitconfig include"
+claude_code || fail "claude code install"
+
+if [ "$(uname)" = Darwin ]; then
+  sudo_reattach || fail "sudo reattach"
+  sudo_timeout || fail "sudo timeout"
+  rosetta || fail "rosetta 2"
+  git_signing || fail "git signing"
+  use_ssh || fail "dotfiles remote"
+  op_ssh_agent || fail "1password ssh agent"
+fi
+
+rm -f ~/.cache/zsh/eval/*.zsh ~/.cache/zsh/eval/*.zwc ~/.config/zsh/conf.d/*.zwc ~/.zcompdump
+if command -v sheldon >/dev/null && ! sheldon source >/dev/null 2>&1; then
+  warn "sheldon source failed"
+fi
+
+[ "$status" = 0 ] && ok "bootstrapped (restart the shell for changes)"
+exit "$status"

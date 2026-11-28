@@ -1,0 +1,6 @@
+# Diagnostics and debugging
+[bootstrap.packages]
+"brew:nmap" = { os = "macos" }
+"brew:iperf3" = { os = "macos" }
+"brew:telnet" = { os = "macos" }
+"brew:unbound" = { os = "macos" }

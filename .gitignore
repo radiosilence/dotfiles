@@ -3,7 +3,9 @@
 *.code-workspace
 .ruby-lsp
 
-# Local brew config (per-machine)
+# Per-machine roles and packages. dotfiles-roles.yml and Brewfile.local are
+# their old forms, kept ignored until each machine has moved off them.
+config.d/mise/config.local.toml
 dotfiles-roles.yml
 Brewfile.local
 

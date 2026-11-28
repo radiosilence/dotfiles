@@ -43,6 +43,7 @@ pulumi = "latest"
 pup = "latest" # DD Client
 ripgrep = "latest"
 rust = "latest"
+sando = "latest" # sdo: builds, serves and prerenders askama sites
 sccache = "latest" # Shared rustc cache, wired in config.d/cargo
 ruby = "latest"
 sfw-free = { version = "latest", bin = "sfw" } # Socket Firewall — release ships as sfw-free; ni probes for sfw
@@ -55,6 +56,7 @@ taplo = "latest" # TOML formatter
 task = "latest" # Task runner
 tfl = "latest" # TfL MCP
 tubele-solver = "latest" # Tubele solver; playing live needs a Chromium browser
+uv = { version = "latest", os = ["linux"] } # the pipx: backend runs through uv; macOS gets it from brew
 watchwoman = "latest" # Watchman replacement
 xh = "latest" # Modern HTTP client
 yq = "latest"

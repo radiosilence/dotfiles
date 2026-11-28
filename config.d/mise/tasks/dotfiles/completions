@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+#MISE description="Regenerate zsh completions from the installed tools"
+#MISE hide=true
+# Runs inside mise, so each command resolves to the installed tool rather than
+# a shim. A tool that isn't installed fails its command and is skipped; a file
+# is replaced only when the new output is non-empty and differs.
+set -uo pipefail
+
+dir=${COMP_DIR:-$HOME/.config/zsh/completions}
+mkdir -p "$dir"
+
+gen() {
+  local new
+  new=$(mktemp)
+  if eval "$2" >"$new" 2>/dev/null && [ -s "$new" ] && ! cmp -s "$new" "$1"; then
+    mv "$new" "$1"
+    printf '\033[32m󰄬\033[0m %s\n' "${1##*/}"
+  else
+    rm -f "$new"
+  fi
+}
+
+# scripts/ are zarg scripts, whose completions come from the same spec they
+# parse flags with.
+while read -r tool cmd; do
+  gen "$dir/_$tool" "$cmd" &
+done <<'EOF'
+argocd argocd completion zsh
+buf buf completion zsh
+dagger dagger completion zsh
+docker docker completion zsh
+glow glow completion zsh
+golangci-lint golangci-lint completion zsh
+gt gt completion zsh
+helm helm completion zsh
+k9s k9s completion zsh
+kubecolor kubecolor completion zsh
+kubectl kubectl completion zsh
+lefthook lefthook completion zsh
+nano-web nano-web completion zsh
+op op completion zsh
+orbctl orbctl completion zsh
+procs procs completion zsh
+pulumi pulumi completion zsh
+tilt tilt completion zsh
+watchwoman watchwoman completion zsh
+yq yq completion zsh
+aube aube completion zsh
+nr nr --completion-zsh
+gh gh completion -s zsh
+koan koan completions zsh
+sdo sdo completions zsh
+codeowners-cli codeowners-cli completions zsh
+task task --completion zsh
+just just --completions zsh
+aws-vault aws-vault --completion-script-zsh
+rg rg --generate complete-zsh
+xh xh --generate complete-zsh
+pup pup completions zsh
+folk folk completions zsh
+tfl tfl completions zsh
+caldav caldav completions zsh
+fastmail fastmail completions zsh
+sift sift completions zsh
+bun bun completions zsh | sed '/zstyle .:completion:.*:bun.*format/d'
+deno deno completions zsh
+starship starship completions zsh
+sheldon sheldon completions --shell zsh
+bat bat --completion zsh
+delta delta --generate-completion zsh
+lsd cat "$(dirname "$(command -v lsd)")/autocomplete/_lsd"
+clean-dls clean-dls --completions zsh
+clean-exif clean-exif --completions zsh
+embed-art embed-art --completions zsh
+extract-exif-from-flac extract-exif-from-flac --completions zsh
+git-squash git-squash --completions zsh
+git-sync git-sync --completions zsh
+imp imp --completions zsh
+kill-port kill-port --completions zsh
+parallel-dl-extract parallel-dl-extract --completions zsh
+prune prune --completions zsh
+to-audio to-audio --completions zsh
+unfuck-xcode unfuck-xcode --completions zsh
+url2base64 url2base64 --completions zsh
+vimv vimv --completions zsh
+EOF
+# npm's completion is a script to source, not a compdef.
+gen "$HOME/.dotfiles/config.d/zsh/conf.d/npm-completion.zsh" "npm completion" &
+wait
